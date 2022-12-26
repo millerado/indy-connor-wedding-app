@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { Text, Button, Divider, IconButton, Switch, TextInput } from './components';
+import { Text, Button, Divider, IconButton, Switch, TextInput, ActivityIndicator } from './components';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { lightTheme, darkTheme } from './styles';
 
@@ -12,9 +12,10 @@ const App = () => {
         <Divider />
         <IconButton icon="camera" mode='contained' />
         <Switch />
-        <View style={{height: 100, width: 300}}>
-        <TextInput label="Email" />
+        <View style={{height: 50, width: 300}}>
+          <TextInput label="Email" />
         </View>
+        {/* <ActivityIndicator /> */}
       </View>
     </PaperProvider>
   );

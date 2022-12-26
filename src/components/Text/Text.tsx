@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Text as PaperText, withTheme } from 'react-native-paper';
+import { Text as PaperText, TextProps, withTheme } from 'react-native-paper';
 
-const Text = (props): React.ReactElement => (
+const Text = (props: TextProps) => (
   <PaperText {...props} />
 );
 

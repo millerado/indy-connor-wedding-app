@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Switch as PaperSwitch, withTheme } from 'react-native-paper';
+import { Switch as PaperSwitch, SwitchProps, withTheme } from 'react-native-paper';
 
-const Switch = (props): React.ReactElement => (
+const Switch = (props: SwitchProps) => (
   <PaperSwitch {...props} />
 );
 

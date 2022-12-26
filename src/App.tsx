@@ -12,7 +12,9 @@ const App = () => {
         <Divider />
         <IconButton icon="camera" mode='contained' />
         <Switch />
-        <TextInput label="Email" value={'text'} />
+        <View style={{height: 100, width: 300}}>
+        <TextInput label="Email" />
+        </View>
       </View>
     </PaperProvider>
   );

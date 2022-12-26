@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Divider as PaperDivider, withTheme } from 'react-native-paper';
+import { Divider as PaperDivider, DividerProps, withTheme } from 'react-native-paper';
 
-const Divider = (props): React.ReactElement => (
+const Divider = (props: DividerProps) => (
   <PaperDivider {...props} />
 );
 

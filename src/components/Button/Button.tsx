@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { Button as PaperButton, withTheme } from 'react-native-paper';
+import { Button as PaperButton, ButtonProps, withTheme } from 'react-native-paper';
 
-const Button = (props): React.ReactElement => (
+const Button = (props: ButtonProps) => (
   <PaperButton {...props} />
 );
 

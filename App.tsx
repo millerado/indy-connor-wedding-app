@@ -1,20 +1,12 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from 'react';
+import { AppRegistry } from 'react-native';
+import { expo } from './app.json';
+import App from './src/App';
 
-export default function App() {
+export default function Main() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app! TSC Test</Text>
-      <StatusBar style="auto" />
-    </View>
+    <App />
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+AppRegistry.registerComponent(expo.name, () => Main);

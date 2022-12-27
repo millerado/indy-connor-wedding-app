@@ -1,13 +1,20 @@
 import React, { useState } from "react";
 import { Pressable } from "react-native";
 
+interface DoubleTapProps {
+  delay?: number;
+  singleTap?: () => void;
+  doubleTap?: () => void;
+  children: React.ReactNode;
+}
+
 // Function based off of: https://www.npmjs.com/package/react-native-double-tap
 // Rebuilt because that library is old, single purpose, and easy to shift over so we can maintain and customize
-const DoubleTap = (props) => {
+const DoubleTap = (props: DoubleTapProps) => {
   const [firstPress, setFirstPress] = useState(true);
   const [lastTime, setLastTime] = useState(new Date());
   const [timer, setTimer] = useState(false);
-  const {delay = 200} = props;
+  const {delay = 200, singleTap, doubleTap, children} = props;
 
   const onTap = () => {
     let now = new Date().getTime();
@@ -18,7 +25,7 @@ const DoubleTap = (props) => {
       //start a timer --> if a second tap doesnt come in by the delay, trigger singleTap event handler
       setTimer(setTimeout(() => {
         //check if user passed in prop for singleTap event handler
-        props.singleTap ? props.singleTap() : null;
+        singleTap ? singleTap() : null;
 
         // reset back to initial state
         setFirstPress(true);
@@ -34,7 +41,7 @@ const DoubleTap = (props) => {
         timer && clearTimeout(timer);
 
         //check if user passed in prop for double click
-        props.doubleTap ? props.doubleTap() : null;
+        doubleTap ? doubleTap() : null;
 
         // reset back to initial state
         setFirstPress(true);
@@ -44,7 +51,7 @@ const DoubleTap = (props) => {
 
   return (
     <Pressable onPress={onTap}>
-      {props.children}
+      {children}
     </Pressable>
   );
 

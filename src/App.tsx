@@ -1,23 +1,18 @@
-import { View } from 'react-native';
-import { Text, Button, Divider, IconButton, Switch, TextInput, ActivityIndicator } from './components';
+import { NavigationContainer } from '@react-navigation/native';
 import { Provider as PaperProvider } from 'react-native-paper';
+import Navigation from './navigation/navigation';
 import { lightTheme, darkTheme } from './styles';
 
 const App = () => {
+  // Will add custom contexts in here
+  // Also all app-loading functionality (ex: Notification Registration)
+  
   return (
-    <PaperProvider theme={lightTheme}>
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <Text>Hi Indy!</Text>
-        <Button mode='contained'>Test</Button>
-        <Divider />
-        <IconButton icon="camera" mode='contained' />
-        <Switch />
-        <View style={{height: 50, width: 300}}>
-          <TextInput label="Email" />
-        </View>
-        {/* <ActivityIndicator /> */}
-      </View>
-    </PaperProvider>
+    <NavigationContainer>
+      <PaperProvider theme={lightTheme}>
+        <Navigation />
+      </PaperProvider>
+    </NavigationContainer>
   );
 };
 

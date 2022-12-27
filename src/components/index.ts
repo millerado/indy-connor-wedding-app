@@ -4,6 +4,7 @@ import Button from './Button/Button';
 import ConditionalWrapper from './ConditionalWrapper/ConditionalWrapper';
 import Divider from './Divider/Divider';
 import DoubleTap from './DoubleTap/DoubleTap';
+import Icon from './Icon/Icon';
 import IconButton from './IconButton/IconButton';
 import Modal from './Modal/Modal';
 import Switch from './Switch/Switch';
@@ -17,6 +18,7 @@ export {
   ConditionalWrapper,
   Divider,
   DoubleTap,
+  Icon,
   IconButton,
   Modal,
   Switch,

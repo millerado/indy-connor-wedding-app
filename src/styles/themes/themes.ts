@@ -1,4 +1,5 @@
 import { MD3DarkTheme as PaperDarkTheme, MD3LightTheme as PaperDefaultTheme } from 'react-native-paper';
+import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme } from '@react-navigation/native';
 
 // Paper full configurability here:
 // https://github.com/callstack/react-native-paper/blob/main/src/styles/themes/v2/LightTheme.tsx
@@ -7,6 +8,7 @@ import { MD3DarkTheme as PaperDarkTheme, MD3LightTheme as PaperDefaultTheme } fr
 
 export const lightTheme = {
   ...PaperDefaultTheme,
+  ...NavigationDefaultTheme,
   name: 'Light',
   roundness: 4,
   version: 3,
@@ -16,12 +18,14 @@ export const lightTheme = {
   },
   colors: {
     ...PaperDefaultTheme.colors,
+    ...NavigationDefaultTheme.colors,
     // Add all our colors here
   },
 };
 
 export const darkTheme = {
   ...PaperDarkTheme,
+  ...NavigationDarkTheme,
   name: 'Dark',
   roundness: 4,
   version: 3,
@@ -31,6 +35,7 @@ export const darkTheme = {
   },
   colors: {
     ...PaperDefaultTheme.colors,
+    ...NavigationDarkTheme.colors,
     // Add all our colors here
   },
 };

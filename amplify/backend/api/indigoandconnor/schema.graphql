@@ -1,0 +1,70 @@
+type Standings @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  teamId: String
+  rank: String
+  points: String
+}
+
+type Posts @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: String!
+  messageBody: String
+  images: [String]
+  olympicEvent: Boolean!
+  eventDetails: String
+  Comments: [Comments] @hasMany(indexName: "byPosts", fields: ["id"])
+  Reactions: [Reactions] @hasMany(indexName: "byPosts", fields: ["id"])
+}
+
+type Teams @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  colorCode: String!
+  Users: [Users] @hasMany(indexName: "byTeams", fields: ["id"])
+}
+
+type Users @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  image: String!
+  about: String
+  admin: Boolean!
+  teamsID: ID! @index(name: "byTeams")
+}
+
+type ExpoTokens @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  token: String!
+  userId: String
+}
+
+type Reactions @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: String!
+  reactionType: String!
+  postsID: ID! @index(name: "byPosts")
+}
+
+type Comments @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: String!
+  comment: String!
+  postsID: ID! @index(name: "byPosts")
+}
+
+type FAQ @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  question: String!
+  answer: String!
+  sortOrder: Int!
+}
+
+type Schedule @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  time: String!
+  day: String!
+  description: String!
+  location: String!
+  sortOrder: Int!
+} 

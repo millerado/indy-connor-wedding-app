@@ -34,7 +34,7 @@ export const darkTheme = {
     scale: 1.0,
   },
   colors: {
-    ...PaperDefaultTheme.colors,
+    ...PaperDarkTheme.colors,
     ...NavigationDarkTheme.colors,
     // Add all our colors here
   },

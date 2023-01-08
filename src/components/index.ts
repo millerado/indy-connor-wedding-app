@@ -10,6 +10,7 @@ import Modal from './Modal/Modal';
 import Switch from './Switch/Switch';
 import Text, { TextSizes } from './Text/Text';
 import TextInput from './TextInput/TextInput';
+import ZoomableView from './ZoomableView/ZoomableView';
 
 export { 
   ActivityIndicator,
@@ -26,4 +27,5 @@ export {
   TextInput,
   // And ENUMS
   TextSizes,
+  ZoomableView,
 };

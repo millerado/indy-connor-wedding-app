@@ -8,7 +8,7 @@ import Icon from './Icon/Icon';
 import IconButton from './IconButton/IconButton';
 import Modal from './Modal/Modal';
 import Switch from './Switch/Switch';
-import Text from './Text/Text';
+import Text, { TextSizes } from './Text/Text';
 import TextInput from './TextInput/TextInput';
 
 export { 
@@ -24,4 +24,6 @@ export {
   Switch,
   Text,
   TextInput,
+  // And ENUMS
+  TextSizes,
 };

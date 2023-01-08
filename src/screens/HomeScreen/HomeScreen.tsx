@@ -1,10 +1,10 @@
 import { View } from "react-native";
-import { Text, Button, IconButton, Switch, TextInput } from "../../components";
+import { Text, Button, IconButton, Switch, TextInput, TextSizes } from "../../components";
 
 const HomeScreen = () => {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text>Home Screen</Text>
+      <Text size={TextSizes.L}>Home Screen</Text>
       <Button mode="contained">Test</Button>
       <IconButton icon="camera" mode="contained" />
       <Switch />

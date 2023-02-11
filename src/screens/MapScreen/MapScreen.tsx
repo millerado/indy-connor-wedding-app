@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { View, Image } from "react-native";
 import { useTheme } from "react-native-paper";
+import Zoom from 'react-native-zoom-reanimated'
 import { Text, ZoomableView } from '../../components';
 import { calcDimensions } from '../../styles';
 import styles from './MapScreenStyles';
@@ -14,9 +15,9 @@ const MapScreen = () => {
   const dimensions = calcDimensions();
   return (
     <View style={ss.pageWrapper}>
-      <ZoomableView style={ss.zoomWrapper} maxZoom={10} height={dimensions.width * (5216/7792)} width={dimensions.width}>
+      <Zoom>
         <Image resizeMode='contain' style={{width: dimensions.width, height: dimensions.width * (5216/7792)}} source={resortMap} />
-      </ZoomableView>
+      </Zoom>
     </View>
   );
 };

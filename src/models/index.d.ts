@@ -181,7 +181,7 @@ type EagerUsers = {
   };
   readonly id: string;
   readonly name: string;
-  readonly image: string;
+  readonly image?: string | null;
   readonly about?: string | null;
   readonly admin: boolean;
   readonly teamsID: string;
@@ -196,7 +196,7 @@ type LazyUsers = {
   };
   readonly id: string;
   readonly name: string;
-  readonly image: string;
+  readonly image?: string | null;
   readonly about?: string | null;
   readonly admin: boolean;
   readonly teamsID: string;

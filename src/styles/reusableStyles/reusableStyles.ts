@@ -17,7 +17,8 @@ const reusableStyles = theme => {
       alignItems: "center",
     },
     modalBody: {
-      backgroundColor: theme.colors.tertiaryContainer,
+      // backgroundColor: theme.colors.primaryContainer,
+      backgroundColor: theme.colors.white,
       borderRadius: 10,
       justifyContent: 'flex-start',
       overflow: 'hidden',
@@ -55,6 +56,10 @@ const reusableStyles = theme => {
     modalFullScreenHeader: {
       paddingTop: 10,
       paddingBottom: 10,
+    },
+    textInput: {
+      // backgroundColor: theme.colors.onSecondaryContainer,
+      alignSelf: 'center',
     },
     modalTextInput: {
       width: width * .8 * .9,

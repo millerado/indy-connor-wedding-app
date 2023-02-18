@@ -20,6 +20,8 @@ export const lightTheme = {
     ...PaperDefaultTheme.colors,
     ...NavigationDefaultTheme.colors,
     // Add all our colors here
+    black: '#000000',
+    white: '#ffffff',
   },
 };
 
@@ -37,5 +39,7 @@ export const darkTheme = {
     ...PaperDarkTheme.colors,
     ...NavigationDarkTheme.colors,
     // Add all our colors here
+    black: '#000000',
+    white: '#ffffff',
   },
 };

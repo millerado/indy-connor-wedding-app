@@ -1,22 +1,66 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { Provider as PaperProvider } from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Navigation from './navigation/navigation';
-import { lightTheme, darkTheme } from './styles';
-import { ThemeContext } from './contexts';
+import React, { useState, useEffect, useRef } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { Provider as PaperProvider } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Snackbar } from "./components";
+import Navigation from "./navigation/navigation";
+import { lightTheme, darkTheme } from "./styles";
+import {
+  ThemeContext,
+  SnackbarContext,
+  DefaultSnackbar,
+  AuthContext,
+  UnauthedUser,
+} from "./contexts";
+import { Users } from "./models";
 
 const App = () => {
-  const [themeName, setThemeName] = useState("Light");
-  // Will add custom contexts in here
+  // Setup and manage custom Contexts
   // Also all app-loading functionality (ex: Notification Registration)
+  const [themeName, setThemeName] = useState("Light");
+  const [authStatus, setAuthStatus] = useState(UnauthedUser);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackbarDetails, setSnackbarDetails] = useState(DefaultSnackbar);
 
+  // Pieces for the Theme Context
   const theme = themeName === "Dark" ? darkTheme : lightTheme;
-  
-  const saveTheme = async(newThemeName) => {
+
+  const saveTheme = async (newThemeName) => {
     setThemeName(newThemeName);
     await AsyncStorage.setItem("themeName", newThemeName);
-  }
+  };
+
+  // Pieces for the Auth Context
+  const setUser = (newUser: Users) => {
+    // TO-DO: Tie in Notifications at the user level here (associate userId with their Notification Identifier)
+    const { id, name, image, about, admin, teamsID } = newUser;
+    setAuthStatus({
+      isAuthed: true,
+      userId: id,
+      name,
+      image: image ? JSON.parse(image) : undefined,
+      about,
+      isAdmin: admin,
+      teamId: teamsID,
+    });
+  };
+
+  // Pieces for the Snackbar Context
+  const setSnackbar = (props) => {
+    const { message, action, duration = 7000, showCloseIcon = false } = props;
+    setSnackbarDetails({
+      message: message,
+      duration: duration,
+      action: action,
+      onIconPress: showCloseIcon ? onDismissSnackBar : undefined,
+    });
+    setShowSnackbar(true);
+  };
+
+  const onDismissSnackBar = () => {
+    setShowSnackbar(false);
+    setSnackbarDetails(DefaultSnackbar);
+  };
 
   useEffect(() => {
     const fetchCurrentTheme = async () => {
@@ -25,21 +69,36 @@ const App = () => {
         if (currentTheme) {
           setThemeName(currentTheme);
         }
-      } catch(e) {
-        console.log('error fetching current theme', e);
+      } catch (e) {
+        console.log("error fetching current theme", e);
       }
-    }
-    
+    };
+
     fetchCurrentTheme();
   }, []);
-  
+
   return (
     <ThemeContext.Provider value={{ themeName, setThemeName: saveTheme }}>
-      <NavigationContainer>
-        <PaperProvider theme={theme}>
-          <Navigation />
-        </PaperProvider>
-      </NavigationContainer>
+      <AuthContext.Provider value={{ authStatus, setAuthStatus: setUser }}>
+        <NavigationContainer>
+          <PaperProvider theme={theme}>
+            <SnackbarContext.Provider
+              value={{ snackbar: snackbarDetails, setSnackbar }}
+            >
+              <Navigation />
+              <Snackbar
+                visible={showSnackbar}
+                onDismiss={onDismissSnackBar}
+                action={snackbarDetails.action}
+                duration={snackbarDetails.duration}
+                onIconPress={snackbarDetails.onIconPress}
+              >
+                {snackbarDetails.message}
+              </Snackbar>
+            </SnackbarContext.Provider>
+          </PaperProvider>
+        </NavigationContainer>
+      </AuthContext.Provider>
     </ThemeContext.Provider>
   );
 };

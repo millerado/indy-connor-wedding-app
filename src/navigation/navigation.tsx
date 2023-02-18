@@ -1,14 +1,16 @@
 import React from "react";
-import { StatusBar } from "react-native";
+import { StatusBar, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "react-native-paper";
+import { SettingsModal } from '../containers';
 import { Icon } from '../components';
 import {
   HomeScreen,
   MapScreen,
   NotificationsScreen,
   ScheduleScreen,
+  UserScreen,
 } from "../screens";
 
 const HomeStack = createNativeStackNavigator();
@@ -30,7 +32,13 @@ const HomeStackScreen = () => {
         headerTitleAlign: "center",
       }}
     >
-      <HomeStack.Screen name="Home" component={HomeScreen} />
+      <HomeStack.Screen name="Home" component={HomeScreen} options={{ 
+        headerLeft: () => (
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+            <SettingsModal />
+          </View>
+        )}} />
+      <HomeStack.Screen name="User" component={UserScreen} />
     </HomeStack.Navigator>
   );
 };
@@ -72,6 +80,7 @@ const NotificationsStackScreen = () => {
         name="Notifications"
         component={NotificationsScreen}
       />
+      <HomeStack.Screen name="User" component={UserScreen} />
     </NotificationsStack.Navigator>
   );
 };

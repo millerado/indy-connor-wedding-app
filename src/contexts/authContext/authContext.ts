@@ -1,8 +1,15 @@
 import * as React from "react";
 
-const AuthContext = React.createContext({
+export const UnauthedUser = {
   isAuthed: false,
+  isAdmin: false,
   userId: undefined,
-});
+  name: undefined,
+  image: undefined,
+  about: undefined,
+  teamId: undefined
+};
 
-export default AuthContext;
+export const AuthContext = React.createContext(
+  UnauthedUser // Default auth status
+);

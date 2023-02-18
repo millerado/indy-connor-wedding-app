@@ -17,7 +17,8 @@ const reusableStyles = theme => {
       alignItems: "center",
     },
     modalBody: {
-      backgroundColor: theme.colors.tertiaryContainer,
+      // backgroundColor: theme.colors.primaryContainer,
+      backgroundColor: theme.colors.white,
       borderRadius: 10,
       justifyContent: 'flex-start',
       overflow: 'hidden',
@@ -25,8 +26,8 @@ const reusableStyles = theme => {
       maxHeight: height * .8,
     },
     modalHeader: {
-      backgroundColor: theme.colors.primaryContainer,
-      borderBottomColor: theme.colors.primaryContainer,
+      backgroundColor: theme.colors.secondary,
+      // borderBottomColor: theme.colors.primaryContainer,
       borderBottomWidth: 1,
       flexDirection: 'row',
       alignItems: 'center',
@@ -48,13 +49,17 @@ const reusableStyles = theme => {
       borderRadius: 0,
       width: width,
       height: height,
-      backgroundColor: theme.colors.tertiaryContainer,
+      backgroundColor: theme.colors.onPrimary,
       justifyContent: 'flex-start',
       overflow: 'hidden',
     },  
     modalFullScreenHeader: {
       paddingTop: 10,
       paddingBottom: 10,
+    },
+    textInput: {
+      // backgroundColor: theme.colors.onSecondaryContainer,
+      alignSelf: 'center',
     },
     modalTextInput: {
       width: width * .8 * .9,

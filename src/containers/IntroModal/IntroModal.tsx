@@ -92,7 +92,7 @@ const IntroModal = (props) => {
                   </View>
                   <View style={{ paddingTop: 10 }}>
                     <Text size={TextSizes.S}>
-                      Hint: It's the same passcode needed to access the website, and what we're doing this weekend (no spaces)
+                      Hint: It's the state the wedding is in (full state name)
                     </Text>
                   </View>
                   <View style={{ paddingTop: 10 }}>

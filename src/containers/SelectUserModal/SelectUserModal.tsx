@@ -1,11 +1,12 @@
 import React, { useMemo, useEffect, useState, useContext } from "react";
 import { View, ScrollView } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Auth, Predicates, SortDirection } from "aws-amplify";
-import { Modal, Text, TextSizes, TextInput } from "../../components";
+import { Predicates, SortDirection } from "aws-amplify";
+import { Modal, Text, TextSizes, TextInput, Button } from "../../components";
 import { DataStore } from "../../utils";
 import { Users } from "../../models";
 import { AuthContext, SnackbarContext } from "../../contexts";
+import { adminPasscode } from "../../../appConfig";
 import SingleUserInModal from "../SingleUserInModal/SingleUserInModal";
 import styles from "./SelectUserModalStyles";
 
@@ -19,6 +20,8 @@ const SelectUserModal = (props: SelectUserModalProps) => {
   const [allUsers, setAllUsers] = useState([]);
   const [displayedUsers, setDisplayedUsers] = useState([]);
   const [searchText, setSearchText] = useState("");
+  const [clickedUser, setClickedUser] = useState(undefined);
+  const [adminPassword, setAdminPassword] = useState('');
 
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
@@ -71,15 +74,22 @@ const SelectUserModal = (props: SelectUserModalProps) => {
 
   const rowClickedHandler = (userId: string) => {
     const user = allUsers.find((u) => u.id === userId);
+    setClickedUser(user);
+  };
+
+  const confirmChangeUser = () => {
     closeModal();
-    if (user) {
-      setAuthStatus(user.fullObject);
+    setSearchText('');
+    setAdminPassword('');
+    setClickedUser(undefined);
+    if (clickedUser) {
+      setAuthStatus(clickedUser.fullObject);
       setSnackbar({
-        message: `Now Signed-In as ${user.name}`,
+        message: `Now Signed-In as ${clickedUser.name}`,
         showCloseIcon: true,
       });
     }
-  };
+  }
 
   const updateSearchtext = (text: string) => {
     setSearchText(text);
@@ -132,13 +142,38 @@ const SelectUserModal = (props: SelectUserModalProps) => {
               keyboardDismissMode="on-drag"
             >
               {displayedUsers.map((u, index) => (
-                <SingleUserInModal
-                  key={u.id}
-                  userId={u.id}
-                  singleUser={u}
-                  index={index}
-                  rowClickedCallback={rowClickedHandler}
-                />
+                <View key={u.id}>
+                  <SingleUserInModal
+                    key={u.id}
+                    userId={u.id}
+                    singleUser={u}
+                    index={index}
+                    rowClickedCallback={rowClickedHandler}
+                  />
+                  {clickedUser?.id === u.id && (
+                    <View style={{padding: 5}}>
+                      {clickedUser?.fullObject.admin && (
+                        <TextInput
+                          clearButtonMode="while-editing"
+                          maxLength={20}
+                          returnKeyType="done"
+                          label="Admin Password"
+                          dense
+                          value={adminPassword}
+                          autoCapitalize="none"
+                          enablesReturnKeyAutomatically={true}
+                          style={[
+                            ss.textInput,
+                            ss.modalTextInput,
+                            {marginBottom: 10}
+                          ]}
+                          onChangeText={(text) => setAdminPassword(text)}
+                        />
+                      )}
+                      <Button onPress={confirmChangeUser} disabled={clickedUser?.fullObject.admin && adminPassword.toLowerCase() !== adminPasscode.toLowerCase()}>Use as {u.name}</Button>
+                    </View>
+                  )}
+                </View>
               ))}
             </ScrollView>
           </View>

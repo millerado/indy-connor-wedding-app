@@ -22,26 +22,7 @@ const HomeScreen = () => {
       <SelectUserModal showModal={showSelectUserModal} closeModal={closeSelectUserModal} />
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: theme.colors.background }}>
         <Text size={TextSizes.L}>Home Screen</Text>
-        <Button mode="contained" onPress={() => setShowSelectUserModal(true)}>Test</Button>
-        <IconButton icon="camera" mode="contained" />
-        <Switch />
-        <View style={{ height: 50, width: 300 }}>
-          <TextInput label="Email" />
-        </View>
-        <View style={{height: 20, width: 20, backgroundColor: theme.colors.primary}} />
-        <View style={{height: 20, width: 20, backgroundColor: theme.colors.secondary}} />
-        <View style={{height: 20, width: 20, backgroundColor: theme.colors.tertiary}} />
-        <Text>Theme Name: {themeName}</Text>
-        <Button
-          onPress={() => {
-            setThemeName(themeName === "Light" ? "Dark" : "Light");
-          }}
-          disabled={false}
-        >
-          Toggle Theme
-        </Button>
-        <Avatar name="Indy Miller" size={40} variant='circle' />
-        <SingleUserInModal userId="1" index={0} singleUser={{id: '1', name: 'Connor Tyrrell', }} />
+        <Button mode="contained" onPress={() => setShowSelectUserModal(true)}>Select User Modal</Button>
       </View>
     </>
   );

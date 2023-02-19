@@ -8,9 +8,9 @@ import { IntroModal, SingleUserInModal, SelectUserModal } from "../../containers
 const HomeScreen = () => {
   const [showSelectUserModal, setShowSelectUserModal] = useState(false);
   const theme = useTheme();
-  // Get theme Context
-  const themeContext = useContext(ThemeContext);
-  const { themeName, setThemeName } = themeContext;
+
+  const authContect = useContext(AuthContext);
+  const {authStatus} = authContect;
 
   const closeSelectUserModal = () => {
     setShowSelectUserModal(false);
@@ -23,6 +23,9 @@ const HomeScreen = () => {
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: theme.colors.background }}>
         <Text size={TextSizes.L}>Home Screen</Text>
         <Button mode="contained" onPress={() => setShowSelectUserModal(true)}>Select User Modal</Button>
+        <Text>
+          {JSON.stringify(authStatus)}
+        </Text>
       </View>
     </>
   );

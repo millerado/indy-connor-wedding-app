@@ -6,6 +6,7 @@ import shuffleSeed from 'shuffle-seed';
 import { useTheme } from 'react-native-paper';
 import { typography } from '../../styles';
 import Text from '../Text/Text';
+import { TextSizes } from '../Text/Text';
 import ImageS3 from '../ImageS3/ImageS3';
 import avatarColors from './AvatarColors';
 
@@ -14,7 +15,7 @@ interface AvatarProps {
   name?: string;
   size?: number;
   variant?: 'rounded' | 'circle' | 'square';
-  textSize?: number;
+  textSize?: TextSizes;
   bold?: boolean;
   height?: number;
   absolute?: boolean;
@@ -32,7 +33,7 @@ const Avatar = (props: AvatarProps) => {
     name = '',
     size = typography.fontSizeXL,
     variant = 'rounded',
-    textSize = typography.fontSizeM,
+    textSize = TextSizes.M,
     bold = false,
     height,
     absolute = false,

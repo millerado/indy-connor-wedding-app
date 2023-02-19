@@ -1,17 +1,41 @@
-import React, { useState, useEffect, useRef, useContext, memo, useMemo } from 'react';
-import { View, KeyboardAvoidingView, Platform, ScrollView, Pressable, Keyboard } from 'react-native';
-import { useTheme } from 'react-native-paper';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  memo,
+  useMemo,
+} from "react";
+import {
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Pressable,
+  Keyboard,
+} from "react-native";
+import { useTheme } from "react-native-paper";
 import { debounce } from "lodash";
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
-import { Menu } from 'react-native-paper';
-import NetInfo from '@react-native-community/netinfo';
+import { Menu } from "react-native-paper";
+import NetInfo from "@react-native-community/netinfo";
 import { Users } from "../../models";
-import { Text, ActivityIndicator, Icon, Avatar, Divider, ConditionalWrapper, TextInput, Button, TextSizes } from '../../components';
-import { uploadImageS3, DataStore } from '../../utils';
-import { typography, calcDimensions } from '../../styles';
-import { AuthContext } from '../../contexts';
-import styles from './UserScreenStyles';
+import {
+  Text,
+  ActivityIndicator,
+  Icon,
+  Avatar,
+  Divider,
+  ConditionalWrapper,
+  TextInput,
+  Button,
+  TextSizes,
+} from "../../components";
+import { uploadImageS3, DataStore } from "../../utils";
+import { typography, calcDimensions } from "../../styles";
+import { AuthContext } from "../../contexts";
+import styles from "./UserScreenStyles";
 
 const dimensions = calcDimensions();
 
@@ -31,8 +55,8 @@ const UserScreenHeader = (props) => {
   const [error, setError] = useState(undefined);
   const [showErrorDetails, setShowErrorDetails] = useState(false);
   const [photoPermissions, setPhotoPermissions] = useState({
-    photos: 'loading',
-    camera: 'loading',
+    photos: "loading",
+    camera: "loading",
   });
   const auth = useContext(AuthContext);
   const { authStatus, setAuthStatus } = auth;
@@ -47,29 +71,34 @@ const UserScreenHeader = (props) => {
       <Pressable onPress={() => setEditMode(!editMode)}>
         <View>
           <Icon
-            name={editMode ? 'check' : 'edit'}
+            name={editMode ? "check" : "edit"}
             color={theme.colors.primaryContainer}
             size={typography.fontSizeXXL}
           />
         </View>
       </Pressable>
     );
-  }
+  };
 
   const openMenu = () => {
     Keyboard.dismiss();
-    if (photoPermissions.camera === 'allowed' || photoPermissions.photos === 'allowed') {
+    if (
+      photoPermissions.camera === "allowed" ||
+      photoPermissions.photos === "allowed"
+    ) {
       setShowMenu(true);
     } else if (image?.url) {
-      alert('You must enable Camera or Photo permissions to change your picture');
+      alert(
+        "You must enable Camera or Photo permissions to change your picture"
+      );
     } else {
-      alert('You must enable Camera or Photo permissions to add your picture')
+      alert("You must enable Camera or Photo permissions to add your picture");
     }
-  }
+  };
 
   const closeMenu = () => {
     setShowMenu(false);
-  }
+  };
 
   // Handlers for About Me Change with Debounce
   const saveAbout = async (newAbout) => {
@@ -78,11 +107,13 @@ const UserScreenHeader = (props) => {
     } catch (err) {
       console.log("Error saving About", err);
     }
-  }
+  };
 
-  const debouncedAboutChange = useRef(debounce((newAbout, oldDbUser) => {
-    saveAbout(newAbout);
-  }, 500)).current;
+  const debouncedAboutChange = useRef(
+    debounce((newAbout, oldDbUser) => {
+      saveAbout(newAbout);
+    }, 500)
+  ).current;
 
   const handleAboutChange = (newAbout) => {
     setAbout(newAbout);
@@ -91,19 +122,19 @@ const UserScreenHeader = (props) => {
 
   const uploadImageCallback = async (props) => {
     // Callback is setup to handle multiple images in an array, in this case we only upload one
-    const {success, uploadedImages, errorSummary, errorDetails} = props;
+    const { success, uploadedImages, errorSummary, errorDetails } = props;
     if (success) {
       // The utility passes back an array, but we only are looking for 1 image
       const image = uploadedImages[0];
       saveUserToDynamoDB({ updatePicture: JSON.stringify(image.imageObject) });
       setImage(image.imageObject);
       setError(undefined);
-      setImageLoading('downloading');
+      setImageLoading("downloading");
     } else {
       setError({ errorSummary: errorSummary, errorDetails: errorDetails });
       setImageLoading(undefined);
     }
-  }
+  };
 
   // Handlers for updating user in DynamoDB
   const saveUserToDynamoDB = async (props) => {
@@ -115,16 +146,16 @@ const UserScreenHeader = (props) => {
       const oldUser = await DataStore.query(Users, userId);
       // await DataStore.stop();
       const newUser = await DataStore.save(
-        Users.copyOf(oldUser, updatedUser => {
+        Users.copyOf(oldUser, (updatedUser) => {
           updatedUser.image = updatePicture ? updatePicture : oldUser.image;
           updatedUser.about = updateAbout ? updateAbout : oldUser.about;
         })
       );
       setDbUser(newUser);
     } catch (err) {
-      console.log('error posting User', err)
+      console.log("error posting User", err);
     }
-  }
+  };
 
   const getUser = async () => {
     // await DataStore.stop();
@@ -140,22 +171,23 @@ const UserScreenHeader = (props) => {
   const startPickImage = () => {
     setShowMenu(false);
     uploadImageS3.pickImage(uploadImageCallback, false);
-    setImageLoading('uploading');
-  }
+    setImageLoading("uploading");
+  };
 
   const startTakePhoto = () => {
     setShowMenu(false);
     uploadImageS3.takePhoto(uploadImageCallback, false);
-    setImageLoading('uploading');
-  }
+    setImageLoading("uploading");
+  };
 
   const imageLoadedCallback = () => {
     setImageLoading(undefined);
-  }
+  };
 
   useEffect(() => {
-    const headerRight = authStatus !== undefined && dbUser?.name ? addEditButton() : null;
-    const headerTitle = dbUser?.name ? dbUser.name : 'User';
+    const headerRight =
+      authStatus !== undefined && dbUser?.name ? addEditButton() : null;
+    const headerTitle = dbUser?.name ? dbUser.name : "User";
     navigation.setOptions({
       title: headerTitle,
       headerRight: () => headerRight,
@@ -167,8 +199,10 @@ const UserScreenHeader = (props) => {
       const cameraRollStatus =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       const cameraStatus = await ImagePicker.requestCameraPermissionsAsync();
-      const picsPermission = cameraRollStatus.status === "granted" ? 'allowed' : 'denied';
-      const cameraPermission = cameraStatus.status === "granted" ? 'allowed' : 'denied';
+      const picsPermission =
+        cameraRollStatus.status === "granted" ? "allowed" : "denied";
+      const cameraPermission =
+        cameraStatus.status === "granted" ? "allowed" : "denied";
       setPhotoPermissions({
         photos: picsPermission,
         camera: cameraPermission,
@@ -176,35 +210,46 @@ const UserScreenHeader = (props) => {
     })();
     getUser();
 
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       setIsConnected(state.isInternetReachable);
     });
     return () => unsubscribe();
   }, []);
 
-  const imageViewHeight = image ? image.width > image.height ? (image.height / image.width) * dimensions.width : dimensions.width : dimensions.width * .33;
+  const imageViewHeight = image
+    ? image.width > image.height
+      ? (image.height / image.width) * dimensions.width
+      : dimensions.width
+    : dimensions.width * 0.33;
   // console.log('-- dbUser --', dbUser);
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={ss.pageWrapper}>
-      <ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={ss.pageWrapper}
+    >
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+      >
         {authStatus && dbUser && (
           <>
             {editMode && (
               <>
                 <View style={ss.inputWrapper}>
                   <TextInput
-                    clearButtonMode='while-editing'
-                    // maxLength={50}
-                    returnKeyType="done"
+                    clearButtonMode="while-editing"
+                    multiline
                     label="About Me"
                     dense
-                    autoCapitalize='sentences'
+                    autoCapitalize="sentences"
                     enablesReturnKeyAutomatically={true}
                     value={about}
-                    keyboardType='default'
-                    style={[ss.textInput, ss.threeQuarterWidth]}
+                    keyboardType="default"
+                    style={[
+                      ss.textInput,
+                      ss.fullWidthTextInput,
+                      ss.inputLargeMultiLine,
+                    ]}
                     onChangeText={(text) => handleAboutChange(text)}
                     disabled={!isConnected}
                   />
@@ -212,7 +257,8 @@ const UserScreenHeader = (props) => {
                 {!isConnected && (
                   <View style={ss.inputWrapper}>
                     <Text color={theme.colors.error} size={TextSizes.S}>
-                      You must be connected to the internet to edit your profile.
+                      You must be connected to the internet to edit your
+                      profile.
                     </Text>
                   </View>
                 )}
@@ -226,22 +272,31 @@ const UserScreenHeader = (props) => {
                 <ConditionalWrapper
                   condition={authStatus.id === dbUser.owner}
                   wrapper={(children) => (
-                    <Pressable onPress={(openMenu)} disabled={!isConnected}>
+                    <Pressable onPress={openMenu} disabled={!isConnected}>
                       {children}
                     </Pressable>
-                  )}>
+                  )}
+                >
                   <Avatar
-                    size={image?.width ? Math.min(image.width, dimensions.width) : dimensions.width}
+                    size={
+                      image?.width
+                        ? Math.min(image.width, dimensions.width)
+                        : dimensions.width
+                    }
                     fileName={image?.url}
                     name={dbUser.name || nameProp}
-                    variant='square'
+                    variant="square"
                     textSize={TextSizes.XXXL}
                     bold={true}
-                    height={image?.height ? Math.min(image.height, dimensions.width * .33) : dimensions.width * .33}
+                    height={
+                      image?.height
+                        ? Math.min(image.height, dimensions.width * 0.33)
+                        : dimensions.width * 0.33
+                    }
                     absolute={false}
                     imageLoadedCallback={imageLoadedCallback}
                   />
-                  {error && error.errorSummary !== 'Upload Cancelled' && (
+                  {error && error.errorSummary !== "Upload Cancelled" && (
                     <View
                       style={{
                         padding: 10,
@@ -253,8 +308,12 @@ const UserScreenHeader = (props) => {
                         {error.errorSummary}
                       </Text>
                       <View style={{ paddingTop: 10 }}>
-                        <Button onPress={() => setShowErrorDetails(!showErrorDetails)} >
-                          {`${showErrorDetails ? 'Hide' : 'Show'} Error Details`}
+                        <Button
+                          onPress={() => setShowErrorDetails(!showErrorDetails)}
+                        >
+                          {`${
+                            showErrorDetails ? "Hide" : "Show"
+                          } Error Details`}
                         </Button>
                       </View>
                       {showErrorDetails && (
@@ -267,36 +326,67 @@ const UserScreenHeader = (props) => {
                     </View>
                   )}
                   {imageLoading && (
-                    <View style={{ position: 'absolute', width: dimensions.width, height: dimensions.width, alignItems: 'center', justifyContent: 'center' }}>
-                      <ActivityIndicator size={imageViewHeight * .5} />
+                    <View
+                      style={{
+                        position: "absolute",
+                        width: dimensions.width,
+                        height: dimensions.width,
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <ActivityIndicator size={imageViewHeight * 0.5} />
                     </View>
                   )}
                 </ConditionalWrapper>
-              }>
-              {photoPermissions.photos === 'allowed' && (
-                <Menu.Item onPress={startPickImage} title="Upload an Image" icon={({ size, color }) => (
-                  <Icon name="picture" size={size} color={theme.colors.onPrimary} />
-                )} />
+              }
+            >
+              {photoPermissions.photos === "allowed" && (
+                <Menu.Item
+                  onPress={startPickImage}
+                  title="Upload an Image"
+                  icon={({ size, color }) => (
+                    <Icon
+                      name="picture"
+                      size={size}
+                      color={theme.colors.onPrimary}
+                    />
+                  )}
+                />
               )}
-              {photoPermissions.camera === 'allowed' && photoPermissions.photos === 'allowed' && (
-                <Divider />
-              )}
-              {photoPermissions.camera === 'allowed' && (
-                <Menu.Item onPress={startTakePhoto} title="Take a Photo" icon={({ size, color }) => (
-                  <Icon name="camera" size={size} color={theme.colors.onPrimary} />
-                )} />
+              {photoPermissions.camera === "allowed" &&
+                photoPermissions.photos === "allowed" && <Divider />}
+              {photoPermissions.camera === "allowed" && (
+                <Menu.Item
+                  onPress={startTakePhoto}
+                  title="Take a Photo"
+                  icon={({ size, color }) => (
+                    <Icon
+                      name="camera"
+                      size={size}
+                      color={theme.colors.onPrimary}
+                    />
+                  )}
+                />
               )}
             </Menu>
           </>
         )}
+        {about && about.length > 0 && (
+          <View style={{ padding: 10 }}>
+            <Text size={TextSizes.M}>{about}</Text>
+          </View>
+        )}
         <View style={{ padding: 10 }}>
           <Text bold size={TextSizes.XL}>
-            {hasPosted ? `${dbUser?.name.split(' ')[0]}'s Posts:` : `${dbUser?.name.split(' ')[0]} hasn't posted yet`}
+            {hasPosted
+              ? `${dbUser?.name.split(" ")[0]}'s Posts:`
+              : `${dbUser?.name.split(" ")[0]} hasn't posted yet`}
           </Text>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView >
+    </KeyboardAvoidingView>
   );
-}
+};
 
-export default memo(UserScreenHeader)
+export default memo(UserScreenHeader);

@@ -12,19 +12,21 @@ const mimeTypes = [
   {extension: 'gif', mime: 'image/gif'},
 ]
 
-export const takePhoto = async (uploadImageCallback) => {
+export const takePhoto = async (uploadImageCallback, multipleImages = false) => {
   let result = await ImagePicker.launchCameraAsync({
     mediaTypes: "Images",
     exif: true,
+    multipleImages: multipleImages,
   });
 
   handleImagePicked(result, uploadImageCallback);
 };
 
-export const pickImage = async (uploadImageCallback) => {
+export const pickImage = async (uploadImageCallback, multipleImages = false) => {
   let result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: "Images",
     exif: true,
+    allowsMultipleSelection: multipleImages,
   });
   handleImagePicked(result, uploadImageCallback);
 };
@@ -53,32 +55,49 @@ const uploadImage = (filename, img, extension) => {
 
 const handleImagePicked = async (pickerResult, uploadImageCallback) => {
   try {
-    if (pickerResult.cancelled) {
-      console.log('Upload Cancelled');
+    if (pickerResult.canceled) {
+      console.log('Upload Canceled');
       return uploadImageCallback({success: false, errorDetails: 'User aborted the image upload', errorSummary: "Upload Cancelled"});
     } else {
-      const { width, height, exif } = pickerResult;
-      // Handling for Android returning the wrong Width and Height
-      // Orientation of 6 and 8 are Landscape, so we want to make sure we're using the large dimension as the Height in that case
-      // If it's not 6 or 8, it's Portrait, so larger dimension in the Width
-      let imageWidth = width;
-      let imageHeight = height;
-      if(exif?.Orientation) {
-        imageWidth = exif?.Orientation === 6 || exif?.orientation === 8 ? Math.min(width, height) : Math.max(width, height);
-        imageHeight = exif?.Orientation === 6 || exif?.orientation === 8 ? Math.max(width, height) : Math.min(width, height);  
+      // console.log('-- Picker Result --', pickerResult);
+      const uploadedImages = [];
+      const assets = pickerResult.assets;
+      for(let i = 0; i < assets.length; i++) {
+        uploadedImages.push({
+          width: assets[i].width,
+          height: assets[i].height,
+          exif: assets[i].exif,
+          uri: assets[i].uri,
+        });
       }
-      const img = await fetchImageFromUri(pickerResult.uri);
-      const imgName = img._data.name;
-      const parseImgName = imgName.split('.');
-      const extension = parseImgName[parseImgName.length - 1];
-      const newImageName = uuid.v4() + '.' + extension;
-      const uploadUrl = await uploadImage(newImageName, img, extension);
-      // console.log('-- uploadUrl --', uploadUrl);
-      if(uploadUrl.success) {
-        return uploadImageCallback({success: true, imageObject: {url: uploadUrl.key, width: imageWidth, height: imageHeight}});
-      } else {
-        return uploadImageCallback(uploadUrl);
+
+      for(let i = 0; i < uploadedImages.length; i++) {
+        const image = uploadedImages[i];
+        // Handling for Android returning the wrong Width and Height
+        // Orientation of 6 and 8 are Landscape, so we want to make sure we're using the large dimension as the Height in that case
+        // If it's not 6 or 8, it's Portrait, so larger dimension in the Width
+        let imageWidth = image.width;
+        let imageHeight = image.height;
+        if(image.exif?.Orientation) {
+          imageWidth = image.exif?.Orientation === 6 || image.exif?.orientation === 8 ? Math.min(image.width, image.height) : Math.max(image.width, image.height);
+          imageHeight = image.exif?.Orientation === 6 || image.exif?.orientation === 8 ? Math.max(image.width, image.height) : Math.min(image.width, image.height);  
+        }
+        const img = await fetchImageFromUri(image.uri);
+        const imgName = img._data.name;
+        const parseImgName = imgName.split('.');
+        const extension = parseImgName[parseImgName.length - 1];
+        const newImageName = uuid.v4() + '.' + extension;
+        const uploadUrl = await uploadImage(newImageName, img, extension);
+        // console.log('-- uploadUrl --', uploadUrl);
+        if(uploadUrl.success) {
+          uploadedImages[i].success = true;
+          uploadedImages[i].imageObject = {url: uploadUrl.key, width: imageWidth, height: imageHeight}
+        } else {
+          uploadedImages[i].success = false;
+        }
       }
+
+      return uploadImageCallback(uploadedImages);
     }
   } catch (e) {
     console.log(e);

@@ -1,8 +1,15 @@
 import React, { useMemo, useEffect, useState, useContext } from "react";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, SafeAreaView } from "react-native";
 import { useTheme } from "react-native-paper";
 import { Predicates, SortDirection } from "aws-amplify";
-import { Modal, Text, TextSizes, TextInput, Button } from "../../components";
+import {
+  Modal,
+  Text,
+  TextSizes,
+  TextInput,
+  Button,
+  ConditionalWrapper,
+} from "../../components";
 import { DataStore } from "../../utils";
 import { Users } from "../../models";
 import { AuthContext, SnackbarContext } from "../../contexts";
@@ -13,15 +20,16 @@ import styles from "./SelectUserModalStyles";
 interface SelectUserModalProps {
   showModal: boolean;
   closeModal: () => void;
+  fullScreen: boolean;
 }
 
 const SelectUserModal = (props: SelectUserModalProps) => {
-  const { showModal, closeModal } = props;
+  const { showModal, closeModal, fullScreen } = props;
   const [allUsers, setAllUsers] = useState([]);
   const [displayedUsers, setDisplayedUsers] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [clickedUser, setClickedUser] = useState(undefined);
-  const [adminPassword, setAdminPassword] = useState('');
+  const [adminPassword, setAdminPassword] = useState("");
 
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
@@ -45,14 +53,49 @@ const SelectUserModal = (props: SelectUserModalProps) => {
         fullObject: u,
       };
     });
-    
+
     // Quick check to make sure we're only updating state if the subscription caught a change that we care about
     if (newUsers !== allUsers) {
       setAllUsers(newUsers);
-      if(!searchText) {
+      if (!searchText) {
         setDisplayedUsers(newUsers);
       }
     }
+  };
+
+  const rowClickedHandler = (userId: string) => {
+    const user = allUsers.find((u) => u.id === userId);
+    setClickedUser(user);
+  };
+
+  const confirmChangeUser = () => {
+    closeModal();
+    setSearchText("");
+    setAdminPassword("");
+    setClickedUser(undefined);
+    if (clickedUser) {
+      setAuthStatus(clickedUser.fullObject);
+      setSnackbar({
+        message: `Now Signed-In as ${clickedUser.name}`,
+        showCloseIcon: true,
+      });
+    }
+  };
+
+  const updateSearchtext = (text: string) => {
+    setSearchText(text);
+    if (text.length > 0) {
+      const filteredUsers = allUsers.filter((u) =>
+        u.name.toLowerCase().includes(text.toLowerCase())
+      );
+      setDisplayedUsers(filteredUsers);
+    } else {
+      setDisplayedUsers(allUsers);
+    }
+  };
+
+  const handleAttemptedClose = () => {
+    console.log("-- User trying to close modal --");
   };
 
   useEffect(() => {
@@ -72,113 +115,104 @@ const SelectUserModal = (props: SelectUserModalProps) => {
     };
   }, [showModal]);
 
-  const rowClickedHandler = (userId: string) => {
-    const user = allUsers.find((u) => u.id === userId);
-    setClickedUser(user);
-  };
-
-  const confirmChangeUser = () => {
-    closeModal();
-    setSearchText('');
-    setAdminPassword('');
-    setClickedUser(undefined);
-    if (clickedUser) {
-      setAuthStatus(clickedUser.fullObject);
-      setSnackbar({
-        message: `Now Signed-In as ${clickedUser.name}`,
-        showCloseIcon: true,
-      });
-    }
-  }
-
-  const updateSearchtext = (text: string) => {
-    setSearchText(text);
-    if(text.length > 0) {
-      const filteredUsers = allUsers.filter(u => u.name.toLowerCase().includes(text.toLowerCase()));
-      setDisplayedUsers(filteredUsers);
-    } else {
-      setDisplayedUsers(allUsers);
-    }
-  }
-
   return (
     <Modal
       isVisible={showModal}
-      onBackButtonPress={closeModal}
-      onBackdropPress={closeModal}
+      onBackButtonPress={fullScreen ? handleAttemptedClose : closeModal}
+      onBackdropPress={fullScreen ? handleAttemptedClose : closeModal}
       avoidKeyboard={true}
       style={{ padding: 0, margin: 0 }}
     >
-      <View style={ss.modalBackground}>
-        <View style={ss.modalBody}>
-          <View style={ss.modalHeader}>
-            <View style={{ flex: 1, alignItems: "center" }}>
-              <Text color={theme.colors.onSecondary} bold size={TextSizes.L}>
-                Let us know who you are
-              </Text>
-              <TextInput
-                clearButtonMode="while-editing"
-                maxLength={50}
-                returnKeyType="done"
-                label="Search for a User"
-                dense
-                value={searchText}
-                autoCapitalize="none"
-                enablesReturnKeyAutomatically={true}
-                autoComplete="name"
-                textContentType="name"
-                style={[
-                  ss.textInput,
-                  ss.modalTextInput,
-                ]}
-                onChangeText={(text) => updateSearchtext(text)}
-              />
+      <ConditionalWrapper
+        condition={fullScreen}
+        wrapper={(children) => (
+          <>
+            <SafeAreaView
+              style={{ flex: 0, backgroundColor: theme.colors.onPrimary }}
+            />
+            <SafeAreaView style={{ flex: 1 }}>
+              {children}
+            </SafeAreaView>
+          </>
+        )}
+      >
+        <View style={[ss.modalBackground, fullScreen ? ss.modalFullScreenBackground : undefined]}>
+          <View style={fullScreen ? ss.modalFullScreenBody : ss.modalBody}>
+            <View style={[ss.modalHeader, fullScreen ? ss.modalFullScreenHeader : undefined]}>
+              <View style={{ flex: 1, alignItems: "center" }}>
+                <Text color={theme.colors.onSecondary} bold size={TextSizes.L}>
+                  Let us know who you are
+                </Text>
+                <TextInput
+                  clearButtonMode="while-editing"
+                  maxLength={50}
+                  returnKeyType="done"
+                  label="Search for a User"
+                  dense
+                  value={searchText}
+                  autoCapitalize="none"
+                  enablesReturnKeyAutomatically={true}
+                  autoComplete="name"
+                  textContentType="name"
+                  style={[ss.textInput, ss.modalTextInput]}
+                  onChangeText={(text) => updateSearchtext(text)}
+                />
+              </View>
+            </View>
+            <View style={ss.modalContentWrapper}>
+              <ScrollView
+                style={ss.modalScrollView}
+                keyboardShouldPersistTaps="handled"
+                keyboardDismissMode="on-drag"
+              >
+                {displayedUsers.map((u, index) => (
+                  <View key={u.id}>
+                    <SingleUserInModal
+                      key={u.id}
+                      userId={u.id}
+                      singleUser={u}
+                      index={index}
+                      rowClickedCallback={rowClickedHandler}
+                    />
+                    {clickedUser?.id === u.id && (
+                      <View style={{ padding: 5 }}>
+                        {clickedUser?.fullObject.admin && (
+                          <TextInput
+                            clearButtonMode="while-editing"
+                            maxLength={20}
+                            returnKeyType="done"
+                            label="Admin Password"
+                            dense
+                            value={adminPassword}
+                            autoCapitalize="none"
+                            enablesReturnKeyAutomatically={true}
+                            style={[
+                              ss.textInput,
+                              ss.modalTextInput,
+                              { marginBottom: 10 },
+                            ]}
+                            onChangeText={(text) => setAdminPassword(text)}
+                          />
+                        )}
+                        <Button
+                          onPress={confirmChangeUser}
+                          disabled={
+                            clickedUser?.fullObject.admin &&
+                            adminPassword.toLowerCase() !==
+                              adminPasscode.toLowerCase()
+                          }
+                        >
+                          Use as {u.name}
+                        </Button>
+                      </View>
+                    )}
+                  </View>
+                ))}
+              </ScrollView>
             </View>
           </View>
-          <View style={ss.modalContentWrapper}>
-            <ScrollView
-              style={ss.modalScrollView}
-              keyboardShouldPersistTaps="handled"
-              keyboardDismissMode="on-drag"
-            >
-              {displayedUsers.map((u, index) => (
-                <View key={u.id}>
-                  <SingleUserInModal
-                    key={u.id}
-                    userId={u.id}
-                    singleUser={u}
-                    index={index}
-                    rowClickedCallback={rowClickedHandler}
-                  />
-                  {clickedUser?.id === u.id && (
-                    <View style={{padding: 5}}>
-                      {clickedUser?.fullObject.admin && (
-                        <TextInput
-                          clearButtonMode="while-editing"
-                          maxLength={20}
-                          returnKeyType="done"
-                          label="Admin Password"
-                          dense
-                          value={adminPassword}
-                          autoCapitalize="none"
-                          enablesReturnKeyAutomatically={true}
-                          style={[
-                            ss.textInput,
-                            ss.modalTextInput,
-                            {marginBottom: 10}
-                          ]}
-                          onChangeText={(text) => setAdminPassword(text)}
-                        />
-                      )}
-                      <Button onPress={confirmChangeUser} disabled={clickedUser?.fullObject.admin && adminPassword.toLowerCase() !== adminPasscode.toLowerCase()}>Use as {u.name}</Button>
-                    </View>
-                  )}
-                </View>
-              ))}
-            </ScrollView>
-          </View>
         </View>
-      </View>
+      </ConditionalWrapper>
     </Modal>
   );
 };

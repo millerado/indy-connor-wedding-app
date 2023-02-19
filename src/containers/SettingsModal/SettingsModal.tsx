@@ -2,7 +2,7 @@ import React, { useMemo, useState, useContext } from "react";
 import { Pressable, ScrollView, View, Keyboard } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "react-native-paper";
-import { Icon, Text, Button, Modal, TextInput } from "../../components";
+import { Icon, Text, Button, Modal, TextInput, TextSizes } from "../../components";
 import { typography } from "../../styles";
 import { ThemeContext, AuthContext } from "../../contexts";
 // import { sendGlobalPushNotification } from '../../utils';
@@ -71,9 +71,9 @@ const SettingsModal = () => {
   const goToUserPage = async () => {
     closeModal();
     navigation.push("User", {
-      userId: authStatus.id,
+      userId: authStatus.userId,
       name: authStatus.name,
-      picture: authStatus.picture,
+      picture: authStatus.image,
     });
   };
 
@@ -105,7 +105,7 @@ const SettingsModal = () => {
                 <Text
                   color={theme.colors.white}
                   bold
-                  size="M">
+                  size={TextSizes.M}>
                   {view === 'settings' ? 'Settings' : 'Send Global Notification'}
                 </Text>
               </View>
@@ -167,7 +167,7 @@ const SettingsModal = () => {
                   </View>
                   {notificationStatus.length > 0 && (
                     <View style={{paddingTop: 10}}>
-                      <Text size='L' bold>{notificationStatus}</Text>
+                      <Text size={TextSizes.L} bold>{notificationStatus}</Text>
                     </View>
                   )}
                 </View>

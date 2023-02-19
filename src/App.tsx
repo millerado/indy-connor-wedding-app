@@ -31,7 +31,7 @@ const App = () => {
   };
 
   // Pieces for the Auth Context
-  const setUser = (newUser: Users) => {
+  const setUser = async (newUser: Users) => {
     // TO-DO: Tie in Notifications at the user level here (associate userId with their Notification Identifier)
     const { id, name, image, about, admin, teamsID } = newUser;
     setAuthStatus({
@@ -43,6 +43,18 @@ const App = () => {
       isAdmin: admin,
       teamId: teamsID,
     });
+    await AsyncStorage.setItem(
+      "authStatus",
+      JSON.stringify({
+        isAuthed: true,
+        userId: id,
+        name,
+        image: image ? JSON.parse(image) : undefined,
+        about,
+        isAdmin: admin,
+        teamId: teamsID,
+      })
+    );
   };
 
   // Pieces for the Snackbar Context
@@ -74,7 +86,19 @@ const App = () => {
       }
     };
 
+    const fetchCurrentUser = async () => {
+      try {
+        const currentUser = await AsyncStorage.getItem("authStatus");
+        if (currentUser) {
+          setAuthStatus(JSON.parse(currentUser));
+        }
+      } catch (e) {
+        console.log("error fetching current theme", e);
+      }
+    };
+
     fetchCurrentTheme();
+    fetchCurrentUser();
   }, []);
 
   return (

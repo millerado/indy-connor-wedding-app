@@ -5,7 +5,8 @@ import { useTheme } from "react-native-paper";
 import { Icon, Text, Button, Modal, TextInput, TextSizes } from "../../components";
 import { typography } from "../../styles";
 import { ThemeContext, AuthContext } from "../../contexts";
-// import { sendGlobalPushNotification } from '../../utils';
+import { sendGlobalPushNotification } from '../../utils';
+import SelectUserModal from '../SelectUserModal/SelectUserModal';
 import styles from "./SettingsModalStyles";
 
 const SettingsModal = () => {
@@ -14,6 +15,7 @@ const SettingsModal = () => {
   const [notificationText, setNotificationText] = useState("");
   const [notificationSending, setNotificationSending] = useState(false);
   const [notificationStatus, setNotificationStatus] = useState("");
+  const [showSelectUserModal, setShowSelectUserModal] = useState(false);
 
   const navigation = useNavigation();
 
@@ -77,11 +79,25 @@ const SettingsModal = () => {
     });
   };
 
+  const openSelectUserModal = () => {
+    closeModal();
+    // Timeout only here to let one modal disappear before the other appears (iOS breaks if two mdoals are open)
+    // ...Yes, this is ugly...
+    setTimeout(() => {
+      setShowSelectUserModal(true);
+    }, 350);
+  }
+
+  const closeSelectUserModal = () => {
+    setShowSelectUserModal(false);
+  };
+
   return (
     <>
       <Pressable onPress={openModal}>
         <Icon name='cog' color={theme.colors.primaryContainer} size={typography.fontSizeXXL} />
       </Pressable>
+      <SelectUserModal showModal={showSelectUserModal} closeModal={closeSelectUserModal} fullScreen={false} />
       <Modal
         isVisible={showModal}
         onBackButtonPress={closeModal}
@@ -128,6 +144,11 @@ const SettingsModal = () => {
                       </Button>
                     </View>
                   )}
+                  <View style={{ paddingTop: 10 }}>
+                    <Button onPress={openSelectUserModal}>
+                      {authStatus.isAuthed ? 'Change User' : 'Sign In to App'}
+                    </Button>
+                  </View>
                   {authStatus.isAdmin && (
                     <View style={{ paddingTop: 10 }}>
                       <Button onPress={openNotificationDialog} >

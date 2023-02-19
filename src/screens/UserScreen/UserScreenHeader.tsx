@@ -91,11 +91,12 @@ const UserScreenHeader = (props) => {
 
   const uploadImageCallback = async (props) => {
     // Callback is setup to handle multiple images in an array, in this case we only upload one
-    const singleImage = props[0];
-    const { success, imageObject, errorSummary, errorDetails } = singleImage;
+    const {success, uploadedImages, errorSummary, errorDetails} = props;
     if (success) {
-      saveUserToDynamoDB({ updatePicture: JSON.stringify(imageObject) });
-      setImage(imageObject);
+      // The utility passes back an array, but we only are looking for 1 image
+      const image = uploadedImages[0];
+      saveUserToDynamoDB({ updatePicture: JSON.stringify(image.imageObject) });
+      setImage(image.imageObject);
       setError(undefined);
       setImageLoading('downloading');
     } else {

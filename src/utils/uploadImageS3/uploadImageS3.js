@@ -97,7 +97,7 @@ const handleImagePicked = async (pickerResult, uploadImageCallback) => {
         }
       }
 
-      return uploadImageCallback(uploadedImages);
+      return uploadImageCallback({success: true, uploadedImages});
     }
   } catch (e) {
     console.log(e);

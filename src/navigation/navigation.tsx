@@ -3,9 +3,10 @@ import { StatusBar, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "react-native-paper";
-import { SettingsModal } from '../containers';
+import { SettingsModal, NotificationsHeaderButton } from '../containers';
 import { Icon } from '../components';
 import {
+  FAQScreen,
   HomeScreen,
   MapScreen,
   NotificationsScreen,
@@ -15,7 +16,7 @@ import {
 
 const HomeStack = createNativeStackNavigator();
 const MapStack = createNativeStackNavigator();
-const NotificationsStack = createNativeStackNavigator();
+const FAQStack = createNativeStackNavigator();
 const ScheduleStack = createNativeStackNavigator();
 
 const HomeStackScreen = () => {
@@ -37,8 +38,14 @@ const HomeStackScreen = () => {
           <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
             <SettingsModal />
           </View>
+        ),
+        headerRight: () => (
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+            <NotificationsHeaderButton />
+          </View>
         )}} />
       <HomeStack.Screen name="User" component={UserScreen} />
+      <HomeStack.Screen name="Notifications" component={NotificationsScreen} />
     </HomeStack.Navigator>
   );
 };
@@ -62,10 +69,10 @@ const MapStackScreen = () => {
   );
 };
 
-const NotificationsStackScreen = () => {
+const FAQStackScreen = () => {
   const theme = useTheme();
   return (
-    <NotificationsStack.Navigator
+    <FAQStack.Navigator
       screenOptions={{
         headerStyle: {
           // backgroundColor: theme.colors.tertiaryContainer,
@@ -76,12 +83,11 @@ const NotificationsStackScreen = () => {
         headerTitleAlign: "center",
       }}
     >
-      <NotificationsStack.Screen
-        name="Notifications"
-        component={NotificationsScreen}
+      <FAQStack.Screen
+        name="FAQ"
+        component={FAQScreen}
       />
-      <HomeStack.Screen name="User" component={UserScreen} />
-    </NotificationsStack.Navigator>
+    </FAQStack.Navigator>
   );
 };
 
@@ -125,8 +131,8 @@ const Navigation = () => {
               iconName = focused ? "calendar" : "calendarFocused";
             } else if (route.name === "MapStack") {
               iconName = focused ? "map" : "mapFocused";
-            } else if (route.name === "NotificationsStack") {
-              iconName = focused ? "notifications" : "notificationsFocused";
+            } else if (route.name === "FAQStack") {
+              iconName = focused ? "faq" : "faqFocused";
             }
             return <Icon name={iconName} size={size} color={color}></Icon>;
           },
@@ -161,9 +167,9 @@ const Navigation = () => {
           options={{ headerShown: false, title: "Schedule" }}
         />
         <Tab.Screen
-          name="NotificationsStack"
-          component={NotificationsStackScreen}
-          options={{ headerShown: false, title: "Notifications" }}
+          name="FAQStack"
+          component={FAQStackScreen}
+          options={{ headerShown: false, title: "FAQ" }}
         />
       </Tab.Navigator>
     </>

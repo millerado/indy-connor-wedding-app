@@ -1,6 +1,7 @@
 import ActivityIndicator from './ActivityIndicator/ActivityIndicator';
 import AnimatedFAB from './AnimatedFAB/AnimatedFAB';
 import Avatar from './Avatar/Avatar';
+import Badge from './Badge/Badge';
 import Button from './Button/Button';
 import ConditionalWrapper from './ConditionalWrapper/ConditionalWrapper';
 import Divider from './Divider/Divider';
@@ -19,6 +20,7 @@ export {
   ActivityIndicator,
   AnimatedFAB,
   Avatar,
+  Badge,
   Button,
   ConditionalWrapper,
   Divider,

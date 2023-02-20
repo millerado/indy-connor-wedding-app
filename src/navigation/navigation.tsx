@@ -3,7 +3,7 @@ import { StatusBar, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "react-native-paper";
-import { SettingsModal } from '../containers';
+import { SettingsModal, NotificationsHeaderButton } from '../containers';
 import { Icon } from '../components';
 import {
   FAQScreen,
@@ -37,6 +37,11 @@ const HomeStackScreen = () => {
         headerLeft: () => (
           <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
             <SettingsModal />
+          </View>
+        ),
+        headerRight: () => (
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+            <NotificationsHeaderButton />
           </View>
         )}} />
       <HomeStack.Screen name="User" component={UserScreen} />

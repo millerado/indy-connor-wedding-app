@@ -95,7 +95,7 @@ const SettingsModal = () => {
   return (
     <>
       <Pressable onPress={openModal}>
-        <Icon name='cog' color={theme.colors.primaryContainer} size={typography.fontSizeXXL} />
+        <Icon name='cog' color={theme.colors.onPrimary} size={typography.fontSizeXXL} />
       </Pressable>
       <SelectUserModal showModal={showSelectUserModal} closeModal={closeSelectUserModal} fullScreen={false} />
       <Modal

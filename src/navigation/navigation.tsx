@@ -25,11 +25,11 @@ const HomeStackScreen = () => {
     <HomeStack.Navigator
       screenOptions={{
         headerStyle: {
-          // backgroundColor: theme.colors.tertiaryContainer,
+          backgroundColor: theme.colors.primary,
           borderBottomWidth: 0,
           shadowOffset: { height: 0, width: 0 },
         },
-        // headerTintColor: theme.colors.primaryContainer,
+        headerTintColor: theme.colors.onPrimary,
         headerTitleAlign: "center",
       }}
     >
@@ -56,11 +56,11 @@ const MapStackScreen = () => {
     <MapStack.Navigator
       screenOptions={{
         headerStyle: {
-          // backgroundColor: theme.colors.tertiaryContainer,
+          backgroundColor: theme.colors.primary,
           borderBottomWidth: 0,
           shadowOffset: { height: 0, width: 0 },
         },
-        // headerTintColor: theme.colors.primaryContainer,
+        headerTintColor: theme.colors.onPrimary,
         headerTitleAlign: "center",
       }}
     >
@@ -75,11 +75,11 @@ const FAQStackScreen = () => {
     <FAQStack.Navigator
       screenOptions={{
         headerStyle: {
-          // backgroundColor: theme.colors.tertiaryContainer,
+          backgroundColor: theme.colors.primary,
           borderBottomWidth: 0,
           shadowOffset: { height: 0, width: 0 },
         },
-        // headerTintColor: theme.colors.primaryContainer,
+        headerTintColor: theme.colors.onPrimary,
         headerTitleAlign: "center",
       }}
     >
@@ -97,11 +97,11 @@ const ScheduleStackScreen = () => {
     <ScheduleStack.Navigator
       screenOptions={{
         headerStyle: {
-          // backgroundColor: theme.colors.tertiaryContainer,
+          backgroundColor: theme.colors.primary,
           borderBottomWidth: 0,
           shadowOffset: { height: 0, width: 0 },
         },
-        // headerTintColor: theme.colors.primaryContainer,
+        headerTintColor: theme.colors.onPrimary,
         headerTitleAlign: "center",
       }}
     >
@@ -137,18 +137,18 @@ const Navigation = () => {
             return <Icon name={iconName} size={size} color={color}></Icon>;
           },
 
-          // tabBarActiveTintColor: theme.colors.onPrimary,
-          // tabBarActiveBackgroundColor: theme.colors.onPrimary,
-          // tabBarInactiveTintColor: theme.colors.onPrimary,
+          tabBarActiveTintColor: theme.colors.onPrimary,
+          tabBarActiveBackgroundColor: theme.colors.primary,
+          tabBarInactiveTintColor: theme.colors.primary,
           tabBarItemStyle: {
             padding: 5,
           },
           tabBarLabelStyle: {
             fontWeight: "800",
           },
-          // tabBarStyle: {
-          //   backgroundColor: theme.colors.primary,
-          // },
+          tabBarStyle: {
+            backgroundColor: theme.colors.onPrimary,
+          },
         })}
       >
         <Tab.Screen

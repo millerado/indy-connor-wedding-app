@@ -23,7 +23,7 @@ const NotificationsHeaderButton = () => {
 
   return (
     <Pressable onPress={() => navigation.push('Notifications')}>
-      <Icon name='notifications' color={theme.colors.primaryContainer} size={typography.fontSizeXXL} />
+      <Icon name='notifications' color={theme.colors.onPrimary} size={typography.fontSizeXXL} />
       <Badge style={{position: 'absolute', top: 0, left: 0}} size={15}>3</Badge>
     </Pressable>
   );

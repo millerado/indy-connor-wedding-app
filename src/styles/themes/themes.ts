@@ -1,10 +1,26 @@
 import { MD3DarkTheme as PaperDarkTheme, MD3LightTheme as PaperDefaultTheme } from 'react-native-paper';
 import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme } from '@react-navigation/native';
 
-// Paper full configurability here:
-// https://github.com/callstack/react-native-paper/blob/main/src/styles/themes/v2/LightTheme.tsx
-// Also See:
-// https://callstack.github.io/react-native-paper/theming.html
+const primaryGreen = '#0A3314';
+const greensDark = primaryGreen;
+const greensMediumDark = '#325937';
+const greensMedium = '#59825D';
+const greensMediumLight = '#83AE87';
+const greensLight = '#AFDBB2';
+const greensSuperLight = '#F8FFF8';
+const lightGreenGray = '#A0AfA0';
+const darkGreenGray = '#6C7B6D';
+const primaryBlue = '#00627C';
+const bluesDark = primaryBlue;
+const bluesMedium = '#00627C';
+const bluesLight = '#97AFBA';
+const white = '#ffffff';
+const black = '#000000';
+const error = '#b55464';
+
+
+// Paper Theming Info:
+// https://callstack.github.io/react-native-paper/docs/guides/theming/
 
 export const lightTheme = {
   ...PaperDefaultTheme,
@@ -20,8 +36,11 @@ export const lightTheme = {
     ...PaperDefaultTheme.colors,
     ...NavigationDefaultTheme.colors,
     // Add all our colors here
-    black: '#000000',
-    white: '#ffffff',
+    background: greensSuperLight,
+    black: black,
+    white: white,
+    primary: primaryGreen,
+    onPrimary: greensSuperLight,
   },
 };
 

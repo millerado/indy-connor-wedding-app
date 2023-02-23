@@ -25,7 +25,6 @@ const FAQScreen = ({ navigation, route }) => {
   const loadFAQ = async (dt) => {
     try {
       dt.sort((a, b) => a.sortOrder - b.sortOrder);
-      console.log('-- Subscription found FAQ Change --', dt);
       if (dataLoading || searchTerm === '') {
         setFAQData(dt);
       }

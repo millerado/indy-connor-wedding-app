@@ -22,12 +22,11 @@ const FAQScreen = ({ navigation, route }) => {
     setShowModal(false);
   };
 
-  const fetchFAQ = async (initialLoad) => {
+  const loadFAQ = async (dt) => {
     try {
-      await DataStore.stop();
-      const dt = await DataStore.query(FAQ);
       dt.sort((a, b) => a.sortOrder - b.sortOrder);
-      if (initialLoad) {
+      console.log('-- Subscription found FAQ Change --', dt);
+      if (dataLoading || searchTerm === '') {
         setFAQData(dt);
       }
       setAllFAQData(dt);
@@ -37,6 +36,7 @@ const FAQScreen = ({ navigation, route }) => {
       // console.log('-- Fetched Data --', dt);
     } catch (err) { console.log('error fetching Data', err) }
   }
+
 
 
   const addNewButton = () => {
@@ -96,11 +96,9 @@ const FAQScreen = ({ navigation, route }) => {
   }, [searchTerm]);
 
   useEffect(() => {
-    const subscription = DataStore.observe(FAQ).subscribe((FAQ) => {
-      fetchFAQ(false);
+    const subscription = DataStore.observeQuery(FAQ).subscribe(({ items }) => {
+      loadFAQ(items);
     });
-
-    fetchFAQ(true);
 
     return () => subscription.unsubscribe();
   }, []);

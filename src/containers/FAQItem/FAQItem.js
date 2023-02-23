@@ -29,7 +29,7 @@ const FAQItem = (props) => {
     if (authStatus?.isAuthed) {
       try {
         // await DataStore.stop();
-        await DataStore.delete(FAQ, (f) => f.id("eq", id));
+        await DataStore.delete(FAQ, id);
         setDeleteDialogVisible(false);
       } catch (error) {
         console.log("Error deleting FAQ item", error);

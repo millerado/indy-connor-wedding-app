@@ -26,8 +26,7 @@ const reusableStyles = theme => {
       maxHeight: height * .8,
     },
     modalHeader: {
-      backgroundColor: theme.colors.secondary,
-      // borderBottomColor: theme.colors.primaryContainer,
+      backgroundColor: theme.colors.primary,
       borderBottomWidth: 1,
       flexDirection: 'row',
       alignItems: 'center',

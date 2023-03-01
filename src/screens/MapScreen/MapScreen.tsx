@@ -8,9 +8,7 @@ const resortMap = require('../../assets/images/rmmcMap.png');
 
 const MapScreen = () => {
   const theme = useTheme();
-  const ss = useMemo(
-    () => styles(theme), [theme]
-  );
+  const ss = useMemo(() => styles(theme), [theme]);
   const dimensions = calcDimensions();
   return (
     <View style={ss.pageWrapper}>

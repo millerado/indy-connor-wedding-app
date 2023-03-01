@@ -72,7 +72,7 @@ const UserScreenHeader = (props) => {
         <View>
           <Icon
             name={editMode ? "check" : "edit"}
-            color={theme.colors.primaryContainer}
+            color={theme.colors.primary}
             size={typography.fontSizeXXL}
           />
         </View>

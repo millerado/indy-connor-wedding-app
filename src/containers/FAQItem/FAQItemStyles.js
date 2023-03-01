@@ -10,19 +10,20 @@ const styles = theme => {
       marginBottom: 0,
     },
     accordionWrapper: {
-      backgroundColor: theme.colors.tertiaryContainer,
+      backgroundColor: theme.colors.primary,
       paddingTop: 0,
       paddingBottom: 0,
     },
     answerWrapper: {
       paddingTop: 0,
+      // backgroundColor: theme.colors.onPrimary,
     },
     questionStyle: {
-      color: theme.colors.onSecondary,
+      color: theme.colors.onPrimary,
       fontSize: typography.fontSizeL,
     },
     answerStyle: {
-      color: theme.colors.onSecondary, 
+      color: theme.colors.primary,
       fontSize: typography.fontSizeM,
     },
   });

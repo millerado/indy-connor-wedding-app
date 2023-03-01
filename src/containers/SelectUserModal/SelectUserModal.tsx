@@ -140,7 +140,7 @@ const SelectUserModal = (props: SelectUserModalProps) => {
           <View style={fullScreen ? ss.modalFullScreenBody : ss.modalBody}>
             <View style={[ss.modalHeader, fullScreen ? ss.modalFullScreenHeader : undefined]}>
               <View style={{ flex: 1, alignItems: "center" }}>
-                <Text color={theme.colors.onSecondary} bold size={TextSizes.L}>
+                <Text color={theme.colors.onModalHeader} bold size={TextSizes.L}>
                   Let us know who you are
                 </Text>
                 <TextInput

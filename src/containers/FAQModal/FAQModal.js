@@ -123,7 +123,7 @@ const FAQModal = (props) => {
           <View style={ss.modalHeader}>
             <View style={{ flex: 1, alignItems: 'flex-start' }}>
               <Button
-                variant='header'
+                variant='onModalHeader'
                 onPress={() => handleCloseModal()}
                 compact
                 disabled={isLoading}
@@ -142,7 +142,7 @@ const FAQModal = (props) => {
             <View style={{ flex: 1, alignItems: 'flex-end' }}>
               {!isLoading ? (
                 <Button
-                  variant='header'
+                  variant='onModalHeader'
                   onPress={() => handleSaveItem()}
                   compact
                 >

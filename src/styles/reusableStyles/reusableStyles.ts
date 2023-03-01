@@ -17,8 +17,8 @@ const reusableStyles = theme => {
       alignItems: "center",
     },
     modalBody: {
-      // backgroundColor: theme.colors.primaryContainer,
-      backgroundColor: theme.colors.white,
+      backgroundColor: theme.colors.background,
+      // backgroundColor: theme.colors.white,
       borderRadius: 10,
       justifyContent: 'flex-start',
       overflow: 'hidden',
@@ -26,8 +26,7 @@ const reusableStyles = theme => {
       maxHeight: height * .8,
     },
     modalHeader: {
-      backgroundColor: theme.colors.secondary,
-      // borderBottomColor: theme.colors.primaryContainer,
+      backgroundColor: theme.colors.modalHeader,
       borderBottomWidth: 1,
       flexDirection: 'row',
       alignItems: 'center',

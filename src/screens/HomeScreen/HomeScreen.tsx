@@ -1,12 +1,14 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useMemo } from "react";
 import { View } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Text, TextSizes, AnimatedFAB } from "../../components";
+import { Text, TextSizes } from "../../components";
 import { AuthContext } from "../../contexts";
 import { IntroModal } from "../../containers";
+import styles from './HomeScreenStyles';
 
 const HomeScreen = () => {
   const theme = useTheme();
+  const ss = useMemo(() => styles(theme), [theme]);
 
   const authContect = useContext(AuthContext);
   const {authStatus} = authContect;
@@ -14,21 +16,11 @@ const HomeScreen = () => {
   return (
     <>
       <IntroModal />
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: theme.colors.background }}>
+      <View style={ss.pageWrapper}>
         <Text size={TextSizes.L}>Home Screen</Text>
         <Text>
           {JSON.stringify(authStatus)}
         </Text>
-        <AnimatedFAB
-          icon={'plus'}
-          label={'Label'}
-          // extended={isExtended}
-          onPress={() => console.log('Pressed')}
-          // visible={visible}
-          animateFrom={'right'}
-          iconMode={'static'}
-          // style={[styles.fabStyle, style, fabStyle]}
-        />
       </View>
     </>
   );

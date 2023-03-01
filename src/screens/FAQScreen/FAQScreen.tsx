@@ -44,7 +44,7 @@ const FAQScreen = ({ navigation, route }) => {
         <View>
           <Icon
             name={'addItem'}
-            color={theme.colors.primaryContainer}
+            color={theme.colors.primary}
           />
         </View>
       </Pressable>
@@ -73,7 +73,7 @@ const FAQScreen = ({ navigation, route }) => {
     navigation.setOptions({
       headerRight: () => authStatus?.isAdmin ? addNewButton() : null,
     });
-  }, [authStatus]);
+  }, [authStatus, theme]);
 
   useEffect(() => {
     if (allFAQData !== FAQData && searchTerm !== '') {

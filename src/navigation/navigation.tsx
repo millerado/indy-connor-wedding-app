@@ -19,20 +19,25 @@ const MapStack = createNativeStackNavigator();
 const FAQStack = createNativeStackNavigator();
 const ScheduleStack = createNativeStackNavigator();
 
+// Single set of screen options for all tabs
+const getScreenOptions = () => {
+  const theme = useTheme();
+  const screenOptions={
+    headerStyle: {
+      backgroundColor: theme.colors.background,
+      borderBottomWidth: 0,
+      shadowOffset: { height: 0, width: 0 },
+    },
+    headerTintColor: theme.colors.primary,
+    headerTitleAlign: "center",
+  };
+  return screenOptions;
+}
+
 const HomeStackScreen = () => {
   const theme = useTheme();
   return (
-    <HomeStack.Navigator
-      screenOptions={{
-        headerStyle: {
-          // backgroundColor: theme.colors.tertiaryContainer,
-          borderBottomWidth: 0,
-          shadowOffset: { height: 0, width: 0 },
-        },
-        // headerTintColor: theme.colors.primaryContainer,
-        headerTitleAlign: "center",
-      }}
-    >
+    <HomeStack.Navigator screenOptions={getScreenOptions()} >
       <HomeStack.Screen name="Home" component={HomeScreen} options={{ 
         headerLeft: () => (
           <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
@@ -53,17 +58,7 @@ const HomeStackScreen = () => {
 const MapStackScreen = () => {
   const theme = useTheme();
   return (
-    <MapStack.Navigator
-      screenOptions={{
-        headerStyle: {
-          // backgroundColor: theme.colors.tertiaryContainer,
-          borderBottomWidth: 0,
-          shadowOffset: { height: 0, width: 0 },
-        },
-        // headerTintColor: theme.colors.primaryContainer,
-        headerTitleAlign: "center",
-      }}
-    >
+    <MapStack.Navigator screenOptions={getScreenOptions()} >
       <MapStack.Screen name="Map" component={MapScreen} />
     </MapStack.Navigator>
   );
@@ -72,17 +67,7 @@ const MapStackScreen = () => {
 const FAQStackScreen = () => {
   const theme = useTheme();
   return (
-    <FAQStack.Navigator
-      screenOptions={{
-        headerStyle: {
-          // backgroundColor: theme.colors.tertiaryContainer,
-          borderBottomWidth: 0,
-          shadowOffset: { height: 0, width: 0 },
-        },
-        // headerTintColor: theme.colors.primaryContainer,
-        headerTitleAlign: "center",
-      }}
-    >
+    <FAQStack.Navigator screenOptions={getScreenOptions()} >
       <FAQStack.Screen
         name="FAQ"
         component={FAQScreen}
@@ -94,17 +79,7 @@ const FAQStackScreen = () => {
 const ScheduleStackScreen = () => {
   const theme = useTheme();
   return (
-    <ScheduleStack.Navigator
-      screenOptions={{
-        headerStyle: {
-          // backgroundColor: theme.colors.tertiaryContainer,
-          borderBottomWidth: 0,
-          shadowOffset: { height: 0, width: 0 },
-        },
-        // headerTintColor: theme.colors.primaryContainer,
-        headerTitleAlign: "center",
-      }}
-    >
+    <ScheduleStack.Navigator screenOptions={getScreenOptions()} >
       <ScheduleStack.Screen name="Schedule" component={ScheduleScreen} />
     </ScheduleStack.Navigator>
   );
@@ -137,18 +112,18 @@ const Navigation = () => {
             return <Icon name={iconName} size={size} color={color}></Icon>;
           },
 
-          // tabBarActiveTintColor: theme.colors.onPrimary,
-          // tabBarActiveBackgroundColor: theme.colors.onPrimary,
-          // tabBarInactiveTintColor: theme.colors.onPrimary,
+          tabBarActiveTintColor: theme.colors.onPrimary,
+          tabBarActiveBackgroundColor: theme.colors.primary,
+          tabBarInactiveTintColor: theme.colors.primary,
           tabBarItemStyle: {
             padding: 5,
           },
           tabBarLabelStyle: {
             fontWeight: "800",
           },
-          // tabBarStyle: {
-          //   backgroundColor: theme.colors.primary,
-          // },
+          tabBarStyle: {
+            backgroundColor: theme.colors.onPrimary,
+          },
         })}
       >
         <Tab.Screen

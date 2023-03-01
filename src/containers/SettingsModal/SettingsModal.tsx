@@ -95,7 +95,7 @@ const SettingsModal = () => {
   return (
     <>
       <Pressable onPress={openModal}>
-        <Icon name='cog' color={theme.colors.onPrimary} size={typography.fontSizeXXL} />
+        <Icon name='cog' color={theme.colors.primary} size={typography.fontSizeXXL} />
       </Pressable>
       <SelectUserModal showModal={showSelectUserModal} closeModal={closeSelectUserModal} fullScreen={false} />
       <Modal
@@ -110,9 +110,9 @@ const SettingsModal = () => {
             <View style={ss.modalHeader}>
               <View style={{ flex: 1, alignItems: "flex-start" }}>
                 <Button
-                  // variant="header"
                   onPress={closeModal}
                   compact
+                  variant='onModalHeader'
                 >
                   Cancel
                 </Button>

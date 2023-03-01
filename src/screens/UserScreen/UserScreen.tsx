@@ -1,20 +1,20 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { View, FlatList, Platform } from 'react-native';
-import { SortDirection } from 'aws-amplify';
-import { useTheme } from 'react-native-paper';
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { View, FlatList, Platform } from "react-native";
+import { SortDirection } from "aws-amplify";
+import { useTheme } from "react-native-paper";
 import { Posts } from "../../models";
-import { Divider, ActivityIndicator } from '../../components';
+import { Divider, ActivityIndicator } from "../../components";
 // import { PostPreview } from '../../containers';
-import { DataStore } from '../../utils';
-import UserScreenHeader from './UserScreenHeader';
-import styles from './UserScreenStyles';
+import { DataStore } from "../../utils";
+import UserScreenHeader from "./UserScreenHeader";
+import styles from "./UserScreenStyles";
 
 const UserScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
 
   const { userId, name, picture } = route.params;
-  console.log('-- Nav props --', userId, name, picture);
+  console.log("-- Nav props --", userId, name, picture);
   const [allPosts, setAllPosts] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
 
@@ -41,35 +41,32 @@ const UserScreen = ({ navigation, route }) => {
     }
   };
 
-  const renderItem = useCallback(
-    ({ item }) => {
-      return null;
-      // return (
-      //   <PostPreview
-      //     post={item}
-      //     previewMode
-      //   />
-      // )
-    }
-  );
+  const renderItem = useCallback(({ item }) => {
+    return null;
+    // return (
+    //   <PostPreview
+    //     post={item}
+    //     previewMode
+    //   />
+    // )
+  });
 
-  const listHeader = useCallback(
-    () => {
-      return (
-        <UserScreenHeader name={name} picture={picture} hasPosted={allPosts.length > 0} userId={userId} />
-      )
-    }
-  )
+  const listHeader = useCallback(() => {
+    return (
+      <UserScreenHeader
+        name={name}
+        picture={picture}
+        hasPosted={allPosts.length > 0}
+        userId={userId}
+      />
+    );
+  });
 
   const keyExtractor = useCallback((item) => item.id, []);
 
-  const listItemSeparator = useCallback(
-    () => {
-      return (
-        <Divider height={5} margin={0} />
-      )
-    }
-  )
+  const listItemSeparator = useCallback(() => {
+    return <Divider height={5} margin={0} />;
+  });
 
   useEffect(() => {
     const postSubscription = DataStore.observe(Posts).subscribe((post) => {
@@ -96,15 +93,15 @@ const UserScreen = ({ navigation, route }) => {
           keyExtractor={keyExtractor}
           ItemSeparatorComponent={listItemSeparator}
           ListHeaderComponent={listHeader}
-          removeClippedSubviews={Platform.OS === 'android'} // Saves memory, has issues on iOS
+          removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
           maxToRenderPerBatch={10} // Also the default
           initialNumToRender={10} // Also the default
-          keyboardShouldPersistTaps='handled'
+          keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         />
       )}
     </View>
-  )
-}
+  );
+};
 
 export default UserScreen;

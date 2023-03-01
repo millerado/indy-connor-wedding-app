@@ -8,7 +8,7 @@ import {
 import styles from "./ButtonStyles";
 
 interface ButtonProps extends PaperButtonProps {
-   variant?: 'primary' | 'primaryOnDark' | 'secondary' | 'secondaryOnDark';
+   variant?: 'primary' | 'primaryOnDark' | 'secondary' | 'secondaryOnDark' | 'onModalHeader';
 }
 
 const Button = (props: ButtonProps) => {
@@ -27,7 +27,10 @@ const Button = (props: ButtonProps) => {
   } else if (variant === 'secondaryOnDark') {
     buttonColor = theme.colors.onSecondary;
     textColor = theme.colors.secondary;
-  }
+  } else if (variant === 'onModalHeader' ) {
+    buttonColor = theme.colors.onModalHeader;
+    textColor = theme.colors.modalHeader;
+  }  
 
   return <PaperButton mode={mode} buttonColor={buttonColor} textColor={textColor} {...restOfProps} />;
 };

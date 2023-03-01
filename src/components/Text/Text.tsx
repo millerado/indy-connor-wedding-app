@@ -31,7 +31,7 @@ const Text = (props: TextProps) => {
     bold = false,
     numberOfLines = 0,
     style,
-    color = theme.colors.secondary,
+    color = theme.colors.primary,
     ...restOfProps
   } = props;
   const textSize = sizeToVariant(size);

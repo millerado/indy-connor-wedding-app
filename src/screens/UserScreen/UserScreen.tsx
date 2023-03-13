@@ -14,24 +14,20 @@ const UserScreen = ({ navigation, route }) => {
   const ss = useMemo(() => styles(theme), [theme]);
 
   const { userId, name, picture } = route.params;
-  console.log("-- Nav props --", userId, name, picture);
+  // console.log("-- Nav props --", userId, name, picture);
   const [allPosts, setAllPosts] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
 
-  const fetchPosts = async () => {
+  const loadPosts = async (postsData) => {
     try {
-      // await DataStore.stop();
-      // const postsData = await DataStore.query(Posts, p => p.userId("eq", userId), {
-      //   sort: s => s.createdAt(SortDirection.DESCENDING)
-      // });
-      // const newPosts = postsData.map(post => {
-      //   const obj = Object.assign({}, post);
-      //   // obj.image = post.image ? JSON.parse(post.image) : undefined;
-      //   return obj;
-      // });
-      // if (newPosts !== allPosts) {
-      //   setAllPosts(newPosts);
-      // }
+      const newPosts = postsData.map((post) => {
+        const obj = Object.assign({}, post);
+        // obj.image = post.image ? JSON.parse(post.image) : undefined;
+        return obj;
+      });
+      if (newPosts !== allPosts) {
+        setAllPosts(newPosts);
+      }
       if (dataLoading) {
         setDataLoading(false);
       }
@@ -69,11 +65,13 @@ const UserScreen = ({ navigation, route }) => {
   });
 
   useEffect(() => {
-    const postSubscription = DataStore.observe(Posts).subscribe((post) => {
-      fetchPosts();
+    const postSubscription = DataStore.observeQuery(
+      Posts,
+      (p) => p.userId.eq(userId),
+      { sort: (s) => s.createdAt(SortDirection.DESCENDING) }
+    ).subscribe(({ items }) => {
+      loadPosts(items);
     });
-
-    fetchPosts();
 
     return () => {
       postSubscription.unsubscribe();

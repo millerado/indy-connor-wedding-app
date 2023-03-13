@@ -40,29 +40,6 @@ const SelectUserModal = (props: SelectUserModalProps) => {
   const authContext = useContext(AuthContext);
   const { setAuthStatus, authStatus } = authContext;
 
-  const fetchUsers = async () => {
-    // await DataStore.stop();
-    const dt = await DataStore.query(Users, Predicates.ALL, {
-      sort: (u) => u.name(SortDirection.ASCENDING),
-    });
-    const newUsers = dt.map((u) => {
-      return {
-        id: u.id,
-        name: u.name,
-        image: u.image ? JSON.parse(u.image) : undefined,
-        fullObject: u,
-      };
-    });
-
-    // Quick check to make sure we're only updating state if the subscription caught a change that we care about
-    if (newUsers !== allUsers) {
-      setAllUsers(newUsers);
-      if (!searchText) {
-        setDisplayedUsers(newUsers);
-      }
-    }
-  };
-
   const rowClickedHandler = (userId: string) => {
     const user = allUsers.find((u) => u.id === userId);
     setClickedUser(user);
@@ -99,16 +76,32 @@ const SelectUserModal = (props: SelectUserModalProps) => {
   };
 
   useEffect(() => {
+    const fetchUsers = async (dt) => {
+
+      const newUsers = dt.map((u) => {
+        return {
+          id: u.id,
+          name: u.name,
+          image: u.image ? JSON.parse(u.image) : undefined,
+          fullObject: u,
+        };
+      });
+  
+      // Quick check to make sure we're only updating state if the subscription caught a change that we care about
+      if (newUsers !== allUsers) {
+        setAllUsers(newUsers);
+        if (!searchText) {
+          setDisplayedUsers(newUsers);
+        }
+      }
+    };
+
     // Subscribe to Users
-    const usersSubscription = DataStore.observe(Users).subscribe((u) => {
+    const usersSubscription = DataStore.observeQuery(Users).subscribe(({ items }) => {
       if (showModal) {
-        fetchUsers();
+        fetchUsers(items);
       }
     });
-
-    if (showModal) {
-      fetchUsers();
-    }
 
     return () => {
       usersSubscription.unsubscribe();

@@ -5,9 +5,9 @@ const styles = theme => {
   const rstyles = reusableStyles(theme);
   const ss = StyleSheet.create({
     ...rstyles,
-    sectionHeader: {
+    sectionHeader: { // Not used
       padding: 10,
-      backgroundColor: theme.colors.primary,
+      backgroundColor: theme.colors.primaryContainer,
     },
     itemWrapper: {
       flex: 1,
@@ -16,6 +16,8 @@ const styles = theme => {
     },
     textInputWrapper: {
       marginBottom: 10,
+      borderColor: theme.colors.onSecondary,
+      marginRight: 1,
     },
   });
   return ss;

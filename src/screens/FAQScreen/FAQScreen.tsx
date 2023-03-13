@@ -36,8 +36,6 @@ const FAQScreen = ({ navigation, route }) => {
     } catch (err) { console.log('error fetching Data', err) }
   }
 
-
-
   const addNewButton = () => {
     return (
       <Pressable onPress={() => setShowModal(true)}>
@@ -67,7 +65,7 @@ const FAQScreen = ({ navigation, route }) => {
         <Divider />
       )
     }
-  )
+  );
 
   useEffect(() => {
     navigation.setOptions({

@@ -67,5 +67,4 @@ type Schedule @model @auth(rules: [{allow: public}]) {
   description: String!
   location: String!
   sortOrder: Int!
-}
- 
+} 

@@ -470,7 +470,6 @@ const PostPreview = (props) => {
           </Dialog.Actions>
         </Dialog>
       </Portal>
-
     </>
   );
 };

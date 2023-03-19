@@ -94,7 +94,7 @@ const ScheduleScreen = ({ navigation, route }) => {
             )}
             renderSectionHeader={({ section: { day } }) => (
               <View style={ss.sectionHeader}>
-                <Text color={theme.colors.white} size={TextSizes.XL} bold>{day}</Text>
+                <Text color={theme.colors.onPrimary} size={TextSizes.XL} bold>{day}</Text>
               </View>
             )}
             sections={scheduleData}

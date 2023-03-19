@@ -131,6 +131,13 @@ const reusableStyles = theme => {
       alignContent: 'center',
       justifyContent: 'center',
     },
+    fakeTextInput: {
+      padding: 10,
+      borderColor: theme.colors.primary,
+      borderWidth: 1,
+      borderRadius: 5,
+      alignSelf: 'center',
+    },
   });
   return ss;
 }

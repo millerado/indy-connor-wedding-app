@@ -22,20 +22,6 @@ const FAQScreen = ({ navigation, route }) => {
     setShowModal(false);
   };
 
-  const loadFAQ = async (dt) => {
-    try {
-      dt.sort((a, b) => a.sortOrder - b.sortOrder);
-      if (dataLoading || searchTerm === '') {
-        setFAQData(dt);
-      }
-      setAllFAQData(dt);
-      if (dataLoading) {
-        setDataLoading(false);
-      }
-      // console.log('-- Fetched Data --', dt);
-    } catch (err) { console.log('error fetching Data', err) }
-  }
-
   const addNewButton = () => {
     return (
       <Pressable onPress={() => setShowModal(true)}>
@@ -94,7 +80,17 @@ const FAQScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     const subscription = DataStore.observeQuery(FAQ).subscribe(({ items }) => {
-      loadFAQ(items);
+      try {
+        items.sort((a, b) => a.sortOrder - b.sortOrder);
+        if (dataLoading || searchTerm === '') {
+          setFAQData(items);
+        }
+        setAllFAQData(items);
+        if (dataLoading) {
+          setDataLoading(false);
+        }
+        // console.log('-- Fetched Data --', dt);
+      } catch (err) { console.log('error fetching Data', err) }
     });
 
     return () => subscription.unsubscribe();

@@ -71,9 +71,11 @@ const ScheduleItem = (props) => {
                 Cancel
               </Button>
             </View>
-            <Button onPress={deleteScheduleItem}>
-              Delete
-            </Button>
+            <View>
+              <Button onPress={deleteScheduleItem}>
+                Delete
+              </Button>
+            </View>
           </Dialog.Actions>
         </Dialog>
       </Portal>

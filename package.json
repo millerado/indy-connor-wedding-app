@@ -43,6 +43,7 @@
     "react-native-screens": "~3.18.0",
     "react-native-uuid": "^2.0.1",
     "react-native-zoom-reanimated": "^1.1.2",
+    "react-string-replace": "^1.1.0",
     "shuffle-seed": "^1.1.6",
     "typescript": "^4.9.4",
     "undefined": "@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView"

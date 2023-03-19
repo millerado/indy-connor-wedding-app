@@ -270,7 +270,7 @@ const UserScreenHeader = (props) => {
               disabled={!isConnected}
               anchor={
                 <ConditionalWrapper
-                  condition={authStatus.id === dbUser.owner}
+                  condition={authStatus.userId === dbUser.userId}
                   wrapper={(children) => (
                     <Pressable onPress={openMenu} disabled={!isConnected}>
                       {children}

@@ -16,6 +16,7 @@ const bluesMedium = '#00627C';
 const bluesLight = '#97AFBA';
 const white = '#ffffff';
 const black = '#000000';
+const red = '#FF0000';
 const error = '#b55464';
 
 
@@ -38,6 +39,7 @@ export const lightTheme = {
     // Add all our colors here
     black: black,
     white: white,
+    red: red,
     background: greensSuperLight,
     modalBackground: greensDark,
     modalHeader: primaryGreen,
@@ -63,6 +65,7 @@ export const darkTheme = {
     // Add all our colors here
     black: black,
     white: white,
+    red: red,
     background: black,
     modalBackground: greensDark,
     modalHeader: primaryGreen,

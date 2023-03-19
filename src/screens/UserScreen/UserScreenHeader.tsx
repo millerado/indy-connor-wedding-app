@@ -164,6 +164,7 @@ const UserScreenHeader = (props) => {
     if (user) {
       setAbout(user.about);
       setImage(user.image ? JSON.parse(user.image) : undefined);
+      console.log('-- Should become db user --', user);
       setDbUser(user);
     }
   };
@@ -185,8 +186,7 @@ const UserScreenHeader = (props) => {
   };
 
   useEffect(() => {
-    const headerRight =
-      authStatus !== undefined && dbUser?.name ? addEditButton() : null;
+    const headerRight = authStatus !== undefined && dbUser?.id === authStatus.userId && dbUser?.name ? addEditButton() : null;
     const headerTitle = dbUser?.name ? dbUser.name : "User";
     navigation.setOptions({
       title: headerTitle,

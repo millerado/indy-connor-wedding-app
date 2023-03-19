@@ -5,6 +5,7 @@ import CommentModal from "./CommentModal/CommentModal";
 import FAQItem from "./FAQItem/FAQItem";
 import FAQModal from "./FAQModal/FAQModal";
 import FormatTextWithMentions from "./FormatTextWithMentions/FormatTextWithMentions";
+import ImageScroll from "./ImageScroll/ImageScroll";
 import IntroModal from "./IntroModal/IntroModal";
 import LikedByUsersModal from "./LikedByUsersModal/LikedByUsersModal";
 import NotificationsHeaderButton from './NotificationsHeaderButton/NotificationsHeaderButton';
@@ -26,6 +27,7 @@ export {
   FAQItem,
   FAQModal,
   FormatTextWithMentions,
+  ImageScroll,
   IntroModal,
   LikedByUsersModal,
   NotificationsHeaderButton,

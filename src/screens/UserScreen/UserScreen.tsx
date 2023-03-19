@@ -4,7 +4,7 @@ import { SortDirection } from "aws-amplify";
 import { useTheme } from "react-native-paper";
 import { Posts } from "../../models";
 import { Divider, ActivityIndicator } from "../../components";
-// import { PostPreview } from '../../containers';
+import { PostPreview } from '../../containers';
 import { DataStore } from "../../utils";
 import UserScreenHeader from "./UserScreenHeader";
 import styles from "./UserScreenStyles";
@@ -18,15 +18,18 @@ const UserScreen = ({ navigation, route }) => {
   const [allPosts, setAllPosts] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
 
-  const loadPosts = async (postsData) => {
+  const loadPosts = async (items) => {
     try {
-      const newPosts = postsData.map((post) => {
+      const formattedPosts = items.map((post) => {
         const obj = Object.assign({}, post);
-        // obj.image = post.image ? JSON.parse(post.image) : undefined;
+        const images = post.images?.length > 0 ? post.images.map((image) => {
+          return JSON.parse(image);
+        }) : undefined;
+        obj.images = images;
         return obj;
       });
-      if (newPosts !== allPosts) {
-        setAllPosts(newPosts);
+      if (formattedPosts !== allPosts) {
+        setAllPosts(formattedPosts);
       }
       if (dataLoading) {
         setDataLoading(false);
@@ -38,14 +41,13 @@ const UserScreen = ({ navigation, route }) => {
   };
 
   const renderItem = useCallback(({ item }) => {
-    return null;
-    // return (
-    //   <PostPreview
-    //     post={item}
-    //     previewMode
-    //   />
-    // )
-  });
+    return (
+      <PostPreview
+        post={item}
+        previewMode
+      />
+    )
+  }, [allPosts]);
 
   const listHeader = useCallback(() => {
     return (
@@ -56,13 +58,13 @@ const UserScreen = ({ navigation, route }) => {
         userId={userId}
       />
     );
-  });
+  }, [name, picture, userId, allPosts]);
 
   const keyExtractor = useCallback((item) => item.id, []);
 
   const listItemSeparator = useCallback(() => {
     return <Divider height={5} margin={0} />;
-  });
+  }, []);
 
   useEffect(() => {
     const postSubscription = DataStore.observeQuery(

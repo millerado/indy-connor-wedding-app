@@ -65,6 +65,13 @@ const styles = theme => {
       alignItems: "center",
       justifyContent: "center",
     },
+    imageScrollIndicatorWrapper: {
+      height: '100%',
+      justifyContent: 'center',
+      alignItems: 'flex-end',
+      paddingBottom: 10,
+      flexDirection: 'row',
+    }
   });
   return ss;
 }

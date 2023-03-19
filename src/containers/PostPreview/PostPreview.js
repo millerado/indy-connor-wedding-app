@@ -10,19 +10,17 @@ import { View, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Dialog, Menu, Portal, useTheme } from "react-native-paper";
 import { SortDirection } from "aws-amplify";
+import _ from "lodash";
 import SingleComment from "../SingleComment/SingleComment";
 import AddCommentListView from "../AddCommentListView/AddCommentListView";
+import ImageScroll from "../ImageScroll/ImageScroll";
 import { Reactions, Users, Comments, Posts } from "../../models";
 import {
   Icon,
   Text,
   Avatar,
-  ImageS3,
   Button,
   Divider,
-  ConditionalWrapper,
-  ZoomableView,
-  DoubleTap,
 } from "../../components";
 import { typography, calcDimensions } from "../../styles";
 import { formatDate, DataStore } from "../../utils/";
@@ -32,7 +30,6 @@ import CaptionModal from "../CaptionModal/CaptionModal";
 import LikedByUsersModal from "../LikedByUsersModal/LikedByUsersModal";
 import FormatTextWithMentions from '../FormatTextWithMentions/FormatTextWithMentions';
 import styles from "./PostPreviewStyles";
-import _ from "lodash";
 
 const previewLines = 3;
 const expandedLines = undefined; // If we're not doing a details page, we should show full caption in Preview
@@ -67,8 +64,7 @@ const PostPreview = (props) => {
 
   const authStatus = useContext(AuthContext).authStatus;
 
-  const { messageBody, image, userId, createdAt, id: postsID } = post;
-
+  const { messageBody, images, userId, createdAt, id: postsID } = post;
 
   const likePressHandler = async () => {
     if (authStatus?.isAuthed) {
@@ -76,7 +72,7 @@ const PostPreview = (props) => {
         try {
           // await DataStore.stop();
           await DataStore.delete(Reactions, (reaction) =>
-            reaction.and( reaction => [
+            reaction.and(reaction => [
               reaction.userId.eq(authStatus.userId),
               reaction.postsID.eq(postsID),
               reaction.reactionType.eq("like")
@@ -298,7 +294,7 @@ const PostPreview = (props) => {
               <Text>Are you sure you want to delete this post?</Text>
             </Dialog.Content>
             <Dialog.Actions>
-              <View style={{paddingRight: 10}}>
+              <View style={{ paddingRight: 10 }}>
                 <Button onPress={hideDeleteDialog}>Cancel</Button>
               </View>
               <View>
@@ -360,23 +356,7 @@ const PostPreview = (props) => {
             </Menu>
           ) : null}
         </View>
-        {image?.url && (
-          <View style={ss.imageWrapper}>
-            <ConditionalWrapper
-              condition={!previewMode}
-              wrapper={(children) => (
-                <ZoomableView maxZoom={10} style={ss.zoomWrapper} height={dimensions.width * (image.height / image.width)} width={dimensions.width}>{children}</ZoomableView>
-              )}>
-              <DoubleTap doubleTap={likePressHandler} singleTap={goToPostScreen} delay={500}>
-                <ImageS3
-                  fileName={image.url}
-                  height={image.height}
-                  width={image.width}
-                />
-              </DoubleTap>
-            </ConditionalWrapper>
-          </View>
-        )}
+        <ImageScroll images={images} previewMode={previewMode} doubleTapHandler={likePressHandler} singleTapHandler={goToPostScreen} tapDelay={500} />
         {messageBody ? (
           <View style={ss.captionWrapper}>
             <Text
@@ -414,14 +394,14 @@ const PostPreview = (props) => {
                 onPress={likePressHandler}
                 name={isLiked ? "heart" : "heart-outline"}
                 size={typography.fontSizeXXL}
-                color={isLiked ? theme.colors.primary : theme.colors.secondary}
+                color={isLiked ? theme.colors.red : theme.colors.secondary}
               />
             </Pressable>
           </View>
           {reactions.length > 0 && (
             <Pressable onPress={handleShowLikesList}>
               <View style={ss.likedByWrapper}>
-                <Text size="S" color={theme.colors.primary}>
+                <Text size="S" color={theme.colors.red}>
                   Liked by {reactions.length}{" "}
                   {reactions.length === 1 ? "person" : "people"}
                 </Text>

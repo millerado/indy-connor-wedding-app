@@ -72,6 +72,8 @@ const getIconName = (name) => {
     return "cog-outline";
   } else if (name === 'image') {
     return 'image-outline';
+  } else if (name === 'circle') {
+    return 'ellipse';
   }
 
   return 'home';

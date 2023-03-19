@@ -50,13 +50,15 @@ const HomeScreen = () => {
     }).subscribe(({ items }) => {
       try {
         // await DataStore.stop();
-        setAllPosts(
-          items.map((post) => {
-            const obj = Object.assign({}, post);
-            // obj.image = post.image ? JSON.parse(post.image) : undefined;
-            return obj;
-          })
-        );
+        const formattedPosts = items.map((post) => {
+          const obj = Object.assign({}, post);
+          const images = post.images?.length > 0 ? post.images.map((image) => {
+            return JSON.parse(image);
+          }) : undefined;
+          obj.images = images;
+          return obj;
+        });
+        setAllPosts(formattedPosts);
         setDataLoading(false);
       } catch (err) {
         console.log("error fetching Data", err);

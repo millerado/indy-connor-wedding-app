@@ -5,7 +5,7 @@ import { useTheme } from "react-native-paper";
 import { Icon, Text, Button, Modal, TextInput, TextSizes } from "../../components";
 import { typography } from "../../styles";
 import { ThemeContext, AuthContext } from "../../contexts";
-import { sendGlobalPushNotification } from '../../utils';
+import { sendGlobalPushNotification, DataStore } from '../../utils';
 import SelectUserModal from '../SelectUserModal/SelectUserModal';
 import styles from "./SettingsModalStyles";
 
@@ -92,6 +92,12 @@ const SettingsModal = () => {
     setShowSelectUserModal(false);
   };
 
+  const resetDatastore = async () => {
+    await DataStore.stop();
+    await DataStore.clear();
+    await DataStore.start();
+  }
+
   return (
     <>
       <Pressable onPress={openModal}>
@@ -153,6 +159,13 @@ const SettingsModal = () => {
                     <View style={{ paddingTop: 10 }}>
                       <Button onPress={openNotificationDialog} >
                         Send Global Notification
+                      </Button>
+                    </View>
+                  )}
+                  {authStatus.isAdmin && (
+                    <View style={{ paddingTop: 10 }}>
+                      <Button onPress={resetDatastore} >
+                        Debug Reset Datastore
                       </Button>
                     </View>
                   )}

@@ -6,12 +6,14 @@ import { useTheme } from "react-native-paper";
 import { SettingsModal, NotificationsHeaderButton } from '../containers';
 import { Icon } from '../components';
 import {
+  CreatePostScreen,
   FAQScreen,
   HomeScreen,
   MapScreen,
   NotificationsScreen,
   ScheduleScreen,
   UserScreen,
+  ViewPostScreen,
 } from "../screens";
 
 const HomeStack = createNativeStackNavigator();
@@ -51,6 +53,8 @@ const HomeStackScreen = () => {
         )}} />
       <HomeStack.Screen name="User" component={UserScreen} />
       <HomeStack.Screen name="Notifications" component={NotificationsScreen} />
+      <HomeStack.Screen name="View Post" component={ViewPostScreen} />
+      <HomeStack.Screen name="Create Post" component={CreatePostScreen} />
     </HomeStack.Navigator>
   );
 };

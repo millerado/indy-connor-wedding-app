@@ -87,7 +87,9 @@ const FAQItem = (props) => {
             <View style={{paddingRight: 10}}>
               <Button onPress={hideDeleteDialog} text="Cancel">Cancel</Button>
             </View>
-            <Button onPress={deleteFAQItem} text="Delete">Delete</Button>
+            <View>
+              <Button onPress={deleteFAQItem} text="Delete">Delete</Button>
+            </View>
           </Dialog.Actions>
         </Dialog>
       </Portal>

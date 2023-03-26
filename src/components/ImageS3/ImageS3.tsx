@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, View } from "react-native";
+import { View, ImageBackground } from "react-native";
 import { Storage } from 'aws-amplify';
 import * as FileSystem from "expo-file-system";
 import { calcDimensions } from '../../styles';
@@ -54,7 +54,7 @@ const renderPlaceholder = (width, height, borderRadius, absolute) => {
 }
 
 const ImageS3 = (props) => {
-  const { fileName, variant, width, height, borderRadius, placeholder, imageLoadedCallback, ...restOfProps } = props;
+  const { fileName, variant, width, height, borderRadius, placeholder, imageLoadedCallback, children, ...restOfProps } = props;
   // const isMounted = useRef(false);
   const [imgUrl, setImgUrl] = useState(undefined);
   const [dimensions, setDimensions] = useState({width: 0, height: 0, borderRadius: 0});
@@ -143,11 +143,15 @@ const ImageS3 = (props) => {
     return (
       <>
         {imgUrl && imgUrl.slice(-9) !== "undefined" ? (
-          <Image 
+          <ImageBackground 
             source={{ uri: imgUrl }} 
-            style={{ width: dimensions.width, height: dimensions.height, borderRadius: dimensions.borderRadius }}
+            style={{ width: dimensions.width, height: dimensions.height }}
+            imageStyle={{ borderRadius: dimensions.borderRadius }}
+            resizeMode='contain'
             {...restOfProps}
-          />
+          >
+            {children}
+          </ImageBackground>
         ) : (
           showPlaceholder(false)
         )}

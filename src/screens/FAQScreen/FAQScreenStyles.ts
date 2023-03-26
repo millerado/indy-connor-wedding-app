@@ -21,8 +21,8 @@ const styles = theme => {
       padding: 10,
       paddingBottom: 0,
       width: '100%',
-      borderBottomWidth: 5,
-      borderBottomColor: theme.colors.onTertiary,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.onSecondary,
     },
   });
   return ss;

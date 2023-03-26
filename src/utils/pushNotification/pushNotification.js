@@ -25,14 +25,14 @@ const sendPushNotification = async (token, title, body, data) => {
   });
 }
 
-// sends push notification to user, identified by owner
-// if owner is mapped to multiple devices (tokens), sends notification to all of them
-export const sendUserPushNotification = async (owner, title, body, data) => {
-  if (owner === null || owner === '') {
+// sends push notification to user, identified by userId
+// if userId is mapped to multiple devices (tokens), sends notification to all of them
+export const sendUserPushNotification = async (userId, title, body, data) => {
+  if (userId === null || userId === '') {
     return;
   }
 
-  const tokenRecords = await DataStore.query(ExpoTokens, t => t.owner("eq",  owner));
+  const tokenRecords = await DataStore.query(ExpoTokens, t => t.userId("eq",  userId));
   tokenRecords.forEach(expoToken => {
     sendPushNotification(expoToken.token, title, body, data);
   });
@@ -49,8 +49,8 @@ export const sendGlobalPushNotification = async (title, body, data) => {
   });
 }
 
-export const registerForPushNotificationsAsync = async (owner) => {
-  // console.log(owner);
+export const registerForPushNotificationsAsync = async (userId) => {
+  // console.log(userId);
   // console.log('-- My Push Token --', (await Notifications.getExpoPushTokenAsync()).data);
   if (Device.isDevice) {
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -64,7 +64,7 @@ export const registerForPushNotificationsAsync = async (owner) => {
       return;
     }
     const token = (await Notifications.getExpoPushTokenAsync()).data;
-    savePushTokenAsync(token, owner);
+    savePushTokenAsync(token, userId);
   } else {
     alert('Must use physical device for Push Notifications');
   }
@@ -79,22 +79,22 @@ export const registerForPushNotificationsAsync = async (owner) => {
   }
 };
 
-export const savePushTokenAsync = async (token, owner) => {
-  owner = owner ? owner : "";
+export const savePushTokenAsync = async (token, userId) => {
+  userId = userId ? userId : "";
   const tokenRecords = await DataStore.query(ExpoTokens, expoToken => 
     expoToken
       .token("eq",  token)
-      .owner("eq", owner)
+      .userId("eq", userId)
   );
 
   if (tokenRecords.length === 0) {
-    // if no token record exists for the owner, insert it
-    // this will work for auth'ed user with valid owner
-    // or unauth'ed user with empty owner
+    // if no token record exists for the userId, insert it
+    // this will work for auth'ed user with valid userId
+    // or unauth'ed user with empty userId
     await DataStore.save(
       new ExpoTokens({
         token,
-        owner
+        userId
       })
     );
   }

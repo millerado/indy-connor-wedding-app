@@ -27,7 +27,7 @@ const TaggingUserSuggestions = (keyword, onSuggestionPress, allUsers) => {
   // End of weird fix up here to avoid screen flicker/flash
   const fixedUserIds = allUsers.map((user) => {
     return ({
-      id: user.userId,
+      id: user.id,
       name: user.name,
       image: user.image ? JSON.parse(user.image) : undefined,
     })

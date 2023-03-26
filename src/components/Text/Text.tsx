@@ -19,6 +19,7 @@ export enum TextSizes {
 interface TextProps extends PaperTextProps {
   size?: TextSizes;
   bold?: boolean;
+  italic?: boolean;
   numberOfLines?: number;
   style?: any;
   color?: string;
@@ -29,6 +30,7 @@ const Text = (props: TextProps) => {
   const {
     size = TextSizes.M,
     bold = false,
+    italic = false,
     numberOfLines = 0,
     style,
     color = theme.colors.primary,
@@ -46,6 +48,7 @@ const Text = (props: TextProps) => {
         fontWeight: bold ? "700" : "400",
         lineHeight: textSize * 1.3,
         color: color,
+        fontStyle: italic ? "italic" : "normal",
       }}
     />
   );

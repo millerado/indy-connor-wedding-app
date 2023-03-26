@@ -24,7 +24,7 @@ import { Posts, Users } from "../../models";
 import { uploadImageS3, DataStore, sendUserPushNotification } from "../../utils";
 import { typography, calcDimensions } from "../../styles";
 import { AuthContext } from '../../contexts';
-import { TaggingUserSuggestions } from '../../containers';
+import { TaggingUserSuggestions, ImageScroll } from '../../containers';
 import styles from "./CreatePostScreenStyles";
 
 const dimensions = calcDimensions();
@@ -32,7 +32,7 @@ const dimensions = calcDimensions();
 const CreatePostScreen = ({ navigation }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [messageBody, setMessageBody] = useState("");
-  const [image, setImage] = useState(undefined);
+  const [images, setImages] = useState([]);
   const [imageLoading, setImageLoading] = useState(undefined);
   const [dataPosting, setDataPosting] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -49,11 +49,14 @@ const CreatePostScreen = ({ navigation }) => {
   const ss = useMemo(() => styles(theme), [theme]);
 
   const uploadImageCallback = async (props) => {
-    console.log('-- Upload Image Callback --', props);
     const { success, uploadedImages, errorSummary, errorDetails } = props;
     if (success) {
-      const image = uploadedImages[0];
-      setImage(image.imageObject);
+      const newImages = [];
+      for(let i = 0; i < uploadedImages.length; i++) {
+        const img = uploadedImages[i];
+        newImages.push(img.imageObject);
+      }
+      setImages(newImages);
       setError(undefined);
       setImageLoading('downloading');
     } else {
@@ -89,14 +92,20 @@ const CreatePostScreen = ({ navigation }) => {
 
   const savePost = async () => {
     setDataPosting(true);
-    if (messageBody !== "" || image) {
+    if (messageBody !== "" || images) {
       try {
         // await DataStore.stop();
+        const imagesArray = [];
+        if(images.length > 0) {
+          for(let i = 0; i < images.length; i++) {
+            imagesArray.push(JSON.stringify(images[i]));
+          }
+        }
         const newPost = await DataStore.save(
           new Posts({
             userId: authStatus.userId,
             messageBody,
-            images: [JSON.stringify(image)],
+            images: imagesArray,
             olympicEvent: false,
           })
         );
@@ -116,8 +125,8 @@ const CreatePostScreen = ({ navigation }) => {
 
   const startPickImage = async () => {
     setShowMenu(false);
-    if (image) {
-      setImage(undefined);
+    if (images) {
+      setImages([]);
     }
     uploadImageS3.pickImage(uploadImageCallback, true);
     setImageLoading('uploading');
@@ -125,8 +134,8 @@ const CreatePostScreen = ({ navigation }) => {
 
   const startTakePhoto = async () => {
     setShowMenu(false);
-    if (image) {
-      setImage(undefined);
+    if (images) {
+      setImages([]);
     }
     uploadImageS3.takePhoto(uploadImageCallback);
     setImageLoading('uploading');
@@ -244,16 +253,14 @@ const CreatePostScreen = ({ navigation }) => {
                 onDismiss={closeMenu}
                 disabled={!isConnected}
                 anchor={
-                  <Pressable onPress={openMenu} disabled={!isConnected}>
-                    <ImageS3
-                      fileName={image?.url}
-                      width={image?.width || dimensions.width}
-                      height={image?.height || dimensions.height * .25}
-                      placeholder={renderPlaceholder}
-                      imageLoadedCallback={imageLoadedCallback}
-                    />
-                  </Pressable>
-                }>
+                  images.length > 0 ? (
+                    <ImageScroll images={images} doubleTapHandler={openMenu} singleTapHandler={openMenu} tapDelay={500} />
+                  ) : (
+                    <Pressable onPress={openMenu} disabled={!isConnected}>
+                      {renderPlaceholder()}
+                    </Pressable>
+                  )}
+                >
                 {photoPermissions.photos === 'allowed' && (
                   <Menu.Item onPress={startPickImage} title="Upload an Image" icon={({ size, color }) => (
                     <Icon name="picture" size={size} color={theme.colors.onPrimary} />
@@ -284,7 +291,7 @@ const CreatePostScreen = ({ navigation }) => {
                 <Button
                   variant="primary"
                   onPress={savePost}
-                  disabled={messageBody === "" && !image}
+                  disabled={messageBody === "" && images.length === 0}
                 >
                   Save Post
                 </Button>
@@ -328,7 +335,7 @@ const addPhotoPlaceholder = (dimensions, isConnected, theme, photoPermissions, i
       <View style={{ backgroundColor: theme.colors.onTertiary, width: '100%', height: dimensions.height * .25, alignItems: 'center', justifyContent: 'center', padding: 20, borderRadius: 5 }}>
         <Icon name='camera' size={typography.fontSizeXXXL} color={theme.colors.primary} />
         <Text color={theme.colors.primary} size={isConnected ? 'XXL' : 'L'} bold>
-          {isConnected ? 'Add Photo' : 'Must be online to add photos'}
+          {isConnected ? 'Add Photo(s)' : 'Must be online to add photos'}
         </Text>
         {photoPermissions.camera === 'denied' && photoPermissions.photos === 'denied' && (
           <Text color={theme.colors.primary} size={'M'} bold>

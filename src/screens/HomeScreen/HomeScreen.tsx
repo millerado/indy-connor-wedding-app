@@ -52,7 +52,7 @@ const HomeScreen = () => {
         // await DataStore.stop();
         const formattedPosts = items.map((post) => {
           const obj = Object.assign({}, post);
-          const images = post.images?.length > 0 ? post.images.map((image) => {
+          const images = post.images?.length > 0 && post.images[0] !== null ? post.images.map((image) => {
             return JSON.parse(image);
           }) : undefined;
           obj.images = images;

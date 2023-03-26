@@ -60,8 +60,7 @@ const CaptionModal = (props) => {
     setIsLoading(true);
     try {
       // await DataStore.stop();
-      const oldPosts = await DataStore.query(Posts, (p) => p.id("eq", post.id));
-      const oldPost = oldPosts[0];
+      const oldPost = await DataStore.query(Posts, post.id);
       // await DataStore.stop();
       await DataStore.save(
         Posts.copyOf(oldPost, (updatedItem) => {
@@ -91,12 +90,13 @@ const CaptionModal = (props) => {
           <View style={ss.modalHeader}>
             <View style={{ flex: 1, alignItems: "flex-start" }}>
               <Button
-                variant="header"
-                text="Cancel"
+                variant="onModalHeader"
                 onPress={() => handleCloseModal()}
-                size="small"
+                compact
                 disabled={isLoading}
-              />
+              >
+                Cancel
+              </Button>
             </View>
             <View style={{ flex: 1, alignItems: "center" }}>
               <Text color={theme.colors.onPrimary} bold size="M">
@@ -106,11 +106,13 @@ const CaptionModal = (props) => {
             <View style={{ flex: 1, alignItems: "flex-end" }}>
               {!isLoading ? (
                 <Button
-                  variant="header"
-                  text="Submit"
+                  variant="onModalHeader"
                   onPress={() => handleSaveItem()}
-                  size="small"
-                />
+                  compact
+                  disabled={isLoading}
+                >
+                  Submit
+                </Button>
               ) : (
                 <ActivityIndicator size={30} />
               )}

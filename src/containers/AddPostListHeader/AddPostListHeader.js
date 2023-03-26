@@ -26,7 +26,7 @@ const AddPostListHeader = (props) => {
         <View style={ss.wrapper}>
           <View style={ss.avatarWrapper}>
             <Avatar
-              fileName={authStatus.picture?.url}
+              fileName={authStatus.image?.url}
               name={authStatus.name}
               size={typography.fontSizeM * 2}
               variant="circle"

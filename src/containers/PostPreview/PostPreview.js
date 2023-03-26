@@ -329,7 +329,7 @@ const PostPreview = (props) => {
               onDismiss={closeMenu}
               anchor={
                 <Pressable onPress={openMenu}>
-                  <Icon name="edit" color={theme.colors.onPrimary} />
+                  <Icon name="edit" color={theme.colors.primary} />
                 </Pressable>
               }
             >
@@ -339,10 +339,10 @@ const PostPreview = (props) => {
                     onPress={openCaptionModal}
                     title="Edit Caption"
                     icon={({ size, color }) => (
-                      <Icon name="edit" size={size} color={theme.colors.onPrimary} />
+                      <Icon name="edit" size={size} color={theme.colors.primary} />
                     )}
                   />
-                  <Divider style={{ paddingTop: 10, paddingBottom: 10 }} />
+                  <Divider />
                 </>
               )}
               <Menu.Item
@@ -350,7 +350,7 @@ const PostPreview = (props) => {
                 title="Delete Post"
                 s
                 icon={({ size, color }) => (
-                  <Icon name="trash" size={size} color={theme.colors.onPrimary} />
+                  <Icon name="trash" size={size} color={theme.colors.primary} />
                 )}
               />
             </Menu>

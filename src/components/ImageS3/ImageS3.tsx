@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, View, ImageBackground } from "react-native";
+import { View, ImageBackground } from "react-native";
 import { Storage } from 'aws-amplify';
 import * as FileSystem from "expo-file-system";
 import { calcDimensions } from '../../styles';
@@ -145,7 +145,9 @@ const ImageS3 = (props) => {
         {imgUrl && imgUrl.slice(-9) !== "undefined" ? (
           <ImageBackground 
             source={{ uri: imgUrl }} 
-            style={{ width: dimensions.width, height: dimensions.height, borderRadius: dimensions.borderRadius }}
+            style={{ width: dimensions.width, height: dimensions.height }}
+            imageStyle={{ borderRadius: dimensions.borderRadius }}
+            resizeMode='contain'
             {...restOfProps}
           >
             {children}

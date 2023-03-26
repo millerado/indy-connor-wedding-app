@@ -2,8 +2,9 @@ import React, { useState, useContext, memo, useMemo } from 'react';
 import { View, Pressable } from 'react-native';
 import { Dialog, Portal, Menu, useTheme } from "react-native-paper";
 import { Schedule } from '../../models';
-import { Text, Divider, Icon, Button, ConditionalWrapper } from '../../components';
+import { Text, Divider, Icon, Button, ConditionalWrapper, TextSizes } from '../../components';
 import ScheduleModal from '../ScheduleModal/ScheduleModal';
+import FormatTextWithMentions from '../FormatTextWithMentions/FormatTextWithMentions';
 import { DataStore } from '../../utils';
 import { AuthContext } from '../../contexts';
 import styles from './ScheduleItemStyles';
@@ -91,11 +92,13 @@ const ScheduleItem = (props) => {
                 )}
             >
               <View style={{ flex: 9 }}>
-                <Text size='L' bold>{name}: {time}</Text>
-                <Text size='M'><Text bold>Location</Text>: {location}</Text>
+                <Text size={TextSizes.L} bold>{name}: {time}</Text>
+                <Text size={TextSizes.L}><Text bold>Location</Text>: {location}</Text>
               </View>
               <View style={ss.textWrapper}>
-                <Text size='M'>{description}</Text>
+                <Text size={TextSizes.M}>
+                  <FormatTextWithMentions text={description} />
+                </Text>
               </View>
             </ConditionalWrapper>
           </View>

@@ -58,6 +58,7 @@ const ImageScroll = (props) => {
                   fileName={image.url}
                   height={imageDimensions.minHeight || image.height}
                   width={imageDimensions.maxWidth || image.width}
+                  multipleImages
                   key={index}
                 >
                   {images.length > 1 && (

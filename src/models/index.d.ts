@@ -6,6 +6,34 @@ import { LazyLoading, LazyLoadingDisabled, AsyncCollection } from "@aws-amplify/
 
 
 
+type EagerAdminFavorites = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<AdminFavorites, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly image: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyAdminFavorites = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<AdminFavorites, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly image: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type AdminFavorites = LazyLoading extends LazyLoadingDisabled ? EagerAdminFavorites : LazyAdminFavorites
+
+export declare const AdminFavorites: (new (init: ModelInit<AdminFavorites>) => AdminFavorites) & {
+  copyOf(source: AdminFavorites, mutator: (draft: MutableModel<AdminFavorites>) => MutableModel<AdminFavorites> | void): AdminFavorites;
+}
+
 type EagerStandings = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Standings, 'id'>;

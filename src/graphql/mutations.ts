@@ -2,6 +2,54 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createAdminFavorites = /* GraphQL */ `
+  mutation CreateAdminFavorites(
+    $input: CreateAdminFavoritesInput!
+    $condition: ModelAdminFavoritesConditionInput
+  ) {
+    createAdminFavorites(input: $input, condition: $condition) {
+      id
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateAdminFavorites = /* GraphQL */ `
+  mutation UpdateAdminFavorites(
+    $input: UpdateAdminFavoritesInput!
+    $condition: ModelAdminFavoritesConditionInput
+  ) {
+    updateAdminFavorites(input: $input, condition: $condition) {
+      id
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteAdminFavorites = /* GraphQL */ `
+  mutation DeleteAdminFavorites(
+    $input: DeleteAdminFavoritesInput!
+    $condition: ModelAdminFavoritesConditionInput
+  ) {
+    deleteAdminFavorites(input: $input, condition: $condition) {
+      id
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
 export const createStandings = /* GraphQL */ `
   mutation CreateStandings(
     $input: CreateStandingsInput!

@@ -2,6 +2,67 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getAdminFavorites = /* GraphQL */ `
+  query GetAdminFavorites($id: ID!) {
+    getAdminFavorites(id: $id) {
+      id
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const listAdminFavorites = /* GraphQL */ `
+  query ListAdminFavorites(
+    $filter: ModelAdminFavoritesFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listAdminFavorites(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncAdminFavorites = /* GraphQL */ `
+  query SyncAdminFavorites(
+    $filter: ModelAdminFavoritesFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncAdminFavorites(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        image
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
 export const getStandings = /* GraphQL */ `
   query GetStandings($id: ID!) {
     getStandings(id: $id) {

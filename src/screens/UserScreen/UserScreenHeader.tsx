@@ -164,7 +164,7 @@ const UserScreenHeader = (props) => {
     if (user) {
       setAbout(user.about);
       setImage(user.image ? JSON.parse(user.image) : undefined);
-      console.log('-- Should become db user --', user);
+      // console.log('-- Should become db user --', user);
       setDbUser(user);
     }
   };

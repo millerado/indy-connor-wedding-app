@@ -14,7 +14,7 @@ import _ from "lodash";
 import SingleComment from "../SingleComment/SingleComment";
 import AddCommentListView from "../AddCommentListView/AddCommentListView";
 import ImageScroll from "../ImageScroll/ImageScroll";
-import { Reactions, Users, Comments, Posts } from "../../models";
+import { Reactions, Users, Comments, Posts, AdminFavorites } from "../../models";
 import {
   Icon,
   Text,
@@ -22,7 +22,7 @@ import {
   Button,
   Divider,
 } from "../../components";
-import { typography, calcDimensions } from "../../styles";
+import { typography } from "../../styles";
 import { formatDate, DataStore } from "../../utils/";
 import { AuthContext } from "../../contexts";
 import CommentModal from "../CommentModal/CommentModal";
@@ -33,7 +33,6 @@ import styles from "./PostPreviewStyles";
 
 const previewLines = 3;
 const expandedLines = undefined; // If we're not doing a details page, we should show full caption in Preview
-const dimensions = calcDimensions();
 
 const PostPreview = (props) => {
   const theme = useTheme();
@@ -55,6 +54,7 @@ const PostPreview = (props) => {
     image: undefined,
   });
   const [reactions, setReactions] = useState(initialReactions || []);
+  const [adminFavorites, setAdminFavorites] = useState([]);
   const [comments, setComments] = useState(initialComments || []);
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [showCaptionModal, setShowCaptionModal] = useState(false);
@@ -231,6 +231,19 @@ const PostPreview = (props) => {
       }
     });
 
+    const adminFavoritesSubscriptions = DataStore.observeQuery(AdminFavorites).subscribe(({ items }) => {
+      if (items) {
+        const newFavorites = items.map((favorite) => {
+          const img = JSON.parse(favorite.image);
+          return {
+            id: favorite.id,
+            url: img.url,
+          };
+        });
+        setAdminFavorites(newFavorites);
+      }
+    });
+
     const commentsSubscription = DataStore.observeQuery(Comments, (c) =>
       c.postsID.eq(postsID),
       {
@@ -264,6 +277,7 @@ const PostPreview = (props) => {
       commentsSubscription.unsubscribe();
       reactionsSubscription.unsubscribe();
       usersSubscription.unsubscribe();
+      adminFavoritesSubscriptions.unsubscribe();
     };
   }, [postsID]);
 
@@ -356,7 +370,7 @@ const PostPreview = (props) => {
             </Menu>
           ) : null}
         </View>
-        <ImageScroll images={images} previewMode={previewMode} doubleTapHandler={likePressHandler} singleTapHandler={goToPostScreen} tapDelay={500} />
+        <ImageScroll images={images} previewMode={previewMode} doubleTapHandler={likePressHandler} singleTapHandler={goToPostScreen} tapDelay={500} adminFavorites={adminFavorites} />
         {messageBody ? (
           <View style={ss.captionWrapper}>
             <Text

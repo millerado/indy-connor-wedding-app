@@ -2,21 +2,17 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateStandingsInput = {
+export type CreateAdminFavoritesInput = {
   id?: string | null,
-  teamId?: string | null,
-  rank?: string | null,
-  points?: string | null,
+  image: string,
   _version?: number | null,
 };
 
-export type ModelStandingsConditionInput = {
-  teamId?: ModelStringInput | null,
-  rank?: ModelStringInput | null,
-  points?: ModelStringInput | null,
-  and?: Array< ModelStandingsConditionInput | null > | null,
-  or?: Array< ModelStandingsConditionInput | null > | null,
-  not?: ModelStandingsConditionInput | null,
+export type ModelAdminFavoritesConditionInput = {
+  image?: ModelStringInput | null,
+  and?: Array< ModelAdminFavoritesConditionInput | null > | null,
+  or?: Array< ModelAdminFavoritesConditionInput | null > | null,
+  not?: ModelAdminFavoritesConditionInput | null,
 };
 
 export type ModelStringInput = {
@@ -57,6 +53,45 @@ export type ModelSizeInput = {
   ge?: number | null,
   gt?: number | null,
   between?: Array< number | null > | null,
+};
+
+export type AdminFavorites = {
+  __typename: "AdminFavorites",
+  id: string,
+  image: string,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type UpdateAdminFavoritesInput = {
+  id: string,
+  image?: string | null,
+  _version?: number | null,
+};
+
+export type DeleteAdminFavoritesInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateStandingsInput = {
+  id?: string | null,
+  teamId?: string | null,
+  rank?: string | null,
+  points?: string | null,
+  _version?: number | null,
+};
+
+export type ModelStandingsConditionInput = {
+  teamId?: ModelStringInput | null,
+  rank?: ModelStringInput | null,
+  points?: ModelStringInput | null,
+  and?: Array< ModelStandingsConditionInput | null > | null,
+  or?: Array< ModelStandingsConditionInput | null > | null,
+  not?: ModelStandingsConditionInput | null,
 };
 
 export type Standings = {
@@ -508,6 +543,21 @@ export type DeleteScheduleInput = {
   _version?: number | null,
 };
 
+export type ModelAdminFavoritesFilterInput = {
+  id?: ModelIDInput | null,
+  image?: ModelStringInput | null,
+  and?: Array< ModelAdminFavoritesFilterInput | null > | null,
+  or?: Array< ModelAdminFavoritesFilterInput | null > | null,
+  not?: ModelAdminFavoritesFilterInput | null,
+};
+
+export type ModelAdminFavoritesConnection = {
+  __typename: "ModelAdminFavoritesConnection",
+  items:  Array<AdminFavorites | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
 export type ModelStandingsFilterInput = {
   id?: ModelIDInput | null,
   teamId?: ModelStringInput | null,
@@ -651,13 +701,11 @@ export type ModelScheduleConnection = {
   startedAt?: number | null,
 };
 
-export type ModelSubscriptionStandingsFilterInput = {
+export type ModelSubscriptionAdminFavoritesFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  teamId?: ModelSubscriptionStringInput | null,
-  rank?: ModelSubscriptionStringInput | null,
-  points?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionStandingsFilterInput | null > | null,
-  or?: Array< ModelSubscriptionStandingsFilterInput | null > | null,
+  image?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionAdminFavoritesFilterInput | null > | null,
+  or?: Array< ModelSubscriptionAdminFavoritesFilterInput | null > | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -688,6 +736,15 @@ export type ModelSubscriptionStringInput = {
   beginsWith?: string | null,
   in?: Array< string | null > | null,
   notIn?: Array< string | null > | null,
+};
+
+export type ModelSubscriptionStandingsFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  teamId?: ModelSubscriptionStringInput | null,
+  rank?: ModelSubscriptionStringInput | null,
+  points?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionStandingsFilterInput | null > | null,
+  or?: Array< ModelSubscriptionStandingsFilterInput | null > | null,
 };
 
 export type ModelSubscriptionPostsFilterInput = {
@@ -782,6 +839,60 @@ export type ModelSubscriptionScheduleFilterInput = {
   sortOrder?: ModelSubscriptionIntInput | null,
   and?: Array< ModelSubscriptionScheduleFilterInput | null > | null,
   or?: Array< ModelSubscriptionScheduleFilterInput | null > | null,
+};
+
+export type CreateAdminFavoritesMutationVariables = {
+  input: CreateAdminFavoritesInput,
+  condition?: ModelAdminFavoritesConditionInput | null,
+};
+
+export type CreateAdminFavoritesMutation = {
+  createAdminFavorites?:  {
+    __typename: "AdminFavorites",
+    id: string,
+    image: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateAdminFavoritesMutationVariables = {
+  input: UpdateAdminFavoritesInput,
+  condition?: ModelAdminFavoritesConditionInput | null,
+};
+
+export type UpdateAdminFavoritesMutation = {
+  updateAdminFavorites?:  {
+    __typename: "AdminFavorites",
+    id: string,
+    image: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteAdminFavoritesMutationVariables = {
+  input: DeleteAdminFavoritesInput,
+  condition?: ModelAdminFavoritesConditionInput | null,
+};
+
+export type DeleteAdminFavoritesMutation = {
+  deleteAdminFavorites?:  {
+    __typename: "AdminFavorites",
+    id: string,
+    image: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
 };
 
 export type CreateStandingsMutationVariables = {
@@ -1381,6 +1492,72 @@ export type DeleteScheduleMutation = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+  } | null,
+};
+
+export type GetAdminFavoritesQueryVariables = {
+  id: string,
+};
+
+export type GetAdminFavoritesQuery = {
+  getAdminFavorites?:  {
+    __typename: "AdminFavorites",
+    id: string,
+    image: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListAdminFavoritesQueryVariables = {
+  filter?: ModelAdminFavoritesFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListAdminFavoritesQuery = {
+  listAdminFavorites?:  {
+    __typename: "ModelAdminFavoritesConnection",
+    items:  Array< {
+      __typename: "AdminFavorites",
+      id: string,
+      image: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncAdminFavoritesQueryVariables = {
+  filter?: ModelAdminFavoritesFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncAdminFavoritesQuery = {
+  syncAdminFavorites?:  {
+    __typename: "ModelAdminFavoritesConnection",
+    items:  Array< {
+      __typename: "AdminFavorites",
+      id: string,
+      image: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
   } | null,
 };
 
@@ -2145,6 +2322,57 @@ export type SyncSchedulesQuery = {
     } | null >,
     nextToken?: string | null,
     startedAt?: number | null,
+  } | null,
+};
+
+export type OnCreateAdminFavoritesSubscriptionVariables = {
+  filter?: ModelSubscriptionAdminFavoritesFilterInput | null,
+};
+
+export type OnCreateAdminFavoritesSubscription = {
+  onCreateAdminFavorites?:  {
+    __typename: "AdminFavorites",
+    id: string,
+    image: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateAdminFavoritesSubscriptionVariables = {
+  filter?: ModelSubscriptionAdminFavoritesFilterInput | null,
+};
+
+export type OnUpdateAdminFavoritesSubscription = {
+  onUpdateAdminFavorites?:  {
+    __typename: "AdminFavorites",
+    id: string,
+    image: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteAdminFavoritesSubscriptionVariables = {
+  filter?: ModelSubscriptionAdminFavoritesFilterInput | null,
+};
+
+export type OnDeleteAdminFavoritesSubscription = {
+  onDeleteAdminFavorites?:  {
+    __typename: "AdminFavorites",
+    id: string,
+    image: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
   } | null,
 };
 

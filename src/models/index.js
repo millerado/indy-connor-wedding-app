@@ -4,9 +4,10 @@ import { schema } from './schema';
 
 
 
-const { Standings, Posts, Comments, Reactions, Teams, Users, ExpoTokens, FAQ, Schedule } = initSchema(schema);
+const { AdminFavorites, Standings, Posts, Comments, Reactions, Teams, Users, ExpoTokens, FAQ, Schedule } = initSchema(schema);
 
 export {
+  AdminFavorites,
   Standings,
   Posts,
   Comments,

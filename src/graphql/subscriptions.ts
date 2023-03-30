@@ -2,6 +2,51 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateAdminFavorites = /* GraphQL */ `
+  subscription OnCreateAdminFavorites(
+    $filter: ModelSubscriptionAdminFavoritesFilterInput
+  ) {
+    onCreateAdminFavorites(filter: $filter) {
+      id
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateAdminFavorites = /* GraphQL */ `
+  subscription OnUpdateAdminFavorites(
+    $filter: ModelSubscriptionAdminFavoritesFilterInput
+  ) {
+    onUpdateAdminFavorites(filter: $filter) {
+      id
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteAdminFavorites = /* GraphQL */ `
+  subscription OnDeleteAdminFavorites(
+    $filter: ModelSubscriptionAdminFavoritesFilterInput
+  ) {
+    onDeleteAdminFavorites(filter: $filter) {
+      id
+      image
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
 export const onCreateStandings = /* GraphQL */ `
   subscription OnCreateStandings(
     $filter: ModelSubscriptionStandingsFilterInput

@@ -8,6 +8,7 @@ const styles = theme => {
     sectionHeader: {
       padding: 10,
       backgroundColor: theme.colors.primary,
+      alignItems: 'center',
     },
     itemWrapper: {
       flex: 1,

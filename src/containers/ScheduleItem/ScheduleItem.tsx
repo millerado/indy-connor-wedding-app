@@ -92,13 +92,11 @@ const ScheduleItem = (props) => {
                 )}
             >
               <View style={{ flex: 9 }}>
-                <Text size={TextSizes.L} bold>{name}: {time}</Text>
-                <Text size={TextSizes.L}><Text bold>Location</Text>: {location}</Text>
+                <Text size={TextSizes.XL} bold>{name}{' '}<Text size={TextSizes.XL}>{time}</Text></Text>
+                <Text size={TextSizes.XL}>Location: <Text bold size={TextSizes.XL}>{location}</Text></Text>
               </View>
-              <View style={ss.textWrapper}>
-                <Text size={TextSizes.M}>
-                  <FormatTextWithMentions text={description} />
-                </Text>
+              <View>
+                <FormatTextWithMentions text={description} size={TextSizes.M} />
               </View>
             </ConditionalWrapper>
           </View>

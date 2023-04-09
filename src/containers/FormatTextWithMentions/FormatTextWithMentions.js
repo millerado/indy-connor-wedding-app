@@ -3,9 +3,9 @@ import { Linking } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "react-native-paper";
 import reactStringReplace from 'react-string-replace';
-import { Text, } from "../../components";
+import { Text } from "../../components";
 
-const FormatTextWithMentions = ({ text }) => {
+const FormatTextWithMentions = ({ text, ...restOfProps }) => {
   if (text) {
     const theme = useTheme();
     const navigation = useNavigation();
@@ -37,7 +37,7 @@ const FormatTextWithMentions = ({ text }) => {
       matches.forEach((match) => {
         const [, username, userId] = match.match(/@\[(.*?)\]\((.*?)\)/);
         text = reactStringReplace(text, match, (match, i) => (
-          <Text key={`${i}${username}${userId}${match}`} onPress={() => goToUserScreen(userId)} color={theme.colors.primary} bold>@{username}</Text>
+          <Text key={`${i}${username}${userId}${match}`} onPress={() => goToUserScreen(userId)} color={theme.colors.primary} bold {...restOfProps}>@{username}</Text>
         ));
       });
     }
@@ -45,7 +45,7 @@ const FormatTextWithMentions = ({ text }) => {
     if (matchesUrl) {
       matchesUrl.forEach((match) => {
         text = reactStringReplace(text, match, (match, i) => (
-          <Text key={`${i}${match}`} onPress={() => Linking.openURL(match)} color={theme.colors.primaryContainer}>{match}</Text>
+          <Text key={`${i}${match}`} onPress={() => Linking.openURL(match)} color={theme.colors.primaryContainer} {...restOfProps}>{match}</Text>
         ));
       });
     }
@@ -54,7 +54,7 @@ const FormatTextWithMentions = ({ text }) => {
       matchesBold.forEach((match) => {
         const [, boldText] = match.match(/\*(.*?)\*/);
         text = reactStringReplace(text, match, (match, i) => (
-          <Text key={`${i}${boldText}${match}`} bold>{boldText}</Text>
+          <Text key={`${i}${boldText}${match}`} bold {...restOfProps}>{boldText}</Text>
         ));
       });
     }
@@ -63,12 +63,12 @@ const FormatTextWithMentions = ({ text }) => {
       matchesItalic.forEach((match) => {
         const [, italicText] = match.match(/_(.*?)_/);
         text = reactStringReplace(text, match, (match, i) => (
-          <Text key={`${i}${italicText}${match}`} italic>{italicText}</Text>
+          <Text key={`${i}${italicText}${match}`} italic {...restOfProps}>{italicText}</Text>
         ));
       });
     }
 
-    return <Text>{text}</Text>;
+    return <Text {...restOfProps}>{text}</Text>;
   }
   return null;
 }

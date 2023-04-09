@@ -74,7 +74,11 @@ const getIconName = (name) => {
     return 'image-outline';
   } else if (name === 'circle') {
     return 'ellipse';
-  }
+  } else if (name === 'expanded') {
+    return 'chevron-down-outline';
+  } else if (name === 'collapsed') {
+    return 'chevron-forward-outline';
+  } 
 
   return 'home';
 };

@@ -12,6 +12,7 @@ import {
   Icon,
 } from "../../components";
 import { DataStore } from "../../utils";
+import { typography } from '../../styles';
 import styles from './FAQItemStyles';
 
 const FAQItem = (props) => {
@@ -105,6 +106,9 @@ const FAQItem = (props) => {
               title={question}
               titleStyle={ss.questionStyle}
               titleNumberOfLines={3}
+              right={() => (
+                <Icon name={expanded ? 'expanded' : 'collapsed'} size={typography.fontSizeL} color={theme.colors.onPrimary} />
+              )}
             >
               <ConditionalWrapper
                 condition={authStatus.isAdmin}

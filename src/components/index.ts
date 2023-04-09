@@ -10,6 +10,7 @@ import Icon from './Icon/Icon';
 import IconButton from './IconButton/IconButton';
 import ImageS3 from './ImageS3/ImageS3';
 import Modal from './Modal/Modal';
+import SegmentedButtons from './SegmentedButtons/SegmentedButtons';
 import Snackbar from './Snackbar/Snackbar';
 import Switch from './Switch/Switch';
 import Text, { TextSizes } from './Text/Text';
@@ -29,6 +30,7 @@ export {
   IconButton,
   ImageS3,
   Modal,
+  SegmentedButtons,
   Snackbar,
   Switch,
   Text,

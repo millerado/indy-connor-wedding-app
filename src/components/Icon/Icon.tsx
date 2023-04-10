@@ -40,9 +40,9 @@ const getIconName = (name) => {
     return "notifications";
   } else if (name === "notificationsFocused") {
     return "notifications-outline";
-  } else if (name === "faq") {
+  } else if (name === "info") {
     return "help-circle";
-  } else if (name === "faqFocused") {
+  } else if (name === "infoFocused") {
     return "help-circle-outline";
   } else if (name === "user") {
     return "person-circle";

@@ -56,7 +56,7 @@ const ScheduleScreen = ({ navigation, route }) => {
       <View style={ss.headerWrapper}>
         {emptyScheduleData.map((item, index) => {
           return (
-            <Pressable onPress={() => setSelectedDay(item.day)} style={[ss.headerItem, {backgroundColor: selectedDay === item.day ? theme.colors.primary : theme.colors.background}]}>
+            <Pressable onPress={() => setSelectedDay(item.day)} style={[ss.headerItem, {backgroundColor: selectedDay === item.day ? theme.colors.primary : theme.colors.background}]} key={item.day}>
               <View>
                 <Text color={selectedDay === item.day ? theme.colors.onPrimary : undefined}>
                   {item.day.toUpperCase()}
@@ -119,22 +119,20 @@ const ScheduleScreen = ({ navigation, route }) => {
           <ActivityIndicator size={60} />
         </View>
       ) : (
-        <>
-          <FlatList
-            data={scheduleData.find((item) => item.day === selectedDay).data}
-            renderItem={({ item }) => <ScheduleItem item={item} />}
-            keyExtractor={keyExtractor}
-            ListHeaderComponent={renderListHeader}
-            stickyHeaderIndices={[0]}
-            ItemSeparatorComponent={Divider}
-            style={{ width: '100%'}}
-            keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="on-drag"
-            removeClippedSubviews={Platform.OS === 'android'} // Saves memory, has issues on iOS
-            maxToRenderPerBatch={10} // Also the default
-            initialNumToRender={10} // Also the default
-          />
-        </>
+        <FlatList
+          data={scheduleData.find((item) => item.day === selectedDay).data}
+          renderItem={({ item }) => <ScheduleItem item={item} />}
+          keyExtractor={keyExtractor}
+          ListHeaderComponent={renderListHeader}
+          stickyHeaderIndices={[0]}
+          ItemSeparatorComponent={Divider}
+          style={{ width: '100%'}}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          removeClippedSubviews={Platform.OS === 'android'} // Saves memory, has issues on iOS
+          maxToRenderPerBatch={10} // Also the default
+          initialNumToRender={10} // Also the default
+        />
       )}
     </View>
   );

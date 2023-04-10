@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react';
-import { View, FlatList, Platform, Pressable } from 'react-native';
+import { View, FlatList, Platform, Pressable, Image } from 'react-native';
 import { useTheme } from 'react-native-paper';
+import Zoom from 'react-native-zoom-reanimated'
 import { FAQ } from '../../models';
 import { Divider, ActivityIndicator, TextInput, Icon } from '../../components';
 import { FAQModal, FAQItem } from '../../containers';
+import { calcDimensions } from '../../styles';
 import { DataStore } from '../../utils';
 import { AuthContext } from '../../contexts';
-import styles from './FAQScreenStyles';
+import styles from './InfoScreenStyles';
+const resortMap = require('../../assets/images/rmmcMap.png');
 
-const FAQScreen = ({ navigation, route }) => {
+const InfoScreen = ({ navigation, route }) => {
   const [FAQData, setFAQData] = useState([]);
   const [allFAQData, setAllFAQData] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
@@ -17,6 +20,7 @@ const FAQScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const authStatus = useContext(AuthContext).authStatus;
+  const dimensions = calcDimensions();
 
   const closeModal = () => {
     setShowModal(false);
@@ -52,6 +56,34 @@ const FAQScreen = ({ navigation, route }) => {
       )
     }
   );
+
+  const renderHeader = () => {
+    return (
+      <>
+        <View>
+          <Zoom>
+            <Image resizeMode='contain' style={{width: dimensions.width, height: dimensions.width * (5216/7792)}} source={resortMap} />
+          </Zoom>
+        </View>
+        <View style={ss.searchWrapper}>
+          <TextInput
+            label="Search FAQs"
+            dense
+            returnKeyType="default"
+            value={searchTerm}
+            enablesReturnKeyAutomatically={true}
+            style={[
+              ss.textInput,
+              ss.textInputWrapper,
+              ss.fullWidthTextInput,
+            ]}
+            onChangeText={(text) => setSearchTerm(text)}
+            color={theme.colors.onSecondary}
+          />
+        </View>
+      </>
+    )
+  }
 
   useEffect(() => {
     navigation.setOptions({
@@ -105,25 +137,10 @@ const FAQScreen = ({ navigation, route }) => {
         </View>
       ) : (
         <>
-          <View style={ss.searchWrapper}>
-            <TextInput
-              label="Search FAQs"
-              dense
-              returnKeyType="default"
-              value={searchTerm}
-              enablesReturnKeyAutomatically={true}
-              style={[
-                ss.textInput,
-                ss.textInputWrapper,
-                ss.fullWidthTextInput,
-              ]}
-              onChangeText={(text) => setSearchTerm(text)}
-              color={theme.colors.onSecondary}
-            />
-          </View>
             <FlatList
               data={FAQData}
               renderItem={renderItem}
+              ListHeaderComponent={renderHeader}
               keyExtractor={keyExtractor}
               ItemSeparatorComponent={listItemSeparator}
               style={{ width: '100%'}}
@@ -139,4 +156,4 @@ const FAQScreen = ({ navigation, route }) => {
   );
 }
 
-export default FAQScreen
+export default InfoScreen;

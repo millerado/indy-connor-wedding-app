@@ -1,6 +1,6 @@
 import CreatePostScreen from "./CreatePostScreen/CreatePostScreen";
-import FAQScreen from "./FAQScreen/FAQScreen";
 import HomeScreen from "./HomeScreen/HomeScreen";
+import InfoScreen from "./InfoScreen/InfoScreen";
 import MapScreen from "./MapScreen/MapScreen";
 import NotificationsScreen from "./NotificationsScreen/NotificationsScreen";
 import ScheduleScreen from "./ScheduleScreen/ScheduleScreen";
@@ -9,8 +9,8 @@ import ViewPostScreen from "./ViewPostScreen/ViewPostScreen";
 
 export {
   CreatePostScreen,
-  FAQScreen,
   HomeScreen,
+  InfoScreen,
   MapScreen,
   NotificationsScreen,
   ScheduleScreen,

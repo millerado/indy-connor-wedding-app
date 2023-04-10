@@ -7,8 +7,8 @@ import { SettingsModal, NotificationsHeaderButton } from '../containers';
 import { Icon } from '../components';
 import {
   CreatePostScreen,
-  FAQScreen,
   HomeScreen,
+  InfoScreen,
   MapScreen,
   NotificationsScreen,
   ScheduleScreen,
@@ -18,7 +18,7 @@ import {
 
 const HomeStack = createNativeStackNavigator();
 const MapStack = createNativeStackNavigator();
-const FAQStack = createNativeStackNavigator();
+const InfoStack = createNativeStackNavigator();
 const ScheduleStack = createNativeStackNavigator();
 
 // Single set of screen options for all tabs
@@ -68,15 +68,15 @@ const MapStackScreen = () => {
   );
 };
 
-const FAQStackScreen = () => {
+const InfoStackScreen = () => {
   const theme = useTheme();
   return (
-    <FAQStack.Navigator screenOptions={getScreenOptions()} >
-      <FAQStack.Screen
-        name="FAQ"
-        component={FAQScreen}
+    <InfoStack.Navigator screenOptions={getScreenOptions()} >
+      <InfoStack.Screen
+        name="Info"
+        component={InfoScreen}
       />
-    </FAQStack.Navigator>
+    </InfoStack.Navigator>
   );
 };
 
@@ -110,8 +110,8 @@ const Navigation = () => {
               iconName = focused ? "calendar" : "calendarFocused";
             } else if (route.name === "MapStack") {
               iconName = focused ? "map" : "mapFocused";
-            } else if (route.name === "FAQStack") {
-              iconName = focused ? "faq" : "faqFocused";
+            } else if (route.name === "InfoStack") {
+              iconName = focused ? "info" : "infoFocused";
             }
             return <Icon name={iconName} size={size} color={color}></Icon>;
           },
@@ -146,9 +146,9 @@ const Navigation = () => {
           options={{ headerShown: false, title: "Schedule" }}
         />
         <Tab.Screen
-          name="FAQStack"
-          component={FAQStackScreen}
-          options={{ headerShown: false, title: "FAQ" }}
+          name="InfoStack"
+          component={InfoStackScreen}
+          options={{ headerShown: false, title: "Info" }}
         />
       </Tab.Navigator>
     </>

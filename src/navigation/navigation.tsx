@@ -12,12 +12,13 @@ import {
   MapScreen,
   NotificationsScreen,
   ScheduleScreen,
+  StandingsScreen,
   UserScreen,
   ViewPostScreen,
 } from "../screens";
 
 const HomeStack = createNativeStackNavigator();
-const MapStack = createNativeStackNavigator();
+const StandingsStack = createNativeStackNavigator();
 const InfoStack = createNativeStackNavigator();
 const ScheduleStack = createNativeStackNavigator();
 
@@ -59,12 +60,12 @@ const HomeStackScreen = () => {
   );
 };
 
-const MapStackScreen = () => {
+const StandingsStackScreen = () => {
   const theme = useTheme();
   return (
-    <MapStack.Navigator screenOptions={getScreenOptions()} >
-      <MapStack.Screen name="Map" component={MapScreen} />
-    </MapStack.Navigator>
+    <StandingsStack.Navigator screenOptions={getScreenOptions()} >
+      <StandingsStack.Screen name="Standings" component={StandingsScreen} />
+    </StandingsStack.Navigator>
   );
 };
 
@@ -108,8 +109,8 @@ const Navigation = () => {
               iconName = focused ? "home" : "homeFocused";
             } else if (route.name === "ScheduleStack") {
               iconName = focused ? "calendar" : "calendarFocused";
-            } else if (route.name === "MapStack") {
-              iconName = focused ? "map" : "mapFocused";
+            } else if (route.name === "StandingsStack") {
+              iconName = focused ? "standings" : "standingsFocused";
             } else if (route.name === "InfoStack") {
               iconName = focused ? "info" : "infoFocused";
             }
@@ -136,9 +137,9 @@ const Navigation = () => {
           options={{ headerShown: false, title: "Home" }}
         />
         <Tab.Screen
-          name="MapStack"
-          component={MapStackScreen}
-          options={{ headerShown: false, title: "Map" }}
+          name="StandingsStack"
+          component={StandingsStackScreen}
+          options={{ headerShown: false, title: "Standings" }}
         />
         <Tab.Screen
           name="ScheduleStack"

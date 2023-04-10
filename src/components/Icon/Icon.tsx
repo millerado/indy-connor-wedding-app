@@ -36,6 +36,10 @@ const getIconName = (name) => {
     return "map";
   } else if (name === "mapFocused") {
     return "map-outline";
+  } else if (name === "standings") {
+    return "trophy";
+  } else if (name === "standingsFocused") {
+    return "trophy-outline";
   } else if (name === "notifications") {
     return "notifications";
   } else if (name === "notificationsFocused") {

@@ -18,7 +18,6 @@ const reusableStyles = theme => {
     },
     modalBody: {
       backgroundColor: theme.colors.background,
-      // backgroundColor: theme.colors.white,
       borderRadius: 10,
       justifyContent: 'flex-start',
       overflow: 'hidden',
@@ -35,6 +34,7 @@ const reusableStyles = theme => {
     },
     modalContentWrapper: {
       alignItems: 'center',
+      height: '100%'
     },
     modalScrollView: {
       padding: 10,

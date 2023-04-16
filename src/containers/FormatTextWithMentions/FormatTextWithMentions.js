@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { Linking } from 'react-native';
+import { Linking, View } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "react-native-paper";
 import reactStringReplace from 'react-string-replace';
@@ -32,6 +32,10 @@ const FormatTextWithMentions = ({ text, ...restOfProps }) => {
     // Regex matches on _italic text_
     const regexItalic = /_(.*?)_/g;
     const matchesItalic = text.match(regexItalic);
+
+    // Regex matches for a bullet (•) and a space that starts a line, along with all text on that line
+    const regexBullet = /^•.*$/gm;
+    const matchesBullet = text.match(regexBullet);
     
     if (matches) {
       matches.forEach((match) => {
@@ -64,6 +68,20 @@ const FormatTextWithMentions = ({ text, ...restOfProps }) => {
         const [, italicText] = match.match(/_(.*?)_/);
         text = reactStringReplace(text, match, (match, i) => (
           <Text key={`${i}${italicText}${match}`} italic {...restOfProps}>{italicText}</Text>
+        ));
+      });
+    }
+
+    if (matchesBullet) {
+      matchesBullet.forEach((match) => {
+        const [, bulletText] = match.match(/^•/gm);
+        text = reactStringReplace(text, match, (match, i) => (
+          <View style={{flexDirection: 'row', paddingLeft: 20}}>
+          <Text>•</Text>
+            <View style={{paddingLeft: 5}}>
+              <Text key={`${i}${bulletText}${match}`} {...restOfProps}>{match.substring(2)}</Text>
+            </View>
+          </View>
         ));
       });
     }

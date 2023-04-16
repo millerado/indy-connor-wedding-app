@@ -20,7 +20,7 @@ const styles = theme => {
       justifyContent: 'center',
       borderTopRightRadius: 20,
       borderTopLeftRadius: 20,
-    }
+    },
   });
   return ss;
 }

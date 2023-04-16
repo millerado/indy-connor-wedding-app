@@ -65,6 +65,7 @@ const StandingsStackScreen = () => {
   return (
     <StandingsStack.Navigator screenOptions={getScreenOptions()} >
       <StandingsStack.Screen name="Standings" component={StandingsScreen} />
+      <HomeStack.Screen name="User" component={UserScreen} />
     </StandingsStack.Navigator>
   );
 };

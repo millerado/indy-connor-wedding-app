@@ -1,8 +1,7 @@
 import React, { useMemo } from "react";
 import { View, Pressable } from "react-native";
-import {
-  useTheme,
-} from "react-native-paper";
+import { useTheme } from "react-native-paper";
+import Animated from 'react-native-reanimated';
 import Text from '../Text/Text';
 import styles from "./TabStyles";
 
@@ -23,7 +22,7 @@ const Tab = (props: TabProps) => {
         return (
           <Pressable onPress={() => setSelectedOption(item)} style={[ss.tabItem, {backgroundColor: selectedOption === item ? theme.colors.primary : theme.colors.background}]} key={index}>
             <View>
-              <Text color={selectedOption === item ? theme.colors.onPrimary : undefined}>
+              <Text color={selectedOption === item ? theme.colors.onPrimary : undefined} bold>
                 {item.toUpperCase()}
               </Text>
             </View>

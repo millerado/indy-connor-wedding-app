@@ -17,6 +17,8 @@ import SettingsModal from "./SettingsModal/SettingsModal";
 import SingleComment from "./SingleComment/SingleComment";
 import SingleLikingUser from "./SingleLikingUser/SingleLikingUser";
 import SingleUserInModal from "./SingleUserInModal/SingleUserInModal";
+import StandingsPersonRow from "./StandingsPersonRow/StandingsPersonRow";
+import StandingsTeamRow from "./StandingsTeamRow/StandingsTeamRow";
 import TaggingUserSuggestions from "./TaggingUserSuggestions/TaggingUserSuggestions";
 
 export {
@@ -39,5 +41,7 @@ export {
   SingleComment,
   SingleLikingUser,
   SingleUserInModal,
+  StandingsPersonRow,
+  StandingsTeamRow,
   TaggingUserSuggestions,
 }

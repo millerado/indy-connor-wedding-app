@@ -1,6 +1,11 @@
 import React from "react";
+import { Image } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useTheme } from "react-native-paper";
+const hufflepuff = require('../../assets/images/hufflepuff.png');
+const gryffindor = require('../../assets/images/gryffindor.png');
+const ravenclaw = require('../../assets/images/ravenclaw.png');
+const slytherin = require('../../assets/images/slytherin.png');
 
 interface IconProps {
   name: string;
@@ -11,8 +16,16 @@ interface IconProps {
 const Icon = (props: IconProps) => {
   const theme = useTheme();
   const { name, size = 32, color = theme.colors.primary, ...restOfProps } = props;
-  const iconName = getIconName(name);
 
+  // A few local-images are used in place of Icons
+  if(name === 'hufflepuff' || name === 'gryffindor' || name === 'ravenclaw' || name === 'slytherin') {
+    return (
+      <Image source={name === 'hufflepuff' ? hufflepuff : name === 'gryffindor' ? gryffindor : name === 'ravenclaw' ? ravenclaw : slytherin} style={{width: size, height: size}} resizeMode="contain" resizeMethod='scale' />
+    )
+  }
+
+  // And the rest that are actually Icons
+  const iconName = getIconName(name);
   return (
     <Ionicons name={iconName} size={size} color={color} {...restOfProps} />
   );

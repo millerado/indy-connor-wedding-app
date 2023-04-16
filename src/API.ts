@@ -2,17 +2,23 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateAdminFavoritesInput = {
+export type CreateGamesInput = {
   id?: string | null,
-  image: string,
+  name?: string | null,
+  iconName?: string | null,
+  teamStructure?: string | null,
+  scoringStructure?: string | null,
   _version?: number | null,
 };
 
-export type ModelAdminFavoritesConditionInput = {
-  image?: ModelStringInput | null,
-  and?: Array< ModelAdminFavoritesConditionInput | null > | null,
-  or?: Array< ModelAdminFavoritesConditionInput | null > | null,
-  not?: ModelAdminFavoritesConditionInput | null,
+export type ModelGamesConditionInput = {
+  name?: ModelStringInput | null,
+  iconName?: ModelStringInput | null,
+  teamStructure?: ModelStringInput | null,
+  scoringStructure?: ModelStringInput | null,
+  and?: Array< ModelGamesConditionInput | null > | null,
+  or?: Array< ModelGamesConditionInput | null > | null,
+  not?: ModelGamesConditionInput | null,
 };
 
 export type ModelStringInput = {
@@ -55,6 +61,102 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type Games = {
+  __typename: "Games",
+  id: string,
+  name?: string | null,
+  iconName?: string | null,
+  teamStructure?: string | null,
+  scoringStructure?: string | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type UpdateGamesInput = {
+  id: string,
+  name?: string | null,
+  iconName?: string | null,
+  teamStructure?: string | null,
+  scoringStructure?: string | null,
+  _version?: number | null,
+};
+
+export type DeleteGamesInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateStandingsPeopleInput = {
+  id?: string | null,
+  userId?: string | null,
+  rank?: number | null,
+  points?: number | null,
+  _version?: number | null,
+};
+
+export type ModelStandingsPeopleConditionInput = {
+  userId?: ModelStringInput | null,
+  rank?: ModelIntInput | null,
+  points?: ModelIntInput | null,
+  and?: Array< ModelStandingsPeopleConditionInput | null > | null,
+  or?: Array< ModelStandingsPeopleConditionInput | null > | null,
+  not?: ModelStandingsPeopleConditionInput | null,
+};
+
+export type ModelIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type StandingsPeople = {
+  __typename: "StandingsPeople",
+  id: string,
+  userId?: string | null,
+  rank?: number | null,
+  points?: number | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type UpdateStandingsPeopleInput = {
+  id: string,
+  userId?: string | null,
+  rank?: number | null,
+  points?: number | null,
+  _version?: number | null,
+};
+
+export type DeleteStandingsPeopleInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateAdminFavoritesInput = {
+  id?: string | null,
+  image: string,
+  _version?: number | null,
+};
+
+export type ModelAdminFavoritesConditionInput = {
+  image?: ModelStringInput | null,
+  and?: Array< ModelAdminFavoritesConditionInput | null > | null,
+  or?: Array< ModelAdminFavoritesConditionInput | null > | null,
+  not?: ModelAdminFavoritesConditionInput | null,
+};
+
 export type AdminFavorites = {
   __typename: "AdminFavorites",
   id: string,
@@ -77,29 +179,29 @@ export type DeleteAdminFavoritesInput = {
   _version?: number | null,
 };
 
-export type CreateStandingsInput = {
+export type CreateStandingsTeamsInput = {
   id?: string | null,
   teamId?: string | null,
-  rank?: string | null,
-  points?: string | null,
+  rank?: number | null,
+  points?: number | null,
   _version?: number | null,
 };
 
-export type ModelStandingsConditionInput = {
+export type ModelStandingsTeamsConditionInput = {
   teamId?: ModelStringInput | null,
-  rank?: ModelStringInput | null,
-  points?: ModelStringInput | null,
-  and?: Array< ModelStandingsConditionInput | null > | null,
-  or?: Array< ModelStandingsConditionInput | null > | null,
-  not?: ModelStandingsConditionInput | null,
+  rank?: ModelIntInput | null,
+  points?: ModelIntInput | null,
+  and?: Array< ModelStandingsTeamsConditionInput | null > | null,
+  or?: Array< ModelStandingsTeamsConditionInput | null > | null,
+  not?: ModelStandingsTeamsConditionInput | null,
 };
 
-export type Standings = {
-  __typename: "Standings",
+export type StandingsTeams = {
+  __typename: "StandingsTeams",
   id: string,
   teamId?: string | null,
-  rank?: string | null,
-  points?: string | null,
+  rank?: number | null,
+  points?: number | null,
   createdAt: string,
   updatedAt: string,
   _version: number,
@@ -107,15 +209,15 @@ export type Standings = {
   _lastChangedAt: number,
 };
 
-export type UpdateStandingsInput = {
+export type UpdateStandingsTeamsInput = {
   id: string,
   teamId?: string | null,
-  rank?: string | null,
-  points?: string | null,
+  rank?: number | null,
+  points?: number | null,
   _version?: number | null,
 };
 
-export type DeleteStandingsInput = {
+export type DeleteStandingsTeamsInput = {
   id: string,
   _version?: number | null,
 };
@@ -224,12 +326,14 @@ export type CreateTeamsInput = {
   id?: string | null,
   name: string,
   colorCode: string,
+  iconName?: string | null,
   _version?: number | null,
 };
 
 export type ModelTeamsConditionInput = {
   name?: ModelStringInput | null,
   colorCode?: ModelStringInput | null,
+  iconName?: ModelStringInput | null,
   and?: Array< ModelTeamsConditionInput | null > | null,
   or?: Array< ModelTeamsConditionInput | null > | null,
   not?: ModelTeamsConditionInput | null,
@@ -241,6 +345,7 @@ export type Teams = {
   name: string,
   colorCode: string,
   Users?: ModelUsersConnection | null,
+  iconName?: string | null,
   createdAt: string,
   updatedAt: string,
   _version: number,
@@ -274,6 +379,7 @@ export type UpdateTeamsInput = {
   id: string,
   name?: string | null,
   colorCode?: string | null,
+  iconName?: string | null,
   _version?: number | null,
 };
 
@@ -450,18 +556,6 @@ export type ModelFAQConditionInput = {
   not?: ModelFAQConditionInput | null,
 };
 
-export type ModelIntInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-};
-
 export type FAQ = {
   __typename: "FAQ",
   id: string,
@@ -543,6 +637,41 @@ export type DeleteScheduleInput = {
   _version?: number | null,
 };
 
+export type ModelGamesFilterInput = {
+  id?: ModelIDInput | null,
+  name?: ModelStringInput | null,
+  iconName?: ModelStringInput | null,
+  teamStructure?: ModelStringInput | null,
+  scoringStructure?: ModelStringInput | null,
+  and?: Array< ModelGamesFilterInput | null > | null,
+  or?: Array< ModelGamesFilterInput | null > | null,
+  not?: ModelGamesFilterInput | null,
+};
+
+export type ModelGamesConnection = {
+  __typename: "ModelGamesConnection",
+  items:  Array<Games | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ModelStandingsPeopleFilterInput = {
+  id?: ModelIDInput | null,
+  userId?: ModelStringInput | null,
+  rank?: ModelIntInput | null,
+  points?: ModelIntInput | null,
+  and?: Array< ModelStandingsPeopleFilterInput | null > | null,
+  or?: Array< ModelStandingsPeopleFilterInput | null > | null,
+  not?: ModelStandingsPeopleFilterInput | null,
+};
+
+export type ModelStandingsPeopleConnection = {
+  __typename: "ModelStandingsPeopleConnection",
+  items:  Array<StandingsPeople | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
 export type ModelAdminFavoritesFilterInput = {
   id?: ModelIDInput | null,
   image?: ModelStringInput | null,
@@ -558,19 +687,19 @@ export type ModelAdminFavoritesConnection = {
   startedAt?: number | null,
 };
 
-export type ModelStandingsFilterInput = {
+export type ModelStandingsTeamsFilterInput = {
   id?: ModelIDInput | null,
   teamId?: ModelStringInput | null,
-  rank?: ModelStringInput | null,
-  points?: ModelStringInput | null,
-  and?: Array< ModelStandingsFilterInput | null > | null,
-  or?: Array< ModelStandingsFilterInput | null > | null,
-  not?: ModelStandingsFilterInput | null,
+  rank?: ModelIntInput | null,
+  points?: ModelIntInput | null,
+  and?: Array< ModelStandingsTeamsFilterInput | null > | null,
+  or?: Array< ModelStandingsTeamsFilterInput | null > | null,
+  not?: ModelStandingsTeamsFilterInput | null,
 };
 
-export type ModelStandingsConnection = {
-  __typename: "ModelStandingsConnection",
-  items:  Array<Standings | null >,
+export type ModelStandingsTeamsConnection = {
+  __typename: "ModelStandingsTeamsConnection",
+  items:  Array<StandingsTeams | null >,
   nextToken?: string | null,
   startedAt?: number | null,
 };
@@ -598,6 +727,7 @@ export type ModelTeamsFilterInput = {
   id?: ModelIDInput | null,
   name?: ModelStringInput | null,
   colorCode?: ModelStringInput | null,
+  iconName?: ModelStringInput | null,
   and?: Array< ModelTeamsFilterInput | null > | null,
   or?: Array< ModelTeamsFilterInput | null > | null,
   not?: ModelTeamsFilterInput | null,
@@ -701,11 +831,14 @@ export type ModelScheduleConnection = {
   startedAt?: number | null,
 };
 
-export type ModelSubscriptionAdminFavoritesFilterInput = {
+export type ModelSubscriptionGamesFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  image?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionAdminFavoritesFilterInput | null > | null,
-  or?: Array< ModelSubscriptionAdminFavoritesFilterInput | null > | null,
+  name?: ModelSubscriptionStringInput | null,
+  iconName?: ModelSubscriptionStringInput | null,
+  teamStructure?: ModelSubscriptionStringInput | null,
+  scoringStructure?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionGamesFilterInput | null > | null,
+  or?: Array< ModelSubscriptionGamesFilterInput | null > | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -738,13 +871,41 @@ export type ModelSubscriptionStringInput = {
   notIn?: Array< string | null > | null,
 };
 
-export type ModelSubscriptionStandingsFilterInput = {
+export type ModelSubscriptionStandingsPeopleFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  userId?: ModelSubscriptionStringInput | null,
+  rank?: ModelSubscriptionIntInput | null,
+  points?: ModelSubscriptionIntInput | null,
+  and?: Array< ModelSubscriptionStandingsPeopleFilterInput | null > | null,
+  or?: Array< ModelSubscriptionStandingsPeopleFilterInput | null > | null,
+};
+
+export type ModelSubscriptionIntInput = {
+  ne?: number | null,
+  eq?: number | null,
+  le?: number | null,
+  lt?: number | null,
+  ge?: number | null,
+  gt?: number | null,
+  between?: Array< number | null > | null,
+  in?: Array< number | null > | null,
+  notIn?: Array< number | null > | null,
+};
+
+export type ModelSubscriptionAdminFavoritesFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  image?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionAdminFavoritesFilterInput | null > | null,
+  or?: Array< ModelSubscriptionAdminFavoritesFilterInput | null > | null,
+};
+
+export type ModelSubscriptionStandingsTeamsFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   teamId?: ModelSubscriptionStringInput | null,
-  rank?: ModelSubscriptionStringInput | null,
-  points?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionStandingsFilterInput | null > | null,
-  or?: Array< ModelSubscriptionStandingsFilterInput | null > | null,
+  rank?: ModelSubscriptionIntInput | null,
+  points?: ModelSubscriptionIntInput | null,
+  and?: Array< ModelSubscriptionStandingsTeamsFilterInput | null > | null,
+  or?: Array< ModelSubscriptionStandingsTeamsFilterInput | null > | null,
 };
 
 export type ModelSubscriptionPostsFilterInput = {
@@ -767,6 +928,7 @@ export type ModelSubscriptionTeamsFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   name?: ModelSubscriptionStringInput | null,
   colorCode?: ModelSubscriptionStringInput | null,
+  iconName?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionTeamsFilterInput | null > | null,
   or?: Array< ModelSubscriptionTeamsFilterInput | null > | null,
 };
@@ -817,18 +979,6 @@ export type ModelSubscriptionFAQFilterInput = {
   or?: Array< ModelSubscriptionFAQFilterInput | null > | null,
 };
 
-export type ModelSubscriptionIntInput = {
-  ne?: number | null,
-  eq?: number | null,
-  le?: number | null,
-  lt?: number | null,
-  ge?: number | null,
-  gt?: number | null,
-  between?: Array< number | null > | null,
-  in?: Array< number | null > | null,
-  notIn?: Array< number | null > | null,
-};
-
 export type ModelSubscriptionScheduleFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   name?: ModelSubscriptionStringInput | null,
@@ -839,6 +989,129 @@ export type ModelSubscriptionScheduleFilterInput = {
   sortOrder?: ModelSubscriptionIntInput | null,
   and?: Array< ModelSubscriptionScheduleFilterInput | null > | null,
   or?: Array< ModelSubscriptionScheduleFilterInput | null > | null,
+};
+
+export type CreateGamesMutationVariables = {
+  input: CreateGamesInput,
+  condition?: ModelGamesConditionInput | null,
+};
+
+export type CreateGamesMutation = {
+  createGames?:  {
+    __typename: "Games",
+    id: string,
+    name?: string | null,
+    iconName?: string | null,
+    teamStructure?: string | null,
+    scoringStructure?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateGamesMutationVariables = {
+  input: UpdateGamesInput,
+  condition?: ModelGamesConditionInput | null,
+};
+
+export type UpdateGamesMutation = {
+  updateGames?:  {
+    __typename: "Games",
+    id: string,
+    name?: string | null,
+    iconName?: string | null,
+    teamStructure?: string | null,
+    scoringStructure?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteGamesMutationVariables = {
+  input: DeleteGamesInput,
+  condition?: ModelGamesConditionInput | null,
+};
+
+export type DeleteGamesMutation = {
+  deleteGames?:  {
+    __typename: "Games",
+    id: string,
+    name?: string | null,
+    iconName?: string | null,
+    teamStructure?: string | null,
+    scoringStructure?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateStandingsPeopleMutationVariables = {
+  input: CreateStandingsPeopleInput,
+  condition?: ModelStandingsPeopleConditionInput | null,
+};
+
+export type CreateStandingsPeopleMutation = {
+  createStandingsPeople?:  {
+    __typename: "StandingsPeople",
+    id: string,
+    userId?: string | null,
+    rank?: number | null,
+    points?: number | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateStandingsPeopleMutationVariables = {
+  input: UpdateStandingsPeopleInput,
+  condition?: ModelStandingsPeopleConditionInput | null,
+};
+
+export type UpdateStandingsPeopleMutation = {
+  updateStandingsPeople?:  {
+    __typename: "StandingsPeople",
+    id: string,
+    userId?: string | null,
+    rank?: number | null,
+    points?: number | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteStandingsPeopleMutationVariables = {
+  input: DeleteStandingsPeopleInput,
+  condition?: ModelStandingsPeopleConditionInput | null,
+};
+
+export type DeleteStandingsPeopleMutation = {
+  deleteStandingsPeople?:  {
+    __typename: "StandingsPeople",
+    id: string,
+    userId?: string | null,
+    rank?: number | null,
+    points?: number | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
 };
 
 export type CreateAdminFavoritesMutationVariables = {
@@ -895,18 +1168,18 @@ export type DeleteAdminFavoritesMutation = {
   } | null,
 };
 
-export type CreateStandingsMutationVariables = {
-  input: CreateStandingsInput,
-  condition?: ModelStandingsConditionInput | null,
+export type CreateStandingsTeamsMutationVariables = {
+  input: CreateStandingsTeamsInput,
+  condition?: ModelStandingsTeamsConditionInput | null,
 };
 
-export type CreateStandingsMutation = {
-  createStandings?:  {
-    __typename: "Standings",
+export type CreateStandingsTeamsMutation = {
+  createStandingsTeams?:  {
+    __typename: "StandingsTeams",
     id: string,
     teamId?: string | null,
-    rank?: string | null,
-    points?: string | null,
+    rank?: number | null,
+    points?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -915,18 +1188,18 @@ export type CreateStandingsMutation = {
   } | null,
 };
 
-export type UpdateStandingsMutationVariables = {
-  input: UpdateStandingsInput,
-  condition?: ModelStandingsConditionInput | null,
+export type UpdateStandingsTeamsMutationVariables = {
+  input: UpdateStandingsTeamsInput,
+  condition?: ModelStandingsTeamsConditionInput | null,
 };
 
-export type UpdateStandingsMutation = {
-  updateStandings?:  {
-    __typename: "Standings",
+export type UpdateStandingsTeamsMutation = {
+  updateStandingsTeams?:  {
+    __typename: "StandingsTeams",
     id: string,
     teamId?: string | null,
-    rank?: string | null,
-    points?: string | null,
+    rank?: number | null,
+    points?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -935,18 +1208,18 @@ export type UpdateStandingsMutation = {
   } | null,
 };
 
-export type DeleteStandingsMutationVariables = {
-  input: DeleteStandingsInput,
-  condition?: ModelStandingsConditionInput | null,
+export type DeleteStandingsTeamsMutationVariables = {
+  input: DeleteStandingsTeamsInput,
+  condition?: ModelStandingsTeamsConditionInput | null,
 };
 
-export type DeleteStandingsMutation = {
-  deleteStandings?:  {
-    __typename: "Standings",
+export type DeleteStandingsTeamsMutation = {
+  deleteStandingsTeams?:  {
+    __typename: "StandingsTeams",
     id: string,
     teamId?: string | null,
-    rank?: string | null,
-    points?: string | null,
+    rank?: number | null,
+    points?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1067,6 +1340,7 @@ export type CreateTeamsMutation = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    iconName?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1091,6 +1365,7 @@ export type UpdateTeamsMutation = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    iconName?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1115,6 +1390,7 @@ export type DeleteTeamsMutation = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    iconName?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1495,6 +1771,153 @@ export type DeleteScheduleMutation = {
   } | null,
 };
 
+export type GetGamesQueryVariables = {
+  id: string,
+};
+
+export type GetGamesQuery = {
+  getGames?:  {
+    __typename: "Games",
+    id: string,
+    name?: string | null,
+    iconName?: string | null,
+    teamStructure?: string | null,
+    scoringStructure?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListGamesQueryVariables = {
+  filter?: ModelGamesFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListGamesQuery = {
+  listGames?:  {
+    __typename: "ModelGamesConnection",
+    items:  Array< {
+      __typename: "Games",
+      id: string,
+      name?: string | null,
+      iconName?: string | null,
+      teamStructure?: string | null,
+      scoringStructure?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncGamesQueryVariables = {
+  filter?: ModelGamesFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncGamesQuery = {
+  syncGames?:  {
+    __typename: "ModelGamesConnection",
+    items:  Array< {
+      __typename: "Games",
+      id: string,
+      name?: string | null,
+      iconName?: string | null,
+      teamStructure?: string | null,
+      scoringStructure?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetStandingsPeopleQueryVariables = {
+  id: string,
+};
+
+export type GetStandingsPeopleQuery = {
+  getStandingsPeople?:  {
+    __typename: "StandingsPeople",
+    id: string,
+    userId?: string | null,
+    rank?: number | null,
+    points?: number | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListStandingsPeopleQueryVariables = {
+  filter?: ModelStandingsPeopleFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListStandingsPeopleQuery = {
+  listStandingsPeople?:  {
+    __typename: "ModelStandingsPeopleConnection",
+    items:  Array< {
+      __typename: "StandingsPeople",
+      id: string,
+      userId?: string | null,
+      rank?: number | null,
+      points?: number | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncStandingsPeopleQueryVariables = {
+  filter?: ModelStandingsPeopleFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncStandingsPeopleQuery = {
+  syncStandingsPeople?:  {
+    __typename: "ModelStandingsPeopleConnection",
+    items:  Array< {
+      __typename: "StandingsPeople",
+      id: string,
+      userId?: string | null,
+      rank?: number | null,
+      points?: number | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
 export type GetAdminFavoritesQueryVariables = {
   id: string,
 };
@@ -1561,17 +1984,17 @@ export type SyncAdminFavoritesQuery = {
   } | null,
 };
 
-export type GetStandingsQueryVariables = {
+export type GetStandingsTeamsQueryVariables = {
   id: string,
 };
 
-export type GetStandingsQuery = {
-  getStandings?:  {
-    __typename: "Standings",
+export type GetStandingsTeamsQuery = {
+  getStandingsTeams?:  {
+    __typename: "StandingsTeams",
     id: string,
     teamId?: string | null,
-    rank?: string | null,
-    points?: string | null,
+    rank?: number | null,
+    points?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1580,21 +2003,21 @@ export type GetStandingsQuery = {
   } | null,
 };
 
-export type ListStandingsQueryVariables = {
-  filter?: ModelStandingsFilterInput | null,
+export type ListStandingsTeamsQueryVariables = {
+  filter?: ModelStandingsTeamsFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
 };
 
-export type ListStandingsQuery = {
-  listStandings?:  {
-    __typename: "ModelStandingsConnection",
+export type ListStandingsTeamsQuery = {
+  listStandingsTeams?:  {
+    __typename: "ModelStandingsTeamsConnection",
     items:  Array< {
-      __typename: "Standings",
+      __typename: "StandingsTeams",
       id: string,
       teamId?: string | null,
-      rank?: string | null,
-      points?: string | null,
+      rank?: number | null,
+      points?: number | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -1606,22 +2029,22 @@ export type ListStandingsQuery = {
   } | null,
 };
 
-export type SyncStandingsQueryVariables = {
-  filter?: ModelStandingsFilterInput | null,
+export type SyncStandingsTeamsQueryVariables = {
+  filter?: ModelStandingsTeamsFilterInput | null,
   limit?: number | null,
   nextToken?: string | null,
   lastSync?: number | null,
 };
 
-export type SyncStandingsQuery = {
-  syncStandings?:  {
-    __typename: "ModelStandingsConnection",
+export type SyncStandingsTeamsQuery = {
+  syncStandingsTeams?:  {
+    __typename: "ModelStandingsTeamsConnection",
     items:  Array< {
-      __typename: "Standings",
+      __typename: "StandingsTeams",
       id: string,
       teamId?: string | null,
-      rank?: string | null,
-      points?: string | null,
+      rank?: number | null,
+      points?: number | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -1736,6 +2159,7 @@ export type GetTeamsQuery = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    iconName?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1758,6 +2182,7 @@ export type ListTeamsQuery = {
       id: string,
       name: string,
       colorCode: string,
+      iconName?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -1784,6 +2209,7 @@ export type SyncTeamsQuery = {
       id: string,
       name: string,
       colorCode: string,
+      iconName?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2325,6 +2751,123 @@ export type SyncSchedulesQuery = {
   } | null,
 };
 
+export type OnCreateGamesSubscriptionVariables = {
+  filter?: ModelSubscriptionGamesFilterInput | null,
+};
+
+export type OnCreateGamesSubscription = {
+  onCreateGames?:  {
+    __typename: "Games",
+    id: string,
+    name?: string | null,
+    iconName?: string | null,
+    teamStructure?: string | null,
+    scoringStructure?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateGamesSubscriptionVariables = {
+  filter?: ModelSubscriptionGamesFilterInput | null,
+};
+
+export type OnUpdateGamesSubscription = {
+  onUpdateGames?:  {
+    __typename: "Games",
+    id: string,
+    name?: string | null,
+    iconName?: string | null,
+    teamStructure?: string | null,
+    scoringStructure?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteGamesSubscriptionVariables = {
+  filter?: ModelSubscriptionGamesFilterInput | null,
+};
+
+export type OnDeleteGamesSubscription = {
+  onDeleteGames?:  {
+    __typename: "Games",
+    id: string,
+    name?: string | null,
+    iconName?: string | null,
+    teamStructure?: string | null,
+    scoringStructure?: string | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateStandingsPeopleSubscriptionVariables = {
+  filter?: ModelSubscriptionStandingsPeopleFilterInput | null,
+};
+
+export type OnCreateStandingsPeopleSubscription = {
+  onCreateStandingsPeople?:  {
+    __typename: "StandingsPeople",
+    id: string,
+    userId?: string | null,
+    rank?: number | null,
+    points?: number | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateStandingsPeopleSubscriptionVariables = {
+  filter?: ModelSubscriptionStandingsPeopleFilterInput | null,
+};
+
+export type OnUpdateStandingsPeopleSubscription = {
+  onUpdateStandingsPeople?:  {
+    __typename: "StandingsPeople",
+    id: string,
+    userId?: string | null,
+    rank?: number | null,
+    points?: number | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteStandingsPeopleSubscriptionVariables = {
+  filter?: ModelSubscriptionStandingsPeopleFilterInput | null,
+};
+
+export type OnDeleteStandingsPeopleSubscription = {
+  onDeleteStandingsPeople?:  {
+    __typename: "StandingsPeople",
+    id: string,
+    userId?: string | null,
+    rank?: number | null,
+    points?: number | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
 export type OnCreateAdminFavoritesSubscriptionVariables = {
   filter?: ModelSubscriptionAdminFavoritesFilterInput | null,
 };
@@ -2376,17 +2919,17 @@ export type OnDeleteAdminFavoritesSubscription = {
   } | null,
 };
 
-export type OnCreateStandingsSubscriptionVariables = {
-  filter?: ModelSubscriptionStandingsFilterInput | null,
+export type OnCreateStandingsTeamsSubscriptionVariables = {
+  filter?: ModelSubscriptionStandingsTeamsFilterInput | null,
 };
 
-export type OnCreateStandingsSubscription = {
-  onCreateStandings?:  {
-    __typename: "Standings",
+export type OnCreateStandingsTeamsSubscription = {
+  onCreateStandingsTeams?:  {
+    __typename: "StandingsTeams",
     id: string,
     teamId?: string | null,
-    rank?: string | null,
-    points?: string | null,
+    rank?: number | null,
+    points?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2395,17 +2938,17 @@ export type OnCreateStandingsSubscription = {
   } | null,
 };
 
-export type OnUpdateStandingsSubscriptionVariables = {
-  filter?: ModelSubscriptionStandingsFilterInput | null,
+export type OnUpdateStandingsTeamsSubscriptionVariables = {
+  filter?: ModelSubscriptionStandingsTeamsFilterInput | null,
 };
 
-export type OnUpdateStandingsSubscription = {
-  onUpdateStandings?:  {
-    __typename: "Standings",
+export type OnUpdateStandingsTeamsSubscription = {
+  onUpdateStandingsTeams?:  {
+    __typename: "StandingsTeams",
     id: string,
     teamId?: string | null,
-    rank?: string | null,
-    points?: string | null,
+    rank?: number | null,
+    points?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2414,17 +2957,17 @@ export type OnUpdateStandingsSubscription = {
   } | null,
 };
 
-export type OnDeleteStandingsSubscriptionVariables = {
-  filter?: ModelSubscriptionStandingsFilterInput | null,
+export type OnDeleteStandingsTeamsSubscriptionVariables = {
+  filter?: ModelSubscriptionStandingsTeamsFilterInput | null,
 };
 
-export type OnDeleteStandingsSubscription = {
-  onDeleteStandings?:  {
-    __typename: "Standings",
+export type OnDeleteStandingsTeamsSubscription = {
+  onDeleteStandingsTeams?:  {
+    __typename: "StandingsTeams",
     id: string,
     teamId?: string | null,
-    rank?: string | null,
-    points?: string | null,
+    rank?: number | null,
+    points?: number | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2541,6 +3084,7 @@ export type OnCreateTeamsSubscription = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    iconName?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2564,6 +3108,7 @@ export type OnUpdateTeamsSubscription = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    iconName?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2587,6 +3132,7 @@ export type OnDeleteTeamsSubscription = {
       nextToken?: string | null,
       startedAt?: number | null,
     } | null,
+    iconName?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,

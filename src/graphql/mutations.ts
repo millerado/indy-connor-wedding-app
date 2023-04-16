@@ -2,6 +2,117 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createGames = /* GraphQL */ `
+  mutation CreateGames(
+    $input: CreateGamesInput!
+    $condition: ModelGamesConditionInput
+  ) {
+    createGames(input: $input, condition: $condition) {
+      id
+      name
+      iconName
+      teamStructure
+      scoringStructure
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateGames = /* GraphQL */ `
+  mutation UpdateGames(
+    $input: UpdateGamesInput!
+    $condition: ModelGamesConditionInput
+  ) {
+    updateGames(input: $input, condition: $condition) {
+      id
+      name
+      iconName
+      teamStructure
+      scoringStructure
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteGames = /* GraphQL */ `
+  mutation DeleteGames(
+    $input: DeleteGamesInput!
+    $condition: ModelGamesConditionInput
+  ) {
+    deleteGames(input: $input, condition: $condition) {
+      id
+      name
+      iconName
+      teamStructure
+      scoringStructure
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const createStandingsPeople = /* GraphQL */ `
+  mutation CreateStandingsPeople(
+    $input: CreateStandingsPeopleInput!
+    $condition: ModelStandingsPeopleConditionInput
+  ) {
+    createStandingsPeople(input: $input, condition: $condition) {
+      id
+      userId
+      rank
+      points
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateStandingsPeople = /* GraphQL */ `
+  mutation UpdateStandingsPeople(
+    $input: UpdateStandingsPeopleInput!
+    $condition: ModelStandingsPeopleConditionInput
+  ) {
+    updateStandingsPeople(input: $input, condition: $condition) {
+      id
+      userId
+      rank
+      points
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteStandingsPeople = /* GraphQL */ `
+  mutation DeleteStandingsPeople(
+    $input: DeleteStandingsPeopleInput!
+    $condition: ModelStandingsPeopleConditionInput
+  ) {
+    deleteStandingsPeople(input: $input, condition: $condition) {
+      id
+      userId
+      rank
+      points
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
 export const createAdminFavorites = /* GraphQL */ `
   mutation CreateAdminFavorites(
     $input: CreateAdminFavoritesInput!
@@ -50,12 +161,12 @@ export const deleteAdminFavorites = /* GraphQL */ `
     }
   }
 `;
-export const createStandings = /* GraphQL */ `
-  mutation CreateStandings(
-    $input: CreateStandingsInput!
-    $condition: ModelStandingsConditionInput
+export const createStandingsTeams = /* GraphQL */ `
+  mutation CreateStandingsTeams(
+    $input: CreateStandingsTeamsInput!
+    $condition: ModelStandingsTeamsConditionInput
   ) {
-    createStandings(input: $input, condition: $condition) {
+    createStandingsTeams(input: $input, condition: $condition) {
       id
       teamId
       rank
@@ -68,12 +179,12 @@ export const createStandings = /* GraphQL */ `
     }
   }
 `;
-export const updateStandings = /* GraphQL */ `
-  mutation UpdateStandings(
-    $input: UpdateStandingsInput!
-    $condition: ModelStandingsConditionInput
+export const updateStandingsTeams = /* GraphQL */ `
+  mutation UpdateStandingsTeams(
+    $input: UpdateStandingsTeamsInput!
+    $condition: ModelStandingsTeamsConditionInput
   ) {
-    updateStandings(input: $input, condition: $condition) {
+    updateStandingsTeams(input: $input, condition: $condition) {
       id
       teamId
       rank
@@ -86,12 +197,12 @@ export const updateStandings = /* GraphQL */ `
     }
   }
 `;
-export const deleteStandings = /* GraphQL */ `
-  mutation DeleteStandings(
-    $input: DeleteStandingsInput!
-    $condition: ModelStandingsConditionInput
+export const deleteStandingsTeams = /* GraphQL */ `
+  mutation DeleteStandingsTeams(
+    $input: DeleteStandingsTeamsInput!
+    $condition: ModelStandingsTeamsConditionInput
   ) {
-    deleteStandings(input: $input, condition: $condition) {
+    deleteStandingsTeams(input: $input, condition: $condition) {
       id
       teamId
       rank
@@ -201,6 +312,7 @@ export const createTeams = /* GraphQL */ `
         nextToken
         startedAt
       }
+      iconName
       createdAt
       updatedAt
       _version
@@ -222,6 +334,7 @@ export const updateTeams = /* GraphQL */ `
         nextToken
         startedAt
       }
+      iconName
       createdAt
       updatedAt
       _version
@@ -243,6 +356,7 @@ export const deleteTeams = /* GraphQL */ `
         nextToken
         startedAt
       }
+      iconName
       createdAt
       updatedAt
       _version

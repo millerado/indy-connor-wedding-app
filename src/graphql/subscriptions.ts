@@ -2,6 +2,105 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateGames = /* GraphQL */ `
+  subscription OnCreateGames($filter: ModelSubscriptionGamesFilterInput) {
+    onCreateGames(filter: $filter) {
+      id
+      name
+      iconName
+      teamStructure
+      scoringStructure
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateGames = /* GraphQL */ `
+  subscription OnUpdateGames($filter: ModelSubscriptionGamesFilterInput) {
+    onUpdateGames(filter: $filter) {
+      id
+      name
+      iconName
+      teamStructure
+      scoringStructure
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteGames = /* GraphQL */ `
+  subscription OnDeleteGames($filter: ModelSubscriptionGamesFilterInput) {
+    onDeleteGames(filter: $filter) {
+      id
+      name
+      iconName
+      teamStructure
+      scoringStructure
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onCreateStandingsPeople = /* GraphQL */ `
+  subscription OnCreateStandingsPeople(
+    $filter: ModelSubscriptionStandingsPeopleFilterInput
+  ) {
+    onCreateStandingsPeople(filter: $filter) {
+      id
+      userId
+      rank
+      points
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateStandingsPeople = /* GraphQL */ `
+  subscription OnUpdateStandingsPeople(
+    $filter: ModelSubscriptionStandingsPeopleFilterInput
+  ) {
+    onUpdateStandingsPeople(filter: $filter) {
+      id
+      userId
+      rank
+      points
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteStandingsPeople = /* GraphQL */ `
+  subscription OnDeleteStandingsPeople(
+    $filter: ModelSubscriptionStandingsPeopleFilterInput
+  ) {
+    onDeleteStandingsPeople(filter: $filter) {
+      id
+      userId
+      rank
+      points
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
 export const onCreateAdminFavorites = /* GraphQL */ `
   subscription OnCreateAdminFavorites(
     $filter: ModelSubscriptionAdminFavoritesFilterInput
@@ -47,11 +146,11 @@ export const onDeleteAdminFavorites = /* GraphQL */ `
     }
   }
 `;
-export const onCreateStandings = /* GraphQL */ `
-  subscription OnCreateStandings(
-    $filter: ModelSubscriptionStandingsFilterInput
+export const onCreateStandingsTeams = /* GraphQL */ `
+  subscription OnCreateStandingsTeams(
+    $filter: ModelSubscriptionStandingsTeamsFilterInput
   ) {
-    onCreateStandings(filter: $filter) {
+    onCreateStandingsTeams(filter: $filter) {
       id
       teamId
       rank
@@ -64,11 +163,11 @@ export const onCreateStandings = /* GraphQL */ `
     }
   }
 `;
-export const onUpdateStandings = /* GraphQL */ `
-  subscription OnUpdateStandings(
-    $filter: ModelSubscriptionStandingsFilterInput
+export const onUpdateStandingsTeams = /* GraphQL */ `
+  subscription OnUpdateStandingsTeams(
+    $filter: ModelSubscriptionStandingsTeamsFilterInput
   ) {
-    onUpdateStandings(filter: $filter) {
+    onUpdateStandingsTeams(filter: $filter) {
       id
       teamId
       rank
@@ -81,11 +180,11 @@ export const onUpdateStandings = /* GraphQL */ `
     }
   }
 `;
-export const onDeleteStandings = /* GraphQL */ `
-  subscription OnDeleteStandings(
-    $filter: ModelSubscriptionStandingsFilterInput
+export const onDeleteStandingsTeams = /* GraphQL */ `
+  subscription OnDeleteStandingsTeams(
+    $filter: ModelSubscriptionStandingsTeamsFilterInput
   ) {
-    onDeleteStandings(filter: $filter) {
+    onDeleteStandingsTeams(filter: $filter) {
       id
       teamId
       rank
@@ -183,6 +282,7 @@ export const onCreateTeams = /* GraphQL */ `
         nextToken
         startedAt
       }
+      iconName
       createdAt
       updatedAt
       _version
@@ -201,6 +301,7 @@ export const onUpdateTeams = /* GraphQL */ `
         nextToken
         startedAt
       }
+      iconName
       createdAt
       updatedAt
       _version
@@ -219,6 +320,7 @@ export const onDeleteTeams = /* GraphQL */ `
         nextToken
         startedAt
       }
+      iconName
       createdAt
       updatedAt
       _version

@@ -2,7 +2,6 @@ import React, { useMemo } from "react";
 import {
   Button as PaperButton,
   ButtonProps as PaperButtonProps,
-  withTheme,
   useTheme,
 } from "react-native-paper";
 import styles from "./ButtonStyles";
@@ -35,4 +34,4 @@ const Button = (props: ButtonProps) => {
   return <PaperButton mode={mode} buttonColor={buttonColor} textColor={textColor} {...restOfProps} />;
 };
 
-export default withTheme(Button);
+export default Button;

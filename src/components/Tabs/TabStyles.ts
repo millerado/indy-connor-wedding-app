@@ -5,18 +5,21 @@ const styles = theme => {
   const rstyles = reusableStyles(theme);
   const ss = StyleSheet.create({
     ...rstyles,
-    sectionHeader: {
-      padding: 10,
-      backgroundColor: theme.colors.primary,
+    tabWrapper: {
+      width: '100%',
+      flexDirection: 'row',
       alignItems: 'center',
+      justifyContent: 'center',
+      borderBottomColor: theme.colors.primary,
+      borderBottomWidth: 2,
     },
-    itemWrapper: {
+    tabItem: {
       flex: 1,
       padding: 10,
-      overflow: 'hidden',
-    },
-    textInputWrapper: {
-      marginBottom: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderTopRightRadius: 20,
+      borderTopLeftRadius: 20,
     }
   });
   return ss;

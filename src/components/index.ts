@@ -1,41 +1,19 @@
-import ActivityIndicator from './ActivityIndicator/ActivityIndicator';
-import AnimatedFAB from './AnimatedFAB/AnimatedFAB';
-import Avatar from './Avatar/Avatar';
-import Badge from './Badge/Badge';
-import Button from './Button/Button';
-import ConditionalWrapper from './ConditionalWrapper/ConditionalWrapper';
-import Divider from './Divider/Divider';
-import DoubleTap from './DoubleTap/DoubleTap';
-import Icon from './Icon/Icon';
-import IconButton from './IconButton/IconButton';
-import ImageS3 from './ImageS3/ImageS3';
-import Modal from './Modal/Modal';
-import SegmentedButtons from './SegmentedButtons/SegmentedButtons';
-import Snackbar from './Snackbar/Snackbar';
-import Switch from './Switch/Switch';
-import Text, { TextSizes } from './Text/Text';
-import TextInput from './TextInput/TextInput';
-import ZoomableView from './ZoomableView/ZoomableView';
-
-export { 
-  ActivityIndicator,
-  AnimatedFAB,
-  Avatar,
-  Badge,
-  Button,
-  ConditionalWrapper,
-  Divider,
-  DoubleTap,
-  Icon,
-  IconButton,
-  ImageS3,
-  Modal,
-  SegmentedButtons,
-  Snackbar,
-  Switch,
-  Text,
-  TextInput,
-  // And ENUMS
-  TextSizes,
-  ZoomableView,
-};
+export { default as ActivityIndicator } from './ActivityIndicator/ActivityIndicator';
+export { default as AnimatedFAB } from './AnimatedFAB/AnimatedFAB';
+export { default as Avatar } from './Avatar/Avatar';
+export { default as Badge } from './Badge/Badge';
+export { default as Button } from './Button/Button';
+export { default as ConditionalWrapper } from './ConditionalWrapper/ConditionalWrapper';
+export { default as Divider } from './Divider/Divider';
+export { default as DoubleTap } from './DoubleTap/DoubleTap';
+export { default as Icon } from './Icon/Icon';
+export { default as IconButton } from './IconButton/IconButton';
+export { default as ImageS3 } from './ImageS3/ImageS3';
+export { default as Modal } from './Modal/Modal';
+export { default as SegmentedButtons } from './SegmentedButtons/SegmentedButtons';
+export { default as Snackbar } from './Snackbar/Snackbar';
+export { default as Switch } from './Switch/Switch';
+export { default as Tabs } from './Tabs/Tabs';
+export { default as Text, TextSizes } from './Text/Text';
+export { default as TextInput } from './TextInput/TextInput';
+export { default as ZoomableView } from './ZoomableView/ZoomableView';

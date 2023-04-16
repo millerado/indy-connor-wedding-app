@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react';
-import { View, FlatList, Platform, Pressable, Image } from 'react-native';
+import { View, FlatList, Platform, Pressable, Image, ImageBackground } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import Zoom from 'react-native-zoom-reanimated'
 import { FAQ } from '../../models';
@@ -17,6 +17,7 @@ const InfoScreen = ({ navigation, route }) => {
   const [dataLoading, setDataLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [imageLoaded, setImageLoaded] = useState(false);
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const authStatus = useContext(AuthContext).authStatus;
@@ -62,7 +63,18 @@ const InfoScreen = ({ navigation, route }) => {
       <>
         <View>
           <Zoom>
-            <Image resizeMode='contain' style={{width: dimensions.width, height: dimensions.width * (5216/7792)}} source={resortMap} />
+            <ImageBackground
+              resizeMode='contain'
+              style={{width: dimensions.width, height: dimensions.width * (5216/7792)}}
+              source={resortMap}
+              onLoadEnd={() => setImageLoaded(true)}
+            >
+              {!imageLoaded &&
+                <View style={{alignItems: 'center', justifyContent: 'center', width: dimensions.width, height: dimensions.width * (5216/7792)}}>
+                  <ActivityIndicator size={dimensions.width * .3} color={theme.colors.primary} />
+                </View>
+              }
+            </ImageBackground>
           </Zoom>
         </View>
         <View style={ss.searchWrapper}>
@@ -74,7 +86,6 @@ const InfoScreen = ({ navigation, route }) => {
             enablesReturnKeyAutomatically={true}
             style={[
               ss.textInput,
-              ss.textInputWrapper,
               ss.fullWidthTextInput,
             ]}
             onChangeText={(text) => setSearchTerm(text)}

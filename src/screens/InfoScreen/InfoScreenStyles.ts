@@ -14,15 +14,13 @@ const styles = theme => {
       padding: 10,
       overflow: 'hidden',
     },
-    textInputWrapper: {
-      marginBottom: 10,
-    },
     searchWrapper: {
       padding: 10,
-      paddingBottom: 0,
       width: '100%',
+      borderTopWidth: 1,
+      borderTopColor: theme.colors.secondary,
       borderBottomWidth: 1,
-      borderBottomColor: theme.colors.onSecondary,
+      borderBottomColor: theme.colors.secondary ,
     },
   });
   return ss;

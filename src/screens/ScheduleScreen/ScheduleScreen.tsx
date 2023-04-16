@@ -4,10 +4,10 @@ import { useTheme } from "react-native-paper";
 import { Schedule } from "../../models";
 import {
   Text,
-  TextSizes,
   Divider,
   Icon,
   ActivityIndicator,
+  Tabs,
 } from "../../components";
 import { ScheduleItem, ScheduleModal } from "../../containers";
 import { DataStore } from "../../utils";
@@ -52,20 +52,16 @@ const ScheduleScreen = ({ navigation, route }) => {
   const keyExtractor = useCallback((item) => item.id, []);
 
   const renderListHeader = () => {
+    const daysArray = emptyScheduleData.map((item, index) => {
+      return item.day;
+    });
+
     return (
-      <View style={ss.headerWrapper}>
-        {emptyScheduleData.map((item, index) => {
-          return (
-            <Pressable onPress={() => setSelectedDay(item.day)} style={[ss.headerItem, {backgroundColor: selectedDay === item.day ? theme.colors.primary : theme.colors.background}]} key={item.day}>
-              <View>
-                <Text color={selectedDay === item.day ? theme.colors.onPrimary : undefined}>
-                  {item.day.toUpperCase()}
-                </Text>
-              </View>
-            </Pressable>
-          )
-        })}
-      </View>
+      <Tabs 
+        options={daysArray}
+        selectedOption={selectedDay}
+        setSelectedOption={setSelectedDay}
+      />
     )
   };
 

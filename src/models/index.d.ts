@@ -12,10 +12,16 @@ type EagerGames = {
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
-  readonly name?: string | null;
-  readonly iconName?: string | null;
-  readonly teamStructure?: string | null;
-  readonly scoringStructure?: string | null;
+  readonly name: string;
+  readonly iconName: string;
+  readonly minNumberOfTeams: number;
+  readonly maxNumberOfTeams?: number | null;
+  readonly minNumberOfPlayer: number;
+  readonly maxNumberOfPlayers?: number | null;
+  readonly playerPoints?: number[] | null;
+  readonly teamPoints?: number[] | null;
+  readonly rules?: string | null;
+  readonly canHaveMultipleWinners: boolean;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -26,10 +32,16 @@ type LazyGames = {
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
-  readonly name?: string | null;
-  readonly iconName?: string | null;
-  readonly teamStructure?: string | null;
-  readonly scoringStructure?: string | null;
+  readonly name: string;
+  readonly iconName: string;
+  readonly minNumberOfTeams: number;
+  readonly maxNumberOfTeams?: number | null;
+  readonly minNumberOfPlayer: number;
+  readonly maxNumberOfPlayers?: number | null;
+  readonly playerPoints?: number[] | null;
+  readonly teamPoints?: number[] | null;
+  readonly rules?: string | null;
+  readonly canHaveMultipleWinners: boolean;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

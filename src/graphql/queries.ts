@@ -8,8 +8,14 @@ export const getGames = /* GraphQL */ `
       id
       name
       iconName
-      teamStructure
-      scoringStructure
+      minNumberOfTeams
+      maxNumberOfTeams
+      minNumberOfPlayer
+      maxNumberOfPlayers
+      playerPoints
+      teamPoints
+      rules
+      canHaveMultipleWinners
       createdAt
       updatedAt
       _version
@@ -29,8 +35,14 @@ export const listGames = /* GraphQL */ `
         id
         name
         iconName
-        teamStructure
-        scoringStructure
+        minNumberOfTeams
+        maxNumberOfTeams
+        minNumberOfPlayer
+        maxNumberOfPlayers
+        playerPoints
+        teamPoints
+        rules
+        canHaveMultipleWinners
         createdAt
         updatedAt
         _version
@@ -59,8 +71,14 @@ export const syncGames = /* GraphQL */ `
         id
         name
         iconName
-        teamStructure
-        scoringStructure
+        minNumberOfTeams
+        maxNumberOfTeams
+        minNumberOfPlayer
+        maxNumberOfPlayers
+        playerPoints
+        teamPoints
+        rules
+        canHaveMultipleWinners
         createdAt
         updatedAt
         _version

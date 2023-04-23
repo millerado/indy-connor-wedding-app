@@ -1,9 +1,15 @@
 type Games @model @auth(rules: [{allow: public}]) {
   id: ID!
-  name: String
-  iconName: String
-  teamStructure: String
-  scoringStructure: String
+  name: String!
+  iconName: String!
+  minNumberOfTeams: Int!
+  maxNumberOfTeams: Int
+  minNumberOfPlayer: Int!
+  maxNumberOfPlayers: Int
+  playerPoints: [Int!]
+  teamPoints: [Int!]
+  rules: String
+  canHaveMultipleWinners: Boolean!
 }
 
 type StandingsPeople @model @auth(rules: [{allow: public}]) {

@@ -14,28 +14,72 @@ export const schema = {
                     "name": "name",
                     "isArray": false,
                     "type": "String",
-                    "isRequired": false,
+                    "isRequired": true,
                     "attributes": []
                 },
                 "iconName": {
                     "name": "iconName",
                     "isArray": false,
                     "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "minNumberOfTeams": {
+                    "name": "minNumberOfTeams",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "maxNumberOfTeams": {
+                    "name": "maxNumberOfTeams",
+                    "isArray": false,
+                    "type": "Int",
                     "isRequired": false,
                     "attributes": []
                 },
-                "teamStructure": {
-                    "name": "teamStructure",
+                "minNumberOfPlayer": {
+                    "name": "minNumberOfPlayer",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "maxNumberOfPlayers": {
+                    "name": "maxNumberOfPlayers",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "playerPoints": {
+                    "name": "playerPoints",
+                    "isArray": true,
+                    "type": "Int",
+                    "isRequired": true,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "teamPoints": {
+                    "name": "teamPoints",
+                    "isArray": true,
+                    "type": "Int",
+                    "isRequired": true,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "rules": {
+                    "name": "rules",
                     "isArray": false,
                     "type": "String",
                     "isRequired": false,
                     "attributes": []
                 },
-                "scoringStructure": {
-                    "name": "scoringStructure",
+                "canHaveMultipleWinners": {
+                    "name": "canHaveMultipleWinners",
                     "isArray": false,
-                    "type": "String",
-                    "isRequired": false,
+                    "type": "Boolean",
+                    "isRequired": true,
                     "attributes": []
                 },
                 "createdAt": {
@@ -991,5 +1035,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "a2fe0cd5859faa317fedf55b9185442c"
+    "version": "c35864c76d2c492f6df9b94c8933f95b"
 };

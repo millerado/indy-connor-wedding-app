@@ -8,8 +8,14 @@ export const onCreateGames = /* GraphQL */ `
       id
       name
       iconName
-      teamStructure
-      scoringStructure
+      minNumberOfTeams
+      maxNumberOfTeams
+      minNumberOfPlayer
+      maxNumberOfPlayers
+      playerPoints
+      teamPoints
+      rules
+      canHaveMultipleWinners
       createdAt
       updatedAt
       _version
@@ -24,8 +30,14 @@ export const onUpdateGames = /* GraphQL */ `
       id
       name
       iconName
-      teamStructure
-      scoringStructure
+      minNumberOfTeams
+      maxNumberOfTeams
+      minNumberOfPlayer
+      maxNumberOfPlayers
+      playerPoints
+      teamPoints
+      rules
+      canHaveMultipleWinners
       createdAt
       updatedAt
       _version
@@ -40,8 +52,14 @@ export const onDeleteGames = /* GraphQL */ `
       id
       name
       iconName
-      teamStructure
-      scoringStructure
+      minNumberOfTeams
+      maxNumberOfTeams
+      minNumberOfPlayer
+      maxNumberOfPlayers
+      playerPoints
+      teamPoints
+      rules
+      canHaveMultipleWinners
       createdAt
       updatedAt
       _version

@@ -1,11 +1,3 @@
-import ThemeContext from './themeContext/themeContext';
-import { AuthContext, UnauthedUser } from './authContext/authContext';
-import { SnackbarContext, DefaultSnackbar } from './snackbarContext/snackbarContext';
-
-export {
-  ThemeContext,
-  AuthContext,
-  UnauthedUser,
-  SnackbarContext,
-  DefaultSnackbar,
-}
+export { default as ThemeContext } from './themeContext/themeContext';
+export { AuthContext, UnauthedUser } from './authContext/authContext';
+export { SnackbarContext, DefaultSnackbar } from './snackbarContext/snackbarContext';

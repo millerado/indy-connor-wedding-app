@@ -17,11 +17,11 @@ const FormatTextWithMentions = ({ text, ...restOfProps }) => {
       navigation.push("User", { userId: userId });
     };
 
-    // Regex matches and replace on [username](userId)
+    // Regex matches on [username](userId)
     const regex = /@\[(.*?)\]\((.*?)\)/g;
     const matches = text.match(regex);
 
-    // Regex matches and replace on URLs
+    // Regex matches on URLs
     const regexUrl = /(https?:\/\/[^\s]+)/g;
     const matchesUrl = text.toLowerCase().match(regexUrl);
 
@@ -33,7 +33,7 @@ const FormatTextWithMentions = ({ text, ...restOfProps }) => {
     const regexItalic = /_(.*?)_/g;
     const matchesItalic = text.match(regexItalic);
 
-    // Regex matches for a bullet (•) and a space that starts a line, along with all text on that line
+    // Regex matches on a bullet (•) and a space that starts a line, along with all text on that line
     const regexBullet = /^•.*$/gm;
     const matchesBullet = text.match(regexBullet);
     

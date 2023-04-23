@@ -46,6 +46,8 @@ export const lightTheme = {
     onModalHeader: greensSuperLight,
     primary: primaryGreen,
     onPrimary: greensSuperLight,
+    disabled: lightGreenGray,
+    onDisabled: primaryGreen,
   },
 };
 
@@ -72,5 +74,7 @@ export const darkTheme = {
     onModalHeader: greensSuperLight,
     primary: greensSuperLight,
     onPrimary: primaryGreen,
+    disabled: darkGreenGray,
+    onDisabled: greensSuperLight,
   },
 };

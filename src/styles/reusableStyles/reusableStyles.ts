@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native';
-import * as typography from '../typography/typography';
+import typography from '../typography/typography';
 
 const dim = Dimensions.get('screen');
 const { width, height } = dim;

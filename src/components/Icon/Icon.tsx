@@ -95,7 +95,41 @@ const getIconName = (name) => {
     return 'chevron-down-outline';
   } else if (name === 'collapsed') {
     return 'chevron-forward-outline';
-  } 
+  } else if (name === 'football') {
+    return 'american-football';
+  } else if (name === 'baseball') {
+    return 'baseball';
+  } else if (name === 'basketball') {
+    return 'basketball';
+  } else if (name === 'golf') {
+    return 'golf';
+  } else if (name === 'speedometer') {
+    return 'speedometer';
+  } else if (name === 'barbell') {
+    return 'barbell';
+  } else if (name === 'beer') {
+    return 'beer';
+  } else if (name === 'bicycle') {
+    return 'bicycle';
+  } else if (name === 'controller') {
+    return 'game-controller';
+  } else if (name === 'soccer') {
+    return 'football';
+  } else if (name === 'medal') {
+    return 'medal';
+  } else if (name === 'pint') {
+    return 'pint';
+  } else if (name === 'ribbon') {
+    return 'ribbon';
+  } else if (name === 'school') {
+    return 'school';
+  } else if (name === 'stopwatch') {
+    return 'stopwatch';
+  } else if (name === 'tennisball') {
+    return 'tennisball';
+  } else if (name === 'disc') {
+    return 'disc';
+  }
 
   return 'home';
 };

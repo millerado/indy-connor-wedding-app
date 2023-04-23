@@ -81,6 +81,11 @@ const SettingsModal = () => {
     });
   };
 
+  const goToGamesPage = async () => {
+    closeModal();
+    navigation.push("Games List");
+  };
+
   const openSelectUserModal = () => {
     closeModal();
     // Timeout only here to let one modal disappear before the other appears (iOS breaks if two mdoals are open)
@@ -214,6 +219,13 @@ const SettingsModal = () => {
                     <View style={{ paddingTop: 10 }}>
                       <Button onPress={openNotificationDialog} >
                         Send Global Notification
+                      </Button>
+                    </View>
+                  )}
+                  {authStatus.isAuthed && (
+                    <View style={{ paddingTop: 10 }}>
+                      <Button onPress={goToGamesPage} >
+                        Manage Games
                       </Button>
                     </View>
                   )}

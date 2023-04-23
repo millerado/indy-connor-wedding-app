@@ -7,9 +7,10 @@ import { SettingsModal, NotificationsHeaderButton } from '../containers';
 import { Icon } from '../components';
 import {
   CreatePostScreen,
+  GamesScreen,
   HomeScreen,
   InfoScreen,
-  MapScreen,
+  ManageGameScreen,
   NotificationsScreen,
   ScheduleScreen,
   StandingsScreen,
@@ -56,6 +57,8 @@ const HomeStackScreen = () => {
       <HomeStack.Screen name="Notifications" component={NotificationsScreen} />
       <HomeStack.Screen name="View Post" component={ViewPostScreen} />
       <HomeStack.Screen name="Create Post" component={CreatePostScreen} />
+      <HomeStack.Screen name="Games List" component={GamesScreen} />
+      <HomeStack.Screen name="Manage Game" component={ManageGameScreen} />
     </HomeStack.Navigator>
   );
 };

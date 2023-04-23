@@ -16,10 +16,9 @@ type EagerGames = {
   readonly iconName: string;
   readonly minNumberOfTeams: number;
   readonly maxNumberOfTeams?: number | null;
-  readonly minNumberOfPlayer: number;
-  readonly maxNumberOfPlayers?: number | null;
-  readonly playerPoints?: number[] | null;
-  readonly teamPoints?: number[] | null;
+  readonly minNumberOfPlayersPerTeam: number;
+  readonly maxNumberOfPlayersPerTeam?: number | null;
+  readonly points?: number[] | null;
   readonly rules?: string | null;
   readonly canHaveMultipleWinners: boolean;
   readonly createdAt?: string | null;
@@ -36,10 +35,9 @@ type LazyGames = {
   readonly iconName: string;
   readonly minNumberOfTeams: number;
   readonly maxNumberOfTeams?: number | null;
-  readonly minNumberOfPlayer: number;
-  readonly maxNumberOfPlayers?: number | null;
-  readonly playerPoints?: number[] | null;
-  readonly teamPoints?: number[] | null;
+  readonly minNumberOfPlayersPerTeam: number;
+  readonly maxNumberOfPlayersPerTeam?: number | null;
+  readonly points?: number[] | null;
   readonly rules?: string | null;
   readonly canHaveMultipleWinners: boolean;
   readonly createdAt?: string | null;

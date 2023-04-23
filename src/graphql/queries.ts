@@ -10,10 +10,9 @@ export const getGames = /* GraphQL */ `
       iconName
       minNumberOfTeams
       maxNumberOfTeams
-      minNumberOfPlayer
-      maxNumberOfPlayers
-      playerPoints
-      teamPoints
+      minNumberOfPlayersPerTeam
+      maxNumberOfPlayersPerTeam
+      points
       rules
       canHaveMultipleWinners
       createdAt
@@ -37,10 +36,9 @@ export const listGames = /* GraphQL */ `
         iconName
         minNumberOfTeams
         maxNumberOfTeams
-        minNumberOfPlayer
-        maxNumberOfPlayers
-        playerPoints
-        teamPoints
+        minNumberOfPlayersPerTeam
+        maxNumberOfPlayersPerTeam
+        points
         rules
         canHaveMultipleWinners
         createdAt
@@ -73,10 +71,9 @@ export const syncGames = /* GraphQL */ `
         iconName
         minNumberOfTeams
         maxNumberOfTeams
-        minNumberOfPlayer
-        maxNumberOfPlayers
-        playerPoints
-        teamPoints
+        minNumberOfPlayersPerTeam
+        maxNumberOfPlayersPerTeam
+        points
         rules
         canHaveMultipleWinners
         createdAt

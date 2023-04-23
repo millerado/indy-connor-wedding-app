@@ -11,12 +11,12 @@ const styles = theme => {
       borderRadius: 5,
       alignItems: 'center',
       padding: 5,
+      width: '100%',
     },
     oneButtonWrapper: {
       justifyContent: 'center',
       alignItems: 'center',
     },
-
   });
   return ss;
 }

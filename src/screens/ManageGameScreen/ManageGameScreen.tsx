@@ -1,9 +1,10 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { View, ScrollView } from "react-native";
 import { useTheme, Switch } from "react-native-paper";
 import { Text, Icon, TextSizes, DropdownInput, TextInput, NumberInput, Button } from '../../components';
 import { typography } from '../../styles';
-import { nth } from '../../utils';
+import { nth, DataStore } from '../../utils';
+import { Games } from '../../models';
 import styles from './ManageGameScreenStyles';
 
 const iconData = [
@@ -30,32 +31,28 @@ const iconData = [
   {label: 'Tennisball', value: 'tennisball', icon: 'tennisball'},
 ];
 
-const ManageGameScreen = () => {
+const ManageGameScreen = ({ navigation, route }) => {
+  const { view, item } = route.params;
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const [iconValue, setIconValue] = useState(null);
   const [gameName, setGameName] = useState('');
+  const [rules, setRules] = useState('');
   const [minNumberOfTeams, setMinNumberOfTeams] = useState(2);
   const [hasMaxNumberOfTeams, setHasMaxNumberOfTeams] = useState(true);
   const [maxNumberOfTeams, setMaxNumberOfTeams] = useState(4);
-  const [minNumberOfPlayersPerTeam, setMinNumberOfPlayersPerTeam] = useState(1);
+  const [minNumberOfPlayersPerTeam, setMinNumberOfPlayersPerTeam] = useState(2);
   const [hasMaxNumberOfPlayersPerTeam, setHasMaxNumberOfPlayersPerTeam] = useState(true);
-  const [maxNumberOfPlayersPerTeam, setMaxNumberOfPlayersPerTeam] = useState(1);
-  const [teamPoints, setTeamPoints] = useState([0, 1]);
+  const [maxNumberOfPlayersPerTeam, setMaxNumberOfPlayersPerTeam] = useState(2);
   const [playerPoints, setPlayerPoints] = useState([0, 1]);
+  const [hasMultipleWinners, setHasMultipleWinners] = useState(false);
+  const [hasTeams, setHasTeams] = useState(true);
 
   const handlePlayerPointPress = (idx, fn) => {
     // Update the idx value of playerPoints array
     const newPlayerPoints = [...playerPoints];
     newPlayerPoints[idx] = fn === 'plus' ? newPlayerPoints[idx] + 1 : newPlayerPoints[idx] - 1;
     setPlayerPoints(newPlayerPoints);
-  }
-
-  const handleTeamPointPress = (idx, fn) => {
-    // Update the idx value of teamPoints array
-    const newTeamPoints = [...teamPoints];
-    newTeamPoints[idx] = fn === 'plus' ? newTeamPoints[idx] + 1 : newTeamPoints[idx] - 1;
-    setTeamPoints(newTeamPoints);
   }
 
   const handleNumberPlayerPress = fn => {
@@ -69,20 +66,67 @@ const ManageGameScreen = () => {
     setPlayerPoints(newPlayerPoints);
   }
 
-  const handleNumberTeamPress = fn => {
-    // Update the number of teams
-    const newTeamPoints = [...teamPoints];
-    if (fn === 'plus') {
-      newTeamPoints.push(0);
+  const handleSave = async() => {
+    if(view === 'editGame') {
+      try { 
+        await DataStore.save(
+          Games.copyOf(item, (i) => {
+            i.name = gameName;
+            i.iconName = iconValue;
+            i.minNumberOfTeams = minNumberOfTeams;
+            i.maxNumberOfTeams = hasMaxNumberOfTeams ? maxNumberOfTeams : null;
+            i.minNumberOfPlayersPerTeam = hasTeams ? minNumberOfPlayersPerTeam : 1;
+            i.maxNumberOfPlayersPerTeam = hasTeams ? hasMaxNumberOfPlayersPerTeam ? maxNumberOfPlayersPerTeam : null : 1;
+            i.points = playerPoints;
+            i.rules = rules;
+            i.canHaveMultipleWinners = hasMultipleWinners;
+          })
+        );
+        navigation.goBack();
+      } catch (err) {
+        console.log("error updating Game", err);
+      }
     } else {
-      newTeamPoints.pop();
+      try {
+        // await DataStore.stop();
+        await DataStore.save(
+          new Games({
+            name: gameName,
+            iconName: iconValue,
+            minNumberOfTeams,
+            maxNumberOfTeams: hasMaxNumberOfTeams ? maxNumberOfTeams : null, 
+            minNumberOfPlayersPerTeam: hasTeams ? minNumberOfPlayersPerTeam : 1,
+            maxNumberOfPlayersPerTeam: hasTeams ? hasMaxNumberOfPlayersPerTeam ? maxNumberOfPlayersPerTeam : null : 1,
+            points: playerPoints,
+            rules,
+            canHaveMultipleWinners: hasMultipleWinners,
+          })
+        );
+        navigation.goBack();
+      } catch (err) {
+        console.log("error saving Game", err);
+      }
     }
-    setTeamPoints(newTeamPoints);
   }
 
-  const handleSave = () => {
-    // Save the game
-  }
+  useEffect(() => {
+    if (view === 'editGame') {
+      setGameName(item.name);
+      setIconValue(item.iconName);
+      setRules(item.rules);
+      setMinNumberOfTeams(item.minNumberOfTeams);
+      setHasMaxNumberOfTeams(item.maxNumberOfTeams ? true : false);
+      setMaxNumberOfTeams(item.maxNumberOfTeams);
+      setMinNumberOfPlayersPerTeam(item.minNumberOfPlayersPerTeam); 
+      setHasMaxNumberOfPlayersPerTeam(item.maxNumberOfPlayersPerTeam ? true : false);
+      setMaxNumberOfPlayersPerTeam(item.maxNumberOfPlayersPerTeam);
+      setPlayerPoints(item.points);
+      setHasMultipleWinners(item.canHaveMultipleWinners);
+      navigation.setOptions({title: 'Edit Game'});
+    } else {
+      navigation.setOptions({title: 'Create New Game'});
+    }
+  }, [view, item]);
 
   return (
     <View style={ss.pageWrapper}>
@@ -128,166 +172,173 @@ const ManageGameScreen = () => {
                   name={item.icon}
                 />
               </View>
-              <Text size={TextSizes.L}>
+              <Text size={TextSizes.M}>
                 {item.label}
               </Text>
             </View>
           )}
         />
+        <View style={{paddingHorizontal: 15, paddingTop: 10}}>
+          <TextInput
+            clearButtonMode="while-editing"
+            returnKeyType="default"
+            label="Rules"
+            autoCapitalize='sentences'
+            multiline
+            value={rules}
+            enablesReturnKeyAutomatically={true}
+            keyboardType="default"
+            style={[
+              ss.fullWidthTextInput,
+              ss.inputMultiLine,
+            ]}
+            onChangeText={(text) => setRules(text)}
+          />
+        </View>
         <View style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
           <View style={{ alignItems: 'center', width: '40%'}}>
-            <Text size={TextSizes.L} bold>
-              Teams:
-            </Text>
-            <Text size={TextSizes.XS}>
-              How many teams can play in the game?
-            </Text>
-            <View style={ss.numberButtonWrapper}>
-              <View style={ss.oneButtonWrapper}>
-                <Text>
-                  Minimum:
-                </Text>
-                <NumberInput
-                  value={minNumberOfTeams}
-                  setValue={setMinNumberOfTeams}
-                  min={2}
-                  max={100}
-                />
+            <>
+              <Text size={TextSizes.M} bold>
+                Has Teams:
+              </Text>
+              <Text size={TextSizes.XS}>
+                Disable this for games people play as individuals
+              </Text>
+              <View style={ss.numberButtonWrapper}>
+                <Switch value={hasTeams} onValueChange={setHasTeams} />
               </View>
-              {hasMaxNumberOfTeams && (
-                <View style={[ss.oneButtonWrapper, {paddingTop: 10}]}>
+            </>
+            <>
+              <Text size={TextSizes.M} bold>
+                {hasTeams ? 'Teams:' : 'Players:'}
+              </Text>
+              <Text size={TextSizes.XS}>
+                How many {hasTeams ? 'teams' : 'players'} can play in the game?
+              </Text>
+              <View style={ss.numberButtonWrapper}>
+                <View style={ss.oneButtonWrapper}>
                   <Text>
-                    Maximum:
+                    Minimum:
                   </Text>
                   <NumberInput
-                    value={maxNumberOfTeams}
-                    setValue={setMaxNumberOfTeams}
+                    value={minNumberOfTeams}
+                    setValue={setMinNumberOfTeams}
                     min={2}
                     max={100}
                   />
                 </View>
-              )}
-              <View style={[ss.oneButtonWrapper, {paddingTop: 10}]}>
-                <Text>
-                  Has Max?
-                </Text>
-                <Switch value={hasMaxNumberOfTeams} onValueChange={setHasMaxNumberOfTeams} />
-              </View>
-            </View>
-          </View>
-          <View style={{ alignItems: 'center', width: '40%'}}>
-            <Text size={TextSizes.L} bold>
-              Players:
-            </Text>
-            <Text size={TextSizes.XS}>
-              How many players are on each team?
-            </Text>
-            <View style={ss.numberButtonWrapper}>
-              <View style={ss.oneButtonWrapper}>
-                <Text>
-                  Minimum:
-                </Text>
-                <NumberInput
-                  value={minNumberOfPlayersPerTeam}
-                  setValue={setMinNumberOfPlayersPerTeam}
-                  min={1}
-                  max={100}
-                />
-              </View>
-              {hasMaxNumberOfPlayersPerTeam && (
+                {hasMaxNumberOfTeams && (
+                  <View style={[ss.oneButtonWrapper, {paddingTop: 10}]}>
+                    <Text>
+                      Maximum:
+                    </Text>
+                    <NumberInput
+                      value={maxNumberOfTeams}
+                      setValue={setMaxNumberOfTeams}
+                      min={2}
+                      max={100}
+                    />
+                  </View>
+                )}
                 <View style={[ss.oneButtonWrapper, {paddingTop: 10}]}>
                   <Text>
-                    Maximum:
+                    Has Max?
                   </Text>
-                  <NumberInput
-                    value={maxNumberOfPlayersPerTeam}
-                    setValue={setMaxNumberOfPlayersPerTeam}
-                    min={1}
-                    max={100}
-                  />
+                  <Switch value={hasMaxNumberOfTeams} onValueChange={setHasMaxNumberOfTeams} />
                 </View>
-              )}
-              <View style={[ss.oneButtonWrapper, {paddingTop: 10}]}>
-                <Text>
-                  Has Max?
-                </Text>
-                <Switch value={hasMaxNumberOfPlayersPerTeam} onValueChange={setHasMaxNumberOfPlayersPerTeam} />
               </View>
-            </View>
+            </>
+            <>
+              <Text size={TextSizes.M} bold>
+                Multiple Winners:
+              </Text>
+              <Text size={TextSizes.XS}>
+                Some Games (ex: Bingo) can have multiple winners that aren't on the same team
+              </Text>
+              <View style={ss.numberButtonWrapper}>
+                <Switch value={hasMultipleWinners} onValueChange={setHasMultipleWinners} />
+              </View>
+            </>
           </View>
-        </View>
-        <View style={{flexDirection: 'row', justifyContent: 'space-evenly', paddingTop: 10}}>
           <View style={{ alignItems: 'center', width: '40%'}}>
-            <Text size={TextSizes.M} bold>
-              Team Points:
-            </Text>
-            <Text size={TextSizes.XS}>
-              Points earned for the Team Standings per player on the winning team, 2nd place team, etc...
-            </Text>
-            <View style={ss.numberButtonWrapper}>
+            {hasTeams && (
               <>
-                <Text>
-                  Scoring Teams:
+                <Text size={TextSizes.M} bold>
+                  Team Sizes:
                 </Text>
-                <NumberInput
-                  value={teamPoints.length - 1}
-                  minusPressHandler={() => handleNumberTeamPress('minus')}
-                  plusPressHandler={() => handleNumberTeamPress('plus')}
-                  min={0}
-                  max={100}
-                />
+                <Text size={TextSizes.XS}>
+                  How many players are on each team?
+                </Text>
+                <View style={ss.numberButtonWrapper}>
+                  <View style={ss.oneButtonWrapper}>
+                    <Text>
+                      Minimum:
+                    </Text>
+                    <NumberInput
+                      value={minNumberOfPlayersPerTeam}
+                      setValue={setMinNumberOfPlayersPerTeam}
+                      min={2}
+                      max={100}
+                    />
+                  </View>
+                  {hasMaxNumberOfPlayersPerTeam && (
+                    <View style={[ss.oneButtonWrapper, {paddingTop: 10}]}>
+                      <Text>
+                        Maximum:
+                      </Text>
+                      <NumberInput
+                        value={maxNumberOfPlayersPerTeam}
+                        setValue={setMaxNumberOfPlayersPerTeam}
+                        min={2}
+                        max={100}
+                      />
+                    </View>
+                  )}
+                  <View style={[ss.oneButtonWrapper, {paddingTop: 10}]}>
+                    <Text>
+                      Has Max?
+                    </Text>
+                    <Switch value={hasMaxNumberOfPlayersPerTeam} onValueChange={setHasMaxNumberOfPlayersPerTeam} />
+                  </View>
+                </View>
               </>
-              {teamPoints.map((point, index) => (
+            )}
+            <>
+              <Text size={TextSizes.M} bold>
+                Points:
+              </Text>
+              <Text size={TextSizes.XS}>
+                Points earned for each player on the winning team, 2nd place team, etc...
+              </Text>
+              <View style={ss.numberButtonWrapper}>
                 <>
                   <Text>
-                    {index === 0 ? 'Participants' : nth(index)}:
+                    Scoring Players:
                   </Text>
                   <NumberInput
-                    value={point}
-                    minusPressHandler={() => handleTeamPointPress(index, 'minus')}
-                    plusPressHandler={() => handleTeamPointPress(index, 'plus')}
+                    value={playerPoints.length - 1}
+                    minusPressHandler={() => handleNumberPlayerPress('minus')}
+                    plusPressHandler={() => handleNumberPlayerPress('plus')}
                     min={0}
                     max={100}
                   />
                 </>
-              ))}
-            </View>
-          </View>
-          <View style={{ alignItems: 'center', width: '40%'}}>
-            <Text size={TextSizes.M} bold>
-              Player Points:
-            </Text>
-            <Text size={TextSizes.XS}>
-              Points earned for Player Standings per player on the winning team, 2nd place team, etc...
-            </Text>
-            <View style={ss.numberButtonWrapper}>
-              <>
-                <Text>
-                  Scoring Players:
-                </Text>
-                <NumberInput
-                  value={playerPoints.length - 1}
-                  minusPressHandler={() => handleNumberPlayerPress('minus')}
-                  plusPressHandler={() => handleNumberPlayerPress('plus')}
-                  min={0}
-                  max={100}
-                />
-              </>
-              {playerPoints.map((point, index) => (
-                <>
-                  <Text>
-                    {index === 0 ? 'Participants' : nth(index)}:
-                  </Text>
-                  <NumberInput
-                    value={point}
-                    minusPressHandler={() => handlePlayerPointPress(index, 'minus')}
-                    plusPressHandler={() => handlePlayerPointPress(index, 'plus')}
-                    min={0}
-                    max={100}
-                  />
-                </>
-              ))}
-            </View>
+                {playerPoints.map((point, index) => (
+                  <View key={index}>
+                    <Text>
+                      {index === 0 ? 'Participants' : nth(index)}:
+                    </Text>
+                    <NumberInput
+                      value={point}
+                      minusPressHandler={() => handlePlayerPointPress(index, 'minus')}
+                      plusPressHandler={() => handlePlayerPointPress(index, 'plus')}
+                      min={0}
+                      max={100}
+                    />
+                  </View>
+                ))}
+              </View>
+            </>
           </View>
         </View>
         <View style={{padding: 10}}>

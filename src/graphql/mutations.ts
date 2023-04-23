@@ -13,10 +13,9 @@ export const createGames = /* GraphQL */ `
       iconName
       minNumberOfTeams
       maxNumberOfTeams
-      minNumberOfPlayer
-      maxNumberOfPlayers
-      playerPoints
-      teamPoints
+      minNumberOfPlayersPerTeam
+      maxNumberOfPlayersPerTeam
+      points
       rules
       canHaveMultipleWinners
       createdAt
@@ -38,10 +37,9 @@ export const updateGames = /* GraphQL */ `
       iconName
       minNumberOfTeams
       maxNumberOfTeams
-      minNumberOfPlayer
-      maxNumberOfPlayers
-      playerPoints
-      teamPoints
+      minNumberOfPlayersPerTeam
+      maxNumberOfPlayersPerTeam
+      points
       rules
       canHaveMultipleWinners
       createdAt
@@ -63,10 +61,9 @@ export const deleteGames = /* GraphQL */ `
       iconName
       minNumberOfTeams
       maxNumberOfTeams
-      minNumberOfPlayer
-      maxNumberOfPlayers
-      playerPoints
-      teamPoints
+      minNumberOfPlayersPerTeam
+      maxNumberOfPlayersPerTeam
+      points
       rules
       canHaveMultipleWinners
       createdAt

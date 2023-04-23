@@ -38,30 +38,22 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
-                "minNumberOfPlayer": {
-                    "name": "minNumberOfPlayer",
+                "minNumberOfPlayersPerTeam": {
+                    "name": "minNumberOfPlayersPerTeam",
                     "isArray": false,
                     "type": "Int",
                     "isRequired": true,
                     "attributes": []
                 },
-                "maxNumberOfPlayers": {
-                    "name": "maxNumberOfPlayers",
+                "maxNumberOfPlayersPerTeam": {
+                    "name": "maxNumberOfPlayersPerTeam",
                     "isArray": false,
                     "type": "Int",
                     "isRequired": false,
                     "attributes": []
                 },
-                "playerPoints": {
-                    "name": "playerPoints",
-                    "isArray": true,
-                    "type": "Int",
-                    "isRequired": true,
-                    "attributes": [],
-                    "isArrayNullable": true
-                },
-                "teamPoints": {
-                    "name": "teamPoints",
+                "points": {
+                    "name": "points",
                     "isArray": true,
                     "type": "Int",
                     "isRequired": true,
@@ -1035,5 +1027,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "c35864c76d2c492f6df9b94c8933f95b"
+    "version": "fba409e1a711cb1a2708585b88de23ff"
 };

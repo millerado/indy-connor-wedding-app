@@ -4,10 +4,9 @@ type Games @model @auth(rules: [{allow: public}]) {
   iconName: String!
   minNumberOfTeams: Int!
   maxNumberOfTeams: Int
-  minNumberOfPlayer: Int!
-  maxNumberOfPlayers: Int
-  playerPoints: [Int!]
-  teamPoints: [Int!]
+  minNumberOfPlayersPerTeam: Int!
+  maxNumberOfPlayersPerTeam: Int
+  points: [Int!]
   rules: String
   canHaveMultipleWinners: Boolean!
 }

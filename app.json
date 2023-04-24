@@ -56,6 +56,11 @@
           "iosDisplayInForeground": true
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "7c952a84-f6d0-4e33-a56f-02d22d4a3fbb"
+      }
+    }
   }
 }

@@ -11,6 +11,7 @@ import {
   HomeScreen,
   InfoScreen,
   ManageGameScreen,
+  MostLikedPostsScreen,
   NotificationsScreen,
   ScheduleScreen,
   StandingsScreen,
@@ -59,6 +60,7 @@ const HomeStackScreen = () => {
       <HomeStack.Screen name="Create Post" component={CreatePostScreen} />
       <HomeStack.Screen name="Games List" component={GamesScreen} />
       <HomeStack.Screen name="Manage Game" component={ManageGameScreen} />
+      <HomeStack.Screen name="Most Liked Posts" component={MostLikedPostsScreen} />
     </HomeStack.Navigator>
   );
 };

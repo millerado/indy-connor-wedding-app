@@ -81,6 +81,11 @@ const SettingsModal = () => {
     });
   };
 
+  const goToMostLikedPage = async () => {
+    closeModal();
+    navigation.push("Most Liked Posts");
+  }
+
   const goToGamesPage = async () => {
     closeModal();
     navigation.push("Games List");
@@ -226,6 +231,13 @@ const SettingsModal = () => {
                     <View style={{ paddingTop: 10 }}>
                       <Button onPress={goToGamesPage} >
                         Manage Games
+                      </Button>
+                    </View>
+                  )}
+                  {authStatus.isAdmin && (
+                    <View style={{ paddingTop: 10 }}>
+                      <Button onPress={goToMostLikedPage} >
+                        Most Liked Posts
                       </Button>
                     </View>
                   )}

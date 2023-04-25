@@ -34,7 +34,6 @@ const reusableStyles = theme => {
     },
     modalContentWrapper: {
       alignItems: 'center',
-      height: '100%'
     },
     modalScrollView: {
       padding: 10,

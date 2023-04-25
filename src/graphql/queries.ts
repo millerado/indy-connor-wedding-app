@@ -2,6 +2,158 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getGames = /* GraphQL */ `
+  query GetGames($id: ID!) {
+    getGames(id: $id) {
+      id
+      name
+      iconName
+      minNumberOfTeams
+      maxNumberOfTeams
+      minNumberOfPlayersPerTeam
+      maxNumberOfPlayersPerTeam
+      points
+      rules
+      canHaveMultipleWinners
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const listGames = /* GraphQL */ `
+  query ListGames(
+    $filter: ModelGamesFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listGames(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        name
+        iconName
+        minNumberOfTeams
+        maxNumberOfTeams
+        minNumberOfPlayersPerTeam
+        maxNumberOfPlayersPerTeam
+        points
+        rules
+        canHaveMultipleWinners
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncGames = /* GraphQL */ `
+  query SyncGames(
+    $filter: ModelGamesFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncGames(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        name
+        iconName
+        minNumberOfTeams
+        maxNumberOfTeams
+        minNumberOfPlayersPerTeam
+        maxNumberOfPlayersPerTeam
+        points
+        rules
+        canHaveMultipleWinners
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const getStandingsPeople = /* GraphQL */ `
+  query GetStandingsPeople($id: ID!) {
+    getStandingsPeople(id: $id) {
+      id
+      userId
+      rank
+      points
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const listStandingsPeople = /* GraphQL */ `
+  query ListStandingsPeople(
+    $filter: ModelStandingsPeopleFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listStandingsPeople(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        userId
+        rank
+        points
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncStandingsPeople = /* GraphQL */ `
+  query SyncStandingsPeople(
+    $filter: ModelStandingsPeopleFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncStandingsPeople(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        userId
+        rank
+        points
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
 export const getAdminFavorites = /* GraphQL */ `
   query GetAdminFavorites($id: ID!) {
     getAdminFavorites(id: $id) {
@@ -63,9 +215,9 @@ export const syncAdminFavorites = /* GraphQL */ `
     }
   }
 `;
-export const getStandings = /* GraphQL */ `
-  query GetStandings($id: ID!) {
-    getStandings(id: $id) {
+export const getStandingsTeams = /* GraphQL */ `
+  query GetStandingsTeams($id: ID!) {
+    getStandingsTeams(id: $id) {
       id
       teamId
       rank
@@ -78,13 +230,13 @@ export const getStandings = /* GraphQL */ `
     }
   }
 `;
-export const listStandings = /* GraphQL */ `
-  query ListStandings(
-    $filter: ModelStandingsFilterInput
+export const listStandingsTeams = /* GraphQL */ `
+  query ListStandingsTeams(
+    $filter: ModelStandingsTeamsFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listStandings(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listStandingsTeams(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
         teamId
@@ -101,14 +253,14 @@ export const listStandings = /* GraphQL */ `
     }
   }
 `;
-export const syncStandings = /* GraphQL */ `
-  query SyncStandings(
-    $filter: ModelStandingsFilterInput
+export const syncStandingsTeams = /* GraphQL */ `
+  query SyncStandingsTeams(
+    $filter: ModelStandingsTeamsFilterInput
     $limit: Int
     $nextToken: String
     $lastSync: AWSTimestamp
   ) {
-    syncStandings(
+    syncStandingsTeams(
       filter: $filter
       limit: $limit
       nextToken: $nextToken
@@ -221,6 +373,7 @@ export const getTeams = /* GraphQL */ `
         nextToken
         startedAt
       }
+      iconName
       createdAt
       updatedAt
       _version
@@ -240,6 +393,7 @@ export const listTeams = /* GraphQL */ `
         id
         name
         colorCode
+        iconName
         createdAt
         updatedAt
         _version
@@ -268,6 +422,7 @@ export const syncTeams = /* GraphQL */ `
         id
         name
         colorCode
+        iconName
         createdAt
         updatedAt
         _version

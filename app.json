@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "indy-connor-wedding-app",
-    "slug": "indy-connor-wedding-app",
+    "name": "Conndigo",
+    "slug": "camp-conndigo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -12,13 +12,59 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/7c952a84-f6d0-4e33-a56f-02d22d4a3fbb"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.connortyrrell.campconndigo",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "googleServicesFile": "./google-services.json",
+      "package": "com.connortyrrell.campconndigo",
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.NOTIFICATIONS",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "useNextNotificationsApi": true
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends.",
+          "cameraPermission": "The app accesses your camera to let you share photos with your friends."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/adaptive-icon.png",
+          "color": "#ffffff",
+          "sounds": [],
+          "androidMode": "default",
+          "androidCollapsedTitle": "Camp Conndigo",
+          "iosDisplayInForeground": true
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "7c952a84-f6d0-4e33-a56f-02d22d4a3fbb"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }

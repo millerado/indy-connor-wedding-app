@@ -7,11 +7,14 @@ import FAQModal from '../FAQModal/FAQModal';
 import {
   Divider,
   Text,
+  TextSizes,
   Button,
   ConditionalWrapper,
   Icon,
 } from "../../components";
+import FormatTextWithMentions from '../FormatTextWithMentions/FormatTextWithMentions';
 import { DataStore } from "../../utils";
+import { typography } from '../../styles';
 import styles from './FAQItemStyles';
 
 const FAQItem = (props) => {
@@ -105,6 +108,9 @@ const FAQItem = (props) => {
               title={question}
               titleStyle={ss.questionStyle}
               titleNumberOfLines={3}
+              right={() => (
+                <Icon name={expanded ? 'expanded' : 'collapsed'} size={typography.fontSizeL} color={theme.colors.onPrimary} />
+              )}
             >
               <ConditionalWrapper
                 condition={authStatus.isAdmin}
@@ -112,12 +118,9 @@ const FAQItem = (props) => {
                   <Pressable onPress={openMenu}>{children}</Pressable>
                 )}
               >
-                <List.Item
-                  style={ss.answerWrapper}
-                  title={answer}
-                  titleStyle={ss.answerStyle}
-                  titleNumberOfLines={100}
-                />
+                <View style={{padding: 10, paddingLeft: 15}}>
+                  <FormatTextWithMentions text={answer} size={TextSizes.L} />
+                </View>
               </ConditionalWrapper>
             </List.Accordion>
           </List.Section>

@@ -6,8 +6,10 @@ import { Icon, Text, Button, Modal, TextInput, TextSizes } from "../../component
 import { typography } from "../../styles";
 import { ThemeContext, AuthContext } from "../../contexts";
 import { sendGlobalPushNotification, DataStore } from '../../utils';
+import { Users, Teams, StandingsPeople, StandingsTeams } from '../../models';
 import SelectUserModal from '../SelectUserModal/SelectUserModal';
 import styles from "./SettingsModalStyles";
+import { Predicates } from "aws-amplify";
 
 const SettingsModal = () => {
   const [view, setView] = useState("settings");
@@ -79,6 +81,16 @@ const SettingsModal = () => {
     });
   };
 
+  const goToMostLikedPage = async () => {
+    closeModal();
+    navigation.push("Most Liked Posts");
+  }
+
+  const goToGamesPage = async () => {
+    closeModal();
+    navigation.push("Games List");
+  };
+
   const openSelectUserModal = () => {
     closeModal();
     // Timeout only here to let one modal disappear before the other appears (iOS breaks if two mdoals are open)
@@ -96,6 +108,59 @@ const SettingsModal = () => {
     await DataStore.stop();
     await DataStore.clear();
     await DataStore.start();
+  }
+
+  const createFakeStandings = async () => {
+    await DataStore.delete(StandingsPeople, Predicates.ALL);
+    await DataStore.delete(StandingsTeams, Predicates.ALL);
+    const users = await DataStore.query(Users);
+    const teams = await DataStore.query(Teams);
+    const standingsPeople = users.map((user) => {
+      return {
+        userId: user.id,
+        teamId: user.teamsID,
+        points: Math.floor(Math.random() * 50),
+        rank: 0
+      }
+    });
+    standingsPeople.sort((a, b) => b.points - a.points);
+    standingsPeople.forEach((standing, index) => {
+      standing.rank = index + 1;
+    });
+    const standingsTeams = teams.map((team) => {
+      // Sum up all points from stndingsPeople where teamId === team.id
+      const teamPoints = standingsPeople.reduce((acc, standing) => {
+        if (standing.teamId === team.id) {
+          return acc + standing.points;
+        }
+        return acc;
+      }, 0);
+
+      return {
+        teamId: team.id,
+        points: teamPoints,
+        rank: 0
+      }
+    });
+    standingsTeams.sort((a, b) => b.points - a.points);
+    standingsTeams.forEach((standing, index) => {
+      standing.rank = index + 1;
+    });
+
+    for(let i = 0; i < standingsPeople.length; i++) {
+      await DataStore.save(new StandingsPeople({
+        userId: standingsPeople[i].userId,
+        points: standingsPeople[i].points,
+        rank: standingsPeople[i].rank,
+      }));
+    }
+    for(let i = 0; i < standingsTeams.length; i++) {
+      await DataStore.save(new StandingsTeams({
+        teamId: standingsTeams[i].teamId,
+        rank: standingsTeams[i].rank,
+        points: standingsTeams[i].points,
+      }));
+    }
   }
 
   return (
@@ -162,10 +227,31 @@ const SettingsModal = () => {
                       </Button>
                     </View>
                   )}
+                  {authStatus.isAuthed && (
+                    <View style={{ paddingTop: 10 }}>
+                      <Button onPress={goToGamesPage} >
+                        Manage Games
+                      </Button>
+                    </View>
+                  )}
+                  {authStatus.isAdmin && (
+                    <View style={{ paddingTop: 10 }}>
+                      <Button onPress={goToMostLikedPage} >
+                        Most Liked Posts
+                      </Button>
+                    </View>
+                  )}
                   {authStatus.isAdmin && (
                     <View style={{ paddingTop: 10 }}>
                       <Button onPress={resetDatastore} >
                         Debug Reset Datastore
+                      </Button>
+                    </View>
+                  )}
+                  {authStatus.isAdmin && (
+                    <View style={{ paddingTop: 10 }}>
+                      <Button onPress={createFakeStandings} >
+                        Create Fake Standings
                       </Button>
                     </View>
                   )}

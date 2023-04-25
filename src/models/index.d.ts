@@ -6,6 +6,82 @@ import { LazyLoading, LazyLoadingDisabled, AsyncCollection } from "@aws-amplify/
 
 
 
+type EagerGames = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Games, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly name: string;
+  readonly iconName: string;
+  readonly minNumberOfTeams: number;
+  readonly maxNumberOfTeams?: number | null;
+  readonly minNumberOfPlayersPerTeam: number;
+  readonly maxNumberOfPlayersPerTeam?: number | null;
+  readonly points?: number[] | null;
+  readonly rules?: string | null;
+  readonly canHaveMultipleWinners: boolean;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyGames = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Games, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly name: string;
+  readonly iconName: string;
+  readonly minNumberOfTeams: number;
+  readonly maxNumberOfTeams?: number | null;
+  readonly minNumberOfPlayersPerTeam: number;
+  readonly maxNumberOfPlayersPerTeam?: number | null;
+  readonly points?: number[] | null;
+  readonly rules?: string | null;
+  readonly canHaveMultipleWinners: boolean;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Games = LazyLoading extends LazyLoadingDisabled ? EagerGames : LazyGames
+
+export declare const Games: (new (init: ModelInit<Games>) => Games) & {
+  copyOf(source: Games, mutator: (draft: MutableModel<Games>) => MutableModel<Games> | void): Games;
+}
+
+type EagerStandingsPeople = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<StandingsPeople, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId?: string | null;
+  readonly rank?: number | null;
+  readonly points?: number | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyStandingsPeople = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<StandingsPeople, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId?: string | null;
+  readonly rank?: number | null;
+  readonly points?: number | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type StandingsPeople = LazyLoading extends LazyLoadingDisabled ? EagerStandingsPeople : LazyStandingsPeople
+
+export declare const StandingsPeople: (new (init: ModelInit<StandingsPeople>) => StandingsPeople) & {
+  copyOf(source: StandingsPeople, mutator: (draft: MutableModel<StandingsPeople>) => MutableModel<StandingsPeople> | void): StandingsPeople;
+}
+
 type EagerAdminFavorites = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<AdminFavorites, 'id'>;
@@ -34,36 +110,36 @@ export declare const AdminFavorites: (new (init: ModelInit<AdminFavorites>) => A
   copyOf(source: AdminFavorites, mutator: (draft: MutableModel<AdminFavorites>) => MutableModel<AdminFavorites> | void): AdminFavorites;
 }
 
-type EagerStandings = {
+type EagerStandingsTeams = {
   readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Standings, 'id'>;
+    identifier: ManagedIdentifier<StandingsTeams, 'id'>;
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
   readonly teamId?: string | null;
-  readonly rank?: string | null;
-  readonly points?: string | null;
+  readonly rank?: number | null;
+  readonly points?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
-type LazyStandings = {
+type LazyStandingsTeams = {
   readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Standings, 'id'>;
+    identifier: ManagedIdentifier<StandingsTeams, 'id'>;
     readOnlyFields: 'createdAt' | 'updatedAt';
   };
   readonly id: string;
   readonly teamId?: string | null;
-  readonly rank?: string | null;
-  readonly points?: string | null;
+  readonly rank?: number | null;
+  readonly points?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
 
-export declare type Standings = LazyLoading extends LazyLoadingDisabled ? EagerStandings : LazyStandings
+export declare type StandingsTeams = LazyLoading extends LazyLoadingDisabled ? EagerStandingsTeams : LazyStandingsTeams
 
-export declare const Standings: (new (init: ModelInit<Standings>) => Standings) & {
-  copyOf(source: Standings, mutator: (draft: MutableModel<Standings>) => MutableModel<Standings> | void): Standings;
+export declare const StandingsTeams: (new (init: ModelInit<StandingsTeams>) => StandingsTeams) & {
+  copyOf(source: StandingsTeams, mutator: (draft: MutableModel<StandingsTeams>) => MutableModel<StandingsTeams> | void): StandingsTeams;
 }
 
 type EagerPosts = {
@@ -179,6 +255,7 @@ type EagerTeams = {
   readonly name: string;
   readonly colorCode: string;
   readonly Users?: (Users | null)[] | null;
+  readonly iconName?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -192,6 +269,7 @@ type LazyTeams = {
   readonly name: string;
   readonly colorCode: string;
   readonly Users: AsyncCollection<Users>;
+  readonly iconName?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

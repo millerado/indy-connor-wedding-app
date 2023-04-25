@@ -33,6 +33,7 @@
     "react": "18.1.0",
     "react-native": "0.70.5",
     "react-native-controlled-mentions": "^2.2.5",
+    "react-native-element-dropdown": "^2.9.0",
     "react-native-gesture-handler": "~2.8.0",
     "react-native-image-viewing": "^0.2.2",
     "react-native-indicators": "^0.17.0",
@@ -46,8 +47,7 @@
     "react-native-zoom-reanimated": "^1.1.2",
     "react-string-replace": "^1.1.0",
     "shuffle-seed": "^1.1.6",
-    "typescript": "^4.9.4",
-    "undefined": "@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView"
+    "typescript": "^4.9.4"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

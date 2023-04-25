@@ -16,7 +16,8 @@ const bluesMedium = '#00627C';
 const bluesLight = '#97AFBA';
 const white = '#ffffff';
 const black = '#000000';
-const red = '#FF0000';
+// const red = '#FF0000';
+const red = 'rgba(179, 38, 30, 1)';
 const error = '#b55464';
 
 
@@ -46,6 +47,8 @@ export const lightTheme = {
     onModalHeader: greensSuperLight,
     primary: primaryGreen,
     onPrimary: greensSuperLight,
+    disabled: lightGreenGray,
+    onDisabled: primaryGreen,
   },
 };
 
@@ -72,5 +75,7 @@ export const darkTheme = {
     onModalHeader: greensSuperLight,
     primary: greensSuperLight,
     onPrimary: primaryGreen,
+    disabled: darkGreenGray,
+    onDisabled: greensSuperLight,
   },
 };

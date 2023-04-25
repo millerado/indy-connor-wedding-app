@@ -1,11 +1,11 @@
 import React, { memo } from "react";
-import { Linking } from 'react-native';
+import { Linking, View } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "react-native-paper";
 import reactStringReplace from 'react-string-replace';
-import { Text, } from "../../components";
+import { Text } from "../../components";
 
-const FormatTextWithMentions = ({ text }) => {
+const FormatTextWithMentions = ({ text, ...restOfProps }) => {
   if (text) {
     const theme = useTheme();
     const navigation = useNavigation();
@@ -17,11 +17,11 @@ const FormatTextWithMentions = ({ text }) => {
       navigation.push("User", { userId: userId });
     };
 
-    // Regex matches and replace on [username](userId)
+    // Regex matches on [username](userId)
     const regex = /@\[(.*?)\]\((.*?)\)/g;
     const matches = text.match(regex);
 
-    // Regex matches and replace on URLs
+    // Regex matches on URLs
     const regexUrl = /(https?:\/\/[^\s]+)/g;
     const matchesUrl = text.toLowerCase().match(regexUrl);
 
@@ -32,12 +32,16 @@ const FormatTextWithMentions = ({ text }) => {
     // Regex matches on _italic text_
     const regexItalic = /_(.*?)_/g;
     const matchesItalic = text.match(regexItalic);
+
+    // Regex matches on a bullet (•) and a space that starts a line, along with all text on that line
+    const regexBullet = /^•.*$/gm;
+    const matchesBullet = text.match(regexBullet);
     
     if (matches) {
       matches.forEach((match) => {
         const [, username, userId] = match.match(/@\[(.*?)\]\((.*?)\)/);
         text = reactStringReplace(text, match, (match, i) => (
-          <Text key={`${i}${username}${userId}${match}`} onPress={() => goToUserScreen(userId)} color={theme.colors.primary} bold>@{username}</Text>
+          <Text key={`${i}${username}${userId}${match}`} onPress={() => goToUserScreen(userId)} color={theme.colors.primary} bold {...restOfProps}>@{username}</Text>
         ));
       });
     }
@@ -45,7 +49,7 @@ const FormatTextWithMentions = ({ text }) => {
     if (matchesUrl) {
       matchesUrl.forEach((match) => {
         text = reactStringReplace(text, match, (match, i) => (
-          <Text key={`${i}${match}`} onPress={() => Linking.openURL(match)} color={theme.colors.primaryContainer}>{match}</Text>
+          <Text key={`${i}${match}`} onPress={() => Linking.openURL(match)} color={theme.colors.primaryContainer} {...restOfProps}>{match}</Text>
         ));
       });
     }
@@ -54,7 +58,7 @@ const FormatTextWithMentions = ({ text }) => {
       matchesBold.forEach((match) => {
         const [, boldText] = match.match(/\*(.*?)\*/);
         text = reactStringReplace(text, match, (match, i) => (
-          <Text key={`${i}${boldText}${match}`} bold>{boldText}</Text>
+          <Text key={`${i}${boldText}${match}`} bold {...restOfProps}>{boldText}</Text>
         ));
       });
     }
@@ -63,12 +67,26 @@ const FormatTextWithMentions = ({ text }) => {
       matchesItalic.forEach((match) => {
         const [, italicText] = match.match(/_(.*?)_/);
         text = reactStringReplace(text, match, (match, i) => (
-          <Text key={`${i}${italicText}${match}`} italic>{italicText}</Text>
+          <Text key={`${i}${italicText}${match}`} italic {...restOfProps}>{italicText}</Text>
         ));
       });
     }
 
-    return <Text>{text}</Text>;
+    if (matchesBullet) {
+      matchesBullet.forEach((match) => {
+        const [, bulletText] = match.match(/^•/gm);
+        text = reactStringReplace(text, match, (match, i) => (
+          <View style={{flexDirection: 'row', paddingLeft: 20}}>
+          <Text>•</Text>
+            <View style={{paddingLeft: 5}}>
+              <Text key={`${i}${bulletText}${match}`} {...restOfProps}>{match.substring(2)}</Text>
+            </View>
+          </View>
+        ));
+      });
+    }
+
+    return <Text {...restOfProps}>{text}</Text>;
   }
   return null;
 }

@@ -1,5 +1,5 @@
 import { StyleSheet, Dimensions } from 'react-native';
-import * as typography from '../typography/typography';
+import typography from '../typography/typography';
 
 const dim = Dimensions.get('screen');
 const { width, height } = dim;
@@ -18,7 +18,6 @@ const reusableStyles = theme => {
     },
     modalBody: {
       backgroundColor: theme.colors.background,
-      // backgroundColor: theme.colors.white,
       borderRadius: 10,
       justifyContent: 'flex-start',
       overflow: 'hidden',

@@ -1,12 +1,4 @@
-import { lightTheme, darkTheme }  from './themes/themes';
-import calcDimensions from './calcDimensions/calcDimensions';
-import * as typography from './typography/typography';
-import reusableStyles from './reusableStyles/reusableStyles';
-
-export {
-  calcDimensions,
-  lightTheme,
-  darkTheme,
-  typography,
-  reusableStyles,
-}
+export { lightTheme, darkTheme }  from './themes/themes';
+export { default as calcDimensions } from './calcDimensions/calcDimensions';
+export { default as typography } from './typography/typography';
+export { default as reusableStyles } from './reusableStyles/reusableStyles';

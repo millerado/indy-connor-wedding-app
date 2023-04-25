@@ -22,7 +22,7 @@ interface TextProps extends PaperTextProps {
   italic?: boolean;
   numberOfLines?: number;
   style?: any;
-  color?: string;
+  color?: string | undefined
 }
 
 const Text = (props: TextProps) => {

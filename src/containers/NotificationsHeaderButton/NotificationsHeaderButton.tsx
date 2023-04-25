@@ -10,10 +10,6 @@ import styles from "./NotificationsHeaderButtonStyles";
 const NotificationsHeaderButton = () => {
   const navigation = useNavigation();
 
-  // Get theme Context
-  const themeContext = useContext(ThemeContext);
-  const { themeName, setThemeName } = themeContext;
-
   // Get the Auth Context
   const authStatus = useContext(AuthContext).authStatus;
 
@@ -21,6 +17,7 @@ const NotificationsHeaderButton = () => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
 
+  console.log('-- theme --', theme)
   return (
     <Pressable onPress={() => navigation.push('Notifications')}>
       <Icon name='notifications' color={theme.colors.primary} size={typography.fontSizeXXL} />

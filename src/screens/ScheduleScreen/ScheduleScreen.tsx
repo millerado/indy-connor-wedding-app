@@ -1,17 +1,23 @@
-import React, { useState, useEffect, useContext, useMemo } from 'react';
-import { View, SectionList, Pressable } from 'react-native';
+import React, { useState, useEffect, useContext, useMemo, useCallback } from "react";
+import { View, FlatList, Platform, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Schedule } from '../../models';
-import { Text, Divider, Icon, ActivityIndicator, TextSizes } from '../../components';
-import { ScheduleItem, ScheduleModal } from '../../containers';
-import { DataStore } from '../../utils';
-import { AuthContext } from '../../contexts';
-import styles from './ScheduleScreenStyles';
+import { Schedule } from "../../models";
+import {
+  Text,
+  Divider,
+  Icon,
+  ActivityIndicator,
+  Tabs,
+} from "../../components";
+import { ScheduleItem, ScheduleModal } from "../../containers";
+import { DataStore } from "../../utils";
+import { AuthContext } from "../../contexts";
+import styles from "./ScheduleScreenStyles";
 
 const emptyScheduleData = [
-  { day: 'Friday', data: [] },
-  { day: 'Saturday', data: [] },
-  { day: 'Sunday', data: [] },
+  { day: "Friday", data: [] },
+  { day: "Saturday", data: [] },
+  { day: "Sunday", data: [] },
 ];
 
 const ScheduleScreen = ({ navigation, route }) => {
@@ -21,6 +27,7 @@ const ScheduleScreen = ({ navigation, route }) => {
   const [scheduleData, setScheduleData] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [selectedDay, setSelectedDay] = useState("Friday");
 
   const authStatus = useContext(AuthContext).authStatus;
 
@@ -36,27 +43,40 @@ const ScheduleScreen = ({ navigation, route }) => {
     return (
       <Pressable onPress={openModal}>
         <View>
-          <Icon
-            name={'addItem'}
-            color={theme.colors.primary}
-          />
+          <Icon name={"addItem"} color={theme.colors.primary} />
         </View>
       </Pressable>
     );
-  }
+  };
+
+  const keyExtractor = useCallback((item) => item.id, []);
+
+  const renderListHeader = () => {
+    const daysArray = emptyScheduleData.map((item, index) => {
+      return item.day;
+    });
+
+    return (
+      <Tabs 
+        options={daysArray}
+        selectedOption={selectedDay}
+        setSelectedOption={setSelectedDay}
+      />
+    )
+  };
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => authStatus?.isAdmin ? addNewButton() : null,
+      headerRight: () => (authStatus?.isAdmin ? addNewButton() : null),
     });
   }, [authStatus, theme]);
 
   useEffect(() => {
     const newScheduleData = [...emptyScheduleData];
-    const days = 'Friday,Saturday,Sunday'.split(',');
+    const days = "Friday,Saturday,Sunday".split(",");
     for (let i = 0; i < days.length; i++) {
       const day = days[i];
-      const dayData = rawScheduleData.filter(item => item.day === day);
+      const dayData = rawScheduleData.filter((item) => item.day === day);
       if (dayData.length > 0) {
         dayData.sort((a, b) => a.sortOrder - b.sortOrder);
         newScheduleData[i].data = dayData;
@@ -66,46 +86,49 @@ const ScheduleScreen = ({ navigation, route }) => {
   }, [rawScheduleData]);
 
   useEffect(() => {
-    const subscription = DataStore.observeQuery(Schedule).subscribe(({ items }) => {
-      try {
-        setRawScheduleData(items);
-        if (dataLoading) {
-          setDataLoading(false);
+    const subscription = DataStore.observeQuery(Schedule).subscribe(
+      ({ items }) => {
+        try {
+          setRawScheduleData(items);
+          if (dataLoading) {
+            setDataLoading(false);
+          }
+          // console.log('-- Fetched Data --', dt);
+        } catch (err) {
+          console.log("error fetching Data", err);
         }
-        // console.log('-- Fetched Data --', dt);
-      } catch (err) { console.log('error fetching Data', err) }
-    });
+      }
+    );
 
     return () => subscription.unsubscribe();
   }, []);
 
-  return ( 
+  return (
     <View style={ss.pageWrapper}>
-      <ScheduleModal showModal={showModal} closeModal={closeModal} modalType={'create'} />
+      <ScheduleModal
+        showModal={showModal}
+        closeModal={closeModal}
+        modalType={"create"}
+      />
       {dataLoading || rawScheduleData.length === 0 ? (
         <View style={ss.pageActivityIndicatorWrapper}>
           <ActivityIndicator size={60} />
         </View>
       ) : (
-        <>
-          <SectionList
-            renderItem={({ item }) => (
-              <ScheduleItem item={item} />
-            )}
-            renderSectionHeader={({ section: { day } }) => (
-              <View style={ss.sectionHeader}>
-                <Text color={theme.colors.onPrimary} size={TextSizes.XL} bold>{day}</Text>
-              </View>
-            )}
-            sections={scheduleData}
-            keyExtractor={(item, index) => item + index}
-            keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="on-drag"
-            style={{ width: '100%' }}
-            ItemSeparatorComponent={Divider}
-          />
-        </>
-
+        <FlatList
+          data={scheduleData.find((item) => item.day === selectedDay).data}
+          renderItem={({ item }) => <ScheduleItem item={item} />}
+          keyExtractor={keyExtractor}
+          ListHeaderComponent={renderListHeader}
+          stickyHeaderIndices={[0]}
+          ItemSeparatorComponent={Divider}
+          style={{ width: '100%'}}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          removeClippedSubviews={Platform.OS === 'android'} // Saves memory, has issues on iOS
+          maxToRenderPerBatch={10} // Also the default
+          initialNumToRender={10} // Also the default
+        />
       )}
     </View>
   );

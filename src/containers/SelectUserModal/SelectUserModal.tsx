@@ -76,9 +76,11 @@ const SelectUserModal = (props: SelectUserModalProps) => {
   };
 
   useEffect(() => {
-    const fetchUsers = async (dt) => {
-
-      const newUsers = dt.map((u) => {
+    // Subscribe to Users
+    const usersSubscription = DataStore.observeQuery(Users, Predicates.ALL, {
+      sort: (u) => u.name(SortDirection.ASCENDING),
+    }).subscribe(({ items }) => {
+      const newUsers = items.map((u) => {
         return {
           id: u.id,
           name: u.name,
@@ -94,19 +96,12 @@ const SelectUserModal = (props: SelectUserModalProps) => {
           setDisplayedUsers(newUsers);
         }
       }
-    };
-
-    // Subscribe to Users
-    const usersSubscription = DataStore.observeQuery(Users).subscribe(({ items }) => {
-      if (showModal) {
-        fetchUsers(items);
-      }
     });
 
     return () => {
       usersSubscription.unsubscribe();
     };
-  }, [showModal]);
+  }, []);
 
   return (
     <Modal
@@ -131,28 +126,28 @@ const SelectUserModal = (props: SelectUserModalProps) => {
       >
         <View style={[ss.modalBackground, fullScreen ? ss.modalFullScreenBackground : undefined]}>
           <View style={fullScreen ? ss.modalFullScreenBody : ss.modalBody}>
-            <View style={[ss.modalHeader, fullScreen ? ss.modalFullScreenHeader : undefined]}>
-              <View style={{ flex: 1, alignItems: "center" }}>
-                <Text color={theme.colors.onModalHeader} bold size={TextSizes.L}>
-                  Let us know who you are
-                </Text>
-                <TextInput
-                  clearButtonMode="while-editing"
-                  maxLength={50}
-                  returnKeyType="done"
-                  label="Search for a User"
-                  dense
-                  value={searchText}
-                  autoCapitalize="none"
-                  enablesReturnKeyAutomatically={true}
-                  autoComplete="name"
-                  textContentType="name"
-                  style={[ss.textInput, ss.modalTextInput]}
-                  onChangeText={(text) => updateSearchtext(text)}
-                />
-              </View>
-            </View>
             <View style={ss.modalContentWrapper}>
+              <View style={[ss.modalHeader, fullScreen ? ss.modalFullScreenHeader : undefined]}>
+                <View style={{ flex: 1, alignItems: "center" }}>
+                  <Text color={theme.colors.onModalHeader} bold size={TextSizes.L}>
+                    Let us know who you are
+                  </Text>
+                  <TextInput
+                    clearButtonMode="while-editing"
+                    maxLength={50}  
+                    returnKeyType="done"
+                    label="Search for a User"
+                    dense
+                    value={searchText}
+                    autoCapitalize="none"
+                    enablesReturnKeyAutomatically={true}
+                    autoComplete="name"
+                    textContentType="name"
+                    style={[ss.textInput, ss.modalTextInput]}
+                    onChangeText={(text) => updateSearchtext(text)}
+                  />
+                </View>
+              </View>
               <ScrollView
                 style={ss.modalScrollView}
                 keyboardShouldPersistTaps="handled"

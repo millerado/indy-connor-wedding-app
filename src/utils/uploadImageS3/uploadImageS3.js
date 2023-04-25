@@ -12,7 +12,7 @@ const mimeTypes = [
   {extension: 'gif', mime: 'image/gif'},
 ]
 
-export const takePhoto = async (uploadImageCallback, multipleImages = false) => {
+const takePhoto = async (uploadImageCallback, multipleImages = false) => {
   let result = await ImagePicker.launchCameraAsync({
     mediaTypes: "Images",
     exif: true,
@@ -22,7 +22,7 @@ export const takePhoto = async (uploadImageCallback, multipleImages = false) => 
   handleImagePicked(result, uploadImageCallback);
 };
 
-export const pickImage = async (uploadImageCallback, multipleImages = false) => {
+const pickImage = async (uploadImageCallback, multipleImages = false) => {
   let result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: "Images",
     exif: true,
@@ -109,4 +109,9 @@ const fetchImageFromUri = async (uri) => {
   const response = await fetch(uri);
   const blob = await response.blob();
   return blob;
+};
+
+export default {
+  takePhoto,
+  pickImage,
 };

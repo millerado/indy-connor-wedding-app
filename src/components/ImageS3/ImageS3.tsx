@@ -148,6 +148,7 @@ const ImageS3 = (props) => {
             style={{ width: dimensions.width, height: dimensions.height }}
             imageStyle={{ borderRadius: dimensions.borderRadius }}
             resizeMode={multipleImages ? 'contain' : 'cover'}
+            loadingIndicatorSource={() => showPlaceholder(false)}
             {...restOfProps}
           >
             {children}

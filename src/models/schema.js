@@ -1,5 +1,194 @@
 export const schema = {
     "models": {
+        "Games": {
+            "name": "Games",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "name": {
+                    "name": "name",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "iconName": {
+                    "name": "iconName",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "minNumberOfTeams": {
+                    "name": "minNumberOfTeams",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "maxNumberOfTeams": {
+                    "name": "maxNumberOfTeams",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "minNumberOfPlayersPerTeam": {
+                    "name": "minNumberOfPlayersPerTeam",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "maxNumberOfPlayersPerTeam": {
+                    "name": "maxNumberOfPlayersPerTeam",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "points": {
+                    "name": "points",
+                    "isArray": true,
+                    "type": "Int",
+                    "isRequired": true,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "rules": {
+                    "name": "rules",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "canHaveMultipleWinners": {
+                    "name": "canHaveMultipleWinners",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Games",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "StandingsPeople": {
+            "name": "StandingsPeople",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "userId": {
+                    "name": "userId",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "rank": {
+                    "name": "rank",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "points": {
+                    "name": "points",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "StandingsPeople",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "AdminFavorites": {
             "name": "AdminFavorites",
             "fields": {
@@ -59,8 +248,8 @@ export const schema = {
                 }
             ]
         },
-        "Standings": {
-            "name": "Standings",
+        "StandingsTeams": {
+            "name": "StandingsTeams",
             "fields": {
                 "id": {
                     "name": "id",
@@ -79,14 +268,14 @@ export const schema = {
                 "rank": {
                     "name": "rank",
                     "isArray": false,
-                    "type": "String",
+                    "type": "Int",
                     "isRequired": false,
                     "attributes": []
                 },
                 "points": {
                     "name": "points",
                     "isArray": false,
-                    "type": "String",
+                    "type": "Int",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -108,7 +297,7 @@ export const schema = {
                 }
             },
             "syncable": true,
-            "pluralName": "Standings",
+            "pluralName": "StandingsTeams",
             "attributes": [
                 {
                     "type": "model",
@@ -455,6 +644,13 @@ export const schema = {
                             "teamsID"
                         ]
                     }
+                },
+                "iconName": {
+                    "name": "iconName",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
                 },
                 "createdAt": {
                     "name": "createdAt",
@@ -831,5 +1027,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "2c8a7175792c8a2fdb47326e9e655564"
+    "version": "fba409e1a711cb1a2708585b88de23ff"
 };

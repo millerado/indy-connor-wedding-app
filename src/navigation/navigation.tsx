@@ -7,18 +7,22 @@ import { SettingsModal, NotificationsHeaderButton } from '../containers';
 import { Icon } from '../components';
 import {
   CreatePostScreen,
-  FAQScreen,
+  GamesScreen,
   HomeScreen,
+  InfoScreen,
+  ManageGameScreen,
   MapScreen,
+  MostLikedPostsScreen,
   NotificationsScreen,
   ScheduleScreen,
+  StandingsScreen,
   UserScreen,
   ViewPostScreen,
 } from "../screens";
 
 const HomeStack = createNativeStackNavigator();
-const MapStack = createNativeStackNavigator();
-const FAQStack = createNativeStackNavigator();
+const StandingsStack = createNativeStackNavigator();
+const InfoStack = createNativeStackNavigator();
 const ScheduleStack = createNativeStackNavigator();
 
 // Single set of screen options for all tabs
@@ -55,28 +59,33 @@ const HomeStackScreen = () => {
       <HomeStack.Screen name="Notifications" component={NotificationsScreen} />
       <HomeStack.Screen name="View Post" component={ViewPostScreen} />
       <HomeStack.Screen name="Create Post" component={CreatePostScreen} />
+      <HomeStack.Screen name="Games List" component={GamesScreen} />
+      <HomeStack.Screen name="Manage Game" component={ManageGameScreen} />
+      <HomeStack.Screen name="Most Liked Posts" component={MostLikedPostsScreen} />
     </HomeStack.Navigator>
   );
 };
 
-const MapStackScreen = () => {
+const StandingsStackScreen = () => {
   const theme = useTheme();
   return (
-    <MapStack.Navigator screenOptions={getScreenOptions()} >
-      <MapStack.Screen name="Map" component={MapScreen} />
-    </MapStack.Navigator>
+    <StandingsStack.Navigator screenOptions={getScreenOptions()} >
+      <StandingsStack.Screen name="Standings" component={StandingsScreen} />
+      <HomeStack.Screen name="User" component={UserScreen} />
+    </StandingsStack.Navigator>
   );
 };
 
-const FAQStackScreen = () => {
+const InfoStackScreen = () => {
   const theme = useTheme();
   return (
-    <FAQStack.Navigator screenOptions={getScreenOptions()} >
-      <FAQStack.Screen
-        name="FAQ"
-        component={FAQScreen}
+    <InfoStack.Navigator screenOptions={getScreenOptions()} >
+      <InfoStack.Screen
+        name="Info"
+        component={InfoScreen}
       />
-    </FAQStack.Navigator>
+      <InfoStack.Screen name="Map" component={MapScreen} />
+    </InfoStack.Navigator>
   );
 };
 
@@ -108,10 +117,10 @@ const Navigation = () => {
               iconName = focused ? "home" : "homeFocused";
             } else if (route.name === "ScheduleStack") {
               iconName = focused ? "calendar" : "calendarFocused";
-            } else if (route.name === "MapStack") {
-              iconName = focused ? "map" : "mapFocused";
-            } else if (route.name === "FAQStack") {
-              iconName = focused ? "faq" : "faqFocused";
+            } else if (route.name === "StandingsStack") {
+              iconName = focused ? "standings" : "standingsFocused";
+            } else if (route.name === "InfoStack") {
+              iconName = focused ? "info" : "infoFocused";
             }
             return <Icon name={iconName} size={size} color={color}></Icon>;
           },
@@ -136,9 +145,9 @@ const Navigation = () => {
           options={{ headerShown: false, title: "Home" }}
         />
         <Tab.Screen
-          name="MapStack"
-          component={MapStackScreen}
-          options={{ headerShown: false, title: "Map" }}
+          name="StandingsStack"
+          component={StandingsStackScreen}
+          options={{ headerShown: false, title: "Standings" }}
         />
         <Tab.Screen
           name="ScheduleStack"
@@ -146,9 +155,9 @@ const Navigation = () => {
           options={{ headerShown: false, title: "Schedule" }}
         />
         <Tab.Screen
-          name="FAQStack"
-          component={FAQStackScreen}
-          options={{ headerShown: false, title: "FAQ" }}
+          name="InfoStack"
+          component={InfoStackScreen}
+          options={{ headerShown: false, title: "Info" }}
         />
       </Tab.Navigator>
     </>

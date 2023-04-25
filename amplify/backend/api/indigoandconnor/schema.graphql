@@ -1,13 +1,33 @@
+type Games @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  name: String!
+  iconName: String!
+  minNumberOfTeams: Int!
+  maxNumberOfTeams: Int
+  minNumberOfPlayersPerTeam: Int!
+  maxNumberOfPlayersPerTeam: Int
+  points: [Int!]
+  rules: String
+  canHaveMultipleWinners: Boolean!
+}
+
+type StandingsPeople @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: String
+  rank: Int
+  points: Int
+}
+
 type AdminFavorites @model @auth(rules: [{allow: public}]) {
   id: ID!
   image: String!
 }
 
-type Standings @model @auth(rules: [{allow: public}]) {
+type StandingsTeams @model @auth(rules: [{allow: public}]) {
   id: ID!
   teamId: String
-  rank: String
-  points: String
+  rank: Int
+  points: Int
 }
 
 type Posts @model @auth(rules: [{allow: public}]) {
@@ -26,6 +46,7 @@ type Teams @model @auth(rules: [{allow: public}]) {
   name: String!
   colorCode: String!
   Users: [Users] @hasMany(indexName: "byTeams", fields: ["id"])
+  iconName: String
 }
 
 type Users @model @auth(rules: [{allow: public}]) {

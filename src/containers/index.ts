@@ -1,43 +1,22 @@
-import AddCommentListView from "./AddCommentListView/AddCommentListView";
-import AddPostListHeader from "./AddPostListHeader/AddPostListHeader";
-import CaptionModal from "./CaptionModal/CaptionModal";
-import CommentModal from "./CommentModal/CommentModal";
-import FAQItem from "./FAQItem/FAQItem";
-import FAQModal from "./FAQModal/FAQModal";
-import FormatTextWithMentions from "./FormatTextWithMentions/FormatTextWithMentions";
-import ImageScroll from "./ImageScroll/ImageScroll";
-import IntroModal from "./IntroModal/IntroModal";
-import LikedByUsersModal from "./LikedByUsersModal/LikedByUsersModal";
-import NotificationsHeaderButton from './NotificationsHeaderButton/NotificationsHeaderButton';
-import PostPreview from "./PostPreview/PostPreview";
-import ScheduleItem from "./ScheduleItem/ScheduleItem";
-import ScheduleModal from "./ScheduleModal/ScheduleModal";
-import SelectUserModal from "./SelectUserModal/SelectUserModal";
-import SettingsModal from "./SettingsModal/SettingsModal";
-import SingleComment from "./SingleComment/SingleComment";
-import SingleLikingUser from "./SingleLikingUser/SingleLikingUser";
-import SingleUserInModal from "./SingleUserInModal/SingleUserInModal";
-import TaggingUserSuggestions from "./TaggingUserSuggestions/TaggingUserSuggestions";
-
-export {
-  AddCommentListView,
-  AddPostListHeader,
-  CaptionModal,
-  CommentModal,
-  FAQItem,
-  FAQModal,
-  FormatTextWithMentions,
-  ImageScroll,
-  IntroModal,
-  LikedByUsersModal,
-  NotificationsHeaderButton,
-  PostPreview,
-  ScheduleItem,
-  ScheduleModal,
-  SelectUserModal,
-  SettingsModal,
-  SingleComment,
-  SingleLikingUser,
-  SingleUserInModal,
-  TaggingUserSuggestions,
-}
+export { default as AddCommentListView } from "./AddCommentListView/AddCommentListView";
+export { default as AddPostListHeader } from "./AddPostListHeader/AddPostListHeader";
+export { default as CaptionModal } from "./CaptionModal/CaptionModal";
+export { default as CommentModal } from "./CommentModal/CommentModal";
+export { default as FAQItem } from "./FAQItem/FAQItem";
+export { default as FAQModal } from "./FAQModal/FAQModal";
+export { default as FormatTextWithMentions } from "./FormatTextWithMentions/FormatTextWithMentions";
+export { default as ImageScroll } from "./ImageScroll/ImageScroll";
+export { default as IntroModal } from "./IntroModal/IntroModal";
+export { default as LikedByUsersModal } from "./LikedByUsersModal/LikedByUsersModal";
+export { default as NotificationsHeaderButton } from './NotificationsHeaderButton/NotificationsHeaderButton';
+export { default as PostPreview } from "./PostPreview/PostPreview";
+export { default as ScheduleItem } from "./ScheduleItem/ScheduleItem";
+export { default as ScheduleModal } from "./ScheduleModal/ScheduleModal";
+export { default as SelectUserModal } from "./SelectUserModal/SelectUserModal";
+export { default as SettingsModal } from "./SettingsModal/SettingsModal";
+export { default as SingleComment } from "./SingleComment/SingleComment";
+export { default as SingleLikingUser } from "./SingleLikingUser/SingleLikingUser";
+export { default as SingleUserInModal } from "./SingleUserInModal/SingleUserInModal";
+export { default as StandingsPersonRow } from "./StandingsPersonRow/StandingsPersonRow";
+export { default as StandingsTeamRow } from "./StandingsTeamRow/StandingsTeamRow";
+export { default as TaggingUserSuggestions } from "./TaggingUserSuggestions/TaggingUserSuggestions";

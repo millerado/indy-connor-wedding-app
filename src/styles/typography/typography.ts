@@ -9,16 +9,31 @@ const scaleFont = (size) => {
 };
 
 // FONT WEIGHT
-export const fontWeightLight = '200';
-export const fontWeightRegular = '400';
-export const fontWeightBold = '700';
+const fontWeightLight = '200';
+const fontWeightRegular = '400';
+const fontWeightBold = '700';
 
 // FONT SIZE
-export const fontSizeXXS = scaleFont(tablet ? 12: 10);
-export const fontSizeXS = scaleFont(tablet ? 14 : 12);
-export const fontSizeS = scaleFont(tablet ? 16 : 14);
-export const fontSizeM = scaleFont(tablet ? 18 : 16);
-export const fontSizeL = scaleFont(tablet ? 22 : 20);
-export const fontSizeXL = scaleFont(tablet ? 26 : 24);
-export const fontSizeXXL = scaleFont(tablet ? 36: 28);
-export const fontSizeXXXL = scaleFont(tablet ? 58: 48);
+const fontSizeXXS = scaleFont(tablet ? 12: 10);
+const fontSizeXS = scaleFont(tablet ? 14 : 12);
+const fontSizeS = scaleFont(tablet ? 16 : 14);
+const fontSizeM = scaleFont(tablet ? 18 : 16);
+const fontSizeL = scaleFont(tablet ? 22 : 20);
+const fontSizeXL = scaleFont(tablet ? 26 : 24);
+const fontSizeXXL = scaleFont(tablet ? 36: 28);
+const fontSizeXXXL = scaleFont(tablet ? 58: 48);
+
+export default {
+  scaleFont,
+  fontWeightLight,
+  fontWeightRegular,
+  fontWeightBold,
+  fontSizeXXS,
+  fontSizeXS,
+  fontSizeS,
+  fontSizeM,
+  fontSizeL,
+  fontSizeXL,
+  fontSizeXXL,
+  fontSizeXXXL,
+}

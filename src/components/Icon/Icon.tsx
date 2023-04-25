@@ -129,6 +129,8 @@ const getIconName = (name) => {
     return 'tennisball';
   } else if (name === 'disc') {
     return 'disc';
+  } else if (name === 'expand') {
+    return 'expand';
   }
 
   return 'home';

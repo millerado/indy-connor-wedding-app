@@ -12,6 +12,7 @@ const styles = theme => {
       justifyContent: 'center',
       borderBottomColor: theme.colors.primary,
       borderBottomWidth: 2,
+      backgroundColor: theme.colors.background,
     },
     tabItem: {
       flex: 1,

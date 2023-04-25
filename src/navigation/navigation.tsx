@@ -11,6 +11,7 @@ import {
   HomeScreen,
   InfoScreen,
   ManageGameScreen,
+  MapScreen,
   MostLikedPostsScreen,
   NotificationsScreen,
   ScheduleScreen,
@@ -83,6 +84,7 @@ const InfoStackScreen = () => {
         name="Info"
         component={InfoScreen}
       />
+      <InfoStack.Screen name="Map" component={MapScreen} />
     </InfoStack.Navigator>
   );
 };

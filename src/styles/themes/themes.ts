@@ -16,7 +16,8 @@ const bluesMedium = '#00627C';
 const bluesLight = '#97AFBA';
 const white = '#ffffff';
 const black = '#000000';
-const red = '#FF0000';
+// const red = '#FF0000';
+const red = 'rgba(179, 38, 30, 1)';
 const error = '#b55464';
 
 

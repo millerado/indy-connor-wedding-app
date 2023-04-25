@@ -408,14 +408,14 @@ const PostPreview = (props) => {
                 onPress={likePressHandler}
                 name={isLiked ? "heart" : "heart-outline"}
                 size={typography.fontSizeXXL}
-                color={isLiked ? theme.colors.red : theme.colors.secondary}
+                color={theme.colors.red}
               />
             </Pressable>
           </View>
           {reactions.length > 0 && (
             <Pressable onPress={handleShowLikesList}>
               <View style={ss.likedByWrapper}>
-                <Text size="S" color={theme.colors.red}>
+                <Text size="S">
                   Liked by {reactions.length}{" "}
                   {reactions.length === 1 ? "person" : "people"}
                 </Text>

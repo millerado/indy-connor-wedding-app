@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react';
-import { View, FlatList, Platform, Pressable, Image, ImageBackground } from 'react-native';
+import { View, FlatList, Platform, Pressable, ImageBackground } from 'react-native';
 import { useTheme } from 'react-native-paper';
-import Zoom from 'react-native-zoom-reanimated'
 import { FAQ } from '../../models';
 import { Divider, ActivityIndicator, TextInput, Icon } from '../../components';
 import { FAQModal, FAQItem } from '../../containers';
@@ -62,20 +61,26 @@ const InfoScreen = ({ navigation, route }) => {
     return (
       <>
         <View>
-          <Zoom>
-            <ImageBackground
-              resizeMode='contain'
-              style={{width: dimensions.width, height: dimensions.width * (5216/7792)}}
-              source={resortMap}
-              onLoadEnd={() => setImageLoaded(true)}
-            >
-              {!imageLoaded &&
-                <View style={{alignItems: 'center', justifyContent: 'center', width: dimensions.width, height: dimensions.width * (5216/7792)}}>
-                  <ActivityIndicator size={dimensions.width * .3} color={theme.colors.primary} />
-                </View>
-              }
-            </ImageBackground>
-          </Zoom>
+          <ImageBackground
+            resizeMode='contain'
+            style={{width: dimensions.width, height: dimensions.width * (5216/7792)}}
+            source={resortMap}
+            onLoadEnd={() => setImageLoaded(true)}
+          >
+            {!imageLoaded ? (
+              <View style={{alignItems: 'center', justifyContent: 'center', width: dimensions.width, height: dimensions.width * (5216/7792)}}>
+                <ActivityIndicator size={dimensions.width * .3} color={theme.colors.primary} />
+              </View>
+            ) : (
+              <View style={{flex: 1, alignItems: 'flex-end', justifyContent: 'flex-end', height: '100%', padding: 5}}>
+                <Pressable onPress={() => navigation.push('Map')}>
+                  <View>
+                    <Icon name='expand' color={theme.colors.white} size={40} />
+                  </View>
+                </Pressable>
+              </View>
+            )}
+          </ImageBackground>
         </View>
         <View style={ss.searchWrapper}>
           <TextInput

@@ -21,14 +21,6 @@ const emptyScheduleData = [
   { day: "Sunday", data: [] },
 ];
 
-const FirstRoute = () => (
-  <View style={{ flex: 1, height: 200, backgroundColor: 'red' }} />
-);
-
-const SecondRoute = () => (
-  <View style={{ flex: 1, height: 200, backgroundColor: 'green' }} />
-);
-
 const ScheduleScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);

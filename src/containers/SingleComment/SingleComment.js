@@ -167,8 +167,9 @@ const SingleComment = (props) => {
               >
                 <View style={ss.textWrapper}>
                   <Text size="XS" color={theme.colors.onQuaternary}>{formatDate(comment.createdAt)}</Text>
+                  <Text size="M" bold>{commentUser.name}</Text>
                   <Text size="M" numberOfLines={numberOfLines}>
-                    <Text bold>{commentUser.name}</Text> <FormatTextWithMentions text={comment.comment} />
+                    <FormatTextWithMentions text={comment.comment} />
                   </Text>
                 </View>
               </ConditionalWrapper>

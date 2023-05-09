@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { reusableStyles } from "../../styles";
+import { reusableStyles, typography } from "../../styles";
 
 const styles = theme => {
   const rstyles = reusableStyles(theme);
@@ -43,7 +43,7 @@ const styles = theme => {
       flexDirection: "row",
     },
     moreCommentsWrapper: {
-      paddingLeft: 10,
+      paddingLeft: typography.fontSizeM * 2 + 20,
       paddingBottom: 10,
     },
     unauthedWrapper: {

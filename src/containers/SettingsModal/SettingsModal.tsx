@@ -200,60 +200,44 @@ const SettingsModal = () => {
             </View>
             {view === 'settings' ? (
               <ScrollView style={ss.modalScrollView} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
-                <View style={{ flex: 1, alignItems: 'center', padding: 10, justifyContent: "space-evenly" }}>
-                  <View>
-                    <Button
-                      onPress={() => handleThemeChange(themeName === "Dark" ? 'Light' : 'Dark')}
-                    >
-                      Switch to {themeName === "Dark" ? 'Light' : 'Dark'} Mode
-                    </Button>
-                  </View>
+                <View>
+                  <Button
+                    onPress={() => handleThemeChange(themeName === "Dark" ? 'Light' : 'Dark')}
+                  >
+                    Switch to {themeName === "Dark" ? 'Light' : 'Dark'} Mode
+                  </Button>
                   {authStatus.isAuthed && (
-                    <View style={{ paddingTop: 10 }}>
-                      <Button onPress={goToUserPage} >
-                        View my User Profile
-                      </Button>
-                    </View>
-                  )}
-                  <View style={{ paddingTop: 10 }}>
-                    <Button onPress={openSelectUserModal}>
-                      {authStatus.isAuthed ? 'Change User' : 'Sign In to App'}
+                    <Button onPress={goToUserPage} style={{marginTop: 10}}>
+                      View my User Profile
                     </Button>
-                  </View>
+                  )}
+                  <Button onPress={openSelectUserModal} style={{marginTop: 10}}>
+                    {authStatus.isAuthed ? 'Change User' : 'Sign In to App'}
+                  </Button>
                   {authStatus.isAdmin && (
-                    <View style={{ paddingTop: 10 }}>
-                      <Button onPress={openNotificationDialog} >
-                        Send Global Notification
-                      </Button>
-                    </View>
+                    <Button onPress={openNotificationDialog} style={{marginTop: 10}}>
+                      Send Global Notification
+                    </Button>
                   )}
                   {authStatus.isAuthed && (
-                    <View style={{ paddingTop: 10 }}>
-                      <Button onPress={goToGamesPage} >
-                        Manage Games
-                      </Button>
-                    </View>
+                    <Button onPress={goToGamesPage} style={{marginTop: 10}}>
+                      Manage Games
+                    </Button>
                   )}
                   {authStatus.isAdmin && (
-                    <View style={{ paddingTop: 10 }}>
-                      <Button onPress={goToMostLikedPage} >
-                        Most Liked Posts
-                      </Button>
-                    </View>
+                    <Button onPress={goToMostLikedPage} style={{marginTop: 10}}>
+                      Most Liked Posts
+                    </Button>
                   )}
                   {authStatus.isAdmin && (
-                    <View style={{ paddingTop: 10 }}>
-                      <Button onPress={resetDatastore} >
-                        Debug Reset Datastore
-                      </Button>
-                    </View>
+                    <Button onPress={resetDatastore} style={{marginTop: 10}}>
+                      Debug Reset Datastore
+                    </Button>
                   )}
                   {authStatus.isAdmin && (
-                    <View style={{ paddingTop: 10 }}>
-                      <Button onPress={createFakeStandings} >
-                        Create Fake Standings
-                      </Button>
-                    </View>
+                    <Button onPress={createFakeStandings} style={{marginTop: 10}}>
+                      Create Fake Standings
+                    </Button>
                   )}
                 </View>
               </ScrollView>

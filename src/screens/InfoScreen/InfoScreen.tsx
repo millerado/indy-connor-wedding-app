@@ -57,7 +57,7 @@ const InfoScreen = ({ navigation, route }) => {
     }
   );
 
-  const renderHeader = () => {
+  function renderHeader() {
     return (
       <>
         <View>
@@ -89,6 +89,7 @@ const InfoScreen = ({ navigation, route }) => {
             returnKeyType="default"
             value={searchTerm}
             enablesReturnKeyAutomatically={true}
+            clearButtonMode='always'
             style={[
               ss.textInput,
               ss.fullWidthTextInput,
@@ -152,21 +153,19 @@ const InfoScreen = ({ navigation, route }) => {
           <ActivityIndicator size={60} />
         </View>
       ) : (
-        <>
-            <FlatList
-              data={FAQData}
-              renderItem={renderItem}
-              ListHeaderComponent={renderHeader}
-              keyExtractor={keyExtractor}
-              ItemSeparatorComponent={listItemSeparator}
-              style={{ width: '100%'}}
-              keyboardShouldPersistTaps="handled"
-              keyboardDismissMode="on-drag"
-              removeClippedSubviews={Platform.OS === 'android'} // Saves memory, has issues on iOS
-              maxToRenderPerBatch={10} // Also the default
-              initialNumToRender={10} // Also the default
-            />
-        </>
+        <FlatList
+          data={FAQData}
+          renderItem={renderItem}
+          ListHeaderComponent={renderHeader()}
+          keyExtractor={keyExtractor}
+          ItemSeparatorComponent={listItemSeparator}
+          style={{ width: '100%'}}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          removeClippedSubviews={Platform.OS === 'android'} // Saves memory, has issues on iOS
+          maxToRenderPerBatch={10} // Also the default
+          initialNumToRender={10} // Also the default
+        />
       )}
     </View>
   );

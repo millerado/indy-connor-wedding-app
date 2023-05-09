@@ -17,7 +17,7 @@ const NotificationsHeaderButton = () => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
 
-  console.log('-- theme --', theme)
+  // console.log('-- theme --', theme)
   return (
     <Pressable onPress={() => navigation.push('Notifications')}>
       <Icon name='notifications' color={theme.colors.primary} size={typography.fontSizeXXL} />

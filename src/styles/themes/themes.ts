@@ -41,7 +41,7 @@ export const lightTheme = {
     black: black,
     white: white,
     red: red,
-    background: greensSuperLight,
+    background: white,
     modalBackground: greensDark,
     modalHeader: primaryGreen,
     onModalHeader: greensSuperLight,

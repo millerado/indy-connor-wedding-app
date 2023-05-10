@@ -13,12 +13,13 @@ import NetInfo from '@react-native-community/netinfo';
 import { MentionInput } from 'react-native-controlled-mentions';
 import {
   Text,
+  TextSizes,
   ActivityIndicator,
   Icon,
-  ImageS3,
   Divider,
   Button,
   TextInput,
+  DropdownInput
 } from "../../components";
 import { Posts, Users } from "../../models";
 import { uploadImageS3, DataStore, sendUserPushNotification } from "../../utils";
@@ -28,6 +29,30 @@ import { TaggingUserSuggestions, ImageScroll } from '../../containers';
 import styles from "./CreatePostScreenStyles";
 
 const dimensions = calcDimensions();
+
+const iconData = [
+  {label: 'Barbell', value: 'barbell', icon: 'barbell'},
+  {label: 'Baseball', value: 'baseball', icon: 'baseball'},
+  {label: 'Basketball', value: 'basketball', icon: 'basketball'},
+  {label: 'Beer', value: 'beer', icon: 'beer'},
+  {label: 'Bicycle', value: 'bicycle', icon: 'bicycle'},
+  {label: 'Camera', value: 'camera', icon: 'camera'},
+  {label: 'Comment', value: 'comment', icon: 'comment'},
+  {label: 'Controller', value: 'controller', icon: 'controller'},
+  {label: 'Disc', value: 'disc', icon: 'disc'},
+  {label: 'Football', value: 'football', icon: 'football'},
+  {label: 'Golf', value: 'golf', icon: 'golf'},
+  {label: 'Heart', value: 'heart', icon: 'heart'},
+  {label: 'Medal', value: 'medal', icon: 'medal'},
+  {label: 'Picture', value: 'picture', icon: 'picture'},
+  {label: 'Pint', value: 'pint', icon: 'pint'},
+  {label: 'Ribbon', value: 'ribbon', icon: 'ribbon'},
+  {label: 'School', value: 'school', icon: 'school'},
+  {label: 'Soccer', value: 'soccer', icon: 'soccer'},
+  {label: 'Speedometer', value: 'speedometer', icon: 'speedometer'},
+  {label: 'Stopwatch', value: 'stopwatch', icon: 'stopwatch'},
+  {label: 'Tennisball', value: 'tennisball', icon: 'tennisball'},
+];
 
 const CreatePostScreen = ({ navigation }) => {
   const [isConnected, setIsConnected] = useState(false);
@@ -43,6 +68,7 @@ const CreatePostScreen = ({ navigation }) => {
     photos: 'loading',
     camera: 'loading',
   });
+  const [selectedGame, setSelectedGame] = useState(undefined);
 
   const authStatus = useContext(AuthContext).authStatus;
   const theme = useTheme();
@@ -211,6 +237,38 @@ const CreatePostScreen = ({ navigation }) => {
         ) : (
           <>
             <View style={{ padding: 10, width: "100%" }}>
+              <DropdownInput
+                data={iconData}
+                search
+                placeholder='Playing a Game?'
+                focusPlaceholder='...'
+                searchPlaceholder="Search..."
+                value={selectedGame}
+                setValue={setSelectedGame}
+                // renderLeftIcon={(item) => (
+                //   <View style={{paddingRight: 10}}>
+                //     <Icon
+                //       size={20}
+                //       name={iconValue}
+                //     />
+                //   </View>
+                // )}
+                renderItem={(item) => (
+                  <View style={{flexDirection: 'row', padding: 5}}>
+                    <View style={{paddingRight: 10}}>
+                      <Icon
+                        size={typography.fontSizeL}
+                        name={item.icon}
+                      />
+                    </View>
+                    <Text size={TextSizes.M}>
+                      {item.label}
+                    </Text>
+                  </View>
+                )}
+              />
+            </View>
+            <View style={{ padding: 10, width: "100%" }}>
               <TextInput
                 label="What's going on?"
                 clearButtonMode="while-editing"
@@ -332,7 +390,7 @@ export default CreatePostScreen;
 const addPhotoPlaceholder = (dimensions, isConnected, theme, photoPermissions, imageLoading) => {
   return (
     <View style={{ paddingLeft: 10, paddingRight: 10, width: '100%' }}>
-      <View style={{ backgroundColor: theme.colors.onTertiary, width: '100%', height: dimensions.height * .25, alignItems: 'center', justifyContent: 'center', padding: 20, borderRadius: 5 }}>
+      <View style={{ backgroundColor: theme.colors.background, width: '100%', height: dimensions.height * .25, alignItems: 'center', justifyContent: 'center', padding: 20, borderRadius: 5 }}>
         <Icon name='camera' size={typography.fontSizeXXXL} color={theme.colors.primary} />
         <Text color={theme.colors.primary} size={isConnected ? 'XXL' : 'L'} bold>
           {isConnected ? 'Add Photo(s)' : 'Must be online to add photos'}

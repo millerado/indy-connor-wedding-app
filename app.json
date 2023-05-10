@@ -47,6 +47,12 @@
         }
       ],
       [
+        "expo-updates",
+        {
+          "username": "angusmccloud"
+        }
+      ],
+      [
         "expo-notifications",
         {
           "icon": "./assets/adaptive-icon.png",

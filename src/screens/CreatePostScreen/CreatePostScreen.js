@@ -13,6 +13,8 @@ import NetInfo from '@react-native-community/netinfo';
 import { MentionInput } from 'react-native-controlled-mentions';
 import { Predicates, SortDirection } from "aws-amplify";
 import {
+  Chip,
+  Avatar,
   Text,
   TextSizes,
   ActivityIndicator,
@@ -161,12 +163,12 @@ const CreatePostScreen = ({ navigation }) => {
     setSelectedGame(item);
     const game = games.find((g) => g.id === item);
     if(game) {
+      console.log('-- Full Game Details --', game);
       const { canHaveMultipleWinners, minNumberOfPlayersPerTeam, maxNumberOfPlayersPerTeam, minNumberOfTeams, maxNumberOfTeams, points, rules } = game;
     } else {
       // They selected None
+      console.log('-- No Game Selected, RESET --');
     }
-    console.log('-- Full Game Details --', game);
-    // Going to need to do more stuff here...
   };
 
   useEffect(() => {
@@ -265,9 +267,91 @@ const CreatePostScreen = ({ navigation }) => {
                 )}
               />
               {selectedGame && (
-                <View style={{ paddingHorizontal: 15, paddingBottom: 10, width: "100%" }}>
-                  <FormatTextWithMentions text={games.find((g) => g.id === selectedGame).rules} size={TextSizes.L} />
-                </View>
+                <>
+                  <View style={{ paddingHorizontal: 15, paddingBottom: 10, width: "100%" }}>
+                    <FormatTextWithMentions text={games.find((g) => g.id === selectedGame).rules} size={TextSizes.L} />
+                  </View>
+                  <View style={{flexDirection: 'row', width: '100%', padding: 10, flexWrap: 'wrap', justifyContent: 'space-evenly', paddingVertical: (8 / -2)}}>
+                    <View style={{padding: 8 / 2}}>
+                      <Chip
+                        onPress={() => console.log('Pressed')}
+                        elevated
+                        icon={(item) => (
+                          <Avatar
+                            // fileName={authStatus.image?.url}
+                            name={'Indigo Miller'}
+                            size={typography.fontSizeXS * 2}
+                            variant="circle"
+                            absolute={false}
+                          />
+                        )}
+                        closeIcon={() => (
+                          <Icon
+                            size={typography.fontSizeXS * 2}
+                            name={'close'}
+                          />
+                        )}
+                        onClose={() => console.log('-- Close Chip --')}
+                      >
+                        <Text size={TextSizes.S}>
+                          Indigo Miller
+                        </Text>
+                      </Chip>
+                    </View>
+                    <View style={{padding: 8 / 2}}>
+                      <Chip
+                        onPress={() => console.log('Pressed')}
+                        elevated
+                        icon={(item) => (
+                          <Avatar
+                            // fileName={authStatus.image?.url}
+                            name={'Anna Wilson'}
+                            size={typography.fontSizeXS * 2}
+                            variant="circle"
+                            absolute={false}
+                          />
+                        )}
+                        closeIcon={() => (
+                          <Icon
+                            size={typography.fontSizeXS * 2}
+                            name={'close'}
+                          />
+                        )}
+                        onClose={() => console.log('-- Close Chip --')}
+                      >
+                        <Text size={TextSizes.S}>
+                          Anna Wilson
+                        </Text>
+                      </Chip>
+                    </View>
+                    <View style={{padding: 8 / 2}}>
+                      <Chip
+                        onPress={() => console.log('Pressed')}
+                        elevated
+                        icon={(item) => (
+                          <Avatar
+                            // fileName={authStatus.image?.url}
+                            name={'James Jones'}
+                            size={typography.fontSizeXS * 2}
+                            variant="circle"
+                            absolute={false}
+                          />
+                        )}
+                        closeIcon={() => (
+                          <Icon
+                            size={typography.fontSizeXS * 2}
+                            name={'close'}
+                          />
+                        )}
+                        onClose={() => console.log('-- Close Chip --')}
+                      >
+                        <Text size={TextSizes.S}>
+                          James Jones
+                        </Text>
+                      </Chip>
+                    </View>
+                  </View>
+                </>
               )}
             </View>
             <View style={{ paddingHorizontal: 15, width: "100%" }}>

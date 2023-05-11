@@ -3,6 +3,7 @@ export { default as AnimatedFAB } from './AnimatedFAB/AnimatedFAB';
 export { default as Avatar } from './Avatar/Avatar';
 export { default as Badge } from './Badge/Badge';
 export { default as Button } from './Button/Button';
+export { default as Chip } from './Chip/Chip';
 export { default as ConditionalWrapper } from './ConditionalWrapper/ConditionalWrapper';
 export { default as Divider } from './Divider/Divider';
 export { default as DoubleTap } from './DoubleTap/DoubleTap';

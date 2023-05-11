@@ -7,36 +7,6 @@ import { nth, DataStore } from '../../utils';
 import { Games } from '../../models';
 import styles from './ManageGameScreenStyles';
 
-// Should replace this with something dynamic
-// const iconData = [
-//   {label: 'Barbell', value: 'barbell', icon: 'barbell'},
-//   {label: 'Baseball', value: 'baseball', icon: 'baseball'},
-//   {label: 'Basketball', value: 'basketball', icon: 'basketball'},
-//   {label: 'Beer', value: 'beer', icon: 'beer'},
-//   {label: 'Bicycle', value: 'bicycle', icon: 'bicycle'},
-//   {label: 'Camera', value: 'camera', icon: 'camera'},
-//   {label: 'Cards', value: 'cards', icon: 'cards'},
-//   {label: 'Cards Clubs', value: 'cardsClubs', icon: 'cardsClubs'},
-//   {label: 'Cards Diamonds', value: 'cardsDiamonds', icon: 'cardsDiamonds'},
-//   {label: 'Cards Hearts', value: 'cardsHearts', icon: 'cardsHearts'},
-//   {label: 'Cards Spades', value: 'cardsSpades', icon: 'cardsSpades'},
-//   {label: 'Comment', value: 'comment', icon: 'comment'},
-//   {label: 'Controller', value: 'controller', icon: 'controller'},
-//   {label: 'Disc', value: 'disc', icon: 'disc'},
-//   {label: 'Football', value: 'football', icon: 'football'},
-//   {label: 'Golf', value: 'golf', icon: 'golf'},
-//   {label: 'Heart', value: 'heart', icon: 'heart'},
-//   {label: 'Medal', value: 'medal', icon: 'medal'},
-//   {label: 'Picture', value: 'picture', icon: 'picture'},
-//   {label: 'Pint', value: 'pint', icon: 'pint'},
-//   {label: 'Ribbon', value: 'ribbon', icon: 'ribbon'},
-//   {label: 'School', value: 'school', icon: 'school'},
-//   {label: 'Soccer', value: 'soccer', icon: 'soccer'},
-//   {label: 'Speedometer', value: 'speedometer', icon: 'speedometer'},
-//   {label: 'Stopwatch', value: 'stopwatch', icon: 'stopwatch'},
-//   {label: 'Tennisball', value: 'tennisball', icon: 'tennisball'},
-// ];
-
 const ManageGameScreen = ({ navigation, route }) => {
   const { view, item } = route.params;
   const theme = useTheme();

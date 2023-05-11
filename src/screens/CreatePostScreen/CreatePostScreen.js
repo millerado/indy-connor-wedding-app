@@ -11,6 +11,7 @@ import * as ImagePicker from "expo-image-picker";
 import { Menu, useTheme } from 'react-native-paper';
 import NetInfo from '@react-native-community/netinfo';
 import { MentionInput } from 'react-native-controlled-mentions';
+import { Predicates, SortDirection } from "aws-amplify";
 import {
   Text,
   TextSizes,
@@ -21,38 +22,14 @@ import {
   TextInput,
   DropdownInput
 } from "../../components";
-import { Posts, Users } from "../../models";
+import { Posts, Users, Games } from "../../models";
 import { uploadImageS3, DataStore, sendUserPushNotification } from "../../utils";
 import { typography, calcDimensions } from "../../styles";
 import { AuthContext } from '../../contexts';
-import { TaggingUserSuggestions, ImageScroll } from '../../containers';
+import { TaggingUserSuggestions, ImageScroll, FormatTextWithMentions } from '../../containers';
 import styles from "./CreatePostScreenStyles";
 
 const dimensions = calcDimensions();
-
-const iconData = [
-  {label: 'Barbell', value: 'barbell', icon: 'barbell'},
-  {label: 'Baseball', value: 'baseball', icon: 'baseball'},
-  {label: 'Basketball', value: 'basketball', icon: 'basketball'},
-  {label: 'Beer', value: 'beer', icon: 'beer'},
-  {label: 'Bicycle', value: 'bicycle', icon: 'bicycle'},
-  {label: 'Camera', value: 'camera', icon: 'camera'},
-  {label: 'Comment', value: 'comment', icon: 'comment'},
-  {label: 'Controller', value: 'controller', icon: 'controller'},
-  {label: 'Disc', value: 'disc', icon: 'disc'},
-  {label: 'Football', value: 'football', icon: 'football'},
-  {label: 'Golf', value: 'golf', icon: 'golf'},
-  {label: 'Heart', value: 'heart', icon: 'heart'},
-  {label: 'Medal', value: 'medal', icon: 'medal'},
-  {label: 'Picture', value: 'picture', icon: 'picture'},
-  {label: 'Pint', value: 'pint', icon: 'pint'},
-  {label: 'Ribbon', value: 'ribbon', icon: 'ribbon'},
-  {label: 'School', value: 'school', icon: 'school'},
-  {label: 'Soccer', value: 'soccer', icon: 'soccer'},
-  {label: 'Speedometer', value: 'speedometer', icon: 'speedometer'},
-  {label: 'Stopwatch', value: 'stopwatch', icon: 'stopwatch'},
-  {label: 'Tennisball', value: 'tennisball', icon: 'tennisball'},
-];
 
 const CreatePostScreen = ({ navigation }) => {
   const [isConnected, setIsConnected] = useState(false);
@@ -68,7 +45,9 @@ const CreatePostScreen = ({ navigation }) => {
     photos: 'loading',
     camera: 'loading',
   });
-  const [selectedGame, setSelectedGame] = useState(undefined);
+  const [games, setGames] = useState([]);
+  const [gamesDropdown, setGamesDropdown] = useState([]);
+  const [selectedGame, setSelectedGame] = useState(null);
 
   const authStatus = useContext(AuthContext).authStatus;
   const theme = useTheme();
@@ -88,14 +67,6 @@ const CreatePostScreen = ({ navigation }) => {
     } else {
       setError({ errorSummary: errorSummary, errorDetails: errorDetails });
       setImageLoading(undefined);
-    }
-  };
-
-  const fetchUsers = async () => {
-    // await DataStore.stop();
-    const users = await DataStore.query(Users);
-    if (users) {
-      setAllUsers(users.sort((a, b) => a.name.localeCompare(b.name)));
     }
   };
 
@@ -167,10 +138,6 @@ const CreatePostScreen = ({ navigation }) => {
     setImageLoading('uploading');
   }
 
-  const imageLoadedCallback = () => {
-    setImageLoading(undefined);
-  }
-
   const openMenu = () => {
     Keyboard.dismiss();
     if (photoPermissions.camera === 'allowed' || photoPermissions.photos === 'allowed') {
@@ -190,6 +157,18 @@ const CreatePostScreen = ({ navigation }) => {
     return TaggingUserSuggestions(keyword, onSuggestionPress, allUsers);
   };
 
+  const handleSelectedGame = (item) => {
+    setSelectedGame(item);
+    const game = games.find((g) => g.id === item);
+    if(game) {
+      const { canHaveMultipleWinners, minNumberOfPlayersPerTeam, maxNumberOfPlayersPerTeam, minNumberOfTeams, maxNumberOfTeams, points, rules } = game;
+    } else {
+      // They selected None
+    }
+    console.log('-- Full Game Details --', game);
+    // Going to need to do more stuff here...
+  };
+
   useEffect(() => {
     (async () => {
       const cameraRollStatus =
@@ -203,13 +182,30 @@ const CreatePostScreen = ({ navigation }) => {
       });
     })();
 
-    // Subscribe to Users
-    const usersSubscription = DataStore.observe(Users).subscribe((u) => {
-      fetchUsers();
+    const usersSubscription = DataStore.observeQuery(Users).subscribe(({ users }) => {
+      try {
+        if (users) {
+          setAllUsers(users.sort((a, b) => a.name.localeCompare(b.name)));
+        }
+      } catch (err) { console.log('error fetching Data', err) }
     });
 
-    // And initial user load
-    fetchUsers();
+    const gamesSubscription = DataStore.observeQuery(Games, Predicates.ALL, {
+      sort: (s) => s.name(SortDirection.ASCENDING),
+    }).subscribe(({ items }) => {
+      const g = items.map((game) => ({
+        value: game.id,
+        iconName: game.iconName,
+        label: game.name,
+      }));
+      g.unshift({
+        value: null,
+        iconName: "close",
+        label: "None",
+      })
+      setGames(items);
+      setGamesDropdown(g);
+    });
 
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isInternetReachable);
@@ -217,6 +213,7 @@ const CreatePostScreen = ({ navigation }) => {
     return () => {
       unsubscribe();
       usersSubscription.unsubscribe();
+      gamesSubscription.unsubscribe();
     };
   }, []);
 
@@ -236,29 +233,29 @@ const CreatePostScreen = ({ navigation }) => {
           </View>
         ) : (
           <>
-            <View style={{ padding: 10, width: "100%" }}>
+            <View style={{ width: "100%" }}>
               <DropdownInput
-                data={iconData}
+                data={gamesDropdown}
                 search
                 placeholder='Playing a Game?'
                 focusPlaceholder='...'
                 searchPlaceholder="Search..."
                 value={selectedGame}
-                setValue={setSelectedGame}
-                // renderLeftIcon={(item) => (
-                //   <View style={{paddingRight: 10}}>
-                //     <Icon
-                //       size={20}
-                //       name={iconValue}
-                //     />
-                //   </View>
-                // )}
+                setValue={handleSelectedGame}
+                renderLeftIcon={(item) => (
+                  <View style={{paddingRight: 10}}>
+                    <Icon
+                      size={20}
+                      name={selectedGame ? games.find((g) => g.id === selectedGame).iconName : 'game'}
+                    />
+                  </View>
+                )}
                 renderItem={(item) => (
                   <View style={{flexDirection: 'row', padding: 5}}>
                     <View style={{paddingRight: 10}}>
                       <Icon
                         size={typography.fontSizeL}
-                        name={item.icon}
+                        name={item.iconName}
                       />
                     </View>
                     <Text size={TextSizes.M}>
@@ -267,8 +264,13 @@ const CreatePostScreen = ({ navigation }) => {
                   </View>
                 )}
               />
+              {selectedGame && (
+                <View style={{ paddingHorizontal: 15, paddingBottom: 10, width: "100%" }}>
+                  <FormatTextWithMentions text={games.find((g) => g.id === selectedGame).rules} size={TextSizes.L} />
+                </View>
+              )}
             </View>
-            <View style={{ padding: 10, width: "100%" }}>
+            <View style={{ paddingHorizontal: 15, width: "100%" }}>
               <TextInput
                 label="What's going on?"
                 clearButtonMode="while-editing"
@@ -276,7 +278,6 @@ const CreatePostScreen = ({ navigation }) => {
                 value={messageBody}
                 multiline
                 keyboardType="default"
-                autoFocus={true}
                 blurOnSubmit={false}
                 disabled={!authStatus || !authStatus.isAuthed}
                 style={[
@@ -304,6 +305,9 @@ const CreatePostScreen = ({ navigation }) => {
                   );
                 }}
               />
+            </View>
+            <View style={{ width: "100%", paddingVertical: 10 }}>
+              <Divider />
             </View>
             <View>
               <Menu
@@ -334,7 +338,7 @@ const CreatePostScreen = ({ navigation }) => {
                 )}
               </Menu>
             </View>
-            <View style={{ width: "100%", paddingTop: 10, paddingBottom: 10, }}>
+            <View style={{ width: "100%", paddingVertical: 10 }}>
               <Divider />
             </View>
             <View
@@ -345,7 +349,7 @@ const CreatePostScreen = ({ navigation }) => {
                 alignItems: "center",
               }}
             >
-              <View style={{ width: "50%" }}>
+              <View style={{ minWidth: "50%" }}>
                 <Button
                   variant="primary"
                   onPress={savePost}

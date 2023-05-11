@@ -9,7 +9,7 @@ const styles = theme => {
       height: 50,
       borderColor: theme.colors.primary,
       borderWidth: 0.5,
-      borderRadius: 8,
+      borderRadius: 3,
       paddingHorizontal: 8,
     },
     icon: {

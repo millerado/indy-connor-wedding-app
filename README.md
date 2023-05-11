@@ -24,6 +24,7 @@ The application expects two values to exist in a `appConfig.js` file:
 - Build for one platform: `eas build -p android`
 - Build for both iOS and Android: `eas build`
 - Submit to an App Store: `eas submit --platform android`
+- OTA Updates: `eas update --branch production`
 
 ### AWS Changes Not Covered in Amplify
 - SOMETHING HERE FOR DELTA SYNC

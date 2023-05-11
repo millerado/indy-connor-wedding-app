@@ -7,7 +7,7 @@ export { default as ConditionalWrapper } from './ConditionalWrapper/ConditionalW
 export { default as Divider } from './Divider/Divider';
 export { default as DoubleTap } from './DoubleTap/DoubleTap';
 export { default as DropdownInput } from './DropdownInput/DropdownInput';
-export { default as Icon } from './Icon/Icon';
+export { default as Icon, allIcons } from './Icon/Icon';
 export { default as IconButton } from './IconButton/IconButton';
 export { default as ImageS3 } from './ImageS3/ImageS3';
 export { default as Modal } from './Modal/Modal';

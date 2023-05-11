@@ -406,7 +406,7 @@ const PostPreview = (props) => {
             <Pressable onPress={likePressHandler}>
               <Icon
                 onPress={likePressHandler}
-                name={isLiked ? "heart" : "heart-outline"}
+                name={isLiked ? "heart" : "heartOutline"}
                 size={typography.fontSizeXXL}
                 color={theme.colors.red}
               />

@@ -105,7 +105,7 @@ const ImageScroll = (props) => {
                 >
                   <>
                     <View style={{position: 'absolute', right: 10, top: 10}} onPress={() => console.log('-- Press --')}>
-                      <Icon name={adminFavoritedImages.includes(image.url) ? "heart" : "heart-outline"} size={24} color={theme.colors.red} />
+                      <Icon name={adminFavoritedImages.includes(image.url) ? "heart" : "heartOutline"} size={24} color={theme.colors.red} />
                     </View>
                     {images.length > 1 && (
                       <View style={ss.imageScrollIndicatorWrapper}>

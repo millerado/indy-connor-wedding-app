@@ -3,7 +3,7 @@ import { View, Pressable, FlatList, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
 import { Predicates, SortDirection } from "aws-amplify";
 import { Text, TextSizes, Icon, ActivityIndicator, Divider } from '../../components';
-import { DataStore } from '../../utils';
+import { DataStore, gamePlayers } from '../../utils';
 import { Games } from '../../models';
 import { typography } from '../../styles';
 import { AuthContext } from '../../contexts';
@@ -48,7 +48,7 @@ const GamesScreen = ({ navigation, route }) => {
         />
         <View style={{paddingLeft: 10, justifyContent: 'center'}}>
           <Text size={TextSizes.L}>{item.name}</Text>
-          <Text size={TextSizes.S}>Played by {item.minNumberOfTeams}{item.maxNumberOfTeams > item.minNumberOfTeams ? `-${item.maxNumberOfTeams}` : ''} {item.maxNumberOfPlayersPerTeam === 1 ? 'players' : `teams of ${item.minNumberOfPlayersPerTeam}${item.maxNumberOfPlayersPerTeam > item.minNumberOfPlayersPerTeam ? `-${item.maxNumberOfPlayersPerTeam}` : ''}`}</Text>
+          <Text size={TextSizes.S}>{gamePlayers(item, 'Played by')}</Text>
         </View>
       </Pressable>
     );

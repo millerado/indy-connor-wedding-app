@@ -37,6 +37,10 @@ const Text = (props: TextProps) => {
     ...restOfProps
   } = props;
   const textSize = sizeToVariant(size);
+  // const fontFamily = bold && italic ? 'Thasadith-BoldItalic' : bold ? 'Thasadith-Bold' : italic ? 'Thasadith-Italic' : 'Thasadith-Regular';
+  // const fontFamily = bold && italic ? 'SourceSansPro-SemiBoldItalic' : bold ? 'SourceSansPro-SemiBold' : italic ? 'SourceSansPro-LightItalic' : 'SourceSansPro-Light';
+  const fontFamily = bold && italic ? 'SourceSansPro-BoldItalic' : bold ? 'SourceSansPro-Bold' : italic ? 'SourceSansPro-Italic' : 'SourceSansPro-Regular';
+
   return (
     <PaperText
       {...restOfProps}
@@ -46,6 +50,7 @@ const Text = (props: TextProps) => {
         ...style,
         fontSize: textSize,
         fontWeight: bold ? "700" : "400",
+        fontFamily: fontFamily,
         lineHeight: textSize * 1.3,
         color: color,
         fontStyle: italic ? "italic" : "normal",

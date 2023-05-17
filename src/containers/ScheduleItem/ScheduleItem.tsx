@@ -58,7 +58,7 @@ const ScheduleItem = (props) => {
   }
 
   return (
-    <>
+    <View key={id}>
       <ScheduleModal showModal={showModal} closeModal={closeModal} modalType={'update'} item={props.item} />
       <Portal>
         <Dialog visible={deleteDialogVisible} onDismiss={hideDeleteDialog}>
@@ -118,7 +118,7 @@ const ScheduleItem = (props) => {
           )}
         />
       </Menu>
-    </>
+    </View>
   );
 };
 

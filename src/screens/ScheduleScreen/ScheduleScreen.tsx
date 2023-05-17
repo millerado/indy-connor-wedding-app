@@ -140,7 +140,7 @@ const ScheduleScreen = ({ navigation, route }) => {
             renderTabBarItem={({ route, ...otherProps }) => {
               const isFocused = otherProps?.navigationState.routes[otherProps.navigationState.index].key === route.key;
               return (
-                <Pressable onPress={otherProps.onPress} style={[ss.tabItem, {backgroundColor: isFocused ? theme.colors.primary : theme.colors.background, width: dimensions.width / routes.length }]} key={index}>
+                <Pressable onPress={otherProps.onPress} style={[ss.tabItem, {backgroundColor: isFocused ? theme.colors.primary : theme.colors.background, width: dimensions.width / routes.length }]} key={route.key}>
                   <View>
                     <Text color={isFocused? theme.colors.onPrimary : undefined} bold>
                       {route.title.toUpperCase()}

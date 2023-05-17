@@ -1,7 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { Provider as PaperProvider } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Font from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 import { Snackbar } from "./components";
 import Navigation from "./navigation/navigation";
 import { lightTheme, darkTheme } from "./styles";
@@ -14,9 +17,29 @@ import {
 } from "./contexts";
 import { Users } from "./models";
 
+const customFonts = {
+  'Thasadith-Bold': require('./assets/fonts/Thasadith-Bold.ttf'),
+  'Thasadith-BoldItalic': require('./assets/fonts/Thasadith-BoldItalic.ttf'),
+  'Thasadith-Italic': require('./assets/fonts/Thasadith-Italic.ttf'),
+  'Thasadith-Regular': require('./assets/fonts/Thasadith-Regular.ttf'),
+  'SourceSansPro-Black': require('./assets/fonts/SourceSansPro-Black.ttf'),
+  'SourceSansPro-BlackItalic': require('./assets/fonts/SourceSansPro-BlackItalic.ttf'),
+  'SourceSansPro-Bold': require('./assets/fonts/SourceSansPro-Bold.ttf'),
+  'SourceSansPro-BolcItalic': require('./assets/fonts/SourceSansPro-BoldItalic.ttf'),
+  'SourceSansPro-ExtraLight': require('./assets/fonts/SourceSansPro-ExtraLight.ttf'),
+  'SourceSansPro-ExtraLightItalic': require('./assets/fonts/SourceSansPro-ExtraLightItalic.ttf'),
+  'SourceSansPro-Italic': require('./assets/fonts/SourceSansPro-Italic.ttf'),
+  'SourceSansPro-Light': require('./assets/fonts/SourceSansPro-Light.ttf'),
+  'SourceSansPro-LightItalic': require('./assets/fonts/SourceSansPro-LightItalic.ttf'),
+  'SourceSansPro-Regular': require('./assets/fonts/SourceSansPro-Regular.ttf'),
+  'SourceSansPro-SemiBold': require('./assets/fonts/SourceSansPro-SemiBold.ttf'),
+  'SourceSansPro-SemiBoldItalic': require('./assets/fonts/SourceSansPro-SemiBoldItalic.ttf'),
+};
+
 const App = () => {
   // Setup and manage custom Contexts
   // Also all app-loading functionality (ex: Notification Registration)
+  const [appIsReady, setAppIsReady] = useState(false);
   const [themeName, setThemeName] = useState("Light");
   const [authStatus, setAuthStatus] = useState(UnauthedUser);
   const [showSnackbar, setShowSnackbar] = useState(false);
@@ -97,9 +120,39 @@ const App = () => {
       }
     };
 
+    const prepare = async () => {
+      try {
+        // Keep the splash screen visible while we fetch resources
+        await SplashScreen.preventAutoHideAsync();
+        // Pre-load fonts, make any API calls you need to do here
+        await Font.loadAsync(customFonts);
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        // Tell the application to render
+        setAppIsReady(true);
+      }
+    }
+
+    prepare();
     fetchCurrentTheme();
     fetchCurrentUser();
   }, []);
+
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      // This tells the splash screen to hide immediately! If we call this after
+      // `setAppIsReady`, then we may see a blank screen while the app is
+      // loading its initial state and rendering its first pixels. So instead,
+      // we hide the splash screen once we know the root view has already
+      // performed layout.
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+
+  if (!appIsReady) {
+    return null;
+  }
 
   return (
     <ThemeContext.Provider value={{ themeName, setThemeName: saveTheme }}>
@@ -109,16 +162,18 @@ const App = () => {
             <SnackbarContext.Provider
               value={{ snackbar: snackbarDetails, setSnackbar }}
             >
-              <Navigation />
-              <Snackbar
-                visible={showSnackbar}
-                onDismiss={onDismissSnackBar}
-                action={snackbarDetails.action}
-                duration={snackbarDetails.duration}
-                onIconPress={snackbarDetails.onIconPress}
-              >
-                {snackbarDetails.message}
-              </Snackbar>
+              <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+                <Navigation />
+                <Snackbar
+                  visible={showSnackbar}
+                  onDismiss={onDismissSnackBar}
+                  action={snackbarDetails.action}
+                  duration={snackbarDetails.duration}
+                  onIconPress={snackbarDetails.onIconPress}
+                >
+                  {snackbarDetails.message}
+                </Snackbar>
+              </View>
             </SnackbarContext.Provider>
           </PaperProvider>
         </NavigationContainer>

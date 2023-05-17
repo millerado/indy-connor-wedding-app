@@ -25,7 +25,7 @@ import {
   DropdownInput
 } from "../../components";
 import { Posts, Users, Games } from "../../models";
-import { uploadImageS3, DataStore, sendUserPushNotification } from "../../utils";
+import { uploadImageS3, DataStore, sendUserPushNotification, gamePlayers, nth } from "../../utils";
 import { typography, calcDimensions } from "../../styles";
 import { AuthContext } from '../../contexts';
 import { TaggingUserSuggestions, ImageScroll, FormatTextWithMentions } from '../../containers';
@@ -50,6 +50,7 @@ const CreatePostScreen = ({ navigation }) => {
   const [games, setGames] = useState([]);
   const [gamesDropdown, setGamesDropdown] = useState([]);
   const [selectedGame, setSelectedGame] = useState(null);
+  const [teams, setTeams] = useState([]);
 
   const authStatus = useContext(AuthContext).authStatus;
   const theme = useTheme();
@@ -160,14 +161,38 @@ const CreatePostScreen = ({ navigation }) => {
   };
 
   const handleSelectedGame = (item) => {
-    setSelectedGame(item);
     const game = games.find((g) => g.id === item);
+    setSelectedGame(game);
     if(game) {
       console.log('-- Full Game Details --', game);
       const { canHaveMultipleWinners, minNumberOfPlayersPerTeam, maxNumberOfPlayersPerTeam, minNumberOfTeams, maxNumberOfTeams, points, rules } = game;
+      const newTeams = [];
+      for(let i = 1; i < points.length; i++) {
+        const point = points[i];
+        newTeams.push({
+          id: i,
+          name: `Team ${i + 1}`,
+          points: point,
+          players: [],
+          minPlayers: minNumberOfPlayersPerTeam,
+          maxPlayers: maxNumberOfPlayersPerTeam,
+          canHaveMultipleWinners,
+        });
+      }
+      newTeams.push({
+        id: 0,
+        name: 'Everyone Else',
+        points: points[0],
+        players: [],
+        minPlayers: minNumberOfPlayersPerTeam,
+        maxPlayers: maxNumberOfPlayersPerTeam,
+        canHaveMultipleWinners,
+      })
+      setTeams(newTeams);
     } else {
       // They selected None
       console.log('-- No Game Selected, RESET --');
+      setTeams([]);
     }
   };
 
@@ -195,15 +220,20 @@ const CreatePostScreen = ({ navigation }) => {
     const gamesSubscription = DataStore.observeQuery(Games, Predicates.ALL, {
       sort: (s) => s.name(SortDirection.ASCENDING),
     }).subscribe(({ items }) => {
-      const g = items.map((game) => ({
-        value: game.id,
-        iconName: game.iconName,
-        label: game.name,
-      }));
+      const g = items.map((game, index) => {
+        return {
+          value: game.id,
+          iconName: game.iconName,
+          label: game.name,
+          players: gamePlayers(game),
+        }
+      });
+      // And a "None" row to unselect a game
       g.unshift({
         value: null,
         iconName: "close",
         label: "None",
+        players: 'Nevermind, not playing a game',
       })
       setGames(items);
       setGamesDropdown(g);
@@ -242,34 +272,41 @@ const CreatePostScreen = ({ navigation }) => {
                 placeholder='Playing a Game?'
                 focusPlaceholder='...'
                 searchPlaceholder="Search..."
-                value={selectedGame}
+                value={selectedGame?.id}
                 setValue={handleSelectedGame}
                 renderLeftIcon={(item) => (
                   <View style={{paddingRight: 10}}>
                     <Icon
                       size={20}
-                      name={selectedGame ? games.find((g) => g.id === selectedGame).iconName : 'game'}
+                      name={selectedGame ? selectedGame.iconName : 'game'}
                     />
                   </View>
                 )}
                 renderItem={(item) => (
-                  <View style={{flexDirection: 'row', padding: 5}}>
-                    <View style={{paddingRight: 10}}>
+                  <View style={{flexDirection: 'row', paddingHorizontal: 5, paddingVertical: 2}}>
+                    <View style={{paddingRight: 10, justifyContent: 'center'}}>
                       <Icon
                         size={typography.fontSizeL}
                         name={item.iconName}
                       />
                     </View>
-                    <Text size={TextSizes.M}>
-                      {item.label}
-                    </Text>
+                    <View style={{flexDirection: 'column'}}>
+                      <Text size={TextSizes.M}>
+                        {item.label}
+                      </Text>
+                      <Text size={TextSizes.XS}>
+                        {item.players}
+                      </Text>
+                    </View>
                   </View>
                 )}
               />
               {selectedGame && (
                 <>
                   <View style={{ paddingHorizontal: 15, paddingBottom: 10, width: "100%" }}>
-                    <FormatTextWithMentions text={games.find((g) => g.id === selectedGame).rules} size={TextSizes.L} />
+                    <Text>
+                      {JSON.stringify(teams)}
+                    </Text>
                   </View>
                   <View style={{flexDirection: 'row', width: '100%', padding: 10, flexWrap: 'wrap', justifyContent: 'space-evenly', paddingVertical: (8 / -2)}}>
                     <View style={{padding: 8 / 2}}>

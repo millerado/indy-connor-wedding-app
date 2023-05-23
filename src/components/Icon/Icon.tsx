@@ -1,11 +1,15 @@
 import React from "react";
 import { Image } from "react-native";
-import { Ionicons, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, FontAwesome5, MaterialCommunityIcons, EvilIcons, SimpleLineIcons, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { useTheme } from "react-native-paper";
 const hufflepuff = require('../../assets/images/hufflepuff.png');
 const gryffindor = require('../../assets/images/gryffindor.png');
 const ravenclaw = require('../../assets/images/ravenclaw.png');
 const slytherin = require('../../assets/images/slytherin.png');
+const fellowshipOfTheRing = require('../../assets/images/fellowshipOfTheRing.png');
+const orderOfThePhoenix = require('../../assets/images/orderOfThePhoenix.png');
+const reproductiveJusticeLeague = require('../../assets/images/reproductiveJusticeLeague.png');
+const diamondDogs = require('../../assets/images/diamondDogs.png');
 
 interface IconProps {
   name: string;
@@ -37,6 +41,22 @@ const Icon = (props: IconProps) => {
     return (
       <MaterialCommunityIcons name={iconName.name} size={size} color={color} {...restOfProps} />
     );
+  } else if (iconName.type === 'EvilIcons') {
+    return (
+      <EvilIcons name={iconName.name} size={size} color={color} {...restOfProps} />
+    );
+  } else if (iconName.type === 'SimpleLineIcons') {
+    return (
+      <SimpleLineIcons name={iconName.name} size={size} color={color} {...restOfProps} />
+    );
+  } else if (iconName.type === 'MaterialIcons') {
+    return (
+      <MaterialIcons name={iconName.name} size={size} color={color} {...restOfProps} />
+    );
+  } else if (iconName.type === 'AntDesign') {
+    return (
+      <AntDesign name={iconName.name} size={size} color={color} {...restOfProps} />
+    );
   }
 };
 
@@ -47,39 +67,42 @@ export default Icon;
 // https://icons.expo.fyi/
 export const allIcons = [
   // Model for Icon object:
-  // Type = Image, Ionicons, FontAwesome5, MaterialCommunityIcons
+  // Type = Image, Ionicons, FontAwesome5, MaterialCommunityIcons, or another VectorIcon library
   // Name = name of icon from library
-  // IconName = name passed to the component
+  // IconName = name passed to the component within our app (aka we call it `settings` instead of `cog` vs. `gear`, etc...)
   // Label = user-friendly name for icon when shown in a drop-down
   { type: "Image", source: hufflepuff, iconName: 'hufflepuff', label: "Hufflepuff" },
   { type: "Image", source: gryffindor, iconName: 'gryffindor', label: "Gryffindor" },
   { type: "Image", source: ravenclaw, iconName: 'ravenclaw', label: "Ravenclaw" },
   { type: "Image", source: slytherin, iconName: 'slytherin', label: "Slytherin" },
-  { type: "Ionicons", name: "home", iconName: "home", label: "Home" },
-  { type: "Ionicons", name: "home-outline", iconName: "homeFocused", label: "Home Focused" },
-  { type: "Ionicons", name: "calendar", iconName: "calendar", label: "Calendar" },
-  { type: "Ionicons", name: "calendar-outline", iconName: "calendarFocused", label: "Calendar Focused" },
+  { type: "Image", source: fellowshipOfTheRing, iconName: 'fellowshipOfTheRing', label: "Fellowship of the Ring" },
+  { type: "Image", source: orderOfThePhoenix, iconName: 'orderOfThePhoenix', label: "Order of the Phoenix" },
+  { type: "Image", source: reproductiveJusticeLeague, iconName: 'reproductiveJusticeLeague', label: "Reproductive Justice League" },
+  { type: "Image", source: diamondDogs, iconName: 'diamondDogs', label: "Diamond Dogs" },
+  { type: "MaterialIcons", name: "home", iconName: "home", label: "Home" },
+  { type: "MaterialIcons", name: "home", iconName: "homeFocused", label: "Home Focused" },
+  { type: "EvilIcons", name: "calendar", iconName: "calendar", label: "Calendar" },
+  { type: "EvilIcons", name: "calendar", iconName: "calendarFocused", label: "Calendar Focused" },
   { type: "Ionicons", name: "map", iconName: "map", label: "Map" },
   { type: "Ionicons", name: "map-outline", iconName: "mapFocused", label: "Map Focused" },
-  { type: "Ionicons", name: "trophy", iconName: "standings", label: "Standings" },
-  { type: "Ionicons", name: "trophy-outline", iconName: "standingsFocused", label: "Standings Focused" },
-  { type: "Ionicons", name: "notifications", iconName: "notifications", label: "Notifications" },
-  { type: "Ionicons", name: "notifications-outline", iconName: "notificationsFocused", label: "Notifications Focused" },
-  { type: "Ionicons", name: "help-circle", iconName: "info", label: "Info" },
-  { type: "Ionicons", name: "help-circle-outline", iconName: "infoFocused", label: "Info Focused" },
+  { type: "EvilIcons", name: "trophy", iconName: "standings", label: "Standings" },
+  { type: "EvilIcons", name: "trophy", iconName: "standingsFocused", label: "Standings Focused" },
+  { type: "EvilIcons", name: "bell", iconName: "notifications", label: "Notifications" },
+  { type: "EvilIcons", name: "question", iconName: "info", label: "Info" },
+  { type: "EvilIcons", name: "question", iconName: "infoFocused", label: "Info Focused" },
   { type: "Ionicons", name: "person-circle", iconName: "user", label: "User" },
-  { type: "Ionicons", name: "add-circle-outline", iconName: "addItem", label: "Add Item" },
-  { type: "Ionicons", name: "create-outline", iconName: "edit", label: "Edit" },
+  { type: "EvilIcons", name: "plus", iconName: "addItem", label: "Add Item" },
+  { type: "AntDesign", name: "edit", iconName: "edit", label: "Edit" },
   { type: "Ionicons", name: "heart-outline", iconName: "heartOutline", label: "Heart Outline" },
   { type: "Ionicons", name: "heart", iconName: "heart", label: "Heart" },
-  { type: "Ionicons", name: "chatbubble-outline", iconName: "comment", label: "Comment" },
+  { type: "SimpleLineIcons", name: "bubble", iconName: "comment", label: "Comment" },
   { type: "Ionicons", name: "checkmark-circle-outline", iconName: "check", label: "Check" },
   { type: "Ionicons", name: "image-outline", iconName: "picture", label: "Picture" },
-  { type: "Ionicons", name: "camera", iconName: "camera", label: "Camera" },
+  { type: "EvilIcons", name: "camera", iconName: "camera", label: "Camera" },
   { type: "Ionicons", name: "trash-outline", iconName: "trash", label: "Trash" },
   { type: "Ionicons", name: "close-outline", iconName: "close", label: "Close" },
   { type: "Ionicons", name: "checkmark-outline", iconName: "checkmark", label: "Checkmark" },
-  { type: "Ionicons", name: "cog-outline", iconName: "cog", label: "Cog" },
+  { type: "EvilIcons", name: "gear", iconName: "settings", label: "Settings" },
   { type: "Ionicons", name: "ellipse", iconName: "circle", label: "Circle" },
   { type: "Ionicons", name: "chevron-down-outline", iconName: "expanded", label: "Expanded" },
   { type: "Ionicons", name: "chevron-forward-outline", iconName: "collapsed", label: "Collapsed" },
@@ -100,7 +123,7 @@ export const allIcons = [
   { type: "Ionicons", name: "stopwatch", iconName: "stopwatch", label: "Stopwatch" },
   { type: "Ionicons", name: "tennisball", iconName: "tennisball", label: "Tennisball" },
   { type: "Ionicons", name: "disc", iconName: "disc", label: "Disc" },
-  { type: "Ionicons", name: "expand", iconName: "expand", label: "Expand" },
+  { type: "MaterialCommunityIcons", name: "magnify-expand", iconName: "expand", label: "Expand" },
   { type: "MaterialCommunityIcons", name: "dice-multiple", iconName: "game", label: "Game" },
   { type: "MaterialCommunityIcons", name: "cards", iconName: "cards", label: "Cards" },
   { type: "FontAwesome5", name: "dice", iconName: "dice", label: "Dice" },

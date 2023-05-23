@@ -6,6 +6,7 @@ import {
   ScrollView,
   Pressable,
   Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Menu, useTheme } from 'react-native-paper';
@@ -22,7 +23,8 @@ import {
   Divider,
   Button,
   TextInput,
-  DropdownInput
+  DropdownInput,
+  MultiselectInput,
 } from "../../components";
 import { Posts, Users, Games } from "../../models";
 import { uploadImageS3, DataStore, sendUserPushNotification, gamePlayers, nth } from "../../utils";
@@ -51,6 +53,7 @@ const CreatePostScreen = ({ navigation }) => {
   const [gamesDropdown, setGamesDropdown] = useState([]);
   const [selectedGame, setSelectedGame] = useState(null);
   const [teams, setTeams] = useState([]);
+  const [testUsers, setTestUsers] = useState([]);
 
   const authStatus = useContext(AuthContext).authStatus;
   const theme = useTheme();
@@ -196,6 +199,11 @@ const CreatePostScreen = ({ navigation }) => {
     }
   };
 
+  const handleMultiselectChange = (newValues) => {
+    console.log('-- New Values --', newValues);
+    setTestUsers(newValues);
+  }
+
   useEffect(() => {
     (async () => {
       const cameraRollStatus =
@@ -209,13 +217,27 @@ const CreatePostScreen = ({ navigation }) => {
       });
     })();
 
-    const usersSubscription = DataStore.observeQuery(Users).subscribe(({ users }) => {
-      try {
-        if (users) {
-          setAllUsers(users.sort((a, b) => a.name.localeCompare(b.name)));
-        }
-      } catch (err) { console.log('error fetching Data', err) }
+    const usersSubscription = DataStore.observeQuery(Users, Predicates.ALL, {
+      sort: (u) => u.name(SortDirection.ASCENDING),
+    }).subscribe(({ items }) => {
+      const newUsers = items.map((u) => {
+        return {
+          id: u.id,
+          name: u.name,
+          image: u.image ? JSON.parse(u.image) : undefined,
+          fullObject: u,
+        };
+      });
+  
+      // Quick check to make sure we're only updating state if the subscription caught a change that we care about
+      if (newUsers !== allUsers) {
+        setAllUsers(newUsers);
+      }
     });
+
+    const handleItemUnselect = (item) => {
+      console.log('-- Item Unselected --', item);
+    }
 
     const gamesSubscription = DataStore.observeQuery(Games, Predicates.ALL, {
       sort: (s) => s.name(SortDirection.ASCENDING),
@@ -300,6 +322,42 @@ const CreatePostScreen = ({ navigation }) => {
                     </View>
                   </View>
                 )}
+              />
+              <MultiselectInput
+                data={allUsers}
+                search
+                placeholder='Select Players'
+                focusPlaceholder='...'
+                searchPlaceholder="Search..."
+                values={testUsers}
+                setValues={handleMultiselectChange}
+                valueField="id"
+                renderLeftIcon={(item) => (
+                  <View style={{paddingRight: 10}}>
+                    <Icon
+                      size={20}
+                      name={'user'}
+                    />
+                  </View>
+                )}
+                renderItem={(item) => (
+                  <View style={{flexDirection: 'row', paddingHorizontal: 5, paddingVertical: 2}}>
+                    <View style={{paddingRight: 10, justifyContent: 'center'}}>
+                      <Avatar
+                        fileName={item.image?.url}
+                        name={item.name}
+                        size={typography.fontSizeXS * 2}
+                        variant="circle"
+                        absolute={false}
+                        textSize={TextSizes.S}
+                      />
+                    </View>
+                    <Text size={TextSizes.M}>
+                      {item.name}
+                    </Text>
+                  </View>
+                )}
+                visibleSelectedItem={false}
               />
               {selectedGame && (
                 <>

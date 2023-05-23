@@ -1,26 +1,27 @@
 import React, { useState } from 'react';
 import { View } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Dropdown, IDropdownRef } from 'react-native-element-dropdown';
+import { MultiSelect, IMultiSelectRef } from 'react-native-element-dropdown';
 import Text, { TextSizes } from '../Text/Text';
-import styles from "./DropdownInputStyles";
+import styles from "./MultiselectInputStyles";
 
-interface DropdownProps extends IDropdownRef {
-  value: string;
-  setValue: (value: string) => void;
-  data: [{label: string; value: string; icon?: string}];
+interface MultiselectInputProps extends IMultiSelectRef {
+  values: string[];
+  setValues: (values: string[]) => void;
+  data: any[];
   placeholder?: string;
   focusPlaceholder?: string;
+  valueField?: string;
 }
 
-const DropdownInput = (props: DropdownProps) => {
-  const { value, setValue, data, placeholder, focusPlaceholder, ...restOfProps } = props;
+const MultiselectInput = (props: MultiselectInputProps) => {
+  const { values, setValues, data, placeholder, focusPlaceholder, valueField, ...restOfProps } = props;
   const theme = useTheme();
   const ss = styles(theme);
   const [isFocus, setIsFocus] = useState(false);
 
   const renderLabel = (label) => {
-    if (value || isFocus) {
+    if (values?.length > 0 || isFocus) {
       return (
         <View style={ss.dropdownLabelWrapper}>
           <Text style={[isFocus && { color: theme.colors.primary }]} size={TextSizes.XS}>
@@ -35,7 +36,7 @@ const DropdownInput = (props: DropdownProps) => {
   return (
     <View style={ss.dropdownWrapper}>
       {renderLabel(placeholder)}
-      <Dropdown
+      <MultiSelect
         style={[ss.dropdown, isFocus && { borderColor: theme.colors.primary }]}
         placeholderStyle={ss.dropdownPlaceholder}
         selectedTextStyle={ss.dropdownSelectedText}
@@ -44,13 +45,12 @@ const DropdownInput = (props: DropdownProps) => {
         data={data}
         placeholder={isFocus ? focusPlaceholder : placeholder}
         labelField="label"
-        valueField="value"
-        value={value}
+        valueField={valueField || "value"}
+        value={values}
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={item => {
-          setValue(item.value);
-          setIsFocus(false);
+          setValues(item);
         }}
         {...restOfProps}
       />
@@ -58,4 +58,4 @@ const DropdownInput = (props: DropdownProps) => {
   );
 };
 
-export default DropdownInput;
+export default MultiselectInput;

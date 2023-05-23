@@ -12,6 +12,7 @@ export { default as Icon, allIcons } from './Icon/Icon';
 export { default as IconButton } from './IconButton/IconButton';
 export { default as ImageS3 } from './ImageS3/ImageS3';
 export { default as Modal } from './Modal/Modal';
+export { default as MultiselectInput } from './MultiselectInput/MultiselectInput';
 export { default as NumberInput } from './NumberInput/NumberInput';
 export { default as SegmentedButtons } from './SegmentedButtons/SegmentedButtons';
 export { default as Snackbar } from './Snackbar/Snackbar';

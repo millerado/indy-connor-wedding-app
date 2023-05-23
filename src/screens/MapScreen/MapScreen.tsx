@@ -17,7 +17,7 @@ const MapScreen = () => {
         <Image
           source={resortMap} 
           resizeMode='contain'
-          style={{width: dimensions.width, height: dimensions.width * (7792 / 5216)}}
+          style={{width: dimensions.width, height: dimensions.width * (6000 / 3952)}}
         />
       </Zoom>
     </View>

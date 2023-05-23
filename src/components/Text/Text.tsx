@@ -5,6 +5,7 @@ import {
   TextProps as PaperTextProps,
   withTheme,
 } from "react-native-paper";
+import { typography } from "../../styles";
 
 export enum TextSizes {
   XXS = "XXS",
@@ -64,22 +65,22 @@ export default withTheme(Text);
 const sizeToVariant = (size: TextSizes): number => {
   switch (size) {
     case TextSizes.XXXL:
-      return 48;
+      return typography.fontSizeXXXL;
     case TextSizes.XXL:
-      return 28;
+      return typography.fontSizeXXL;
     case TextSizes.XL:
-      return 24;
+      return typography.fontSizeXL;
     case TextSizes.L:
-      return 20;
+      return typography.fontSizeL;
     case TextSizes.M:
-      return 16;
+      return typography.fontSizeM;
     case TextSizes.S:
-      return 14;
+      return typography.fontSizeS;
     case TextSizes.XS:
-      return 12;
+      return typography.fontSizeXS;
     case TextSizes.XXS:
-      return 10;
+      return typography.fontSizeXXS;
     default:
-      return 16;
+      return typography.fontSizeM;
   }
 };

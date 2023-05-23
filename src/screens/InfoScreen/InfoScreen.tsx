@@ -63,12 +63,12 @@ const InfoScreen = ({ navigation, route }) => {
         <View>
           <ImageBackground
             resizeMode='contain'
-            style={{width: dimensions.width, height: dimensions.width * (5216/7792)}}
+            style={{width: dimensions.width, height: dimensions.width * (1317/2000)}}
             source={resortMap}
             onLoadEnd={() => setImageLoaded(true)}
           >
             {!imageLoaded ? (
-              <View style={{alignItems: 'center', justifyContent: 'center', width: dimensions.width, height: dimensions.width * (5216/7792)}}>
+              <View style={{alignItems: 'center', justifyContent: 'center', width: dimensions.width, height: dimensions.width * (1317/2000)}}>
                 <ActivityIndicator size={dimensions.width * .3} color={theme.colors.primary} />
               </View>
             ) : (

@@ -166,7 +166,7 @@ const SettingsModal = () => {
   return (
     <>
       <Pressable onPress={openModal}>
-        <Icon name='cog' color={theme.colors.primary} size={typography.fontSizeXXL} />
+        <Icon name='settings' color={theme.colors.primary} size={typography.fontSizeXXL} />
       </Pressable>
       <SelectUserModal showModal={showSelectUserModal} closeModal={closeSelectUserModal} fullScreen={false} />
       <Modal
@@ -201,11 +201,11 @@ const SettingsModal = () => {
             {view === 'settings' ? (
               <ScrollView style={ss.modalScrollView} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
                 <View>
-                  <Button
+                  {/* <Button
                     onPress={() => handleThemeChange(themeName === "Dark" ? 'Light' : 'Dark')}
                   >
                     Switch to {themeName === "Dark" ? 'Light' : 'Dark'} Mode
-                  </Button>
+                  </Button> */}
                   {authStatus.isAuthed && (
                     <Button onPress={goToUserPage} style={{marginTop: 10}}>
                       View my User Profile

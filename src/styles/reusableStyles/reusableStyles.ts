@@ -137,6 +137,41 @@ const reusableStyles = theme => {
       borderRadius: 5,
       alignSelf: 'center',
     },
+    dropdown: {
+      height: 50,
+      borderColor: theme.colors.primary,
+      borderWidth: 0.5,
+      borderRadius: 3,
+      paddingHorizontal: 8,
+    },
+    dropdownLabelWrapper: {
+      position: 'absolute',
+      backgroundColor: theme.colors.background,
+      left: 22,
+      top: 7,
+      zIndex: 999,
+      paddingHorizontal: 8,
+    },
+    dropdownItemText: {
+      color: 'red',
+      fontSize: typography.fontSizeS,
+    },
+    dropdownPlaceholder: {
+      fontSize: typography.fontSizeS,
+      color: theme.colors.primary,
+    },
+    dropdownSelectedText: {
+      fontSize: typography.fontSizeS,
+      color: theme.colors.primary,
+    },
+    dropdownIcon: {
+      width: typography.fontSizeL,
+      height: typography.fontSizeL,
+    },
+    dropdownWrapper: {
+      backgroundColor: theme.colors.background,
+      padding: typography.fontSizeS,
+    },
   });
   return ss;
 }

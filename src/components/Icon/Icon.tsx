@@ -1,6 +1,6 @@
 import React from "react";
 import { Image } from "react-native";
-import { Ionicons, FontAwesome5, MaterialCommunityIcons, EvilIcons, SimpleLineIcons, MaterialIcons, AntDesign } from '@expo/vector-icons';
+import { Ionicons, FontAwesome5, FontAwesome, MaterialCommunityIcons, EvilIcons, SimpleLineIcons, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { useTheme } from "react-native-paper";
 const hufflepuff = require('../../assets/images/hufflepuff.png');
 const gryffindor = require('../../assets/images/gryffindor.png');
@@ -56,6 +56,10 @@ const Icon = (props: IconProps) => {
   } else if (iconName.type === 'AntDesign') {
     return (
       <AntDesign name={iconName.name} size={size} color={color} {...restOfProps} />
+    );
+  } else if (iconName.type === 'FontAwesome') {
+    return (
+      <FontAwesome name={iconName.name} size={size} color={color} {...restOfProps} />
     );
   }
 };
@@ -122,7 +126,7 @@ export const allIcons = [
   { type: "Ionicons", name: "school", iconName: "school", label: "School" },
   { type: "Ionicons", name: "stopwatch", iconName: "stopwatch", label: "Stopwatch" },
   { type: "Ionicons", name: "tennisball", iconName: "tennisball", label: "Tennisball" },
-  { type: "Ionicons", name: "disc", iconName: "disc", label: "Disc" },
+  { type: "SimpleLineIcons", name: "disc", iconName: "disc", label: "Disc" },
   { type: "MaterialCommunityIcons", name: "magnify-expand", iconName: "expand", label: "Expand" },
   { type: "MaterialCommunityIcons", name: "dice-multiple", iconName: "game", label: "Game" },
   { type: "MaterialCommunityIcons", name: "cards", iconName: "cards", label: "Cards" },
@@ -131,4 +135,16 @@ export const allIcons = [
   { type: "MaterialCommunityIcons", name: "cards-playing-diamond-multiple-outline", iconName: "cardsDiamonds", label: "Cards Diamonds" },
   { type: "MaterialCommunityIcons", name: "cards-playing-heart-multiple-outline", iconName: "cardsHearts", label: "Cards Hearts" },
   { type: "MaterialCommunityIcons", name: "cards-playing-spade-multiple-outline", iconName: "cardsSpades", label: "Cards Spades" },
+  { type: "MaterialCommunityIcons", name: "run", iconName: "run", label: "Run" },
+  { type: "MaterialCommunityIcons", name: "run-fast", iconName: "runFast", label: "Run Fast" },
+  { type: "FontAwesome", name: "balance-scale", iconName: "balance", label: "Balance" },
+  { type: "MaterialCommunityIcons", name: "thought-bubble-outline", iconName: "thinking", label: "Thinking" },
+  { type: "SimpleLineIcons", name: "bubbles", iconName: "talking", label: "Talking" },
+  { type: "Ionicons", name: "chatbubble-ellipses-outline", iconName: "thinkingAgain", label: "Thinking Again" },
+  { type: "MaterialCommunityIcons", name: "spoon-sugar", iconName: "spoon", label: "Spoon" },
+  { type: "FontAwesome", name: "table", iconName: "bingo", label: "Bingo" },
+  { type: "Ionicons", name: "shuffle-sharp", iconName: "shuffle", label: "Shuffle" },
+  { type: "MaterialIcons", name: "groups", iconName: "teams", label: "Teams" },
+  { type: "MaterialCommunityIcons", name: "kayaking", iconName: "kayaking", label: "Kayaking" },
+
 ];

@@ -6,7 +6,6 @@ import {
   ScrollView,
   Pressable,
   Keyboard,
-  TouchableWithoutFeedback,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Menu, useTheme } from 'react-native-paper';
@@ -174,7 +173,7 @@ const CreatePostScreen = ({ navigation }) => {
         const point = points[i];
         newTeams.push({
           id: i,
-          name: `Team ${i + 1}`,
+          name: `${nth(i)} Place`,
           points: point,
           players: [],
           minPlayers: minNumberOfPlayersPerTeam,
@@ -204,6 +203,18 @@ const CreatePostScreen = ({ navigation }) => {
     setTestUsers(newValues);
   }
 
+  const handleItemUnselect = (item) => {
+    console.log('-- Item Unselected --', item);
+  }
+
+  const handleTeamSetSinglePlayer = (teamId, playerId) => {
+    const newTeams = [...teams];
+    const teamIndex = newTeams.findIndex((t) => t.id === teamId);
+    const teamPlayers = newTeams[teamIndex].players = [playerId];
+    newTeams[teamIndex].players = teamPlayers;
+    setTeams(newTeams);
+  }
+
   useEffect(() => {
     (async () => {
       const cameraRollStatus =
@@ -226,6 +237,8 @@ const CreatePostScreen = ({ navigation }) => {
           name: u.name,
           image: u.image ? JSON.parse(u.image) : undefined,
           fullObject: u,
+          label: u.name,
+          value: u.id,
         };
       });
   
@@ -234,10 +247,6 @@ const CreatePostScreen = ({ navigation }) => {
         setAllUsers(newUsers);
       }
     });
-
-    const handleItemUnselect = (item) => {
-      console.log('-- Item Unselected --', item);
-    }
 
     const gamesSubscription = DataStore.observeQuery(Games, Predicates.ALL, {
       sort: (s) => s.name(SortDirection.ASCENDING),
@@ -299,7 +308,7 @@ const CreatePostScreen = ({ navigation }) => {
                 renderLeftIcon={(item) => (
                   <View style={{paddingRight: 10}}>
                     <Icon
-                      size={20}
+                      size={typography.fontSizeXS * 2}
                       name={selectedGame ? selectedGame.iconName : 'game'}
                     />
                   </View>
@@ -323,42 +332,103 @@ const CreatePostScreen = ({ navigation }) => {
                   </View>
                 )}
               />
-              <MultiselectInput
-                data={allUsers}
-                search
-                placeholder='Select Players'
-                focusPlaceholder='...'
-                searchPlaceholder="Search..."
-                values={testUsers}
-                setValues={handleMultiselectChange}
-                valueField="id"
-                renderLeftIcon={(item) => (
-                  <View style={{paddingRight: 10}}>
-                    <Icon
-                      size={20}
-                      name={'user'}
-                    />
-                  </View>
-                )}
-                renderItem={(item) => (
-                  <View style={{flexDirection: 'row', paddingHorizontal: 5, paddingVertical: 2}}>
-                    <View style={{paddingRight: 10, justifyContent: 'center'}}>
-                      <Avatar
-                        fileName={item.image?.url}
-                        name={item.name}
-                        size={typography.fontSizeXS * 2}
-                        variant="circle"
-                        absolute={false}
-                        textSize={TextSizes.S}
-                      />
-                    </View>
-                    <Text size={TextSizes.M}>
-                      {item.name}
-                    </Text>
-                  </View>
-                )}
-                visibleSelectedItem={false}
-              />
+              {selectedGame && (
+                <>
+                  {teams.map((team, index) => {
+                    if(team.maxPlayers === 1) {
+                      // console.log('-- Team --', team);
+                      return (
+                        <DropdownInput
+                          key={index}
+                          data={allUsers}
+                          search
+                          placeholder={team.name}
+                          focusPlaceholder='...'
+                          searchPlaceholder="Search..."
+                          value={team.players[0]}
+                          setValue={(item) => handleTeamSetSinglePlayer(team.id, item)}
+                          renderLeftIcon={(item) => (
+                            <View style={{paddingRight: 10}}>
+                              {team.players.length > 0 ? (
+                                <Avatar
+                                  fileName={allUsers.find((u) => u.id === team.players[0])?.image?.url}
+                                  name={allUsers.find((u) => u.id === team.players[0])?.name}
+                                  size={typography.fontSizeXS * 2}
+                                  variant="circle"
+                                  absolute={false}
+                                  textSize={TextSizes.S}
+                                />
+                              ) : (
+                                <Icon
+                                  size={typography.fontSizeXS * 2}
+                                  name={'user'}
+                                />
+                              )}
+                            </View>
+                          )}
+                          renderItem={(item) => (
+                            <View style={{flexDirection: 'row', paddingHorizontal: 5, paddingVertical: 2}}>
+                              <View style={{paddingRight: 10, justifyContent: 'center'}}>
+                                <Avatar
+                                  fileName={item.image?.url}
+                                  name={item.name}
+                                  size={typography.fontSizeXS * 2}
+                                  variant="circle"
+                                  absolute={false}
+                                  textSize={TextSizes.S}
+                                />
+                              </View>
+                              <Text size={TextSizes.M}>
+                                {item.name}
+                              </Text>
+                            </View>
+                          )}
+                        />
+                      );
+                    } else {
+                      return (
+                        <MultiselectInput
+                          key={index}
+                          data={allUsers}
+                          search
+                          placeholder={team.name}
+                          focusPlaceholder='...'
+                          searchPlaceholder="Search..."
+                          values={testUsers}
+                          setValues={handleMultiselectChange}
+                          valueField="id"
+                          renderLeftIcon={(item) => (
+                            <View style={{paddingRight: 10}}>
+                              <Icon
+                                size={typography.fontSizeXS * 2}
+                                name={'user'}
+                              />
+                            </View>
+                          )}
+                          renderItem={(item) => (
+                            <View style={{flexDirection: 'row', paddingHorizontal: 5, paddingVertical: 2}}>
+                              <View style={{paddingRight: 10, justifyContent: 'center'}}>
+                                <Avatar
+                                  fileName={item.image?.url}
+                                  name={item.name}
+                                  size={typography.fontSizeXS * 2}
+                                  variant="circle"
+                                  absolute={false}
+                                  textSize={TextSizes.S}
+                                />
+                              </View>
+                              <Text size={TextSizes.M}>
+                                {item.name}
+                              </Text>
+                            </View>
+                          )}
+                          visibleSelectedItem={false}
+                        />
+                      );
+                    }
+                  })}
+                </>
+              )}
               {selectedGame && (
                 <>
                   <View style={{ paddingHorizontal: 15, paddingBottom: 10, width: "100%" }}>

@@ -60,6 +60,7 @@ const UserScreenHeader = (props) => {
   });
   const auth = useContext(AuthContext);
   const { authStatus, setAuthStatus } = auth;
+  console.log('-- Auth Context --', auth);
 
   const navigation = useNavigation();
 

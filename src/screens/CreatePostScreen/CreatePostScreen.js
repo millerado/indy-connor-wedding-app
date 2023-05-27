@@ -24,6 +24,7 @@ import {
   TextInput,
   DropdownInput,
   MultiselectInput,
+  ConditionalWrapper,
 } from "../../components";
 import { Posts, Users, Games } from "../../models";
 import { uploadImageS3, DataStore, sendUserPushNotification, gamePlayers, nth } from "../../utils";
@@ -52,7 +53,6 @@ const CreatePostScreen = ({ navigation }) => {
   const [gamesDropdown, setGamesDropdown] = useState([]);
   const [selectedGame, setSelectedGame] = useState(null);
   const [teams, setTeams] = useState([]);
-  const [testUsers, setTestUsers] = useState([]);
 
   const authStatus = useContext(AuthContext).authStatus;
   const theme = useTheme();
@@ -166,28 +166,71 @@ const CreatePostScreen = ({ navigation }) => {
     const game = games.find((g) => g.id === item);
     setSelectedGame(game);
     if(game) {
-      console.log('-- Full Game Details --', game);
+      // console.log('-- Full Game Details --', game);
       const { canHaveMultipleWinners, minNumberOfPlayersPerTeam, maxNumberOfPlayersPerTeam, minNumberOfTeams, maxNumberOfTeams, points, rules } = game;
       const newTeams = [];
       for(let i = 1; i < points.length; i++) {
         const point = points[i];
+        let playerString = '';
+        if (canHaveMultipleWinners) {
+          playerString = `at least ${minNumberOfPlayersPerTeam} player`;
+        } else {
+          if(minNumberOfPlayersPerTeam === maxNumberOfPlayersPerTeam) {
+            playerString = `${minNumberOfPlayersPerTeam} player${minNumberOfPlayersPerTeam > 1 ? 's' : ''}`;
+          } else if (!maxNumberOfPlayersPerTeam) {
+            playerString = `at least ${minNumberOfPlayersPerTeam} player${minNumberOfPlayersPerTeam > 1 ? 's' : ''}`;
+          } else {
+            playerString = `${minNumberOfPlayersPerTeam}-${maxNumberOfPlayersPerTeam} players`;
+          }
+        }
         newTeams.push({
           id: i,
           name: `${nth(i)} Place`,
+          label: `${nth(i)} Place (${playerString})`,
           points: point,
           players: [],
           minPlayers: minNumberOfPlayersPerTeam,
-          maxPlayers: maxNumberOfPlayersPerTeam,
+          maxPlayers: canHaveMultipleWinners ? null : maxNumberOfPlayersPerTeam,
           canHaveMultipleWinners,
         });
       }
+
+      // Based on the number of teams in newTeam, minNumberOfPlayersPerTeam, maxNumberOfPlayersPerTeam (nullable), minNumberOfTeam, maxNumberOfTeams (nullable), and canHaveMultipleWinners
+      // Determine the minimum and maximum players for the "everyone else" bucket
+      // If there is a maxNumberOfTeams, then the minimum number of players is the maxNumberOfTeams * minNumberOfPlayersPerTeam
+      // If there is a maxNumberOfTeams, then the maximum number of players is the maxNumberOfTeams * maxNumberOfPlayersPerTeam
+      // If there is no maxNumberOfTeams, then the minimum number of players is minNumberOfTeams * minNumberOfPlayersPerTeam
+      // If there is no maxNumberOfTeams, then the maximum number of players is null
+      const minNumberInTeams = newTeams.length * minNumberOfPlayersPerTeam;
+      const maxNumberInTeams = newTeams.length * maxNumberOfPlayersPerTeam;
+      let minNumberOfPlayersForEveryoneElse = null; 
+      let maxNumberOfPlayersForEveryoneElse = null;
+      if (maxNumberOfTeams) {
+        minNumberOfPlayersForEveryoneElse = (minNumberOfTeams * minNumberOfPlayersPerTeam) - minNumberInTeams;
+        maxNumberOfPlayersForEveryoneElse = (maxNumberOfTeams * maxNumberOfPlayersPerTeam) - maxNumberInTeams;
+      } else {
+        minNumberOfPlayersForEveryoneElse = (minNumberOfTeams * minNumberOfPlayersPerTeam) - minNumberInTeams;
+      }
+
+      let playerString = '';
+      if(maxNumberOfPlayersForEveryoneElse) {
+        if(minNumberOfPlayersForEveryoneElse === maxNumberOfPlayersForEveryoneElse) {
+          playerString = `${minNumberOfPlayersForEveryoneElse} player${minNumberOfPlayersForEveryoneElse > 1 ? 's' : ''}`;
+        } else {
+          playerString = `${minNumberOfPlayersForEveryoneElse}-${maxNumberOfPlayersForEveryoneElse} player${maxNumberOfPlayersForEveryoneElse > 1 ? 's' : ''}`;
+        }
+      } else {
+        playerString = `at least ${minNumberOfPlayersForEveryoneElse} player${minNumberOfPlayersForEveryoneElse > 1 ? 's' : ''}`;
+      }
+
       newTeams.push({
         id: 0,
         name: 'Everyone Else',
+        label: `Everyone Else (${playerString})`,
         points: points[0],
         players: [],
-        minPlayers: minNumberOfPlayersPerTeam,
-        maxPlayers: maxNumberOfPlayersPerTeam,
+        minPlayers: minNumberOfPlayersForEveryoneElse,
+        maxPlayers: maxNumberOfPlayersForEveryoneElse,
         canHaveMultipleWinners,
       })
       setTeams(newTeams);
@@ -198,13 +241,20 @@ const CreatePostScreen = ({ navigation }) => {
     }
   };
 
-  const handleMultiselectChange = (newValues) => {
-    console.log('-- New Values --', newValues);
-    setTestUsers(newValues);
+  const handleMultiselectChange = (teamId, newValues) => {
+    console.log('-- New Values --', teamId, newValues);
+    const newTeams = [...teams];
+    const teamIndex = newTeams.findIndex((t) => t.id === teamId);
+    newTeams[teamIndex].players = newValues;
+    setTeams(newTeams);
   }
 
-  const handleItemUnselect = (item) => {
-    console.log('-- Item Unselected --', item);
+  const handleRemovePlayer = (teamId, playerId) => {
+    const newTeams = [...teams];
+    const teamIndex = newTeams.findIndex((t) => t.id === teamId);
+    const teamPlayers = newTeams[teamIndex].players.filter((p) => p !== playerId);
+    newTeams[teamIndex].players = teamPlayers;
+    setTeams(newTeams);
   }
 
   const handleTeamSetSinglePlayer = (teamId, playerId) => {
@@ -343,6 +393,7 @@ const CreatePostScreen = ({ navigation }) => {
                           data={allUsers}
                           search
                           placeholder={team.name}
+                          label={team.label}
                           focusPlaceholder='...'
                           searchPlaceholder="Search..."
                           value={team.players[0]}
@@ -387,135 +438,95 @@ const CreatePostScreen = ({ navigation }) => {
                       );
                     } else {
                       return (
-                        <MultiselectInput
-                          key={index}
-                          data={allUsers}
-                          search
-                          placeholder={team.name}
-                          focusPlaceholder='...'
-                          searchPlaceholder="Search..."
-                          values={testUsers}
-                          setValues={handleMultiselectChange}
-                          valueField="id"
-                          renderLeftIcon={(item) => (
-                            <View style={{paddingRight: 10}}>
-                              <Icon
-                                size={typography.fontSizeXS * 2}
-                                name={'user'}
-                              />
-                            </View>
-                          )}
-                          renderItem={(item) => (
-                            <View style={{flexDirection: 'row', paddingHorizontal: 5, paddingVertical: 2}}>
-                              <View style={{paddingRight: 10, justifyContent: 'center'}}>
-                                <Avatar
-                                  fileName={item.image?.url}
-                                  name={item.name}
+                        <>
+                          <MultiselectInput
+                            key={index}
+                            data={allUsers}
+                            search
+                            // disabled={team.maxPlayers && team.players.length >= team.maxPlayers}
+                            // placeholder={team.name}
+                            maxSelect={team.maxPlayers}
+                            placeholder={team.label}
+                            label={team.label}
+                            focusPlaceholder='...'
+                            searchPlaceholder="Search..."
+                            values={team.players}
+                            setValues={(item) => handleMultiselectChange(team.id, item)}
+                            valueField="id"
+                            renderLeftIcon={(item) => (
+                              <View style={{paddingRight: 10}}>
+                                <Icon
                                   size={typography.fontSizeXS * 2}
-                                  variant="circle"
-                                  absolute={false}
-                                  textSize={TextSizes.S}
+                                  name={'user'}
                                 />
                               </View>
-                              <Text size={TextSizes.M}>
-                                {item.name}
-                              </Text>
-                            </View>
-                          )}
-                          visibleSelectedItem={false}
-                        />
+                            )}
+                            renderItem={(item) => (
+                              <View style={{flexDirection: 'row', paddingHorizontal: 5, paddingVertical: 2}}>
+                                <View style={{paddingRight: 10, justifyContent: 'center'}}>
+                                  <Avatar
+                                    fileName={item.image?.url}
+                                    name={item.name}
+                                    size={typography.fontSizeXS * 2}
+                                    variant="circle"
+                                    absolute={false}
+                                    textSize={TextSizes.S}
+                                  />
+                                </View>
+                                <Text size={TextSizes.M}>
+                                  {item.name}
+                                </Text>
+                              </View>
+                            )}
+                            visibleSelectedItem={false}
+                          />
+                          <ConditionalWrapper
+                            condition={team.players.length > 0}
+                            wrapper={(children) => (
+                              <View style={{flexDirection: 'row', width: '100%', padding: 10, flexWrap: 'wrap', justifyContent: 'space-evenly', paddingVertical: (8 / -2)}}>
+                                {children}
+                              </View>
+                            )}
+                          >
+                            {team.players.map((player, index) => {
+                              const playerData = allUsers.find((u) => u.id === player);
+                              if(playerData) {
+                                return(
+                                  <View style={{padding: 8 / 2}} key={index}>
+                                    <Chip
+                                      elevated
+                                      icon={(item) => (
+                                        <Avatar
+                                          fileName={playerData.image?.url}
+                                          name={playerData.name}
+                                          size={typography.fontSizeXS * 2}
+                                          textSize={TextSizes.S}
+                                          variant="circle"
+                                          absolute={false}
+                                        />
+                                      )}
+                                      closeIcon={() => (
+                                        <Icon
+                                          size={typography.fontSizeXS * 2}
+                                          name={'close'}
+                                        />
+                                      )}
+                                      onClose={() => handleRemovePlayer(team.id, player)}
+                                    >
+                                      <Text size={TextSizes.S}>
+                                        {playerData.name}
+                                      </Text>
+                                    </Chip>
+                                  </View>
+                                )
+                              }
+                              return null;
+                            })}
+                          </ConditionalWrapper>
+                        </>
                       );
                     }
                   })}
-                </>
-              )}
-              {selectedGame && (
-                <>
-                  <View style={{ paddingHorizontal: 15, paddingBottom: 10, width: "100%" }}>
-                    <Text>
-                      {JSON.stringify(teams)}
-                    </Text>
-                  </View>
-                  <View style={{flexDirection: 'row', width: '100%', padding: 10, flexWrap: 'wrap', justifyContent: 'space-evenly', paddingVertical: (8 / -2)}}>
-                    <View style={{padding: 8 / 2}}>
-                      <Chip
-                        onPress={() => console.log('Pressed')}
-                        elevated
-                        icon={(item) => (
-                          <Avatar
-                            // fileName={authStatus.image?.url}
-                            name={'Indigo Miller'}
-                            size={typography.fontSizeXS * 2}
-                            variant="circle"
-                            absolute={false}
-                          />
-                        )}
-                        closeIcon={() => (
-                          <Icon
-                            size={typography.fontSizeXS * 2}
-                            name={'close'}
-                          />
-                        )}
-                        onClose={() => console.log('-- Close Chip --')}
-                      >
-                        <Text size={TextSizes.S}>
-                          Indigo Miller
-                        </Text>
-                      </Chip>
-                    </View>
-                    <View style={{padding: 8 / 2}}>
-                      <Chip
-                        onPress={() => console.log('Pressed')}
-                        elevated
-                        icon={(item) => (
-                          <Avatar
-                            // fileName={authStatus.image?.url}
-                            name={'Anna Wilson'}
-                            size={typography.fontSizeXS * 2}
-                            variant="circle"
-                            absolute={false}
-                          />
-                        )}
-                        closeIcon={() => (
-                          <Icon
-                            size={typography.fontSizeXS * 2}
-                            name={'close'}
-                          />
-                        )}
-                        onClose={() => console.log('-- Close Chip --')}
-                      >
-                        <Text size={TextSizes.S}>
-                          Anna Wilson
-                        </Text>
-                      </Chip>
-                    </View>
-                    <View style={{padding: 8 / 2}}>
-                      <Chip
-                        onPress={() => console.log('Pressed')}
-                        elevated
-                        icon={(item) => (
-                          <Avatar
-                            // fileName={authStatus.image?.url}
-                            name={'James Jones'}
-                            size={typography.fontSizeXS * 2}
-                            variant="circle"
-                            absolute={false}
-                          />
-                        )}
-                        closeIcon={() => (
-                          <Icon
-                            size={typography.fontSizeXS * 2}
-                            name={'close'}
-                          />
-                        )}
-                        onClose={() => console.log('-- Close Chip --')}
-                      >
-                        <Text size={TextSizes.S}>
-                          James Jones
-                        </Text>
-                      </Chip>
-                    </View>
-                  </View>
                 </>
               )}
             </View>

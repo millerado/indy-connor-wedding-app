@@ -47,7 +47,7 @@ const reusableStyles = theme => {
       borderRadius: 0,
       width: width,
       height: height,
-      backgroundColor: theme.colors.onPrimary,
+      backgroundColor: theme.colors.background,
       justifyContent: 'flex-start',
       overflow: 'hidden',
     },  

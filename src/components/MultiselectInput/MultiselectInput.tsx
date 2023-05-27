@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MultiSelect, IMultiSelectRef } from 'react-native-element-dropdown';
@@ -12,10 +12,12 @@ interface MultiselectInputProps extends IMultiSelectRef {
   placeholder?: string;
   focusPlaceholder?: string;
   valueField?: string;
+  label?: string;
+  disabled?: boolean;
 }
 
 const MultiselectInput = (props: MultiselectInputProps) => {
-  const { values, setValues, data, placeholder, focusPlaceholder, valueField, ...restOfProps } = props;
+  const { values, setValues, data, placeholder, focusPlaceholder, valueField, label, disabled, ...restOfProps } = props;
   const theme = useTheme();
   const ss = styles(theme);
   const [isFocus, setIsFocus] = useState(false);
@@ -32,6 +34,12 @@ const MultiselectInput = (props: MultiselectInputProps) => {
     }
     return null;
   };
+
+  useEffect(() => {
+    if(disabled) {
+      setIsFocus(false);
+    }
+  }, [disabled])
 
   return (
     <View style={ss.dropdownWrapper}>
@@ -52,6 +60,7 @@ const MultiselectInput = (props: MultiselectInputProps) => {
         onChange={item => {
           setValues(item);
         }}
+        disable={disabled}
         {...restOfProps}
       />
     </View>

@@ -143,6 +143,7 @@ const reusableStyles = theme => {
       borderWidth: 0.5,
       borderRadius: 3,
       paddingHorizontal: 8,
+      marginBottom: -5,
     },
     dropdownLabelWrapper: {
       position: 'absolute',

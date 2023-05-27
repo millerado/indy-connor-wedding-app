@@ -53,6 +53,7 @@ const CreatePostScreen = ({ navigation }) => {
   const [gamesDropdown, setGamesDropdown] = useState([]);
   const [selectedGame, setSelectedGame] = useState(null);
   const [teams, setTeams] = useState([]);
+  const [formValid, setFormValid] = useState(false);
 
   const authStatus = useContext(AuthContext).authStatus;
   const theme = useTheme();
@@ -242,7 +243,6 @@ const CreatePostScreen = ({ navigation }) => {
   };
 
   const handleMultiselectChange = (teamId, newValues) => {
-    console.log('-- New Values --', teamId, newValues);
     const newTeams = [...teams];
     const teamIndex = newTeams.findIndex((t) => t.id === teamId);
     newTeams[teamIndex].players = newValues;
@@ -264,6 +264,43 @@ const CreatePostScreen = ({ navigation }) => {
     newTeams[teamIndex].players = teamPlayers;
     setTeams(newTeams);
   }
+
+  const addSaveButton = () => {
+    return (
+      <Pressable onPress={savePost}>
+        <View>
+          <Icon
+            name={'save'}
+            color={theme.colors.primary}
+            size={typography.fontSizeXL}
+          />
+        </View>
+      </Pressable>
+    );
+  }
+
+  useEffect(() => {
+    if (selectedGame) {
+      let allTeamsValid = true;
+      for (let i = 0; i < teams.length; i++) {
+        const team = teams[i];
+        if (team.players.length < team.minPlayers) {
+          allTeamsValid = false;
+          break;
+        }
+      }
+      setFormValid(allTeamsValid);
+    } else {
+      // There's no game, we only need to know if they wrote a message or added 1+ images
+      setFormValid(messageBody !== '' || images.length > 0);
+    }
+  }, [messageBody, images, selectedGame, teams]);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => formValid ? addSaveButton() : null,
+    });
+  }, [formValid]);
 
   useEffect(() => {
     (async () => {
@@ -482,7 +519,7 @@ const CreatePostScreen = ({ navigation }) => {
                           <ConditionalWrapper
                             condition={team.players.length > 0}
                             wrapper={(children) => (
-                              <View style={{flexDirection: 'row', width: '100%', padding: 10, flexWrap: 'wrap', justifyContent: 'space-evenly', paddingVertical: (8 / -2)}}>
+                              <View style={{flexDirection: 'row', width: '100%', paddingHorizontal: 10, marginBottom: 10, flexWrap: 'wrap', justifyContent: 'space-evenly', paddingVertical: (8 / -2)}}>
                                 {children}
                               </View>
                             )}
@@ -513,7 +550,7 @@ const CreatePostScreen = ({ navigation }) => {
                                       onClose={() => handleRemovePlayer(team.id, player)}
                                     >
                                       <Text size={TextSizes.S}>
-                                        {playerData.name}
+                                        {team.players.length <=2 ? playerData.name : ''}
                                       </Text>
                                     </Chip>
                                   </View>
@@ -612,7 +649,7 @@ const CreatePostScreen = ({ navigation }) => {
                 <Button
                   variant="primary"
                   onPress={savePost}
-                  disabled={messageBody === "" && images.length === 0}
+                  disabled={!formValid}
                 >
                   Save Post
                 </Button>

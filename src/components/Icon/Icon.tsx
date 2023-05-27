@@ -146,5 +146,5 @@ export const allIcons = [
   { type: "Ionicons", name: "shuffle-sharp", iconName: "shuffle", label: "Shuffle" },
   { type: "MaterialIcons", name: "groups", iconName: "teams", label: "Teams" },
   { type: "MaterialCommunityIcons", name: "kayaking", iconName: "kayaking", label: "Kayaking" },
-
+  { type: "FontAwesome5", name: 'save', iconName: 'save', label: 'Save' },
 ];

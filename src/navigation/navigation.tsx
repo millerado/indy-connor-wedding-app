@@ -30,7 +30,7 @@ const getScreenOptions = () => {
   const theme = useTheme();
   const screenOptions={
     headerStyle: {
-      backgroundColor: theme.colors.background,
+      backgroundColor: theme.colors.onPrimary,
       borderBottomWidth: 0,
       shadowOffset: { height: 0, width: 0 },
     },

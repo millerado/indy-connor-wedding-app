@@ -39,12 +39,12 @@ type Posts @model @auth(rules: [{allow: public}]) {
   eventDetails: String
   Comments: [Comments] @hasMany(indexName: "byPosts", fields: ["id"])
   Reactions: [Reactions] @hasMany(indexName: "byPosts", fields: ["id"])
+  usersInPost: [Users] @hasMany(indexName: "byPosts", fields: ["id"])
 }
 
 type Teams @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String!
-  colorCode: String!
   Users: [Users] @hasMany(indexName: "byTeams", fields: ["id"])
   iconName: String
 }
@@ -54,8 +54,10 @@ type Users @model @auth(rules: [{allow: public}]) {
   name: String!
   image: String
   about: String
-  admin: Boolean!
+  whereAreYouStaying: String
   teamsID: ID! @index(name: "byTeams")
+  postsID: ID @index(name: "byPosts")
+  admin: Boolean!
 }
 
 type ExpoTokens @model @auth(rules: [{allow: public}]) {

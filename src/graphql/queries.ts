@@ -299,6 +299,10 @@ export const getPosts = /* GraphQL */ `
         nextToken
         startedAt
       }
+      usersInPost {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -368,7 +372,6 @@ export const getTeams = /* GraphQL */ `
     getTeams(id: $id) {
       id
       name
-      colorCode
       Users {
         nextToken
         startedAt
@@ -392,7 +395,6 @@ export const listTeams = /* GraphQL */ `
       items {
         id
         name
-        colorCode
         iconName
         createdAt
         updatedAt
@@ -421,7 +423,6 @@ export const syncTeams = /* GraphQL */ `
       items {
         id
         name
-        colorCode
         iconName
         createdAt
         updatedAt
@@ -441,8 +442,10 @@ export const getUsers = /* GraphQL */ `
       name
       image
       about
-      admin
+      whereAreYouStaying
       teamsID
+      postsID
+      admin
       createdAt
       updatedAt
       _version
@@ -463,8 +466,10 @@ export const listUsers = /* GraphQL */ `
         name
         image
         about
-        admin
+        whereAreYouStaying
         teamsID
+        postsID
+        admin
         createdAt
         updatedAt
         _version
@@ -494,8 +499,10 @@ export const syncUsers = /* GraphQL */ `
         name
         image
         about
-        admin
+        whereAreYouStaying
         teamsID
+        postsID
+        admin
         createdAt
         updatedAt
         _version
@@ -527,8 +534,45 @@ export const usersByTeamsID = /* GraphQL */ `
         name
         image
         about
-        admin
+        whereAreYouStaying
         teamsID
+        postsID
+        admin
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const usersByPostsID = /* GraphQL */ `
+  query UsersByPostsID(
+    $postsID: ID!
+    $sortDirection: ModelSortDirection
+    $filter: ModelUsersFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    usersByPostsID(
+      postsID: $postsID
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        name
+        image
+        about
+        whereAreYouStaying
+        teamsID
+        postsID
+        admin
         createdAt
         updatedAt
         _version

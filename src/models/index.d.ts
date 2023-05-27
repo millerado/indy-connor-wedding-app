@@ -155,6 +155,7 @@ type EagerPosts = {
   readonly eventDetails?: string | null;
   readonly Comments?: (Comments | null)[] | null;
   readonly Reactions?: (Reactions | null)[] | null;
+  readonly usersInPost?: (Users | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -172,6 +173,7 @@ type LazyPosts = {
   readonly eventDetails?: string | null;
   readonly Comments: AsyncCollection<Comments>;
   readonly Reactions: AsyncCollection<Reactions>;
+  readonly usersInPost: AsyncCollection<Users>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -246,40 +248,6 @@ export declare const Reactions: (new (init: ModelInit<Reactions>) => Reactions) 
   copyOf(source: Reactions, mutator: (draft: MutableModel<Reactions>) => MutableModel<Reactions> | void): Reactions;
 }
 
-type EagerTeams = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Teams, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly name: string;
-  readonly colorCode: string;
-  readonly Users?: (Users | null)[] | null;
-  readonly iconName?: string | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-type LazyTeams = {
-  readonly [__modelMeta__]: {
-    identifier: ManagedIdentifier<Teams, 'id'>;
-    readOnlyFields: 'createdAt' | 'updatedAt';
-  };
-  readonly id: string;
-  readonly name: string;
-  readonly colorCode: string;
-  readonly Users: AsyncCollection<Users>;
-  readonly iconName?: string | null;
-  readonly createdAt?: string | null;
-  readonly updatedAt?: string | null;
-}
-
-export declare type Teams = LazyLoading extends LazyLoadingDisabled ? EagerTeams : LazyTeams
-
-export declare const Teams: (new (init: ModelInit<Teams>) => Teams) & {
-  copyOf(source: Teams, mutator: (draft: MutableModel<Teams>) => MutableModel<Teams> | void): Teams;
-}
-
 type EagerUsers = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Users, 'id'>;
@@ -289,8 +257,10 @@ type EagerUsers = {
   readonly name: string;
   readonly image?: string | null;
   readonly about?: string | null;
-  readonly admin: boolean;
+  readonly whereAreYouStaying?: string | null;
   readonly teamsID: string;
+  readonly postsID?: string | null;
+  readonly admin: boolean;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -304,8 +274,10 @@ type LazyUsers = {
   readonly name: string;
   readonly image?: string | null;
   readonly about?: string | null;
-  readonly admin: boolean;
+  readonly whereAreYouStaying?: string | null;
   readonly teamsID: string;
+  readonly postsID?: string | null;
+  readonly admin: boolean;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -314,6 +286,38 @@ export declare type Users = LazyLoading extends LazyLoadingDisabled ? EagerUsers
 
 export declare const Users: (new (init: ModelInit<Users>) => Users) & {
   copyOf(source: Users, mutator: (draft: MutableModel<Users>) => MutableModel<Users> | void): Users;
+}
+
+type EagerTeams = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Teams, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly name: string;
+  readonly Users?: (Users | null)[] | null;
+  readonly iconName?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyTeams = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Teams, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly name: string;
+  readonly Users: AsyncCollection<Users>;
+  readonly iconName?: string | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Teams = LazyLoading extends LazyLoadingDisabled ? EagerTeams : LazyTeams
+
+export declare const Teams: (new (init: ModelInit<Teams>) => Teams) & {
+  copyOf(source: Teams, mutator: (draft: MutableModel<Teams>) => MutableModel<Teams> | void): Teams;
 }
 
 type EagerExpoTokens = {

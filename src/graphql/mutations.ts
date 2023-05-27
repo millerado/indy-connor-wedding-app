@@ -250,6 +250,10 @@ export const createPosts = /* GraphQL */ `
         nextToken
         startedAt
       }
+      usersInPost {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -275,6 +279,10 @@ export const updatePosts = /* GraphQL */ `
         startedAt
       }
       Reactions {
+        nextToken
+        startedAt
+      }
+      usersInPost {
         nextToken
         startedAt
       }
@@ -306,6 +314,10 @@ export const deletePosts = /* GraphQL */ `
         nextToken
         startedAt
       }
+      usersInPost {
+        nextToken
+        startedAt
+      }
       createdAt
       updatedAt
       _version
@@ -322,7 +334,6 @@ export const createTeams = /* GraphQL */ `
     createTeams(input: $input, condition: $condition) {
       id
       name
-      colorCode
       Users {
         nextToken
         startedAt
@@ -344,7 +355,6 @@ export const updateTeams = /* GraphQL */ `
     updateTeams(input: $input, condition: $condition) {
       id
       name
-      colorCode
       Users {
         nextToken
         startedAt
@@ -366,7 +376,6 @@ export const deleteTeams = /* GraphQL */ `
     deleteTeams(input: $input, condition: $condition) {
       id
       name
-      colorCode
       Users {
         nextToken
         startedAt
@@ -390,8 +399,10 @@ export const createUsers = /* GraphQL */ `
       name
       image
       about
-      admin
+      whereAreYouStaying
       teamsID
+      postsID
+      admin
       createdAt
       updatedAt
       _version
@@ -410,8 +421,10 @@ export const updateUsers = /* GraphQL */ `
       name
       image
       about
-      admin
+      whereAreYouStaying
       teamsID
+      postsID
+      admin
       createdAt
       updatedAt
       _version
@@ -430,8 +443,10 @@ export const deleteUsers = /* GraphQL */ `
       name
       image
       about
-      admin
+      whereAreYouStaying
       teamsID
+      postsID
+      admin
       createdAt
       updatedAt
       _version

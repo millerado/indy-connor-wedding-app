@@ -299,10 +299,7 @@ export const getPosts = /* GraphQL */ `
         nextToken
         startedAt
       }
-      usersInPost {
-        nextToken
-        startedAt
-      }
+      usersInPost
       createdAt
       updatedAt
       _version
@@ -325,6 +322,7 @@ export const listPosts = /* GraphQL */ `
         images
         olympicEvent
         eventDetails
+        usersInPost
         createdAt
         updatedAt
         _version
@@ -356,6 +354,7 @@ export const syncPosts = /* GraphQL */ `
         images
         olympicEvent
         eventDetails
+        usersInPost
         createdAt
         updatedAt
         _version
@@ -444,7 +443,6 @@ export const getUsers = /* GraphQL */ `
       about
       whereAreYouStaying
       teamsID
-      postsID
       admin
       createdAt
       updatedAt
@@ -468,7 +466,6 @@ export const listUsers = /* GraphQL */ `
         about
         whereAreYouStaying
         teamsID
-        postsID
         admin
         createdAt
         updatedAt
@@ -501,7 +498,6 @@ export const syncUsers = /* GraphQL */ `
         about
         whereAreYouStaying
         teamsID
-        postsID
         admin
         createdAt
         updatedAt
@@ -536,42 +532,6 @@ export const usersByTeamsID = /* GraphQL */ `
         about
         whereAreYouStaying
         teamsID
-        postsID
-        admin
-        createdAt
-        updatedAt
-        _version
-        _deleted
-        _lastChangedAt
-      }
-      nextToken
-      startedAt
-    }
-  }
-`;
-export const usersByPostsID = /* GraphQL */ `
-  query UsersByPostsID(
-    $postsID: ID!
-    $sortDirection: ModelSortDirection
-    $filter: ModelUsersFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    usersByPostsID(
-      postsID: $postsID
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        name
-        image
-        about
-        whereAreYouStaying
-        teamsID
-        postsID
         admin
         createdAt
         updatedAt

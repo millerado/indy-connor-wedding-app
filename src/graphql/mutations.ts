@@ -250,10 +250,7 @@ export const createPosts = /* GraphQL */ `
         nextToken
         startedAt
       }
-      usersInPost {
-        nextToken
-        startedAt
-      }
+      usersInPost
       createdAt
       updatedAt
       _version
@@ -282,10 +279,7 @@ export const updatePosts = /* GraphQL */ `
         nextToken
         startedAt
       }
-      usersInPost {
-        nextToken
-        startedAt
-      }
+      usersInPost
       createdAt
       updatedAt
       _version
@@ -314,10 +308,7 @@ export const deletePosts = /* GraphQL */ `
         nextToken
         startedAt
       }
-      usersInPost {
-        nextToken
-        startedAt
-      }
+      usersInPost
       createdAt
       updatedAt
       _version
@@ -401,7 +392,6 @@ export const createUsers = /* GraphQL */ `
       about
       whereAreYouStaying
       teamsID
-      postsID
       admin
       createdAt
       updatedAt
@@ -423,7 +413,6 @@ export const updateUsers = /* GraphQL */ `
       about
       whereAreYouStaying
       teamsID
-      postsID
       admin
       createdAt
       updatedAt
@@ -445,7 +434,6 @@ export const deleteUsers = /* GraphQL */ `
       about
       whereAreYouStaying
       teamsID
-      postsID
       admin
       createdAt
       updatedAt

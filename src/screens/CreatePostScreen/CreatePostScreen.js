@@ -95,7 +95,7 @@ const CreatePostScreen = ({ navigation }) => {
 
   const savePost = async () => {
     setDataPosting(true);
-    if (messageBody !== "" || images) {
+    if (formValid) {
       try {
         // await DataStore.stop();
         const imagesArray = [];
@@ -104,12 +104,59 @@ const CreatePostScreen = ({ navigation }) => {
             imagesArray.push(JSON.stringify(images[i]));
           }
         }
+        // Create an array of userIds from messageBody based Regex matches on [username](userId)
+        const regex = /@\[(.*?)\]\((.*?)\)/g;
+        const matches = messageBody.match(regex);
+        const taggedUserIds = [authStatus.userId]; // And make sure the creating-user is included
+        if (matches) {
+          matches.forEach((match) => {
+            const [, username, userId] = match.match(/@\[(.*?)\]\((.*?)\)/);
+            taggedUserIds.push(userId);
+          });
+        }
+
+        // Create an array of userIds from the array of teams.players
+        const teamUserIds = [];
+        if (selectedGame) {
+          for (let i = 0; i < teams.length; i++) {
+            const team = teams[i];
+            for (let j = 0; j < team.players.length; j++) {
+              teamUserIds.push(team.players[j]);
+            }
+          }
+        }
+
+        // Combine the two arrays of userIds, and remove duplicates
+        const allUserIds = [...new Set([...taggedUserIds, ...teamUserIds])];
+
+        const gamePoints = [];
+        if(selectedGame) {
+          for(let i = 0; i < teams.length; i++) {
+            if(teams[i].points > 0) {
+              for(let j = 0; j < teams[i].players.length; j++) {
+                gamePoints.push({
+                  userId: teams[i].players[j],
+                  points: teams[i].points,
+                });
+              }
+            }
+          }
+        }
+
+        const eventDetails = {
+          game: selectedGame,
+          teams: teams,
+          points: gamePoints,
+        }
+
         const newPost = await DataStore.save(
           new Posts({
             userId: authStatus.userId,
             messageBody,
             images: imagesArray,
-            olympicEvent: false,
+            olympicEvent: selectedGame ? true : false,
+            eventDetails: selectedGame ? JSON.stringify(eventDetails) : null,
+            usersInPost: allUserIds,
           })
         );
         pushNotificationsToTaggedUsers(messageBody, newPost.id);
@@ -121,7 +168,7 @@ const CreatePostScreen = ({ navigation }) => {
       }
     } else {
       // console.log('-- Validation Error --');
-      setError("Please Upload an Image or Fill in a Message.");
+      setError("Please Upload an Image or Fill in a Message (or fix your game details)");
       setDataPosting(false);
     }
   };
@@ -160,7 +207,10 @@ const CreatePostScreen = ({ navigation }) => {
   }
 
   const renderSuggestions = ({ keyword, onSuggestionPress }) => {
-    return TaggingUserSuggestions(keyword, onSuggestionPress, allUsers);
+    const users = allUsers.map((user) => {
+      return user.fullObject;
+    });
+    return TaggingUserSuggestions(keyword, onSuggestionPress, users);
   };
 
   const handleSelectedGame = (item) => {
@@ -475,7 +525,7 @@ const CreatePostScreen = ({ navigation }) => {
                       );
                     } else {
                       return (
-                        <>
+                        <View key={index}>
                           <MultiselectInput
                             key={index}
                             data={allUsers}
@@ -559,7 +609,7 @@ const CreatePostScreen = ({ navigation }) => {
                               return null;
                             })}
                           </ConditionalWrapper>
-                        </>
+                        </View>
                       );
                     }
                   })}
@@ -591,7 +641,7 @@ const CreatePostScreen = ({ navigation }) => {
                         {
                           trigger: '@', // Should be a single character like '@' or '#'
                           renderSuggestions,
-                          textStyle: { fontWeight: 'bold', color: theme.colors.primaryContainer }, // The mention style in the input
+                          textStyle: { fontWeight: 'bold', color: theme.colors.primary }, // The mention style in the input
                           isBottomMentionSuggestionsRender: true,
                           isInsertSpaceAfterMention: true,
                         },

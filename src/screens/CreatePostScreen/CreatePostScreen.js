@@ -443,7 +443,6 @@ const CreatePostScreen = ({ navigation }) => {
                             key={index}
                             data={allUsers}
                             search
-                            // disabled={team.maxPlayers && team.players.length >= team.maxPlayers}
                             // placeholder={team.name}
                             maxSelect={team.maxPlayers}
                             placeholder={team.label}

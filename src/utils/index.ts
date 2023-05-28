@@ -4,4 +4,4 @@ export { default as formatDate } from './formatDate/formatDate';
 export { sendUserPushNotification, sendGlobalPushNotification, registerForPushNotificationsAsync, savePushTokenAsync } from './pushNotification/pushNotification';
 export { default as uploadImageS3 } from './uploadImageS3/uploadImageS3';
 export { default as useDeviceDimensions } from './useDeviceDimensions/useDeviceDimensions';
-export { nth, gamePlayers } from './stringUtils/stringUtils';
+export { nth, gamePlayers, formatGameString } from './stringUtils/stringUtils';

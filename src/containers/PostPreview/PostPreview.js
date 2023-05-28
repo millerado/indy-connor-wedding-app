@@ -23,7 +23,7 @@ import {
   Divider,
 } from "../../components";
 import { typography } from "../../styles";
-import { formatDate, DataStore } from "../../utils/";
+import { formatDate, DataStore, formatGameString } from "../../utils/";
 import { AuthContext } from "../../contexts";
 import CommentModal from "../CommentModal/CommentModal";
 import CaptionModal from "../CaptionModal/CaptionModal";
@@ -48,6 +48,7 @@ const PostPreview = (props) => {
   const [captionTextExandable, setCaptionTextExandable] = useState(false);
   const [captionExanded, setCaptionExanded] = useState(true);
   const [showUnauthedMessage, setShowUnauthedMessage] = useState(false);
+  const [allUsers, setAllUsers] = useState([]);
   const [postUser, setPostUser] = useState(initialPostUser || {
     id: "",
     name: "",
@@ -64,7 +65,8 @@ const PostPreview = (props) => {
 
   const authStatus = useContext(AuthContext).authStatus;
 
-  const { messageBody, images, userId, createdAt, id: postsID } = post;
+  const { messageBody, images, userId, createdAt, id: postsID, olympicEvent } = post;
+  const eventDetails = olympicEvent ? JSON.parse(post.eventDetails) : null;
 
   const likePressHandler = async () => {
     if (authStatus?.isAuthed) {
@@ -256,21 +258,20 @@ const PostPreview = (props) => {
       }
     });
 
-    const usersSubscription = DataStore.observeQuery(Users, (u) =>
-      u.id.eq(userId)
-    ).subscribe(({ items }) => {
-      if (items?.length > 0) {
-        const user = items[0];
-        const newUser = {
-          id: user.id,
-          name: user.name,
-          image: user.image ? JSON.parse(user.image) : undefined,
+    const usersSubscription = DataStore.observeQuery(Users).subscribe(({ items }) => {
+      const newUsers = items.map((u) => {
+        return {
+          id: u.id,
+          name: u.name,
+          image: u.image ? JSON.parse(u.image) : undefined,
         };
-        // Quick check to make sure we're only updating state if the subscription caught a chance to the user associated with this post
-        if (newUser !== postUser) {
-          setPostUser(newUser);
-        }
+      });
+  
+      // Quick check to make sure we're only updating state if the subscription caught a change that we care about
+      if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
+        setAllUsers(newUsers);
       }
+      setPostUser(newUsers.find((u) => u.id === post.userId));
     });
 
     return () => {
@@ -319,21 +320,31 @@ const PostPreview = (props) => {
         </Portal>
         <View style={ss.userInfoWrapper}>
           <View style={ss.leftSide}>
-            <Pressable onPress={goToUserScreen}>
+            {eventDetails ? (
               <View style={ss.avatarWrapper}>
-                <Avatar
-                  fileName={postUser?.image?.url}
-                  name={postUser?.name}
-                  size={typography.fontSizeM * 2}
-                  variant="circle"
-                  absolute={false}
-                />
+                <Icon name={eventDetails.game.iconName} color={theme.colors.primary} size={typography.fontSizeM * 2} />
               </View>
-            </Pressable>
-            <View>
+            ) : (
               <Pressable onPress={goToUserScreen}>
-                <Text bold>{postUser?.name}</Text>
+                <View style={ss.avatarWrapper}>
+                    <Avatar
+                      fileName={postUser?.image?.url}
+                      name={postUser?.name}
+                      size={typography.fontSizeM * 2}
+                      variant="circle"
+                      absolute={false}
+                    />
+                </View>
               </Pressable>
+            )}
+            <View>
+              {eventDetails ? (
+                <Text bold>{eventDetails.game.name}</Text>
+              ) : (
+                <Pressable onPress={goToUserScreen}>
+                  <Text bold>{postUser?.name}</Text>
+                </Pressable>
+              )}
               <Text size="XS">{formatDate(createdAt)}</Text>
             </View>
           </View>
@@ -371,6 +382,13 @@ const PostPreview = (props) => {
           ) : null}
         </View>
         <ImageScroll images={images} previewMode={previewMode} doubleTapHandler={likePressHandler} singleTapHandler={goToPostScreen} tapDelay={500} adminFavorites={adminFavorites} />
+        {eventDetails ? (
+          <View style={ss.captionWrapper}>
+            <Text size="M">
+              <FormatTextWithMentions text={formatGameString(eventDetails, allUsers)} />
+            </Text>
+          </View>
+        ) : null}
         {messageBody ? (
           <View style={ss.captionWrapper}>
             <Text

@@ -39,7 +39,7 @@ type Posts @model @auth(rules: [{allow: public}]) {
   eventDetails: String
   Comments: [Comments] @hasMany(indexName: "byPosts", fields: ["id"])
   Reactions: [Reactions] @hasMany(indexName: "byPosts", fields: ["id"])
-  usersInPost: [Users] @hasMany(indexName: "byPosts", fields: ["id"])
+  usersInPost: [String]
 }
 
 type Teams @model @auth(rules: [{allow: public}]) {
@@ -56,7 +56,6 @@ type Users @model @auth(rules: [{allow: public}]) {
   about: String
   whereAreYouStaying: String
   teamsID: ID! @index(name: "byTeams")
-  postsID: ID @index(name: "byPosts")
   admin: Boolean!
 }
 

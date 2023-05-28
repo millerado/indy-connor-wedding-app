@@ -315,17 +315,16 @@ const CreatePostScreen = ({ navigation }) => {
     setTeams(newTeams);
   }
 
-  const addSaveButton = () => {
+  const addSaveButton = (disabled) => {
     return (
-      <Pressable onPress={savePost}>
-        <View>
-          <Icon
-            name={'save'}
-            color={theme.colors.primary}
-            size={typography.fontSizeXL}
-          />
-        </View>
-      </Pressable>
+      <Button
+        variant="primary"
+        onPress={savePost}
+        disabled={disabled}
+        short
+      >
+        Save
+      </Button>
     );
   }
 
@@ -348,7 +347,7 @@ const CreatePostScreen = ({ navigation }) => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerRight: () => formValid ? addSaveButton() : null,
+      headerRight: () => addSaveButton(!formValid),
     });
   }, [formValid]);
 

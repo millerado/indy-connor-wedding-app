@@ -61,7 +61,7 @@ const TeamDetailsScreen = ({ navigation, route }) => {
         </View>
       </View>
     )
-  }, []);
+  }, [standingsPeople]);
 
   const keyExtractor = useCallback((item) => item.id, []);
 

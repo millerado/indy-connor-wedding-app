@@ -15,9 +15,9 @@ const StandingsTeamRow = (props) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
 
-  const { index, teamId, teamName, iconName, teamColor, points, topThreeScorers } = props;
+  const { index, teamId, teamName, iconName, points, topThreeScorers } = props;
 
-  if (!teamId || !teamName || !iconName || !points || !teamColor) {
+  if (!teamId || !teamName || !iconName || !points) {
     return null;
   }
 

@@ -103,7 +103,7 @@ const StandingsScreen = () => {
       ) : (
         <>
           <Tabs
-            options={["teams", "people"]}
+            options={["teams", "campers"]}
             selectedOption={view}
             setSelectedOption={setView}
           />
@@ -147,7 +147,7 @@ const StandingsScreen = () => {
                   />
                 );
               })}
-            {view === "people" &&
+            {view === "campers" &&
               standingsPeople.map((s, index) => {
                 const user = users.find((u) => u.id === s.userId);
                 if (!user) {

@@ -76,10 +76,10 @@ const FormatTextWithMentions = ({ text, ...restOfProps }) => {
       matchesBullet.forEach((match) => {
         const [, bulletText] = match.match(/^•/gm);
         text = reactStringReplace(text, match, (match, i) => (
-          <View style={{flexDirection: 'row', paddingLeft: 20}}>
+          <View style={{flexDirection: 'row', paddingLeft: 20}} key={`${i}${bulletText}${match}`}>
           <Text>•</Text>
             <View style={{paddingLeft: 5}}>
-              <Text key={`${i}${bulletText}${match}`} {...restOfProps}>{match.substring(2)}</Text>
+              <Text {...restOfProps}>{match.substring(2)}</Text>
             </View>
           </View>
         ));

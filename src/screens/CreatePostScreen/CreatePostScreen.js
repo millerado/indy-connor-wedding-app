@@ -472,12 +472,27 @@ const CreatePostScreen = ({ navigation }) => {
               {selectedGame && (
                 <>
                   {teams.map((team, index) => {
+                    const onOtherTeams = [];
+                    const availablePlayers = [];
+                    for(let i = 0; i < teams.length; i++) {
+                      if(teams[i].id !== team.id) {
+                        for(let j = 0; j < teams[i].players.length; j++) {
+                          onOtherTeams.push(teams[i].players[j]);
+                        }
+                      }
+                    }
+                    for(let i = 0; i < allUsers.length; i++) {
+                      if(!onOtherTeams.includes(allUsers[i].id)) {
+                        availablePlayers.push(allUsers[i]);
+                      }
+                    }
+
                     if(team.maxPlayers === 1) {
-                      // console.log('-- Team --', team);
+                      // Create a list of all users in allUsers that are not already on a team, but can be on the current team
                       return (
                         <DropdownInput
                           key={index}
-                          data={allUsers}
+                          data={availablePlayers}
                           search
                           placeholder={team.name}
                           label={team.label}
@@ -528,7 +543,7 @@ const CreatePostScreen = ({ navigation }) => {
                         <View key={index}>
                           <MultiselectInput
                             key={index}
-                            data={allUsers}
+                            data={availablePlayers}
                             search
                             // placeholder={team.name}
                             maxSelect={team.maxPlayers}

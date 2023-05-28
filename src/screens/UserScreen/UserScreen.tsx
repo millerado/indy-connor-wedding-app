@@ -69,7 +69,8 @@ const UserScreen = ({ navigation, route }) => {
   useEffect(() => {
     const postSubscription = DataStore.observeQuery(
       Posts,
-      (p) => p.userId.eq(userId),
+      (p) => p.usersInPost.contains(userId),
+      // (p) => p.userId.eq(userId),
       { sort: (s) => s.createdAt(SortDirection.DESCENDING) }
     ).subscribe(({ items }) => {
       loadPosts(items);

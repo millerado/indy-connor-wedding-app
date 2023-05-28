@@ -124,6 +124,7 @@ const ScheduleScreen = ({ navigation, route }) => {
       </View>
     )
   }
+  
   return (
     <>
       <ScheduleModal showModal={showModal} closeModal={closeModal} modalType='Create' />

@@ -16,6 +16,7 @@ import {
   NotificationsScreen,
   ScheduleScreen,
   StandingsScreen,
+  TeamDetailsScreen,
   UserScreen,
   ViewPostScreen,
 } from "../screens";
@@ -71,7 +72,8 @@ const StandingsStackScreen = () => {
   return (
     <StandingsStack.Navigator screenOptions={getScreenOptions()} >
       <StandingsStack.Screen name="Standings" component={StandingsScreen} />
-      <HomeStack.Screen name="User" component={UserScreen} />
+      <StandingsStack.Screen name="User" component={UserScreen} />
+      <StandingsStack.Screen name="Team Details" component={TeamDetailsScreen} />
     </StandingsStack.Navigator>
   );
 };

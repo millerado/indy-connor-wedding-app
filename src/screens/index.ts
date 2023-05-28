@@ -8,5 +8,6 @@ export { default as MostLikedPostsScreen } from "./MostLikedPostsScreen/MostLike
 export { default as NotificationsScreen } from "./NotificationsScreen/NotificationsScreen";
 export { default as ScheduleScreen } from "./ScheduleScreen/ScheduleScreen";
 export { default as StandingsScreen } from "./StandingsScreen/StandingsScreen";
+export { default as TeamDetailsScreen } from "./TeamDetailsScreen/TeamDetailsScreen";
 export { default as UserScreen } from "./UserScreen/UserScreen";
 export { default as ViewPostScreen } from "./ViewPostScreen/ViewPostScreen";

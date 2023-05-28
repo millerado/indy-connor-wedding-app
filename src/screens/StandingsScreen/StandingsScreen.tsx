@@ -127,7 +127,12 @@ const StandingsScreen = () => {
                     teamName={team.name}
                     iconName={team.iconName}
                     teamColor={team.colorCode}
+                    description={team.description}
                     points={s.points}
+                    allUsers={users}
+                    allTeams={teams}
+                    allStandingsTeams={standingsTeams}
+                    allStandingsPeople={standingsPeople}
                   />
                 );
               })}

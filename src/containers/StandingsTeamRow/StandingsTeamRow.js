@@ -1,6 +1,7 @@
 import React, { memo, useMemo } from "react";
 import { View , Image } from "react-native";
 import { useTheme } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
 import {
   Text,
   TextSizes,
@@ -17,11 +18,16 @@ const StandingsTeamRow = (props) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const dimensions = calcDimensions();
+  const navigation = useNavigation();
 
-  const { index, teamId, teamName, iconName, points } = props;
+  const { index, teamId, teamName, iconName, description, points, allUsers, allTeams, allStandingsTeams, allStandingsPeople } = props;
 
   if (!teamId || !teamName || !iconName || !points) {
     return null;
+  }
+
+  const goToTeamScreen = () => {
+    navigation.push("Team Details", { teamId, teamName, iconName, description, allUsers, allTeams, allStandingsPeople, allStandingsTeams });
   }
 
   return (
@@ -29,7 +35,6 @@ const StandingsTeamRow = (props) => {
       <View style={ss.teamWrapper}>
         <View style={ss.iconWrapper}>
           <Image source={iconName === 'diamondDogs' ? diamondDogs : iconName === 'fellowshipOfTheRing' ? fellowshipOfTheRing : iconName === 'orderOfThePhoenix' ? orderOfThePhoenix : reproductiveJusticeLeague} resizeMethod={'scale'} resizeMode={'contain'} style={{width: (dimensions.width * 1/3) - 5, height: (dimensions.width * 1/3) - 5}} />
-          {/* <Icon name={iconName} size={typography.fontSizeXXXL * 2} /> */}
         </View>
         <View style={ss.nameWrapper}>
           <Text size={TextSizes.L} bold >
@@ -39,7 +44,7 @@ const StandingsTeamRow = (props) => {
             <Text size={TextSizes.M}>
               {points} point{points !== 1 ? 's' : ''}
             </Text>
-            <Button onPress={() => console.log('View Team')} short>
+            <Button onPress={goToTeamScreen} short>
               View Team
             </Button>
           </View>

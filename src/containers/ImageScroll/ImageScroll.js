@@ -66,7 +66,6 @@ const ImageScroll = (props) => {
       const minRatio = _.min(imageRatios);
       const minRatioIndex = imageRatios.indexOf(minRatio);
       const minRatioImage = images[minRatioIndex];
-      console.log("minRatioImage", minRatioImage);
     
       setImageDimensions({height: minRatioImage.height, width: minRatioImage.width});
     }

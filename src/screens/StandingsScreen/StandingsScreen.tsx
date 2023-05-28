@@ -118,21 +118,6 @@ const StandingsScreen = () => {
                 if (!team) {
                   return null;
                 }
-                const usersOnTeam = users.filter((u) => u.teamId === team.id);
-
-                // Find top 3 scorers in standingsPeople who's userId is in array of usersOnTeam
-                const topThreeScorers = standingsPeople
-                  .filter((sp) => usersOnTeam.find((u) => u.id === sp.userId))
-                  .sort((a, b) => b.points - a.points)
-                  .slice(0, 3);
-                // Add in User Information
-                const topUsers = topThreeScorers.map((top) => {
-                  const user = users.find((u) => u.id === top.userId);
-                  return {
-                    ...top,
-                    user,
-                  };
-                });
 
                 return (
                   <StandingsTeamRow
@@ -143,7 +128,6 @@ const StandingsScreen = () => {
                     iconName={team.iconName}
                     teamColor={team.colorCode}
                     points={s.points}
-                    topThreeScorers={topUsers}
                   />
                 );
               })}

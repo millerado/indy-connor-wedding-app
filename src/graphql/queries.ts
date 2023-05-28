@@ -376,6 +376,7 @@ export const getTeams = /* GraphQL */ `
         startedAt
       }
       iconName
+      description
       createdAt
       updatedAt
       _version
@@ -395,6 +396,7 @@ export const listTeams = /* GraphQL */ `
         id
         name
         iconName
+        description
         createdAt
         updatedAt
         _version
@@ -423,6 +425,7 @@ export const syncTeams = /* GraphQL */ `
         id
         name
         iconName
+        description
         createdAt
         updatedAt
         _version

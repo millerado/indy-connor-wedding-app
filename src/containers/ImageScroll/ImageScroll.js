@@ -21,7 +21,7 @@ const ImageScroll = (props) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const authStatus = useContext(AuthContext).authStatus;
-  const [imageDimensions, setImageDimensions] = useState({minHeight: 0, maxHeight: 0, minWidth: 0, maxWidth: 0});
+  const [imageDimensions, setImageDimensions] = useState({height: null, width: null});
   const [adminFavoritedImages, setAdminFavoritedImages] = useState([]);
 
   const { images, previewMode, doubleTapHandler, singleTapHandler, tapDelay, adminFavorites } = props;
@@ -57,13 +57,19 @@ const ImageScroll = (props) => {
   }
   
   useEffect(() => {
-    // Get the largest height value from array of objects in images
-    const maxHeight = _.maxBy(images, "height").height;
-    const minHeight = _.minBy(images, "height").height;
-    const maxWidth = _.maxBy(images, "width").width;
-    const minWidth = _.minBy(images, "width").width;
-  
-    setImageDimensions({minHeight, maxHeight, minWidth, maxWidth});
+    if(images.length > 1) {
+      // Find the image with the highest height/width ratio
+      const imageRatios = images.map((image) => {
+        return image.height / image.width;
+      });
+      // Find the image with the lowest height/width ratio
+      const minRatio = _.min(imageRatios);
+      const minRatioIndex = imageRatios.indexOf(minRatio);
+      const minRatioImage = images[minRatioIndex];
+      console.log("minRatioImage", minRatioImage);
+    
+      setImageDimensions({height: minRatioImage.height, width: minRatioImage.width});
+    }
   }, [images]);
 
   useEffect(() => {
@@ -98,8 +104,8 @@ const ImageScroll = (props) => {
               )}>
                 <ImageS3
                   fileName={image.url}
-                  height={imageDimensions.minHeight || image.height}
-                  width={imageDimensions.maxWidth || image.width}
+                  height={imageDimensions.height || image.height}
+                  width={imageDimensions.width || image.width}
                   multipleImages
                   key={index}
                 >

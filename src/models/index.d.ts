@@ -257,6 +257,7 @@ type EagerTeams = {
   readonly name: string;
   readonly Users?: (Users | null)[] | null;
   readonly iconName?: string | null;
+  readonly description?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -270,6 +271,7 @@ type LazyTeams = {
   readonly name: string;
   readonly Users: AsyncCollection<Users>;
   readonly iconName?: string | null;
+  readonly description?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

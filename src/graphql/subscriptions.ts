@@ -300,6 +300,7 @@ export const onCreateTeams = /* GraphQL */ `
         startedAt
       }
       iconName
+      description
       createdAt
       updatedAt
       _version
@@ -318,6 +319,7 @@ export const onUpdateTeams = /* GraphQL */ `
         startedAt
       }
       iconName
+      description
       createdAt
       updatedAt
       _version
@@ -336,6 +338,7 @@ export const onDeleteTeams = /* GraphQL */ `
         startedAt
       }
       iconName
+      description
       createdAt
       updatedAt
       _version

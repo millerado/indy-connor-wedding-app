@@ -46,18 +46,23 @@ const StandingsPersonRow = (props) => {
   return (
     <Pressable onPress={() => goToLikingUserScreen(user.id)} key={index} style={{paddingLeft: showTeamIcon ? 0 : (typography.fontSizeM * 2) + 10}}>
       {index > 0 && showTeamIcon && <Divider />}
-      <View style={ss.userWrapper}>
-        <Avatar
-          fileName={user?.image?.url}
-          name={user?.name}
-          size={typography.fontSizeM * 2}
-          variant="circle"
-          absolute={false}
-        />
-        <View style={ss.nameWrapper}>
-          <Text bold size={TextSizes.M}>
-            {user.name}<Text size={TextSizes.M}>: {points} point{points !== 1 ? 's' : ''}{showTeamIcon ? ' for ' : ''}</Text>
-          </Text>
+      <View style={ss.rowWrapper}>
+        <View style={ss.userWrapper}>
+          <Avatar
+            fileName={user?.image?.url}
+            name={user?.name}
+            size={typography.fontSizeM * 2}
+            variant="circle"
+            absolute={false}
+          />
+          <View style={ss.nameWrapper}>
+            <Text bold size={TextSizes.M}>
+              {user.name}
+            </Text>
+            <Text size={TextSizes.S}>
+              {points} point{points !== 1 ? 's' : ''}
+            </Text>
+          </View>
         </View>
         {showTeamIcon && (
           <Icon name={teamIcon} size={typography.fontSizeM * 2} />

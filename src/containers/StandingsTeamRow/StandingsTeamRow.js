@@ -1,21 +1,24 @@
 import React, { memo, useMemo } from "react";
-import { View } from "react-native";
+import { View , Image } from "react-native";
 import { useTheme } from "react-native-paper";
 import {
   Text,
   TextSizes,
-  Divider,
-  Icon
+  Button,
 } from "../../components";
-import StandingsPersonRow from "../StandingsPersonRow/StandingsPersonRow";
-import { typography } from "../../styles";
+import { calcDimensions } from "../../styles";
 import styles from "./StandingsTeamRowStyles";
+const diamondDogs = require("../../assets/images/diamondDogsFullSize.png");
+const fellowshipOfTheRing = require("../../assets/images/fellowshipOfTheRingFullSize.png");
+const reproductiveJusticeLeague = require("../../assets/images/reproductiveJusticeLeagueFullSize.png");
+const orderOfThePhoenix = require("../../assets/images/orderOfThePhoenixFullSize.png");
 
 const StandingsTeamRow = (props) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
+  const dimensions = calcDimensions();
 
-  const { index, teamId, teamName, iconName, points, topThreeScorers } = props;
+  const { index, teamId, teamName, iconName, points } = props;
 
   if (!teamId || !teamName || !iconName || !points) {
     return null;
@@ -23,27 +26,25 @@ const StandingsTeamRow = (props) => {
 
   return (
     <View key={index}>
-      {/* {index > 0 && <Divider />} */}
-      <>
-        <View style={ss.teamWrapper}>
-          <Icon name={iconName} size={typography.fontSizeM * 2} />
-          <View style={ss.nameWrapper}>
-            <Text size={TextSizes.L} bold>
-              {teamName}<Text size={TextSizes.L}>: {points} point{points !== 1 ? 's' : ''}</Text>
+      <View style={ss.teamWrapper}>
+        <View style={ss.iconWrapper}>
+          <Image source={iconName === 'diamondDogs' ? diamondDogs : iconName === 'fellowshipOfTheRing' ? fellowshipOfTheRing : iconName === 'orderOfThePhoenix' ? orderOfThePhoenix : reproductiveJusticeLeague} resizeMethod={'scale'} resizeMode={'contain'} style={{width: (dimensions.width * 1/3) - 5, height: (dimensions.width * 1/3) - 5}} />
+          {/* <Icon name={iconName} size={typography.fontSizeXXXL * 2} /> */}
+        </View>
+        <View style={ss.nameWrapper}>
+          <Text size={TextSizes.L} bold >
+            {teamName}
+          </Text>
+          <View style={ss.pointsWrapper}>
+            <Text size={TextSizes.M}>
+              {points} point{points !== 1 ? 's' : ''}
             </Text>
+            <Button onPress={() => console.log('View Team')} short>
+              View Team
+            </Button>
           </View>
         </View>
-        {topThreeScorers.map((scorer, idx) => (
-          <StandingsPersonRow
-            key={idx}
-            index={idx}
-            user={scorer.user}
-            points={scorer.points}
-            teamIcon={iconName}
-            showTeamIcon={false}
-          />
-        ))}
-      </>
+      </View>
     </View>
   );
 };

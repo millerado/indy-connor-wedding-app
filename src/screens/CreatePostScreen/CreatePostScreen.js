@@ -30,7 +30,7 @@ import { Posts, Users, Games } from "../../models";
 import { uploadImageS3, DataStore, sendUserPushNotification, gamePlayers, nth } from "../../utils";
 import { typography, calcDimensions } from "../../styles";
 import { AuthContext } from '../../contexts';
-import { TaggingUserSuggestions, ImageScroll, FormatTextWithMentions } from '../../containers';
+import { TaggingUserSuggestions, ImageScroll } from '../../containers';
 import styles from "./CreatePostScreenStyles";
 
 const dimensions = calcDimensions();
@@ -346,10 +346,11 @@ const CreatePostScreen = ({ navigation }) => {
   }, [messageBody, images, selectedGame, teams]);
 
   useEffect(() => {
+    // Need to keep re-adding it after state changes, otherwise it submits with state when form became valid
     navigation.setOptions({
       headerRight: () => addSaveButton(!formValid),
     });
-  }, [formValid]);
+  }, [formValid, images, messageBody, selectedGame, teams]);
 
   useEffect(() => {
     (async () => {
@@ -640,7 +641,7 @@ const CreatePostScreen = ({ navigation }) => {
                         {
                           trigger: '@', // Should be a single character like '@' or '#'
                           renderSuggestions,
-                          textStyle: { fontWeight: 'bold', color: theme.colors.primary }, // The mention style in the input
+                          textStyle: { fontStyle: 'italic', color: theme.colors.primary }, // The mention style in the input
                           isBottomMentionSuggestionsRender: true,
                           isInsertSpaceAfterMention: true,
                         },

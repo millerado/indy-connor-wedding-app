@@ -60,7 +60,6 @@ const UserScreenHeader = (props) => {
   });
   const auth = useContext(AuthContext);
   const { authStatus, setAuthStatus } = auth;
-  // console.log('-- Auth Context --', auth);
 
   const navigation = useNavigation();
 
@@ -271,7 +270,7 @@ const UserScreenHeader = (props) => {
               disabled={!isConnected}
               anchor={
                 <ConditionalWrapper
-                  condition={authStatus.userId === dbUser.userId}
+                  condition={authStatus.userId === dbUser.id}
                   wrapper={(children) => (
                     <Pressable onPress={openMenu} disabled={!isConnected}>
                       {children}

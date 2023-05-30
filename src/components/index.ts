@@ -20,4 +20,5 @@ export { default as Switch } from './Switch/Switch';
 export { default as Tabs } from './Tabs/Tabs';
 export { default as Text, TextSizes } from './Text/Text';
 export { default as TextInput } from './TextInput/TextInput';
+export { default as VideoS3 } from './VideoS3/VideoS3';
 export { default as ZoomableView } from './ZoomableView/ZoomableView';

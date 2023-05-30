@@ -5,9 +5,11 @@ import _ from "lodash";
 import {
   Icon,
   ImageS3,
+  VideoS3,
   ConditionalWrapper,
   DoubleTap,
   ZoomableView,
+  Text,
 } from "../../components";
 import { calcDimensions } from "../../styles";
 import { AuthContext } from "../../contexts";
@@ -101,28 +103,38 @@ const ImageScroll = (props) => {
               wrapper={(children) => (
                 <DoubleTap doubleTap={() => handleDoubleTap(image)} singleTap={singleTapHandler} delay={tapDelay} key={index}>{children}</DoubleTap>
               )}>
-                <ImageS3
-                  fileName={image.url}
-                  height={imageDimensions.height || image.height}
-                  width={imageDimensions.width || image.width}
-                  multipleImages
-                  key={index}
-                >
-                  <>
-                    <View style={{position: 'absolute', right: 10, top: 10}} onPress={() => console.log('-- Press --')}>
-                      <Icon name={adminFavoritedImages.includes(image.url) ? "heart" : "heartOutline"} size={24} color={theme.colors.red} />
-                    </View>
-                    {images.length > 1 && (
-                      <View style={ss.imageScrollIndicatorWrapper}>
-                        {images.map((i, idx) => {
-                          return (
-                            <Icon name="circle" size={12} key={idx} color={idx === index ? theme.colors.primary : theme.colors.onPrimary} />
-                          );
-                        })}
+                {/* <Text>Test</Text> */}
+                {image.type === 'video' ? (
+                  <VideoS3
+                    fileName={image.url}
+                    height={imageDimensions.height || image.height}
+                    width={imageDimensions.width || image.width}
+                    key={index}
+                  />
+                ) : (
+                  <ImageS3
+                    fileName={image.url}
+                    height={imageDimensions.height || image.height}
+                    width={imageDimensions.width || image.width}
+                    multipleImages
+                    key={index}
+                  >
+                    <>
+                      <View style={{position: 'absolute', right: 10, top: 10}} onPress={() => console.log('-- Press --')}>
+                        <Icon name={adminFavoritedImages.includes(image.url) ? "heart" : "heartOutline"} size={24} color={theme.colors.red} />
                       </View>
-                    )}
-                  </>
-                </ImageS3>
+                      {images.length > 1 && (
+                        <View style={ss.imageScrollIndicatorWrapper}>
+                          {images.map((i, idx) => {
+                            return (
+                              <Icon name="circle" size={12} key={idx} color={idx === index ? theme.colors.primary : theme.colors.onPrimary} />
+                            );
+                          })}
+                        </View>
+                      )}
+                    </>
+                  </ImageS3>
+                )}
               </ConditionalWrapper>
             );
           })}

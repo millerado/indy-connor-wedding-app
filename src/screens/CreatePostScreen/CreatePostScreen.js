@@ -65,7 +65,10 @@ const CreatePostScreen = ({ navigation }) => {
       const newImages = [];
       for(let i = 0; i < uploadedImages.length; i++) {
         const img = uploadedImages[i];
-        newImages.push(img.imageObject);
+        newImages.push({
+          ...img.imageObject,
+          type: img.type,
+        });
       }
       setImages(newImages);
       setError(undefined);

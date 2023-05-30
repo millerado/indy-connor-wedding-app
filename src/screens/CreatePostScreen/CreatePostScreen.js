@@ -670,7 +670,7 @@ const CreatePostScreen = ({ navigation }) => {
                 }}
               />
             </View>
-            <View style={{ width: "100%", paddingVertical: 10 }}>
+            <View style={{ width: "100%", paddingTop: 10 }}>
               <Divider />
             </View>
             <View>
@@ -702,7 +702,7 @@ const CreatePostScreen = ({ navigation }) => {
                 )}
               </Menu>
             </View>
-            <View style={{ width: "100%", paddingVertical: 10 }}>
+            <View style={{ width: "100%", paddingBottom: 10 }}>
               <Divider />
             </View>
             <View

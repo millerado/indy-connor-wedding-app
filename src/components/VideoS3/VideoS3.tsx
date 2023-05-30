@@ -127,7 +127,7 @@ const VideoS3 = (props) => {
     // return () => (isMounted.current = false);
     return () => (mounted = false);
   }, [fileName]);
-  const displatHeight = inFullscreen ? (height / width) * dimensions.width : videoPreviewHeight;
+  const displatHeight = inFullscreen ? (height / width) * dimensions.width : Math.min(videoPreviewHeight, (height / width) * dimensions.width);
   const displatWidth = inFullscreen ? dimensions.width : videoPreviewWidth;
 
   // console.log('-- FullScreen --', inFullscreen);

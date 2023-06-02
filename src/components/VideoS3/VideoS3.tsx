@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { View } from "react-native";
 import { Storage } from "aws-amplify";
 import * as FileSystem from "expo-file-system";
-import { setStatusBarHidden } from 'expo-status-bar';
-import { ResizeMode } from "expo-av";
+import { setStatusBarHidden } from "expo-status-bar";
+import { ResizeMode, Video } from "expo-av";
 import VideoPlayer from "expo-video-player";
 import { calcDimensions } from "../../styles";
 import ActivityIndicator from "../ActivityIndicator/ActivityIndicator";
@@ -127,55 +127,63 @@ const VideoS3 = (props) => {
     // return () => (isMounted.current = false);
     return () => (mounted = false);
   }, [fileName]);
-  const displatHeight = inFullscreen ? (height / width) * dimensions.width : Math.min(videoPreviewHeight, (height / width) * dimensions.width);
+  const displatHeight = inFullscreen
+    ? (height / width) * dimensions.width
+    : Math.min(videoPreviewHeight, (height / width) * dimensions.width);
   const displatWidth = inFullscreen ? dimensions.width : videoPreviewWidth;
-
-  // console.log('-- FullScreen --', inFullscreen);
-  // console.log('-- height, width --', height, width);
-  // console.log('-- dimensions --', dimensions);
-  // console.log('-- Video Preview Dimensions --', videoPreviewWidth, videoPreviewHeight);
-  // console.log('-- Display Dimensions --', displatWidth, displatHeight);
 
   if (fileName) {
     return (
       <>
         {videoUrl && videoUrl.slice(-9) !== "undefined" ? (
-          <VideoPlayer
-            videoProps={{
-              shouldPlay: false,
-              resizeMode: ResizeMode.CONTAIN,
-              // ❗ source is required https://docs.expo.io/versions/latest/sdk/video/#props
-              source: {
-                uri: videoUrl,
-              },
-              isMuted: isMute,
-              ref: refVideo,
-            }}
-            // defaultControlsVisible={true}
+          // <VideoPlayer
+          //   videoProps={{
+          //     shouldPlay: false,
+          //     resizeMode: ResizeMode.CONTAIN,
+          //     // ❗ source is required https://docs.expo.io/versions/latest/sdk/video/#props
+          //     source: {
+          //       uri: videoUrl,
+          //     },
+          //     isMuted: isMute,
+          //     ref: refVideo,
+          //   }}
+          //   // defaultControlsVisible={true}
+          //   style={{
+          //     videoBackgroundColor: inFullscreen ? 'black' : 'transparent',
+          //     height: displatHeight,
+          //     width: displatWidth,
+          //   }}
+          //   mute={{
+          //     enterMute: () => setIsMute(!isMute),
+          //     exitMute: () => setIsMute(!isMute),
+          //     isMute,
+          //   }}
+          //   fullscreen={{
+          //     inFullscreen: inFullscreen,
+          //     enterFullscreen: async () => {
+          //       setStatusBarHidden(true, 'fade')
+          //       setInFullsreen(!inFullscreen)
+          //       refVideo.current.setStatusAsync({
+          //         shouldPlay: true,
+          //       })
+          //     },
+          //     exitFullscreen: async () => {
+          //       setStatusBarHidden(false, 'fade')
+          //       setInFullsreen(!inFullscreen)
+          //     },
+          //   }}
+          // />
+          <Video
+            ref={refVideo}
             style={{
-              videoBackgroundColor: inFullscreen ? 'black' : 'transparent',
               height: displatHeight,
               width: displatWidth,
             }}
-            mute={{
-              enterMute: () => setIsMute(!isMute),
-              exitMute: () => setIsMute(!isMute),
-              isMute,
+            source={{
+              uri: videoUrl,
             }}
-            fullscreen={{
-              inFullscreen: inFullscreen,
-              enterFullscreen: async () => {
-                setStatusBarHidden(true, 'fade')
-                setInFullsreen(!inFullscreen)
-                refVideo.current.setStatusAsync({
-                  shouldPlay: true,
-                })
-              },
-              exitFullscreen: async () => {
-                setStatusBarHidden(false, 'fade')
-                setInFullsreen(!inFullscreen)
-              },
-            }}
+            useNativeControls
+            resizeMode={ResizeMode.CONTAIN}
           />
         ) : (
           showPlaceholder(false)

@@ -98,12 +98,11 @@ const ImageScroll = (props) => {
           {images.map((image, index) => {
             return (
               <ConditionalWrapper
-              condition={doubleTapHandler && singleTapHandler && tapDelay}
+              condition={image.type !== 'video' && doubleTapHandler && singleTapHandler && tapDelay}
               key={index}
               wrapper={(children) => (
                 <DoubleTap doubleTap={() => handleDoubleTap(image)} singleTap={singleTapHandler} delay={tapDelay} key={index}>{children}</DoubleTap>
               )}>
-                {/* <Text>Test</Text> */}
                 {image.type === 'video' ? (
                   <VideoS3
                     fileName={image.url}

@@ -21,7 +21,7 @@ const AddPostListHeader = (props) => {
   return (
     <>
       <Pressable
-        onPress={() => navigation.navigate("Create Post")}
+        onPress={() => navigation.navigate("Create Post", {view: "create"})}
       >
         <View style={ss.wrapper}>
           <View style={ss.avatarWrapper}>

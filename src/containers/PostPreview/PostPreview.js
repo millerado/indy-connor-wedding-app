@@ -26,7 +26,6 @@ import { typography } from "../../styles";
 import { formatDate, DataStore, formatGameString } from "../../utils/";
 import { AuthContext } from "../../contexts";
 import CommentModal from "../CommentModal/CommentModal";
-import CaptionModal from "../CaptionModal/CaptionModal";
 import LikedByUsersModal from "../LikedByUsersModal/LikedByUsersModal";
 import FormatTextWithMentions from '../FormatTextWithMentions/FormatTextWithMentions';
 import styles from "./PostPreviewStyles";
@@ -58,7 +57,6 @@ const PostPreview = (props) => {
   const [adminFavorites, setAdminFavorites] = useState([]);
   const [comments, setComments] = useState(initialComments || []);
   const [showCommentModal, setShowCommentModal] = useState(false);
-  const [showCaptionModal, setShowCaptionModal] = useState(false);
   const [showLikesModal, setShowLikesModal] = useState(false);
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
@@ -174,13 +172,12 @@ const PostPreview = (props) => {
     setShowCommentModal(false);
   };
 
-  const closeCaptionModal = () => {
-    setShowCaptionModal(false);
-  };
-
-  const openCaptionModal = () => {
+  const goToEditScreen = () => {
     setShowMenu(false);
-    setShowCaptionModal(true);
+    navigation.push("Create Post", {
+      view: "edit",
+      currentPost: post,
+    });
   };
 
   const commentsButtonHandler = () => {
@@ -291,12 +288,6 @@ const PostPreview = (props) => {
           modalType={"create"}
           postsID={postsID}
         />
-        <CaptionModal
-          showModal={showCaptionModal}
-          closeModal={closeCaptionModal}
-          post={post}
-          postsID={postsID}
-        />
         <LikedByUsersModal
           showModal={showLikesModal}
           closeModal={handleHideLikesList}
@@ -358,18 +349,14 @@ const PostPreview = (props) => {
                 </Pressable>
               }
             >
-              {userId === authStatus?.userId && (
-                <>
-                  <Menu.Item
-                    onPress={openCaptionModal}
-                    title="Edit Caption"
-                    icon={({ size, color }) => (
-                      <Icon name="edit" size={size} color={theme.colors.primary} />
-                    )}
-                  />
-                  <Divider />
-                </>
-              )}
+              <Menu.Item
+                onPress={goToEditScreen}
+                title="Edit Post"
+                icon={({ size, color }) => (
+                  <Icon name="edit" size={size} color={theme.colors.primary} />
+                )}
+              />
+              <Divider />
               <Menu.Item
                 onPress={showDeleteDialog}
                 title="Delete Post"

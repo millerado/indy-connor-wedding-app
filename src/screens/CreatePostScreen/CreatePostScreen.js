@@ -35,7 +35,8 @@ import styles from "./CreatePostScreenStyles";
 
 const dimensions = calcDimensions();
 
-const CreatePostScreen = ({ navigation }) => {
+const CreatePostScreen = ({ navigation, route }) => {
+  const { view, currentPost } = route.params;
   const [isConnected, setIsConnected] = useState(false);
   const [messageBody, setMessageBody] = useState("");
   const [images, setImages] = useState([]);
@@ -152,22 +153,35 @@ const CreatePostScreen = ({ navigation }) => {
           points: gamePoints,
         }
 
-        const newPost = await DataStore.save(
-          new Posts({
-            userId: authStatus.userId,
-            messageBody,
-            images: imagesArray,
-            olympicEvent: selectedGame ? true : false,
-            eventDetails: selectedGame ? JSON.stringify(eventDetails) : null,
-            usersInPost: allUserIds,
-          })
-        );
-        pushNotificationsToTaggedUsers(messageBody, newPost.id);
-        navigation.popToTop();
-        // Page is unmounting and you can't "go back" to it, no need to refresh state
+        if(view === 'edit') {
+          const originalPost = await DataStore.query(Posts, currentPost.id);
+          await DataStore.save(
+            Posts.copyOf(originalPost, (i) => {
+              i.messageBody = messageBody;
+              i.images = imagesArray;
+              i.olympicEvent = selectedGame ? true : false;
+              i.eventDetails = selectedGame ? JSON.stringify(eventDetails) : null;
+              i.usersInPost = allUserIds;
+            })
+          );
+          navigation.goBack();
+        } else {
+          const newPost = await DataStore.save(
+            new Posts({
+              userId: authStatus.userId,
+              messageBody,
+              images: imagesArray,
+              olympicEvent: selectedGame ? true : false,
+              eventDetails: selectedGame ? JSON.stringify(eventDetails) : null,
+              usersInPost: allUserIds,
+            })
+          );
+          pushNotificationsToTaggedUsers(messageBody, newPost.id);
+          navigation.popToTop();
+          // Page is unmounting and you can't "go back" to it, no need to refresh state
+        }
       } catch (err) {
-        console.log("error posting item", err);
-        setDataPosting(false);
+        console.log("error creating/editing post", err);
       }
     } else {
       // console.log('-- Validation Error --');
@@ -354,6 +368,21 @@ const CreatePostScreen = ({ navigation }) => {
       headerRight: () => addSaveButton(!formValid),
     });
   }, [formValid, images, messageBody, selectedGame, teams]);
+
+  useEffect(() => {
+    if(view === 'edit' && currentPost) {
+      const { messageBody, images, selectedGame, teams } = currentPost;
+      const eventDetails = JSON.parse(currentPost.eventDetails);
+      if(eventDetails) {
+        setSelectedGame(eventDetails.game);
+        setTeams(eventDetails.teams);
+      }
+      setMessageBody(messageBody);
+      if(images) {
+        setImages(images);
+      }
+    }
+  }, [currentPost]);
 
   useEffect(() => {
     (async () => {

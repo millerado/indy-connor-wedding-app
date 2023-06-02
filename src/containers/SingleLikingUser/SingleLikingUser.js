@@ -22,11 +22,13 @@ const SingleLikingUser = (props) => {
     return null;
   }
 
-  const goToLikingUserScreen = async (userId) => {
+  const goToLikingUserScreen = async (userId, name, image) => {
     if(userId) {
       await closeModal();
       navigation.push("User", {
         userId,
+        name,
+        picture: image,
       });
     }
   }
@@ -43,7 +45,7 @@ const SingleLikingUser = (props) => {
   }
 
   return (
-    <Pressable onPress={() => goToLikingUserScreen(userId)} key={index}>
+    <Pressable onPress={() => goToLikingUserScreen(userId, likingUser?.name, likingUser?.image)} key={index}>
       {index > 0 && <Divider />}
       <View style={ss.userWrapper}>
         <Avatar

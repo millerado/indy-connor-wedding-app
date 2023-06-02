@@ -56,12 +56,12 @@ const HomeStackScreen = () => {
             <NotificationsHeaderButton />
           </View>
         )}} />
-      <HomeStack.Screen name="User" component={UserScreen} />
+      <HomeStack.Screen name="User" component={UserScreen} options={({ route }) => ({ title: route.params.name || 'User' })} />
       <HomeStack.Screen name="Notifications" component={NotificationsScreen} />
       <HomeStack.Screen name="View Post" component={ViewPostScreen} />
-      <HomeStack.Screen name="Create Post" component={CreatePostScreen} />
+      <HomeStack.Screen name="Create Post" component={CreatePostScreen} options={({ route }) => ({ title: route.params.view === 'edit' ? 'Edit Post' : 'Create Post' })} />
       <HomeStack.Screen name="Games List" component={GamesScreen} />
-      <HomeStack.Screen name="Manage Game" component={ManageGameScreen} />
+      <HomeStack.Screen name="Manage Game" component={ManageGameScreen} options={({ route }) => ({ title: route.params.view === 'editGame' ? 'Edit Game' : 'Create New Game' })} />
       <HomeStack.Screen name="Most Liked Posts" component={MostLikedPostsScreen} />
     </HomeStack.Navigator>
   );
@@ -72,8 +72,8 @@ const StandingsStackScreen = () => {
   return (
     <StandingsStack.Navigator screenOptions={getScreenOptions()} >
       <StandingsStack.Screen name="Standings" component={StandingsScreen} />
-      <StandingsStack.Screen name="User" component={UserScreen} />
-      <StandingsStack.Screen name="Team Details" component={TeamDetailsScreen} />
+      <StandingsStack.Screen name="User" component={UserScreen} options={({ route }) => ({ title: route.params.name || 'User' })} />
+      <StandingsStack.Screen name="Team Details" component={TeamDetailsScreen} options={({ route }) => ({ title: route.params.teamName || 'Team Details' })} />
     </StandingsStack.Navigator>
   );
 };

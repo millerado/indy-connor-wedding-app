@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect, useState, useCallback } from 'react';
-import { View, Image, ScrollView, FlatList } from "react-native";
+import { View, Image, FlatList } from "react-native";
 import { useTheme } from "react-native-paper";
 import { SortDirection } from "aws-amplify";
 import { Text, Divider, TextSizes } from '../../components';
@@ -68,12 +68,6 @@ const TeamDetailsScreen = ({ navigation, route }) => {
   const listItemSeparator = useCallback(() => {
     return <Divider height={5} margin={0} />;
   }, []);
-
-  useEffect(() => {
-    if(teamName) {
-      navigation.setOptions({title: teamName});
-    }
-  }, [teamName]);
 
   useEffect(() => {
     if(allUsers) {

@@ -24,10 +24,12 @@ const StandingsPersonRow = (props) => {
     return null;
   }
 
-  const goToLikingUserScreen = async (userId) => {
+  const goToLikingUserScreen = async (userId, name, image) => {
     if(userId) {
       navigation.push("User", {
         userId,
+        name,
+        picture: image,
       });
     }
   }
@@ -44,7 +46,7 @@ const StandingsPersonRow = (props) => {
   }
 
   return (
-    <Pressable onPress={() => goToLikingUserScreen(user.id)} key={index} style={{paddingLeft: showTeamIcon ? 0 : (typography.fontSizeM * 2) + 10}}>
+    <Pressable onPress={() => goToLikingUserScreen(user.id, user?.name, user?.image)} key={index} style={{paddingLeft: showTeamIcon ? 0 : (typography.fontSizeM * 2) + 10}}>
       {index > 0 && showTeamIcon && <Divider />}
       <View style={ss.rowWrapper}>
         <View style={ss.userWrapper}>

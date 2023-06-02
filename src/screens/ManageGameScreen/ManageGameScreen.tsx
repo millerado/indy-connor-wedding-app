@@ -99,9 +99,7 @@ const ManageGameScreen = ({ navigation, route }) => {
       setMaxNumberOfPlayersPerTeam(item.maxNumberOfPlayersPerTeam);
       setPlayerPoints(item.points);
       setHasMultipleWinners(item.canHaveMultipleWinners);
-      navigation.setOptions({title: 'Edit Game'});
     } else {
-      navigation.setOptions({title: 'Create New Game'});
     }
   }, [view, item]);
 

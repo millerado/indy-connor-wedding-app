@@ -12,9 +12,12 @@ const FormatTextWithMentions = ({ text, ...restOfProps }) => {
     // Replace pattern of @[username](userId)
     // Within larger text (e.g. a comment) we want to replace @[username](userId) with the username
 
-    const goToUserScreen = (userId) => {
+    const goToUserScreen = (userId, name) => {
       // console.log('- Go to screen --', userId);
-      navigation.push("User", { userId: userId });
+      navigation.push("User", {
+        userId: userId,
+        name: name,
+      });
     };
 
     // Regex matches on [username](userId)
@@ -41,7 +44,7 @@ const FormatTextWithMentions = ({ text, ...restOfProps }) => {
       matches.forEach((match) => {
         const [, username, userId] = match.match(/@\[(.*?)\]\((.*?)\)/);
         text = reactStringReplace(text, match, (match, i) => (
-          <Text key={`${i}${username}${userId}${match}`} onPress={() => goToUserScreen(userId)} color={theme.colors.primary} italic {...restOfProps}>{username}</Text>
+          <Text key={`${i}${username}${userId}${match}`} onPress={() => goToUserScreen(userId, username)} color={theme.colors.primary} italic {...restOfProps}>{username}</Text>
         ));
       });
     }

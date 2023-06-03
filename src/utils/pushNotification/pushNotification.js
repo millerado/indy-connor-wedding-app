@@ -6,6 +6,8 @@ import { ExpoTokens } from "../../models";
 
 // send push notification based on an expo token
 const sendPushNotification = async (token, title, body, data) => {
+  console.log('-- Send Notification --', token, title, body, data);
+  // TO-DO: We need Badge in here to uddate Badge # on iOS
   const message = {
     to: token,
     sound: 'default',
@@ -13,6 +15,8 @@ const sendPushNotification = async (token, title, body, data) => {
     body,
     data,
   };
+
+  // Notifications.scheduleNotificationAsync
 
   await fetch('https://exp.host/--/api/v2/push/send', {
     method: 'POST',

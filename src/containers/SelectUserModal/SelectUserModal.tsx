@@ -81,7 +81,7 @@ const SelectUserModal = (props: SelectUserModalProps) => {
     console.log("-- User trying to close modal --");
   };
 
-  const renderItem = useCallback(({ item: u, index }) => {
+  const renderItem = ({ item: u, index }) => {
     return (
       <View key={u.id} style={{backgroundColor: theme.colors.background, paddingHorizontal: 5,}}>
         <SingleUserInModal
@@ -120,7 +120,7 @@ const SelectUserModal = (props: SelectUserModalProps) => {
         )}
       </View>
     );
-  }, [clickedUser, adminPassword]);
+  };
 
   const listHeader = useCallback(() => {
     return (

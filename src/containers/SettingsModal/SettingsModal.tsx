@@ -37,11 +37,11 @@ const SettingsModal = () => {
       setNotificationSending(true);
       Keyboard.dismiss();
       // TO-DO: Turn this back on once we have push notifications
-      // sendGlobalPushNotification(
-      //   'T Party',
-      //   notificationText,
-      //   {}
-      // );
+      sendGlobalPushNotification(
+        'Camp Conndigo',
+        notificationText,
+        {}
+      );
       setNotificationSending(false);
       setNotificationText("");
       setNotificationStatus("Notification sent!");

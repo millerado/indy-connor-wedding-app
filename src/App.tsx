@@ -116,6 +116,8 @@ const App = () => {
         const currentUser = await AsyncStorage.getItem("authStatus");
         if (currentUser) {
           setAuthStatus(JSON.parse(currentUser));
+          registerForPushNotificationsAsync(JSON.parse(currentUser).userId);
+          // console.log('currentUser', currentUser);
         }
       } catch (e) {
         console.log("error fetching current theme", e);

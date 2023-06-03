@@ -32,7 +32,7 @@ export const sendUserPushNotification = async (userId, title, body, data) => {
     return;
   }
 
-  const tokenRecords = await DataStore.query(ExpoTokens, t => t.userId("eq",  userId));
+  const tokenRecords = await DataStore.query(ExpoTokens, t => t.userId.eq(userId));
   tokenRecords.forEach(expoToken => {
     sendPushNotification(expoToken.token, title, body, data);
   });
@@ -50,7 +50,7 @@ export const sendGlobalPushNotification = async (title, body, data) => {
 }
 
 export const registerForPushNotificationsAsync = async (userId) => {
-  // console.log(userId);
+  // console.log('-- Register for Push --', userId);
   // console.log('-- My Push Token --', (await Notifications.getExpoPushTokenAsync()).data);
   if (Device.isDevice) {
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -80,11 +80,11 @@ export const registerForPushNotificationsAsync = async (userId) => {
 };
 
 export const savePushTokenAsync = async (token, userId) => {
+  // Legacy code for an app with using the app anonymously. Leaving to make reusing this code later easier
   userId = userId ? userId : "";
-  const tokenRecords = await DataStore.query(ExpoTokens, expoToken => 
-    expoToken
-      .token("eq",  token)
-      .userId("eq", userId)
+
+  const tokenRecords = await DataStore.query(ExpoTokens, expoToken =>
+    expoToken.token.eq(token)
   );
 
   if (tokenRecords.length === 0) {
@@ -95,6 +95,14 @@ export const savePushTokenAsync = async (token, userId) => {
       new ExpoTokens({
         token,
         userId
+      })
+    );
+  } else if (tokenRecords[0].userId !== userId) {
+    // if token record exists in the DB, but the userId is different
+    // update the userId (aka only one user on this phone)
+    await DataStore.save(
+      ExpoTokens.copyOf(tokenRecords[0], updated => {
+        updated.userId = userId;
       })
     );
   }

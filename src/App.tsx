@@ -16,6 +16,7 @@ import {
   UnauthedUser,
 } from "./contexts";
 import { Users } from "./models";
+import { registerForPushNotificationsAsync } from "./utils";
 
 const customFonts = {
   'Thasadith-Bold': require('./assets/fonts/Thasadith-Bold.ttf'),
@@ -55,7 +56,6 @@ const App = () => {
 
   // Pieces for the Auth Context
   const setUser = async (newUser: Users) => {
-    // TO-DO: Tie in Notifications at the user level here (associate userId with their Notification Identifier)
     const { id, name, image, about, admin, teamsID } = newUser;
     setAuthStatus({
       isAuthed: true,
@@ -66,6 +66,8 @@ const App = () => {
       isAdmin: admin,
       teamId: teamsID,
     });
+    // Tie in Notifications at the user level here (associate userId with their Notification Identifier)
+    registerForPushNotificationsAsync(id);
     await AsyncStorage.setItem(
       "authStatus",
       JSON.stringify({

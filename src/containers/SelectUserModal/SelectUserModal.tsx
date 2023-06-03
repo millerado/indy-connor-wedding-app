@@ -44,7 +44,7 @@ const SelectUserModal = (props: SelectUserModalProps) => {
   const { setSnackbar } = snackbarContext;
 
   const authContext = useContext(AuthContext);
-  const { setAuthStatus, authStatus } = authContext;
+  const { setAuthStatus } = authContext;
 
   const rowClickedHandler = (userId: string) => {
     const user = allUsers.find((u) => u.id === userId);
@@ -120,7 +120,7 @@ const SelectUserModal = (props: SelectUserModalProps) => {
         )}
       </View>
     );
-  }, [clickedUser]);
+  }, [clickedUser, adminPassword]);
 
   const listHeader = useCallback(() => {
     return (

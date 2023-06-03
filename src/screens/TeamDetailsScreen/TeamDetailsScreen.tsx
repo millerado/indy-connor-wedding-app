@@ -2,10 +2,17 @@ import React, { useMemo, useEffect, useState, useCallback } from 'react';
 import { View, Image, FlatList } from "react-native";
 import { useTheme } from "react-native-paper";
 import { SortDirection } from "aws-amplify";
+import Animated, {
+  Extrapolation,
+  interpolate,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
 import { Text, Divider, TextSizes } from '../../components';
 import { StandingsPersonRow, PostPreview } from '../../containers';
 import { Posts } from "../../models";
-import { calcDimensions } from "../../styles";
+import { calcDimensions, typography } from "../../styles";
 import { DataStore } from "../../utils";
 import styles from './TeamDetailsScreenStyles';
 const diamondDogs = require("../../assets/images/diamondDogsFullSize.png");
@@ -20,7 +27,41 @@ const TeamDetailsScreen = ({ navigation, route }) => {
   const [standingsPeople, setStandingsPeople] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
   const { teamId, teamName, iconName, description, allUsers, allTeams, allStandingsTeams, allStandingsPeople } = route.params;
-  const dimensions = calcDimensions();
+  const { width, height } = calcDimensions();
+
+  const scrollY = useSharedValue(0);
+  const scrollHandler = useAnimatedScrollHandler((event) => {
+    scrollY.value = event.contentOffset.y;
+  });
+
+  const headerStyles = useAnimatedStyle(() => {
+    return {
+      height: interpolate(scrollY.value, [0, 200], [height * .5, (width / 6) + 20], Extrapolation.CLAMP),
+      width: width,
+      marginBottom: 0,
+      padding: 10,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: theme.colors.onPrimary
+    };
+  });
+
+  const imageStyles = useAnimatedStyle(() => {
+    return {
+      width: interpolate(scrollY.value, [0, 200], [width / 2, width / 6], Extrapolation.CLAMP),
+      height: interpolate(scrollY.value, [0, 200], [width / 2, width / 6], Extrapolation.CLAMP),
+      alignSelf: 'center',
+    };
+  });
+
+  const textStyles = useAnimatedStyle(() => {
+    return {
+      fontSize: interpolate(scrollY.value, [0, 100], [typography.fontSizeM, 0], Extrapolation.CLAMP),
+      display: scrollY.value >= 90 ? 'none' : 'flex',
+      marginLeft: 0,
+      textAlign: 'center',
+    };
+  });
 
   const renderItem = useCallback(({ item }) => {
     return (
@@ -117,16 +158,14 @@ const TeamDetailsScreen = ({ navigation, route }) => {
 
   return (
     <View style={ss.pageWrapper}>
-      <View style={ss.headerWrapper}>
-        <Image source={iconName === 'diamondDogs' ? diamondDogs : iconName === 'fellowshipOfTheRing' ? fellowshipOfTheRing : iconName === 'orderOfThePhoenix' ? orderOfThePhoenix : reproductiveJusticeLeague} resizeMethod={'scale'} resizeMode={'contain'} style={{width: (dimensions.width * .5), height: (dimensions.width * .5) }} />
-        <Text style={{textAlign: 'center'}}>
-          {description}
-        </Text>
-      </View>
+      <Animated.View style={headerStyles}>
+        <Animated.Image source={iconName === 'diamondDogs' ? diamondDogs : iconName === 'fellowshipOfTheRing' ? fellowshipOfTheRing : iconName === 'orderOfThePhoenix' ? orderOfThePhoenix : reproductiveJusticeLeague} resizeMethod={'scale'} resizeMode={'contain'} style={imageStyles} />
+        <Animated.Text style={textStyles}>{description}</Animated.Text>
+      </Animated.View>
       <View style={{ width: "100%" }}>
         <Divider />
       </View>
-      <FlatList
+      <Animated.FlatList
         data={allPosts}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
@@ -138,6 +177,8 @@ const TeamDetailsScreen = ({ navigation, route }) => {
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
         style={{ width: '100%' }}
+        scrollEventThrottle={16}
+        onScroll={scrollHandler}
       />
     </View>
   );

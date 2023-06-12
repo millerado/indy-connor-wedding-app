@@ -2,11 +2,11 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import DataStore from '../DataStore/DataStore';
-import { ExpoTokens } from "../../models";
+import { ExpoTokens, Notifications as NotificationModel, ScheduledNotifications } from "../../models";
 
 // send push notification based on an expo token
-const sendPushNotification = async (token, title, body, data) => {
-  console.log('-- Send Notification --', token, title, body, data);
+const sendPushNotification = async (token, title, body, data, trigger) => {
+  // console.log('-- Send Notification --', token, title, body, data);
   // TO-DO: We need Badge in here to uddate Badge # on iOS
   const message = {
     to: token,
@@ -14,20 +14,67 @@ const sendPushNotification = async (token, title, body, data) => {
     title,
     body,
     data,
-  };
+  };``
 
-  // Notifications.scheduleNotificationAsync
+  if (trigger) {
+    Notifications.scheduleNotificationAsync({
+      content: message,
+      trigger: {
+        weekday: trigger.weekDay,
+        hour: trigger.hour,
+        minute: trigger.minute,
+        repeats: false,
+      },
+    });
+  } else {
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+  }
 
-  await fetch('https://exp.host/--/api/v2/push/send', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Accept-encoding': 'gzip, deflate',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(message),
-  });
+  // Notifications.scheduleNotificationAsync({
+  //   content: {
+  //     to: token,
+  //     sound: 'default',
+  //     title,
+  //     body,
+  //     data,
+  //   },
+  //   trigger: {
+  //     weekday: 1,
+  //     hour: 17,
+  //     minute: 46,
+  //     repeats: false,
+  //   },
+  // });
 }
+
+// const scheduleNotification = async (token, title, body, data, scheduleTrigger, displayTime) => {
+//   // console.log('-- Schedule Notification --', token, title, body, data, scheduleTrigger, displayTime);
+//   // console.log('-- Formatted Message Body --', formattedMessageBody);
+//   Notifications.scheduleNotificationAsync({
+//     content: {
+//       to: token,
+//       sound: 'default',
+//       title,
+//       body,
+//       data,
+//     },
+//     trigger: {
+//       weekday: scheduleTrigger.weekDay,
+//       hour: scheduleTrigger.hour,
+//       minute: scheduleTrigger.minute,
+//       repeats: false,
+//     },
+//   });
+
+// }
 
 // sends push notification to user, identified by userId
 // if userId is mapped to multiple devices (tokens), sends notification to all of them
@@ -35,6 +82,8 @@ export const sendUserPushNotification = async (userId, title, body, data) => {
   if (userId === null || userId === '') {
     return;
   }
+
+  storeNotification(userId, title, body, data, new Date().toISOString());
 
   const tokenRecords = await DataStore.query(ExpoTokens, t => t.userId.eq(userId));
   tokenRecords.forEach(expoToken => {
@@ -51,6 +100,44 @@ export const sendGlobalPushNotification = async (title, body, data) => {
   uniqueTokens.forEach(token => {
     sendPushNotification(token, title, body, data);
   });
+}
+
+export const scheduleNotificationForAnotherUser = async (userId, title, messageBody, data, scheduleTrigger, displayTime) => {
+  // console.log('-- Schedule Notification --', userId, title, messageBody, data, scheduleTrigger, displayTime);
+  // console.log('-- Formatted Message Body --', formattedMessageBody);
+  await DataStore.save(
+    new ScheduledNotifications({
+      userId,
+      subject: title,
+      linking: JSON.stringify(data),
+      messageBody: messageBody,
+      displayTime,
+      scheduleTrigger: JSON.stringify(scheduleTrigger),
+    })
+  );
+}
+
+const storeNotification = async (userId, title, body, data, displayTime) => {
+  // console.log('-- Store Notification --', userId, title, body, data, displayTime);
+  await DataStore.save(
+    new NotificationModel({
+      userId,
+      read: false,
+      subject: title,
+      messageBody: body,
+      linking: JSON.stringify(data),
+      displayTime
+    })
+  );
+}
+
+export const handleScheduledNotification = async (notification) => {
+  // console.log('-- Handle Scheduled Notification --', notification);
+  // const { userId, subject, messageBody, linking, displayTime } = notification;
+  // const data = JSON.parse(linking);
+  // const scheduleTrigger = JSON.parse(notification.scheduleTrigger);
+  // await scheduleNotificationForAnotherUser(userId, subject, messageBody, data, scheduleTrigger, displayTime);
+  // await DataStore.delete(notification);
 }
 
 export const registerForPushNotificationsAsync = async (userId) => {

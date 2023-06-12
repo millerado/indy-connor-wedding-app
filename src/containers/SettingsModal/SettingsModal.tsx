@@ -1,22 +1,18 @@
 import React, { useMemo, useState, useContext } from "react";
-import { Pressable, ScrollView, View, Keyboard } from "react-native";
+import { Pressable, ScrollView, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "react-native-paper";
-import { Icon, Text, Button, Modal, TextInput, TextSizes } from "../../components";
+import { Predicates } from "aws-amplify";
+import { Icon, Text, Button, Modal, TextSizes } from "../../components";
 import { typography } from "../../styles";
 import { ThemeContext, AuthContext } from "../../contexts";
-import { sendGlobalPushNotification, DataStore } from '../../utils';
+import { DataStore } from '../../utils';
 import { Users, Teams, StandingsPeople, StandingsTeams } from '../../models';
 import SelectUserModal from '../SelectUserModal/SelectUserModal';
 import styles from "./SettingsModalStyles";
-import { Predicates } from "aws-amplify";
 
 const SettingsModal = () => {
-  const [view, setView] = useState("settings");
   const [showModal, setShowModal] = useState(false);
-  const [notificationText, setNotificationText] = useState("");
-  const [notificationSending, setNotificationSending] = useState(false);
-  const [notificationStatus, setNotificationStatus] = useState("");
   const [showSelectUserModal, setShowSelectUserModal] = useState(false);
 
   const navigation = useNavigation();
@@ -32,40 +28,20 @@ const SettingsModal = () => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
 
-  const handleSendNotification = async () => {
-    if(authStatus.isAdmin) {
-      setNotificationSending(true);
-      Keyboard.dismiss();
-      // TO-DO: Turn this back on once we have push notifications
-      sendGlobalPushNotification(
-        'Camp Conndigo',
-        notificationText,
-        {}
-      );
-      setNotificationSending(false);
-      setNotificationText("");
-      setNotificationStatus("Notification sent!");
-    }
-  }
-
   const openNotificationDialog = () => {
+    closeModal();
     if (authStatus.isAdmin) {
-      setView('notification');
+      navigation.navigate('Send Notification');
     }
   }
 
   // Handlers for presses
   const openModal = () => {
     setShowModal(true);
-    setNotificationText("");
   };
 
   const closeModal = () => {
     setShowModal(false);
-    setView('settings');
-    setNotificationText("");
-    setNotificationStatus('');
-    setNotificationSending(false);
   };
 
   const handleThemeChange = async (newThemeName) => {
@@ -188,95 +164,58 @@ const SettingsModal = () => {
                   Cancel
                 </Button>
               </View>
-              <View style={{ flex: view === 'settings' ? 1 : 2, alignItems: 'center' }}>
+              <View style={{ flex: 1, alignItems: 'center' }}>
                 <Text
                   color={theme.colors.white}
                   bold
                   size={TextSizes.M}>
-                  {view === 'settings' ? 'Settings' : 'Send Global Notification'}
+                  Settings
                 </Text>
               </View>
-              <View style={{ flex: view === 'settings' ? 1 : 0 }}></View>
+              <View style={{ flex: 1 }}></View>
             </View>
-            {view === 'settings' ? (
-              <ScrollView style={ss.modalScrollView} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
-                <View>
-                  {/* <Button
-                    onPress={() => handleThemeChange(themeName === "Dark" ? 'Light' : 'Dark')}
-                  >
-                    Switch to {themeName === "Dark" ? 'Light' : 'Dark'} Mode
-                  </Button> */}
-                  {authStatus.isAuthed && (
-                    <Button onPress={goToUserPage} style={{marginTop: 10}}>
-                      View my User Profile
-                    </Button>
-                  )}
-                  <Button onPress={openSelectUserModal} style={{marginTop: 10}}>
-                    {authStatus.isAuthed ? 'Change User' : 'Sign In to App'}
+            <ScrollView style={ss.modalScrollView} keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
+              <View>
+                {/* <Button
+                  onPress={() => handleThemeChange(themeName === "Dark" ? 'Light' : 'Dark')}
+                >
+                  Switch to {themeName === "Dark" ? 'Light' : 'Dark'} Mode
+                </Button> */}
+                {authStatus.isAuthed && (
+                  <Button onPress={goToUserPage} style={{marginTop: 10}}>
+                    View my User Profile
                   </Button>
-                  {authStatus.isAdmin && (
-                    <Button onPress={openNotificationDialog} style={{marginTop: 10}}>
-                      Send Global Notification
-                    </Button>
-                  )}
-                  {authStatus.isAuthed && (
-                    <Button onPress={goToGamesPage} style={{marginTop: 10}}>
-                      Manage Games
-                    </Button>
-                  )}
-                  {authStatus.isAdmin && (
-                    <Button onPress={goToMostLikedPage} style={{marginTop: 10}}>
-                      Most Liked Posts
-                    </Button>
-                  )}
-                  {authStatus.isAdmin && (
-                    <Button onPress={resetDatastore} style={{marginTop: 10}}>
-                      Debug Reset Datastore
-                    </Button>
-                  )}
-                  {authStatus.isAdmin && (
-                    <Button onPress={createFakeStandings} style={{marginTop: 10}}>
-                      Create Fake Standings
-                    </Button>
-                  )}
-                </View>
-              </ScrollView>
-            ) : (
-              <ScrollView keyboardShouldPersistTaps="handled" keyboardDismissMode="on-drag">
-                <View style={{ flex: 1, alignItems: 'center', padding: 10, justifyContent: "space-evenly" }}>
-                  <TextInput
-                    clearButtonMode="while-editing"
-                    maxLength={250}
-                    returnKeyType="done"
-                    label="Notification Message"
-                    dense
-                    value={notificationText}
-                    enablesReturnKeyAutomatically={true}
-                    keyboardType="default"
-                    style={[
-                      ss.textInput,
-                      ss.modalTextInput,
-                      // ss.textInputWrapper,
-                    ]}
-                    onChangeText={(text) => setNotificationText(text)}
-                    disabled={notificationSending}
-                  />
-                  <View style={{paddingTop: 10}}>
-                    <Text>Please read this carefully, it'll go to everyone</Text>
-                  </View>
-                  <View style={{paddingTop: 10}}>
-                    <Button disabled={notificationText.length === 0 || notificationSending} onPress={handleSendNotification} >
-                      Send Message
-                    </Button>
-                  </View>
-                  {notificationStatus.length > 0 && (
-                    <View style={{paddingTop: 10}}>
-                      <Text size={TextSizes.L} bold>{notificationStatus}</Text>
-                    </View>
-                  )}
-                </View>
-              </ScrollView>
-            )}
+                )}
+                <Button onPress={openSelectUserModal} style={{marginTop: 10}}>
+                  {authStatus.isAuthed ? 'Change User' : 'Sign In to App'}
+                </Button>
+                {authStatus.isAdmin && (
+                  <Button onPress={openNotificationDialog} style={{marginTop: 10}}>
+                    Send Global Notification
+                  </Button>
+                )}
+                {authStatus.isAuthed && (
+                  <Button onPress={goToGamesPage} style={{marginTop: 10}}>
+                    Manage Games
+                  </Button>
+                )}
+                {authStatus.isAdmin && (
+                  <Button onPress={goToMostLikedPage} style={{marginTop: 10}}>
+                    Most Liked Posts
+                  </Button>
+                )}
+                {authStatus.isAdmin && (
+                  <Button onPress={resetDatastore} style={{marginTop: 10}}>
+                    Debug Reset Datastore
+                  </Button>
+                )}
+                {authStatus.isAdmin && (
+                  <Button onPress={createFakeStandings} style={{marginTop: 10}}>
+                    Create Fake Standings
+                  </Button>
+                )}
+              </View>
+            </ScrollView>
           </View>
         </View>
       </Modal>

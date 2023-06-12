@@ -15,6 +15,7 @@ import {
   MostLikedPostsScreen,
   NotificationsScreen,
   ScheduleScreen,
+  SendNotificationScreen,
   StandingsScreen,
   TeamDetailsScreen,
   UserScreen,
@@ -63,6 +64,7 @@ const HomeStackScreen = () => {
       <HomeStack.Screen name="Games List" component={GamesScreen} />
       <HomeStack.Screen name="Manage Game" component={ManageGameScreen} options={({ route }) => ({ title: route.params.view === 'editGame' ? 'Edit Game' : 'Create New Game' })} />
       <HomeStack.Screen name="Most Liked Posts" component={MostLikedPostsScreen} />
+      <HomeStack.Screen name="Send Notification" component={SendNotificationScreen} />
     </HomeStack.Navigator>
   );
 };

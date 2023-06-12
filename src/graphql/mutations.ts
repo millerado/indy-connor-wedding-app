@@ -2,6 +2,132 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createScheduledNotifications = /* GraphQL */ `
+  mutation CreateScheduledNotifications(
+    $input: CreateScheduledNotificationsInput!
+    $condition: ModelScheduledNotificationsConditionInput
+  ) {
+    createScheduledNotifications(input: $input, condition: $condition) {
+      id
+      userId
+      subject
+      linking
+      messageBody
+      scheduleTrigger
+      displayTime
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateScheduledNotifications = /* GraphQL */ `
+  mutation UpdateScheduledNotifications(
+    $input: UpdateScheduledNotificationsInput!
+    $condition: ModelScheduledNotificationsConditionInput
+  ) {
+    updateScheduledNotifications(input: $input, condition: $condition) {
+      id
+      userId
+      subject
+      linking
+      messageBody
+      scheduleTrigger
+      displayTime
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteScheduledNotifications = /* GraphQL */ `
+  mutation DeleteScheduledNotifications(
+    $input: DeleteScheduledNotificationsInput!
+    $condition: ModelScheduledNotificationsConditionInput
+  ) {
+    deleteScheduledNotifications(input: $input, condition: $condition) {
+      id
+      userId
+      subject
+      linking
+      messageBody
+      scheduleTrigger
+      displayTime
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const createNotifications = /* GraphQL */ `
+  mutation CreateNotifications(
+    $input: CreateNotificationsInput!
+    $condition: ModelNotificationsConditionInput
+  ) {
+    createNotifications(input: $input, condition: $condition) {
+      id
+      userId
+      read
+      messageBody
+      linking
+      subject
+      displayTime
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const updateNotifications = /* GraphQL */ `
+  mutation UpdateNotifications(
+    $input: UpdateNotificationsInput!
+    $condition: ModelNotificationsConditionInput
+  ) {
+    updateNotifications(input: $input, condition: $condition) {
+      id
+      userId
+      read
+      messageBody
+      linking
+      subject
+      displayTime
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const deleteNotifications = /* GraphQL */ `
+  mutation DeleteNotifications(
+    $input: DeleteNotificationsInput!
+    $condition: ModelNotificationsConditionInput
+  ) {
+    deleteNotifications(input: $input, condition: $condition) {
+      id
+      userId
+      read
+      messageBody
+      linking
+      subject
+      displayTime
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
 export const createGames = /* GraphQL */ `
   mutation CreateGames(
     $input: CreateGamesInput!

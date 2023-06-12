@@ -2,6 +2,162 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getScheduledNotifications = /* GraphQL */ `
+  query GetScheduledNotifications($id: ID!) {
+    getScheduledNotifications(id: $id) {
+      id
+      userId
+      subject
+      linking
+      messageBody
+      scheduleTrigger
+      displayTime
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const listScheduledNotifications = /* GraphQL */ `
+  query ListScheduledNotifications(
+    $filter: ModelScheduledNotificationsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listScheduledNotifications(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        userId
+        subject
+        linking
+        messageBody
+        scheduleTrigger
+        displayTime
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncScheduledNotifications = /* GraphQL */ `
+  query SyncScheduledNotifications(
+    $filter: ModelScheduledNotificationsFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncScheduledNotifications(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        userId
+        subject
+        linking
+        messageBody
+        scheduleTrigger
+        displayTime
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const getNotifications = /* GraphQL */ `
+  query GetNotifications($id: ID!) {
+    getNotifications(id: $id) {
+      id
+      userId
+      read
+      messageBody
+      linking
+      subject
+      displayTime
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const listNotifications = /* GraphQL */ `
+  query ListNotifications(
+    $filter: ModelNotificationsFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listNotifications(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        userId
+        read
+        messageBody
+        linking
+        subject
+        displayTime
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
+export const syncNotifications = /* GraphQL */ `
+  query SyncNotifications(
+    $filter: ModelNotificationsFilterInput
+    $limit: Int
+    $nextToken: String
+    $lastSync: AWSTimestamp
+  ) {
+    syncNotifications(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      lastSync: $lastSync
+    ) {
+      items {
+        id
+        userId
+        read
+        messageBody
+        linking
+        subject
+        displayTime
+        createdAt
+        updatedAt
+        _version
+        _deleted
+        _lastChangedAt
+      }
+      nextToken
+      startedAt
+    }
+  }
+`;
 export const getGames = /* GraphQL */ `
   query GetGames($id: ID!) {
     getGames(id: $id) {

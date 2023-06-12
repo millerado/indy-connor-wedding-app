@@ -40,8 +40,7 @@ const SelectUserModal = (props: SelectUserModalProps) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
 
-  const snackbarContext = useContext(SnackbarContext);
-  const { setSnackbar } = snackbarContext;
+  const { setSnackbar } = useContext(SnackbarContext);
 
   const authContext = useContext(AuthContext);
   const { setAuthStatus } = authContext;

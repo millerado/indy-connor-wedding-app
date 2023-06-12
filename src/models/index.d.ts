@@ -6,6 +6,82 @@ import { LazyLoading, LazyLoadingDisabled, AsyncCollection } from "@aws-amplify/
 
 
 
+type EagerScheduledNotifications = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<ScheduledNotifications, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId: string;
+  readonly subject: string;
+  readonly linking?: string | null;
+  readonly messageBody: string;
+  readonly scheduleTrigger: string;
+  readonly displayTime: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyScheduledNotifications = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<ScheduledNotifications, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId: string;
+  readonly subject: string;
+  readonly linking?: string | null;
+  readonly messageBody: string;
+  readonly scheduleTrigger: string;
+  readonly displayTime: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type ScheduledNotifications = LazyLoading extends LazyLoadingDisabled ? EagerScheduledNotifications : LazyScheduledNotifications
+
+export declare const ScheduledNotifications: (new (init: ModelInit<ScheduledNotifications>) => ScheduledNotifications) & {
+  copyOf(source: ScheduledNotifications, mutator: (draft: MutableModel<ScheduledNotifications>) => MutableModel<ScheduledNotifications> | void): ScheduledNotifications;
+}
+
+type EagerNotifications = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Notifications, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId: string;
+  readonly read: boolean;
+  readonly messageBody: string;
+  readonly linking?: string | null;
+  readonly subject: string;
+  readonly displayTime: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyNotifications = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Notifications, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly userId: string;
+  readonly read: boolean;
+  readonly messageBody: string;
+  readonly linking?: string | null;
+  readonly subject: string;
+  readonly displayTime: string;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Notifications = LazyLoading extends LazyLoadingDisabled ? EagerNotifications : LazyNotifications
+
+export declare const Notifications: (new (init: ModelInit<Notifications>) => Notifications) & {
+  copyOf(source: Notifications, mutator: (draft: MutableModel<Notifications>) => MutableModel<Notifications> | void): Notifications;
+}
+
 type EagerGames = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<Games, 'id'>;

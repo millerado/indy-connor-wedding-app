@@ -39,8 +39,8 @@ export const formatGameString = (gameDetails, allUsers) => {
   return returnString;
 }
 
-export const oxfordComma = function (arr, conjunction, ifempty) {
-  let l = arr.length;
+export const oxfordComma = (arr, conjunction, ifempty) => {
+  const l = arr.length;
   if (!l) return ifempty;
   if (l < 2) return arr[0];
   if (l < 3) return arr.join(` ${conjunction} `);

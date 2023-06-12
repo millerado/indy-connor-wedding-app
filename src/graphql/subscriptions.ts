@@ -2,6 +2,126 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateScheduledNotifications = /* GraphQL */ `
+  subscription OnCreateScheduledNotifications(
+    $filter: ModelSubscriptionScheduledNotificationsFilterInput
+  ) {
+    onCreateScheduledNotifications(filter: $filter) {
+      id
+      userId
+      subject
+      linking
+      messageBody
+      scheduleTrigger
+      displayTime
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateScheduledNotifications = /* GraphQL */ `
+  subscription OnUpdateScheduledNotifications(
+    $filter: ModelSubscriptionScheduledNotificationsFilterInput
+  ) {
+    onUpdateScheduledNotifications(filter: $filter) {
+      id
+      userId
+      subject
+      linking
+      messageBody
+      scheduleTrigger
+      displayTime
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteScheduledNotifications = /* GraphQL */ `
+  subscription OnDeleteScheduledNotifications(
+    $filter: ModelSubscriptionScheduledNotificationsFilterInput
+  ) {
+    onDeleteScheduledNotifications(filter: $filter) {
+      id
+      userId
+      subject
+      linking
+      messageBody
+      scheduleTrigger
+      displayTime
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onCreateNotifications = /* GraphQL */ `
+  subscription OnCreateNotifications(
+    $filter: ModelSubscriptionNotificationsFilterInput
+  ) {
+    onCreateNotifications(filter: $filter) {
+      id
+      userId
+      read
+      messageBody
+      linking
+      subject
+      displayTime
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onUpdateNotifications = /* GraphQL */ `
+  subscription OnUpdateNotifications(
+    $filter: ModelSubscriptionNotificationsFilterInput
+  ) {
+    onUpdateNotifications(filter: $filter) {
+      id
+      userId
+      read
+      messageBody
+      linking
+      subject
+      displayTime
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
+export const onDeleteNotifications = /* GraphQL */ `
+  subscription OnDeleteNotifications(
+    $filter: ModelSubscriptionNotificationsFilterInput
+  ) {
+    onDeleteNotifications(filter: $filter) {
+      id
+      userId
+      read
+      messageBody
+      linking
+      subject
+      displayTime
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+    }
+  }
+`;
 export const onCreateGames = /* GraphQL */ `
   subscription OnCreateGames($filter: ModelSubscriptionGamesFilterInput) {
     onCreateGames(filter: $filter) {

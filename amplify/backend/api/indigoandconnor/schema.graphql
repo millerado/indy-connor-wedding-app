@@ -1,3 +1,23 @@
+type ScheduledNotifications @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: String!
+  subject: String!
+  linking: String
+  messageBody: String!
+  scheduleTrigger: String!
+  displayTime: AWSDateTime!
+}
+
+type Notifications @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  userId: String!
+  read: Boolean!
+  messageBody: String!
+  linking: String
+  subject: String!
+  displayTime: AWSDateTime!
+}
+
 type Games @model @auth(rules: [{allow: public}]) {
   id: ID!
   name: String!

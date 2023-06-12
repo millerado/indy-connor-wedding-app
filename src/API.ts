@@ -2,33 +2,27 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateGamesInput = {
+export type CreateScheduledNotificationsInput = {
   id?: string | null,
-  name: string,
-  iconName: string,
-  minNumberOfTeams: number,
-  maxNumberOfTeams?: number | null,
-  minNumberOfPlayersPerTeam: number,
-  maxNumberOfPlayersPerTeam?: number | null,
-  points?: Array< number > | null,
-  rules?: string | null,
-  canHaveMultipleWinners: boolean,
+  userId: string,
+  subject: string,
+  linking?: string | null,
+  messageBody: string,
+  scheduleTrigger: string,
+  displayTime: string,
   _version?: number | null,
 };
 
-export type ModelGamesConditionInput = {
-  name?: ModelStringInput | null,
-  iconName?: ModelStringInput | null,
-  minNumberOfTeams?: ModelIntInput | null,
-  maxNumberOfTeams?: ModelIntInput | null,
-  minNumberOfPlayersPerTeam?: ModelIntInput | null,
-  maxNumberOfPlayersPerTeam?: ModelIntInput | null,
-  points?: ModelIntInput | null,
-  rules?: ModelStringInput | null,
-  canHaveMultipleWinners?: ModelBooleanInput | null,
-  and?: Array< ModelGamesConditionInput | null > | null,
-  or?: Array< ModelGamesConditionInput | null > | null,
-  not?: ModelGamesConditionInput | null,
+export type ModelScheduledNotificationsConditionInput = {
+  userId?: ModelStringInput | null,
+  subject?: ModelStringInput | null,
+  linking?: ModelStringInput | null,
+  messageBody?: ModelStringInput | null,
+  scheduleTrigger?: ModelStringInput | null,
+  displayTime?: ModelStringInput | null,
+  and?: Array< ModelScheduledNotificationsConditionInput | null > | null,
+  or?: Array< ModelScheduledNotificationsConditionInput | null > | null,
+  not?: ModelScheduledNotificationsConditionInput | null,
 };
 
 export type ModelStringInput = {
@@ -71,6 +65,129 @@ export type ModelSizeInput = {
   between?: Array< number | null > | null,
 };
 
+export type ScheduledNotifications = {
+  __typename: "ScheduledNotifications",
+  id: string,
+  userId: string,
+  subject: string,
+  linking?: string | null,
+  messageBody: string,
+  scheduleTrigger: string,
+  displayTime: string,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type UpdateScheduledNotificationsInput = {
+  id: string,
+  userId?: string | null,
+  subject?: string | null,
+  linking?: string | null,
+  messageBody?: string | null,
+  scheduleTrigger?: string | null,
+  displayTime?: string | null,
+  _version?: number | null,
+};
+
+export type DeleteScheduledNotificationsInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateNotificationsInput = {
+  id?: string | null,
+  userId: string,
+  read: boolean,
+  messageBody: string,
+  linking?: string | null,
+  subject: string,
+  displayTime: string,
+  _version?: number | null,
+};
+
+export type ModelNotificationsConditionInput = {
+  userId?: ModelStringInput | null,
+  read?: ModelBooleanInput | null,
+  messageBody?: ModelStringInput | null,
+  linking?: ModelStringInput | null,
+  subject?: ModelStringInput | null,
+  displayTime?: ModelStringInput | null,
+  and?: Array< ModelNotificationsConditionInput | null > | null,
+  or?: Array< ModelNotificationsConditionInput | null > | null,
+  not?: ModelNotificationsConditionInput | null,
+};
+
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+};
+
+export type Notifications = {
+  __typename: "Notifications",
+  id: string,
+  userId: string,
+  read: boolean,
+  messageBody: string,
+  linking?: string | null,
+  subject: string,
+  displayTime: string,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type UpdateNotificationsInput = {
+  id: string,
+  userId?: string | null,
+  read?: boolean | null,
+  messageBody?: string | null,
+  linking?: string | null,
+  subject?: string | null,
+  displayTime?: string | null,
+  _version?: number | null,
+};
+
+export type DeleteNotificationsInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateGamesInput = {
+  id?: string | null,
+  name: string,
+  iconName: string,
+  minNumberOfTeams: number,
+  maxNumberOfTeams?: number | null,
+  minNumberOfPlayersPerTeam: number,
+  maxNumberOfPlayersPerTeam?: number | null,
+  points?: Array< number > | null,
+  rules?: string | null,
+  canHaveMultipleWinners: boolean,
+  _version?: number | null,
+};
+
+export type ModelGamesConditionInput = {
+  name?: ModelStringInput | null,
+  iconName?: ModelStringInput | null,
+  minNumberOfTeams?: ModelIntInput | null,
+  maxNumberOfTeams?: ModelIntInput | null,
+  minNumberOfPlayersPerTeam?: ModelIntInput | null,
+  maxNumberOfPlayersPerTeam?: ModelIntInput | null,
+  points?: ModelIntInput | null,
+  rules?: ModelStringInput | null,
+  canHaveMultipleWinners?: ModelBooleanInput | null,
+  and?: Array< ModelGamesConditionInput | null > | null,
+  or?: Array< ModelGamesConditionInput | null > | null,
+  not?: ModelGamesConditionInput | null,
+};
+
 export type ModelIntInput = {
   ne?: number | null,
   eq?: number | null,
@@ -79,13 +196,6 @@ export type ModelIntInput = {
   ge?: number | null,
   gt?: number | null,
   between?: Array< number | null > | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-};
-
-export type ModelBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
 };
@@ -665,6 +775,46 @@ export type DeleteScheduleInput = {
   _version?: number | null,
 };
 
+export type ModelScheduledNotificationsFilterInput = {
+  id?: ModelIDInput | null,
+  userId?: ModelStringInput | null,
+  subject?: ModelStringInput | null,
+  linking?: ModelStringInput | null,
+  messageBody?: ModelStringInput | null,
+  scheduleTrigger?: ModelStringInput | null,
+  displayTime?: ModelStringInput | null,
+  and?: Array< ModelScheduledNotificationsFilterInput | null > | null,
+  or?: Array< ModelScheduledNotificationsFilterInput | null > | null,
+  not?: ModelScheduledNotificationsFilterInput | null,
+};
+
+export type ModelScheduledNotificationsConnection = {
+  __typename: "ModelScheduledNotificationsConnection",
+  items:  Array<ScheduledNotifications | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type ModelNotificationsFilterInput = {
+  id?: ModelIDInput | null,
+  userId?: ModelStringInput | null,
+  read?: ModelBooleanInput | null,
+  messageBody?: ModelStringInput | null,
+  linking?: ModelStringInput | null,
+  subject?: ModelStringInput | null,
+  displayTime?: ModelStringInput | null,
+  and?: Array< ModelNotificationsFilterInput | null > | null,
+  or?: Array< ModelNotificationsFilterInput | null > | null,
+  not?: ModelNotificationsFilterInput | null,
+};
+
+export type ModelNotificationsConnection = {
+  __typename: "ModelNotificationsConnection",
+  items:  Array<Notifications | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
 export type ModelGamesFilterInput = {
   id?: ModelIDInput | null,
   name?: ModelStringInput | null,
@@ -866,19 +1016,16 @@ export type ModelScheduleConnection = {
   startedAt?: number | null,
 };
 
-export type ModelSubscriptionGamesFilterInput = {
+export type ModelSubscriptionScheduledNotificationsFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  name?: ModelSubscriptionStringInput | null,
-  iconName?: ModelSubscriptionStringInput | null,
-  minNumberOfTeams?: ModelSubscriptionIntInput | null,
-  maxNumberOfTeams?: ModelSubscriptionIntInput | null,
-  minNumberOfPlayersPerTeam?: ModelSubscriptionIntInput | null,
-  maxNumberOfPlayersPerTeam?: ModelSubscriptionIntInput | null,
-  points?: ModelSubscriptionIntInput | null,
-  rules?: ModelSubscriptionStringInput | null,
-  canHaveMultipleWinners?: ModelSubscriptionBooleanInput | null,
-  and?: Array< ModelSubscriptionGamesFilterInput | null > | null,
-  or?: Array< ModelSubscriptionGamesFilterInput | null > | null,
+  userId?: ModelSubscriptionStringInput | null,
+  subject?: ModelSubscriptionStringInput | null,
+  linking?: ModelSubscriptionStringInput | null,
+  messageBody?: ModelSubscriptionStringInput | null,
+  scheduleTrigger?: ModelSubscriptionStringInput | null,
+  displayTime?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionScheduledNotificationsFilterInput | null > | null,
+  or?: Array< ModelSubscriptionScheduledNotificationsFilterInput | null > | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -911,6 +1058,38 @@ export type ModelSubscriptionStringInput = {
   notIn?: Array< string | null > | null,
 };
 
+export type ModelSubscriptionNotificationsFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  userId?: ModelSubscriptionStringInput | null,
+  read?: ModelSubscriptionBooleanInput | null,
+  messageBody?: ModelSubscriptionStringInput | null,
+  linking?: ModelSubscriptionStringInput | null,
+  subject?: ModelSubscriptionStringInput | null,
+  displayTime?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionNotificationsFilterInput | null > | null,
+  or?: Array< ModelSubscriptionNotificationsFilterInput | null > | null,
+};
+
+export type ModelSubscriptionBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+};
+
+export type ModelSubscriptionGamesFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  name?: ModelSubscriptionStringInput | null,
+  iconName?: ModelSubscriptionStringInput | null,
+  minNumberOfTeams?: ModelSubscriptionIntInput | null,
+  maxNumberOfTeams?: ModelSubscriptionIntInput | null,
+  minNumberOfPlayersPerTeam?: ModelSubscriptionIntInput | null,
+  maxNumberOfPlayersPerTeam?: ModelSubscriptionIntInput | null,
+  points?: ModelSubscriptionIntInput | null,
+  rules?: ModelSubscriptionStringInput | null,
+  canHaveMultipleWinners?: ModelSubscriptionBooleanInput | null,
+  and?: Array< ModelSubscriptionGamesFilterInput | null > | null,
+  or?: Array< ModelSubscriptionGamesFilterInput | null > | null,
+};
+
 export type ModelSubscriptionIntInput = {
   ne?: number | null,
   eq?: number | null,
@@ -921,11 +1100,6 @@ export type ModelSubscriptionIntInput = {
   between?: Array< number | null > | null,
   in?: Array< number | null > | null,
   notIn?: Array< number | null > | null,
-};
-
-export type ModelSubscriptionBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
 };
 
 export type ModelSubscriptionStandingsPeopleFilterInput = {
@@ -1031,6 +1205,144 @@ export type ModelSubscriptionScheduleFilterInput = {
   sortOrder?: ModelSubscriptionIntInput | null,
   and?: Array< ModelSubscriptionScheduleFilterInput | null > | null,
   or?: Array< ModelSubscriptionScheduleFilterInput | null > | null,
+};
+
+export type CreateScheduledNotificationsMutationVariables = {
+  input: CreateScheduledNotificationsInput,
+  condition?: ModelScheduledNotificationsConditionInput | null,
+};
+
+export type CreateScheduledNotificationsMutation = {
+  createScheduledNotifications?:  {
+    __typename: "ScheduledNotifications",
+    id: string,
+    userId: string,
+    subject: string,
+    linking?: string | null,
+    messageBody: string,
+    scheduleTrigger: string,
+    displayTime: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateScheduledNotificationsMutationVariables = {
+  input: UpdateScheduledNotificationsInput,
+  condition?: ModelScheduledNotificationsConditionInput | null,
+};
+
+export type UpdateScheduledNotificationsMutation = {
+  updateScheduledNotifications?:  {
+    __typename: "ScheduledNotifications",
+    id: string,
+    userId: string,
+    subject: string,
+    linking?: string | null,
+    messageBody: string,
+    scheduleTrigger: string,
+    displayTime: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteScheduledNotificationsMutationVariables = {
+  input: DeleteScheduledNotificationsInput,
+  condition?: ModelScheduledNotificationsConditionInput | null,
+};
+
+export type DeleteScheduledNotificationsMutation = {
+  deleteScheduledNotifications?:  {
+    __typename: "ScheduledNotifications",
+    id: string,
+    userId: string,
+    subject: string,
+    linking?: string | null,
+    messageBody: string,
+    scheduleTrigger: string,
+    displayTime: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type CreateNotificationsMutationVariables = {
+  input: CreateNotificationsInput,
+  condition?: ModelNotificationsConditionInput | null,
+};
+
+export type CreateNotificationsMutation = {
+  createNotifications?:  {
+    __typename: "Notifications",
+    id: string,
+    userId: string,
+    read: boolean,
+    messageBody: string,
+    linking?: string | null,
+    subject: string,
+    displayTime: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateNotificationsMutationVariables = {
+  input: UpdateNotificationsInput,
+  condition?: ModelNotificationsConditionInput | null,
+};
+
+export type UpdateNotificationsMutation = {
+  updateNotifications?:  {
+    __typename: "Notifications",
+    id: string,
+    userId: string,
+    read: boolean,
+    messageBody: string,
+    linking?: string | null,
+    subject: string,
+    displayTime: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteNotificationsMutationVariables = {
+  input: DeleteNotificationsInput,
+  condition?: ModelNotificationsConditionInput | null,
+};
+
+export type DeleteNotificationsMutation = {
+  deleteNotifications?:  {
+    __typename: "Notifications",
+    id: string,
+    userId: string,
+    read: boolean,
+    messageBody: string,
+    linking?: string | null,
+    subject: string,
+    displayTime: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
 };
 
 export type CreateGamesMutationVariables = {
@@ -1831,6 +2143,168 @@ export type DeleteScheduleMutation = {
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+  } | null,
+};
+
+export type GetScheduledNotificationsQueryVariables = {
+  id: string,
+};
+
+export type GetScheduledNotificationsQuery = {
+  getScheduledNotifications?:  {
+    __typename: "ScheduledNotifications",
+    id: string,
+    userId: string,
+    subject: string,
+    linking?: string | null,
+    messageBody: string,
+    scheduleTrigger: string,
+    displayTime: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListScheduledNotificationsQueryVariables = {
+  filter?: ModelScheduledNotificationsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListScheduledNotificationsQuery = {
+  listScheduledNotifications?:  {
+    __typename: "ModelScheduledNotificationsConnection",
+    items:  Array< {
+      __typename: "ScheduledNotifications",
+      id: string,
+      userId: string,
+      subject: string,
+      linking?: string | null,
+      messageBody: string,
+      scheduleTrigger: string,
+      displayTime: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncScheduledNotificationsQueryVariables = {
+  filter?: ModelScheduledNotificationsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncScheduledNotificationsQuery = {
+  syncScheduledNotifications?:  {
+    __typename: "ModelScheduledNotificationsConnection",
+    items:  Array< {
+      __typename: "ScheduledNotifications",
+      id: string,
+      userId: string,
+      subject: string,
+      linking?: string | null,
+      messageBody: string,
+      scheduleTrigger: string,
+      displayTime: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type GetNotificationsQueryVariables = {
+  id: string,
+};
+
+export type GetNotificationsQuery = {
+  getNotifications?:  {
+    __typename: "Notifications",
+    id: string,
+    userId: string,
+    read: boolean,
+    messageBody: string,
+    linking?: string | null,
+    subject: string,
+    displayTime: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListNotificationsQueryVariables = {
+  filter?: ModelNotificationsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListNotificationsQuery = {
+  listNotifications?:  {
+    __typename: "ModelNotificationsConnection",
+    items:  Array< {
+      __typename: "Notifications",
+      id: string,
+      userId: string,
+      read: boolean,
+      messageBody: string,
+      linking?: string | null,
+      subject: string,
+      displayTime: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncNotificationsQueryVariables = {
+  filter?: ModelNotificationsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncNotificationsQuery = {
+  syncNotifications?:  {
+    __typename: "ModelNotificationsConnection",
+    items:  Array< {
+      __typename: "Notifications",
+      id: string,
+      userId: string,
+      read: boolean,
+      messageBody: string,
+      linking?: string | null,
+      subject: string,
+      displayTime: string,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
   } | null,
 };
 
@@ -2833,6 +3307,138 @@ export type SyncSchedulesQuery = {
     } | null >,
     nextToken?: string | null,
     startedAt?: number | null,
+  } | null,
+};
+
+export type OnCreateScheduledNotificationsSubscriptionVariables = {
+  filter?: ModelSubscriptionScheduledNotificationsFilterInput | null,
+};
+
+export type OnCreateScheduledNotificationsSubscription = {
+  onCreateScheduledNotifications?:  {
+    __typename: "ScheduledNotifications",
+    id: string,
+    userId: string,
+    subject: string,
+    linking?: string | null,
+    messageBody: string,
+    scheduleTrigger: string,
+    displayTime: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateScheduledNotificationsSubscriptionVariables = {
+  filter?: ModelSubscriptionScheduledNotificationsFilterInput | null,
+};
+
+export type OnUpdateScheduledNotificationsSubscription = {
+  onUpdateScheduledNotifications?:  {
+    __typename: "ScheduledNotifications",
+    id: string,
+    userId: string,
+    subject: string,
+    linking?: string | null,
+    messageBody: string,
+    scheduleTrigger: string,
+    displayTime: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteScheduledNotificationsSubscriptionVariables = {
+  filter?: ModelSubscriptionScheduledNotificationsFilterInput | null,
+};
+
+export type OnDeleteScheduledNotificationsSubscription = {
+  onDeleteScheduledNotifications?:  {
+    __typename: "ScheduledNotifications",
+    id: string,
+    userId: string,
+    subject: string,
+    linking?: string | null,
+    messageBody: string,
+    scheduleTrigger: string,
+    displayTime: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnCreateNotificationsSubscriptionVariables = {
+  filter?: ModelSubscriptionNotificationsFilterInput | null,
+};
+
+export type OnCreateNotificationsSubscription = {
+  onCreateNotifications?:  {
+    __typename: "Notifications",
+    id: string,
+    userId: string,
+    read: boolean,
+    messageBody: string,
+    linking?: string | null,
+    subject: string,
+    displayTime: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateNotificationsSubscriptionVariables = {
+  filter?: ModelSubscriptionNotificationsFilterInput | null,
+};
+
+export type OnUpdateNotificationsSubscription = {
+  onUpdateNotifications?:  {
+    __typename: "Notifications",
+    id: string,
+    userId: string,
+    read: boolean,
+    messageBody: string,
+    linking?: string | null,
+    subject: string,
+    displayTime: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteNotificationsSubscriptionVariables = {
+  filter?: ModelSubscriptionNotificationsFilterInput | null,
+};
+
+export type OnDeleteNotificationsSubscription = {
+  onDeleteNotifications?:  {
+    __typename: "Notifications",
+    id: string,
+    userId: string,
+    read: boolean,
+    messageBody: string,
+    linking?: string | null,
+    subject: string,
+    displayTime: string,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
   } | null,
 };
 

@@ -68,6 +68,7 @@ const Button = (props: ButtonProps) => {
       buttonColor={buttonColor}
       textColor={textColor}
       {...restOfProps}
+      theme={theme}
     >
       <Text color={textColor}>{props.children}</Text>
     </PaperButton>

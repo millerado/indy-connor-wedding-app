@@ -4,6 +4,14 @@ import * as Notifications from "expo-notifications";
 import DataStore from '../DataStore/DataStore';
 import { ExpoTokens, Notifications as NotificationModel, ScheduledNotifications } from "../../models";
 
+export const getBadgeCount = () => {
+  return Notifications.getBadgeCountAsync();
+}
+
+export const setBadgeCount = (count) => {
+  return Notifications.setBadgeCountAsync(count);
+}
+
 const cleanMessageBody = (body) => {
   // console.log('-- Send Notification --', token, title, body, data);
   let messageBody = body;

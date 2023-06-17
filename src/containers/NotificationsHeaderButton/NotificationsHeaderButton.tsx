@@ -6,7 +6,7 @@ import { Icon, Badge } from "../../components";
 import { typography } from "../../styles";
 import { ThemeContext, AuthContext } from "../../contexts";
 import { Notifications } from '../../models';
-import { DataStore } from '../../utils';
+import { DataStore, setBadgeCount } from '../../utils';
 import styles from "./NotificationsHeaderButtonStyles";
 
 const NotificationsHeaderButton = () => {
@@ -28,6 +28,7 @@ const NotificationsHeaderButton = () => {
     ]),
     ).subscribe(({ items }) => {
       setNumberOfNotifications(items.length);
+      setBadgeCount(items.length);
     });
 
     return () => {

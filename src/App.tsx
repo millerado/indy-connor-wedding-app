@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { Provider as PaperProvider } from "react-native-paper";
+import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
@@ -45,6 +46,8 @@ const App = () => {
   const [authStatus, setAuthStatus] = useState(UnauthedUser);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarDetails, setSnackbarDetails] = useState(DefaultSnackbar);
+  const responseListener = useRef();
+  const nav = useRef();
 
   // Pieces for the Theme Context
   const theme = themeName === "Dark" ? darkTheme : lightTheme;
@@ -119,13 +122,12 @@ const App = () => {
         }
         DataStore.delete(ScheduledNotifications, item.id);
       });
-      
     });
 
     return () => {
       notificationsSubscription.unsubscribe();
     };
-  }, [authStatus])
+  }, [authStatus]);
 
   useEffect(() => {
     const fetchCurrentTheme = async () => {
@@ -169,6 +171,33 @@ const App = () => {
     prepare();
     fetchCurrentTheme();
     fetchCurrentUser();
+
+    // The listener for Notification Clicks
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      const { targetType, id } = response.notification.request.content.data;
+      // console.log('-- Notification Target and ID --', targetType, id);
+      if(targetType && id) { // Only worrying about linking if it's pointing somewhere
+        if(targetType === 'post') {
+          // Push to a View Post
+          nav.current.navigate('View Post', {
+            postsID: id,
+          });
+        } else if (targetType === 'user') {
+          // Push to a User View
+          nav.current.navigate('User', {
+            userId: id,
+          });
+        }
+      }
+      
+    });
+
+    return () => {
+      // We *only* need this if we're going to track a state (redux or otherwise) of all notifications. Otherwise this isn't needed
+      // Notifications.removeNotificationSubscription(notificationListener);
+      // This checks for notification clicks with the app open
+      Notifications.removeNotificationSubscription(responseListener);
+    };
   }, []);
 
   const onLayoutRootView = useCallback(async () => {
@@ -189,7 +218,7 @@ const App = () => {
   return (
     <ThemeContext.Provider value={{ themeName, setThemeName: saveTheme }}>
       <AuthContext.Provider value={{ authStatus, setAuthStatus: setUser }}>
-        <NavigationContainer>
+        <NavigationContainer ref={nav}>
           <PaperProvider theme={theme}>
             <SnackbarContext.Provider
               value={{ snackbar: snackbarDetails, setSnackbar }}

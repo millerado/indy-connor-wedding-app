@@ -4,7 +4,7 @@ import { useTheme } from "react-native-paper";
 import { CommentModal, PostPreview, AddCommentListView } from "../../containers";
 import { Posts } from "../../models";
 import { DataStore } from "../../utils";
-import { ActivityIndicator } from "../../components";
+import { ActivityIndicator, Text } from "../../components";
 import styles from "./ViewPostScreenStyles";
 
 const ViewPostScreen = ({ navigation, route }) => {
@@ -59,6 +59,9 @@ const ViewPostScreen = ({ navigation, route }) => {
       ) : (
         <View style={ss.pageActivityIndicatorWrapper}>
           <ActivityIndicator size={60} />
+          <Text>
+            {JSON.stringify(route.param)}
+          </Text>
         </View>
       )}
     </View>

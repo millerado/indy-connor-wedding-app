@@ -44,6 +44,7 @@ const sendPushNotification = async (token, title, body, data) => {
     title,
     body: messageBody,
     data,
+    badge: 77,
   };
 
   await fetch('https://exp.host/--/api/v2/push/send', {

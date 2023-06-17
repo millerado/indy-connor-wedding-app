@@ -4,11 +4,11 @@ import { useTheme } from "react-native-paper";
 import { CommentModal, PostPreview, AddCommentListView } from "../../containers";
 import { Posts } from "../../models";
 import { DataStore } from "../../utils";
-import { ActivityIndicator, Text } from "../../components";
+import { ActivityIndicator } from "../../components";
 import styles from "./ViewPostScreenStyles";
 
 const ViewPostScreen = ({ navigation, route }) => {
-  console.log('-- Route Params --', route.params);
+  // console.log('-- Route Params --', route.params);
   const { postsID, post: initialPost, postUser: initialPostUser, reactions: initialReactions, comments: initialComments } = route.params;
   const [showModal, setShowModal] = useState(false);
   const [post, setPost] = useState(initialPost || undefined);
@@ -60,9 +60,6 @@ const ViewPostScreen = ({ navigation, route }) => {
       ) : (
         <View style={ss.pageActivityIndicatorWrapper}>
           <ActivityIndicator size={60} />
-          <Text>
-            Route Params: {JSON.stringify(route.params)}
-          </Text>
         </View>
       )}
     </View>

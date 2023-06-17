@@ -20,19 +20,20 @@ const ViewPostScreen = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    const fetchPost = async () => {
-      const item = await DataStore.query(Posts, postsID);
-      console.log('-- Fetched Post --', item);
-      const newPost = {
-        ...item,
-        image: item.image ? JSON.parse(item.image) : undefined,
-      };
-      setPost(newPost);
-    }
+    const postsSubscription = DataStore.observeQuery(Posts, (p) => p.id.eq(postsID)).subscribe(({ items }) => {
+      if (items.length > 0) {
+        const item = items[0];
+        const newPost = {
+          ...item,
+          image: item.image ? JSON.parse(item.image) : undefined,
+        };
+        setPost(newPost);
+      }
+    });
 
-    if (postsID) {
-      fetchPost();
-    }
+    return () => {
+      postsSubscription.unsubscribe();
+    };
   }, [postsID]);
 
   return (

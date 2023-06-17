@@ -18,7 +18,7 @@ const StandingsPersonRow = (props) => {
   const ss = useMemo(() => styles(theme), [theme]);
   const navigation = useNavigation();
 
-  const { index, user, points, teamIcon, showTeamIcon } = props;
+  const { index, user, points, gamesPlayed, teamIcon, showTeamIcon } = props;
 
   if (!user) {
     return null;
@@ -62,7 +62,7 @@ const StandingsPersonRow = (props) => {
               {user.name}
             </Text>
             <Text size={TextSizes.S}>
-              {points} point{points !== 1 ? 's' : ''}
+              {points} point{points !== 1 ? 's' : ''}{gamesPlayed > 0 ? ` in ${gamesPlayed} game${gamesPlayed !== 1 ? 's' : ''}` : ''}
             </Text>
           </View>
         </View>

@@ -72,6 +72,7 @@ const StandingsScreen = () => {
                   key={index}
                   user={user}
                   points={s.points}
+                  gamesPlayed={s.gamesPlayed}
                   teamIcon={team.iconName}
                   showTeamIcon={true}
                 />

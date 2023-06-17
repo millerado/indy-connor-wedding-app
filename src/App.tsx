@@ -15,9 +15,11 @@ import {
   DefaultSnackbar,
   AuthContext,
   UnauthedUser,
+  NotificationContext,
+  DefaultNotification,
 } from "./contexts";
-import { Users, ScheduledNotifications } from "./models";
-import { registerForPushNotificationsAsync, DataStore, sendUserPushNotification } from "./utils";
+import { Users, ScheduledNotifications, Notifications as NotificationsModel } from "./models";
+import { registerForPushNotificationsAsync, DataStore, sendUserPushNotification, setBadgeCount } from "./utils";
 
 const customFonts = {
   'Thasadith-Bold': require('./assets/fonts/Thasadith-Bold.ttf'),
@@ -46,6 +48,7 @@ const App = () => {
   const [authStatus, setAuthStatus] = useState(UnauthedUser);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarDetails, setSnackbarDetails] = useState(DefaultSnackbar);
+  const [notificationDetails, setNotificationDetails] = useState(DefaultNotification);
   const responseListener = useRef();
   const nav = useRef();
 
@@ -103,7 +106,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    const notificationsSubscription = DataStore.observeQuery(
+    const scheduledNotificationsSubscription = DataStore.observeQuery(
       ScheduledNotifications,
       (p) => p.userId.eq(authStatus.userId)
     ).subscribe(({ items }) => {
@@ -124,7 +127,22 @@ const App = () => {
       });
     });
 
+    const notificationsSubscription = DataStore.observeQuery(NotificationsModel, (n) => n.and(n => [
+      n.userId.eq(authStatus.userId),
+      n.displayTime.le(new Date().toISOString()),
+      // n.read.eq(false),
+    ]),
+    ).subscribe(({ items }) => {
+      const numberUnread = items.filter((item) => !item.read).length;
+      setNotificationDetails({
+        totalNotifications: items.length,
+        unreadNotifications: numberUnread,
+      });
+      setBadgeCount(numberUnread);
+    });
+
     return () => {
+      scheduledNotificationsSubscription.unsubscribe();
       notificationsSubscription.unsubscribe();
     };
   }, [authStatus]);
@@ -172,7 +190,7 @@ const App = () => {
     fetchCurrentTheme();
     fetchCurrentUser();
 
-    // The listener for Notification Clicks
+    // The listener for Notification Clicks, aka Notifications deep linking
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
       const { targetType, id } = response.notification.request.content.data;
       // console.log('-- Notification Target and ID --', targetType, id);
@@ -189,7 +207,6 @@ const App = () => {
           });
         }
       }
-      
     });
 
     return () => {
@@ -218,26 +235,28 @@ const App = () => {
   return (
     <ThemeContext.Provider value={{ themeName, setThemeName: saveTheme }}>
       <AuthContext.Provider value={{ authStatus, setAuthStatus: setUser }}>
-        <NavigationContainer ref={nav}>
-          <PaperProvider theme={theme}>
-            <SnackbarContext.Provider
-              value={{ snackbar: snackbarDetails, setSnackbar }}
-            >
-              <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-                <Navigation />
-                <Snackbar
-                  visible={showSnackbar}
-                  onDismiss={onDismissSnackBar}
-                  action={snackbarDetails.action}
-                  duration={snackbarDetails.duration}
-                  onIconPress={snackbarDetails.onIconPress}
-                >
-                  {snackbarDetails.message}
-                </Snackbar>
-              </View>
-            </SnackbarContext.Provider>
-          </PaperProvider>
-        </NavigationContainer>
+        <NotificationContext.Provider value={{ notificationDetails, setNotificationDetails }}>
+          <NavigationContainer ref={nav}>
+            <PaperProvider theme={theme}>
+              <SnackbarContext.Provider
+                value={{ snackbar: snackbarDetails, setSnackbar }}
+              >
+                <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+                  <Navigation />
+                  <Snackbar
+                    visible={showSnackbar}
+                    onDismiss={onDismissSnackBar}
+                    action={snackbarDetails.action}
+                    duration={snackbarDetails.duration}
+                    onIconPress={snackbarDetails.onIconPress}
+                  >
+                    {snackbarDetails.message}
+                  </Snackbar>
+                </View>
+              </SnackbarContext.Provider>
+            </PaperProvider>
+          </NavigationContainer>
+        </NotificationContext.Provider>
       </AuthContext.Provider>
     </ThemeContext.Provider>
   );

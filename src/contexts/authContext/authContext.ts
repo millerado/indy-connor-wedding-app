@@ -7,7 +7,7 @@ export const UnauthedUser = {
   name: undefined,
   image: undefined,
   about: undefined,
-  teamId: undefined
+  teamId: undefined,
 };
 
 export const AuthContext = React.createContext(

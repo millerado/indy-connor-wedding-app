@@ -19,7 +19,7 @@ import {
   DefaultNotification,
 } from "./contexts";
 import { Users, ScheduledNotifications, Notifications as NotificationsModel } from "./models";
-import { registerForPushNotificationsAsync, DataStore, sendUserPushNotification, setBadgeCount } from "./utils";
+import { registerForPushNotificationsAsync, DataStore, sendUserPushNotification, setBadgeCount, CalculateStandings } from "./utils";
 
 const customFonts = {
   'Thasadith-Bold': require('./assets/fonts/Thasadith-Bold.ttf'),
@@ -252,6 +252,7 @@ const App = () => {
                   >
                     {snackbarDetails.message}
                   </Snackbar>
+                  <CalculateStandings />
                 </View>
               </SnackbarContext.Provider>
             </PaperProvider>

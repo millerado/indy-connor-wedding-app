@@ -140,14 +140,14 @@ const CreatePostScreen = ({ navigation, route }) => {
         const gamePoints = [];
         if(selectedGame) {
           for(let i = 0; i < teams.length; i++) {
-            if(teams[i].points > 0) {
+            // if(teams[i].points > 0) {
               for(let j = 0; j < teams[i].players.length; j++) {
                 gamePoints.push({
                   userId: teams[i].players[j],
                   points: teams[i].points,
                 });
               }
-            }
+            // }
           }
         }
 

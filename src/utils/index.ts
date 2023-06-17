@@ -5,3 +5,4 @@ export { sendUserPushNotification, sendGlobalPushNotification, registerForPushNo
 export { default as uploadImageS3 } from './uploadImageS3/uploadImageS3';
 export { default as useDeviceDimensions } from './useDeviceDimensions/useDeviceDimensions';
 export { nth, gamePlayers, formatGameString } from './stringUtils/stringUtils';
+export { default as CalculateStandings } from './CalculateStandings/CalculateStandings';

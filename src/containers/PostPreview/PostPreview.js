@@ -263,7 +263,7 @@ const PostPreview = (props) => {
           image: u.image ? JSON.parse(u.image) : undefined,
         };
       });
-  
+
       // Quick check to make sure we're only updating state if the subscription caught a change that we care about
       if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
         setAllUsers(newUsers);
@@ -318,13 +318,13 @@ const PostPreview = (props) => {
             ) : (
               <Pressable onPress={goToUserScreen}>
                 <View style={ss.avatarWrapper}>
-                    <Avatar
-                      fileName={postUser?.image?.url}
-                      name={postUser?.name}
-                      size={typography.fontSizeM * 2}
-                      variant="circle"
-                      absolute={false}
-                    />
+                  <Avatar
+                    fileName={postUser?.image?.url}
+                    name={postUser?.name}
+                    size={typography.fontSizeM * 2}
+                    variant="circle"
+                    absolute={false}
+                  />
                 </View>
               </Pressable>
             )}
@@ -371,20 +371,16 @@ const PostPreview = (props) => {
         <ImageScroll images={images} previewMode={previewMode} doubleTapHandler={likePressHandler} singleTapHandler={goToPostScreen} tapDelay={500} adminFavorites={adminFavorites} />
         {eventDetails ? (
           <View style={ss.captionWrapper}>
-            <Text size="M">
-              <FormatTextWithMentions text={formatGameString(eventDetails, allUsers)} />
-            </Text>
+            <FormatTextWithMentions text={formatGameString(eventDetails, allUsers)} size={'M'} />
           </View>
         ) : null}
         {messageBody ? (
           <View style={ss.captionWrapper}>
-            <Text
+            <FormatTextWithMentions text={messageBody} 
               onTextLayout={onTextLayout}
               size="M"
               numberOfLines={captionExanded || !previewMode ? expandedLines : previewLines}
-            >
-              <FormatTextWithMentions text={messageBody} />
-            </Text>
+            />
             {captionTextExandable && previewMode && (
               <Text
                 style={{ paddingTop: 5 }}

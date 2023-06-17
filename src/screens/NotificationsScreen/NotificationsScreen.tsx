@@ -2,10 +2,11 @@ import React, { useMemo, useEffect, useState, useContext, useCallback } from "re
 import { View, FlatList, Platform, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { SortDirection } from "aws-amplify";
-import { Divider, ActivityIndicator, TextSizes, Icon, ConditionalWrapper } from "../../components";
+import { Divider, ActivityIndicator, TextSizes, Icon, ConditionalWrapper, Text } from "../../components";
 import { FormatTextWithMentions } from "../../containers";
 import { AuthContext } from "../../contexts";
 import { Notifications } from "../../models";
+import { typography, calcDimensions } from "../../styles";
 import { DataStore } from '../../utils';
 import styles from "./NotificationsScreenStyles";
 
@@ -15,6 +16,8 @@ const NotificationsScreen = ({ navigation, route }) => {
   const authStatus = useContext(AuthContext).authStatus;
   const [loading, setLoading] = useState(false);
   const [notifications, setNotifications] = useState([]);
+
+  const { width } = calcDimensions();
 
   const navToLink = (targetType, id) => {
     // console.log('-- Notification Navigation --', targetType, id);
@@ -37,12 +40,12 @@ const NotificationsScreen = ({ navigation, route }) => {
             <Pressable onPress={() => navToLink(linking.targetType, linking.id)}>{children}</Pressable>
           )}
         >
-          <View style={{padding: 10, flexDirection: 'row'}}>
-            <View style={{alignItems: 'center', justifyContent: 'center', paddingRight: 10}}>
-              <Icon name={iconName} size={30} />
+          <View style={{padding: 10, flexDirection: 'row', flex: 0}}>
+            <View style={{paddingRight: 10, justifyContent: 'center'}}>
+              <Icon name={iconName} size={typography.fontSizeL * 2} />
             </View>
-            <View style={{width: '100%', paddingRight: 10}}>
-              <FormatTextWithMentions text={item.messageBody} size={TextSizes.L} />
+            <View style={{justifyContent: 'center', width: width - (typography.fontSizeL * 2 + 20),}}>
+              <FormatTextWithMentions text={item.messageBody} size={TextSizes.L} style={{marginRight: 10}} />
             </View>
           </View>
         </ConditionalWrapper>

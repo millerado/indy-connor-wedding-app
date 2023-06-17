@@ -210,6 +210,8 @@ export const createStandingsPeople = /* GraphQL */ `
       userId
       rank
       points
+      gamesPlayed
+      lastCalculationTime
       createdAt
       updatedAt
       _version
@@ -228,6 +230,8 @@ export const updateStandingsPeople = /* GraphQL */ `
       userId
       rank
       points
+      gamesPlayed
+      lastCalculationTime
       createdAt
       updatedAt
       _version
@@ -246,6 +250,8 @@ export const deleteStandingsPeople = /* GraphQL */ `
       userId
       rank
       points
+      gamesPlayed
+      lastCalculationTime
       createdAt
       updatedAt
       _version
@@ -312,6 +318,7 @@ export const createStandingsTeams = /* GraphQL */ `
       teamId
       rank
       points
+      lastCalculationTime
       createdAt
       updatedAt
       _version
@@ -330,6 +337,7 @@ export const updateStandingsTeams = /* GraphQL */ `
       teamId
       rank
       points
+      lastCalculationTime
       createdAt
       updatedAt
       _version
@@ -348,6 +356,7 @@ export const deleteStandingsTeams = /* GraphQL */ `
       teamId
       rank
       points
+      lastCalculationTime
       createdAt
       updatedAt
       _version

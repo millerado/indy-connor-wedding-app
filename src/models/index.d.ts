@@ -135,6 +135,8 @@ type EagerStandingsPeople = {
   readonly userId?: string | null;
   readonly rank?: number | null;
   readonly points?: number | null;
+  readonly gamesPlayed?: number | null;
+  readonly lastCalculationTime?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -148,6 +150,8 @@ type LazyStandingsPeople = {
   readonly userId?: string | null;
   readonly rank?: number | null;
   readonly points?: number | null;
+  readonly gamesPlayed?: number | null;
+  readonly lastCalculationTime?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -195,6 +199,7 @@ type EagerStandingsTeams = {
   readonly teamId?: string | null;
   readonly rank?: number | null;
   readonly points?: number | null;
+  readonly lastCalculationTime?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -208,6 +213,7 @@ type LazyStandingsTeams = {
   readonly teamId?: string | null;
   readonly rank?: number | null;
   readonly points?: number | null;
+  readonly lastCalculationTime?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

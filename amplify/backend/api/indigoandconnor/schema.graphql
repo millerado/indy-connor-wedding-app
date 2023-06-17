@@ -36,6 +36,8 @@ type StandingsPeople @model @auth(rules: [{allow: public}]) {
   userId: String
   rank: Int
   points: Int
+  gamesPlayed: Int
+  lastCalculationTime: AWSDateTime
 }
 
 type AdminFavorites @model @auth(rules: [{allow: public}]) {
@@ -48,6 +50,7 @@ type StandingsTeams @model @auth(rules: [{allow: public}]) {
   teamId: String
   rank: Int
   points: Int
+  lastCalculationTime: AWSDateTime
 }
 
 type Posts @model @auth(rules: [{allow: public}]) {

@@ -335,6 +335,20 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "gamesPlayed": {
+                    "name": "gamesPlayed",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "lastCalculationTime": {
+                    "name": "lastCalculationTime",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -464,6 +478,13 @@ export const schema = {
                     "name": "points",
                     "isArray": false,
                     "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "lastCalculationTime": {
+                    "name": "lastCalculationTime",
+                    "isArray": false,
+                    "type": "AWSDateTime",
                     "isRequired": false,
                     "attributes": []
                 },
@@ -1230,5 +1251,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "2e487abfa56b8cccb2bd34a3f88fe456"
+    "version": "74c9d06f2e76f8e6621a769fb77ac19a"
 };

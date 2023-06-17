@@ -250,6 +250,8 @@ export const getStandingsPeople = /* GraphQL */ `
       userId
       rank
       points
+      gamesPlayed
+      lastCalculationTime
       createdAt
       updatedAt
       _version
@@ -270,6 +272,8 @@ export const listStandingsPeople = /* GraphQL */ `
         userId
         rank
         points
+        gamesPlayed
+        lastCalculationTime
         createdAt
         updatedAt
         _version
@@ -299,6 +303,8 @@ export const syncStandingsPeople = /* GraphQL */ `
         userId
         rank
         points
+        gamesPlayed
+        lastCalculationTime
         createdAt
         updatedAt
         _version
@@ -378,6 +384,7 @@ export const getStandingsTeams = /* GraphQL */ `
       teamId
       rank
       points
+      lastCalculationTime
       createdAt
       updatedAt
       _version
@@ -398,6 +405,7 @@ export const listStandingsTeams = /* GraphQL */ `
         teamId
         rank
         points
+        lastCalculationTime
         createdAt
         updatedAt
         _version
@@ -427,6 +435,7 @@ export const syncStandingsTeams = /* GraphQL */ `
         teamId
         rank
         points
+        lastCalculationTime
         createdAt
         updatedAt
         _version

@@ -82,6 +82,7 @@ const IntroModal = (props) => {
       />
       <Modal
         isVisible={showPassCodeModal}
+        // isVisible={true}
         onBackButtonPress={handleAttemptedClose}
         onBackdropPress={handleAttemptedClose}
         style={{ padding: 0, margin: 0 }}
@@ -92,17 +93,6 @@ const IntroModal = (props) => {
         <SafeAreaView style={{ flex: 1 }}>
           <View style={[ss.modalBackground, ss.modalFullScreenBackground]}>
             <View style={ss.modalFullScreenBody}>
-              <View style={[ss.modalHeader, ss.modalFullScreenHeader]}>
-                <View style={{ flex: 1, alignItems: "center" }}>
-                  <Text
-                    color={theme.colors.onSecondary}
-                    bold
-                    size={TextSizes.L}
-                  >
-                    Indigo and Connor's Wedding
-                  </Text>
-                </View>
-              </View>
               <View style={ss.modalContentWrapper}>
                 <ScrollView
                   style={[ss.modalScrollView, { height: "100%" }]}
@@ -110,14 +100,16 @@ const IntroModal = (props) => {
                   keyboardDismissMode="on-drag"
                 >
                   <View>
+                    <Text size={TextSizes.L} style={{textAlign: 'center'}} bold>
+                      Welcome to Indy and Connor's Wedding App!
+                    </Text>
                     <Text size={TextSizes.L}>
-                      Welcome to Indy and Connor's Wedding App! To access the
-                      app, please enter the passcode:
+                      Please enter the passcode to access all the content for the weekend:
                     </Text>
                   </View>
                   <View style={{ paddingTop: 10 }}>
                     <Text size={TextSizes.S}>
-                      Hint: It's the state the wedding is in (full state name)
+                      Hint: In what state is the wedding? (full name)
                     </Text>
                   </View>
                   <View style={{ paddingTop: 10 }}>
@@ -153,9 +145,7 @@ const IntroModal = (props) => {
                   </View>
                   <View style={{ paddingTop: 10 }}>
                     <Text size={TextSizes.L}>
-                      Because the app is in the public iOS and Android app
-                      store, we've added password protection to ensure that only
-                      our guests will be using the application.
+                      This app is in the public iOS and Android store, so we need this passcode to ensure only guests of our wedding can access the content
                     </Text>
                   </View>
                 </ScrollView>

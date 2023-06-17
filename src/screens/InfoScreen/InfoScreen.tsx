@@ -45,7 +45,7 @@ const InfoScreen = ({ navigation, route }) => {
         <FAQItem item={item} />
       )
     }
-  );
+  , []);
 
   const keyExtractor = useCallback((item) => item.id, []);
 
@@ -55,7 +55,7 @@ const InfoScreen = ({ navigation, route }) => {
         <Divider />
       )
     }
-  );
+  , []);
 
   function renderHeader() {
     return (

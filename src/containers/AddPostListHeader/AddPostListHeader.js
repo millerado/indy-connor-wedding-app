@@ -2,7 +2,7 @@ import React, { useContext, memo, useMemo } from "react";
 import { View, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "react-native-paper";
-import { Avatar, Text, Icon } from "../../components";
+import { Avatar, Text, Icon, Divider } from "../../components";
 import { typography } from "../../styles";
 import { AuthContext } from '../../contexts';
 import styles from "./AddPostListHeaderStyles"
@@ -35,12 +35,13 @@ const AddPostListHeader = (props) => {
           </View>
           <View style={[ss.textWrapper, ss.fakeTextInput]}>
             <Text size="M" color={theme.colors.primary} bold>
-              What's on your mind?
+              What do you want to post?
             </Text>
             <Icon name='camera' color={theme.colors.primary} size={typography.fontSizeL} />
           </View>
         </View>
       </Pressable>
+      <Divider />
     </>
   );
 };

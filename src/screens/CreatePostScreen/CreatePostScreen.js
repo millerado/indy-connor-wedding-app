@@ -80,21 +80,25 @@ const CreatePostScreen = ({ navigation, route }) => {
     }
   };
 
-  const pushNotificationsToTaggedUsers = (captionText, postId) => {
-    const regex = /@\[(.*?)\]\((.*?)\)/g;
-    const matches = captionText.match(regex);
-    if (matches) {
-      const userFirstName = authStatus.name.split(' ')[0];
-      matches.forEach((match) => {
-        const [, username, userId] = match.match(/@\[(.*?)\]\((.*?)\)/);
-        sendUserPushNotification(
-          userId,
-          'T Party',
-          `${userFirstName} tagged you in a post in the T Party App`,
-          { targetType: 'post', id: postId }
-        );
-      });
-    }
+  const pushNotificationsToTaggedUsers = (captionText, postId, usersInPost) => {
+    const userId = authStatus.userId;
+    // const usersToNotify = usersInPost.filter((user) => user !== userId);
+    const usersToNotify = usersInPost;
+
+    const taggedBy = `@[${authStatus.name}](${authStatus.userId})`;
+    const messageBody = selectedGame ? `${taggedBy} logged a game of *${selectedGame.name}* with you` : `${taggedBy} tagged you in a *post* in the Camp Conndigo App`;
+    const iconType = selectedGame ? 'icon' : 'avatar';
+    const iconDetails = selectedGame ? selectedGame.iconName : authStatus.image;
+    
+
+    usersToNotify.forEach((user) => {
+      sendUserPushNotification(
+        user,
+        'Camp Conndigo',
+        messageBody,
+        { targetType: 'post', id: postId, icon: { iconType, iconDetails } }
+      );
+    });
   }
 
   const savePost = async () => {
@@ -176,7 +180,7 @@ const CreatePostScreen = ({ navigation, route }) => {
               usersInPost: allUserIds,
             })
           );
-          pushNotificationsToTaggedUsers(messageBody, newPost.id);
+          pushNotificationsToTaggedUsers(messageBody, newPost.id, allUserIds);
           navigation.popToTop();
           // Page is unmounting and you can't "go back" to it, no need to refresh state
         }

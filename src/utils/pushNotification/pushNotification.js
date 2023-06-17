@@ -1,94 +1,97 @@
+import { Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { Platform } from "react-native";
 import DataStore from '../DataStore/DataStore';
 import { ExpoTokens, Notifications as NotificationModel, ScheduledNotifications } from "../../models";
 
-// send push notification based on an expo token
-const sendPushNotification = async (token, title, body, data, trigger) => {
+const cleanMessageBody = (body) => {
   // console.log('-- Send Notification --', token, title, body, data);
-  // TO-DO: We need Badge in here to uddate Badge # on iOS
+  let messageBody = body;
+
+  // Regex matches on [username](userId), then replaces with username
+  const regex = /@\[(.*?)\]\((.*?)\)/g;
+  messageBody = messageBody.replace(regex, '$1');
+  // console.log('-- Message Body After User Replace --', messageBody);
+
+  // Regex matches on *bold text*
+  const regexBold = /\*(.*?)\*/g;
+  messageBody = messageBody.replace(regexBold, '$1');
+  // console.log('-- Message Body After Bold Replace --', messageBody);
+
+  // Regex matches on _italic text_
+  const regexItalic = /_(.*?)_/g;
+  messageBody = messageBody.replace(regexItalic, '$1');
+  // console.log('-- Message Body After Italic Replace --', messageBody);
+  return messageBody;
+}
+
+// send push notification based on an expo token
+const sendPushNotification = async (token, title, body, data) => {
+  // console.log('-- Send Notification --', token, title, body, data);
+  const messageBody = cleanMessageBody(body);
+  
   const message = {
     to: token,
     sound: 'default',
     title,
-    body,
+    body: messageBody,
     data,
-  };``
+  };
 
-  if (trigger) {
-    Notifications.scheduleNotificationAsync({
-      content: message,
-      trigger: {
-        weekday: trigger.weekDay,
-        hour: trigger.hour,
-        minute: trigger.minute,
-        repeats: false,
-      },
-    });
-  } else {
-    await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    });
-  }
-
-  // Notifications.scheduleNotificationAsync({
-  //   content: {
-  //     to: token,
-  //     sound: 'default',
-  //     title,
-  //     body,
-  //     data,
-  //   },
-  //   trigger: {
-  //     weekday: 1,
-  //     hour: 17,
-  //     minute: 46,
-  //     repeats: false,
-  //   },
-  // });
+  await fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-encoding': 'gzip, deflate',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(message),
+  });
 }
 
-// const scheduleNotification = async (token, title, body, data, scheduleTrigger, displayTime) => {
-//   // console.log('-- Schedule Notification --', token, title, body, data, scheduleTrigger, displayTime);
-//   // console.log('-- Formatted Message Body --', formattedMessageBody);
-//   Notifications.scheduleNotificationAsync({
-//     content: {
-//       to: token,
-//       sound: 'default',
-//       title,
-//       body,
-//       data,
-//     },
-//     trigger: {
-//       weekday: scheduleTrigger.weekDay,
-//       hour: scheduleTrigger.hour,
-//       minute: scheduleTrigger.minute,
-//       repeats: false,
-//     },
-//   });
+// send a scheduled notification to the local device, no token needed
+const scheduleLocalNotification = async (title, body, data, trigger) => {
+  // console.log('-- Schedule Notification --', token, title, body, data, trigger);
+  const messageBody = cleanMessageBody(body);
+  
+  const message = {
+    sound: 'default',
+    title,
+    body: messageBody,
+    data,
+  };
 
-// }
+  // console.log('-- Setting a notification for the future --', trigger);
+  Notifications.scheduleNotificationAsync({
+    content: message,
+    trigger: {
+      weekday: trigger.weekDay + 1,
+      hour: trigger.hour,
+      minute: trigger.minute,
+      repeats: false,
+    },
+  });
+}
 
 // sends push notification to user, identified by userId
 // if userId is mapped to multiple devices (tokens), sends notification to all of them
-export const sendUserPushNotification = async (userId, title, body, data) => {
+export const sendUserPushNotification = async (userId, title, body, data, displayDate = new Date(), trigger) => {
   if (userId === null || userId === '') {
     return;
   }
+  // console.log('-- Send User Notification --', userId, title, body, data, displayDate, trigger);
 
-  storeNotification(userId, title, body, data, new Date().toISOString());
+  storeNotification(userId, title, body, data, displayDate.toISOString());
 
-  const tokenRecords = await DataStore.query(ExpoTokens, t => t.userId.eq(userId));
-  tokenRecords.forEach(expoToken => {
-    sendPushNotification(expoToken.token, title, body, data);
-  });
+  if (trigger) {
+    scheduleLocalNotification(title, body, data, trigger);
+  } else {
+    const tokenRecords = await DataStore.query(ExpoTokens, t => t.userId.eq(userId));
+    const uniqueTokens = [ ...new Set(tokenRecords.map(t => t.token)) ];
+    uniqueTokens.forEach(expoToken => {
+      sendPushNotification(expoToken, title, body, data);
+    });
+  }
 }
 
 // sends push notification for all devices

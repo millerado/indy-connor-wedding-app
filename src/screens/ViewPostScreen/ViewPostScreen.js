@@ -8,6 +8,7 @@ import { ActivityIndicator } from "../../components";
 import styles from "./ViewPostScreenStyles";
 
 const ViewPostScreen = ({ navigation, route }) => {
+  console.log('-- Route Params --', route.params);
   const { postsID, post: initialPost, postUser: initialPostUser, reactions: initialReactions, comments: initialComments } = route.params;
   const [showModal, setShowModal] = useState(false);
   const [post, setPost] = useState(initialPost || undefined);
@@ -18,27 +19,21 @@ const ViewPostScreen = ({ navigation, route }) => {
     setShowModal(false);
   };
 
-  //// TO-DO: Fix this
   useEffect(() => {
-    const postSubscription = DataStore.observeQuery(
-      Posts,
-      (p) => p.id.eq(postsID)
-    ).subscribe(({ item }) => {
-      if (item) {
-        const newPost = {
-          ...item,
-          image: item.image ? JSON.parse(item.image) : undefined,
-        };
-        setPost(newPost);
-      }
-    });
+    const fetchPost = async () => {
+      const item = await DataStore.query(Posts, postsID);
+      console.log('-- Fetched Post --', item);
+      const newPost = {
+        ...item,
+        image: item.image ? JSON.parse(item.image) : undefined,
+      };
+      setPost(newPost);
+    }
 
-    return () => {
-      postSubscription.unsubscribe();
-    };
-  }, []);
-
-
+    if (postsID) {
+      fetchPost();
+    }
+  }, [postsID]);
 
   return (
     <View style={ss.pageWrapper}>

@@ -21,7 +21,7 @@ const styles = theme => {
       flexDirection: "row",
       width: '100%',
       alignItems: "center",
-      backgroundColor: theme.colors.backgroundColor,
+      backgroundColor: theme.colors.background,
       color:theme.colors.white,
     },
     avatarWrapper: {

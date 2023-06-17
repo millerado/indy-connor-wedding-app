@@ -15,8 +15,8 @@ import {
   AuthContext,
   UnauthedUser,
 } from "./contexts";
-import { Users } from "./models";
-import { registerForPushNotificationsAsync } from "./utils";
+import { Users, ScheduledNotifications } from "./models";
+import { registerForPushNotificationsAsync, DataStore, sendUserPushNotification } from "./utils";
 
 const customFonts = {
   'Thasadith-Bold': require('./assets/fonts/Thasadith-Bold.ttf'),
@@ -98,6 +98,34 @@ const App = () => {
     setShowSnackbar(false);
     setSnackbarDetails(DefaultSnackbar);
   };
+
+  useEffect(() => {
+    const notificationsSubscription = DataStore.observeQuery(
+      ScheduledNotifications,
+      (p) => p.userId.eq(authStatus.userId)
+    ).subscribe(({ items }) => {
+      // console.log('-- Scheduled Notifications --', items);
+      items.forEach((item) => {
+        const date = new Date(item.displayTime);
+        if(date.getTime() > Date.now()) {
+          sendUserPushNotification(
+            authStatus.userId,
+            item.subject,
+            item.messageBody,
+            JSON.parse(item.linking),
+            new Date(item.displayTime),
+            JSON.parse(item.scheduleTrigger),
+          );
+        }
+        DataStore.delete(ScheduledNotifications, item.id);
+      });
+      
+    });
+
+    return () => {
+      notificationsSubscription.unsubscribe();
+    };
+  }, [authStatus])
 
   useEffect(() => {
     const fetchCurrentTheme = async () => {

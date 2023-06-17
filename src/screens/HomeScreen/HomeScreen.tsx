@@ -41,7 +41,7 @@ const HomeScreen = () => {
   const keyExtractor = useCallback((item) => item.id, []);
 
   const listItemSeparator = useCallback(() => {
-    return <Divider height={5} margin={0} />;
+    return <Divider />;
   }, []);
 
   useEffect(() => {
@@ -82,6 +82,7 @@ const HomeScreen = () => {
             renderItem={renderItem}
             keyExtractor={keyExtractor}
             ItemSeparatorComponent={listItemSeparator}
+            stickyHeaderIndices={[0]}
             ListHeaderComponent={listHeader}
             removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
             maxToRenderPerBatch={10} // Also the default

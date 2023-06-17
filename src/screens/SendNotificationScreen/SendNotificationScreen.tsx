@@ -78,7 +78,7 @@ const SendNotificationScreen = ({ navigation }) => {
   // https://docs.expo.dev/versions/latest/sdk/notifications/
 
   const handleSendNotification = async () => {
-    console.log('-- Send Pressed, What is the state?! --', scheduleForLater, sendToEveryone, selectedUsers, selectedDay, selectedHour, selectedMinute );
+    // console.log('-- Send Pressed, What is the state?! --', scheduleForLater, sendToEveryone, selectedUsers, selectedDay, selectedHour, selectedMinute );
     setNotificationSending(true);
     Keyboard.dismiss();
     
@@ -117,14 +117,14 @@ const SendNotificationScreen = ({ navigation }) => {
         minute: selectedMinute,
       };
       
-      console.log('-- displayTime --', displayTime);
-      console.log('-- scheduleTrigger --', scheduleTrigger);
-      console.log('-- Display Time in Local --', displayTime.toLocaleString());
+      // console.log('-- displayTime --', displayTime);
+      // console.log('-- scheduleTrigger --', scheduleTrigger);
+      // console.log('-- Display Time in Local --', displayTime.toLocaleString());
 
       // Create Logic for Scheduling (Insert into that *other* table)
-      console.log('-- Target Users --', targetUsers);
+      // console.log('-- Target Users --', targetUsers);
       targetUsers.forEach((user) => {
-        console.log('-- Scheduling for User --', user);
+        // console.log('-- Scheduling for User --', user);
         scheduleNotificationForAnotherUser(user, subject, notificationText, {}, scheduleTrigger, displayTime.toISOString());
       });
     } else {
@@ -138,13 +138,13 @@ const SendNotificationScreen = ({ navigation }) => {
     }
 
     setNotificationSending(false);
-    // setNotificationText("");
-    // setSubject("");
+    setNotificationText("");
+    setSubject("");
     setSnackbar({
       message: `Notification Sent!`,
       showCloseIcon: true,
     });
-    // navigation.goBack();
+    navigation.goBack();
   };
 
   const handleRemoveUser = (userId) => {

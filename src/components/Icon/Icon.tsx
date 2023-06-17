@@ -147,4 +147,5 @@ export const allIcons = [
   { type: "MaterialIcons", name: "groups", iconName: "teams", label: "Teams" },
   { type: "MaterialCommunityIcons", name: "kayaking", iconName: "kayaking", label: "Kayaking" },
   { type: "FontAwesome5", name: 'save', iconName: 'save', label: 'Save' },
+  { type: 'Ionicons', name: 'alert-circle-outline', iconName: 'alert', label: 'Alert' },
 ];

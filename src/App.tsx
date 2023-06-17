@@ -40,6 +40,14 @@ const customFonts = {
   'SourceSansPro-SemiBoldItalic': require('./assets/fonts/SourceSansPro-SemiBoldItalic.ttf'),
 };
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 const App = () => {
   // Setup and manage custom Contexts
   // Also all app-loading functionality (ex: Notification Registration)

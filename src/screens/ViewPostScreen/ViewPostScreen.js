@@ -60,7 +60,7 @@ const ViewPostScreen = ({ navigation, route }) => {
         <View style={ss.pageActivityIndicatorWrapper}>
           <ActivityIndicator size={60} />
           <Text>
-            {JSON.stringify(route.param)}
+            Route Params: {JSON.stringify(route.params)}
           </Text>
         </View>
       )}

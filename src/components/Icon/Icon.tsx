@@ -20,8 +20,13 @@ interface IconProps {
 const Icon = (props: IconProps) => {
   const theme = useTheme();
   const { name, size = 32, color = theme.colors.primary, ...restOfProps } = props;
-  const iconName = allIcons.find((icon) => icon.iconName === name);
+  let iconName = allIcons.find((icon) => icon.iconName === name);
   if (!iconName) {
+    // Default to the friends icon if we get one that doesn't exist
+    iconName = allIcons.find((icon) => icon.iconName === 'friends');
+  }
+  if (!iconName) {
+    // ...And just in case that didn't work for some reason, return null
     return null;
   }
 
@@ -148,4 +153,6 @@ export const allIcons = [
   { type: "MaterialCommunityIcons", name: "kayaking", iconName: "kayaking", label: "Kayaking" },
   { type: "FontAwesome5", name: 'save', iconName: 'save', label: 'Save' },
   { type: 'Ionicons', name: 'alert-circle-outline', iconName: 'alert', label: 'Alert' },
+  { type: 'MaterialCommunityIcons', name: 'new-box', iconName: 'new', label: 'New' },
+  { type: 'FontAwesome5', name: 'user-friends', iconName: 'friends', label: 'Friends' },
 ];

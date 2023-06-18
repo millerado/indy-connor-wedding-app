@@ -2,9 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { View } from "react-native";
 import { Storage } from "aws-amplify";
 import * as FileSystem from "expo-file-system";
-import { setStatusBarHidden } from "expo-status-bar";
 import { ResizeMode, Video } from "expo-av";
-import VideoPlayer from "expo-video-player";
 import { calcDimensions } from "../../styles";
 import ActivityIndicator from "../ActivityIndicator/ActivityIndicator";
 
@@ -136,43 +134,6 @@ const VideoS3 = (props) => {
     return (
       <>
         {videoUrl && videoUrl.slice(-9) !== "undefined" ? (
-          // <VideoPlayer
-          //   videoProps={{
-          //     shouldPlay: false,
-          //     resizeMode: ResizeMode.CONTAIN,
-          //     // ❗ source is required https://docs.expo.io/versions/latest/sdk/video/#props
-          //     source: {
-          //       uri: videoUrl,
-          //     },
-          //     isMuted: isMute,
-          //     ref: refVideo,
-          //   }}
-          //   // defaultControlsVisible={true}
-          //   style={{
-          //     videoBackgroundColor: inFullscreen ? 'black' : 'transparent',
-          //     height: displatHeight,
-          //     width: displatWidth,
-          //   }}
-          //   mute={{
-          //     enterMute: () => setIsMute(!isMute),
-          //     exitMute: () => setIsMute(!isMute),
-          //     isMute,
-          //   }}
-          //   fullscreen={{
-          //     inFullscreen: inFullscreen,
-          //     enterFullscreen: async () => {
-          //       setStatusBarHidden(true, 'fade')
-          //       setInFullsreen(!inFullscreen)
-          //       refVideo.current.setStatusAsync({
-          //         shouldPlay: true,
-          //       })
-          //     },
-          //     exitFullscreen: async () => {
-          //       setStatusBarHidden(false, 'fade')
-          //       setInFullsreen(!inFullscreen)
-          //     },
-          //   }}
-          // />
           <Video
             ref={refVideo}
             style={{
@@ -184,6 +145,7 @@ const VideoS3 = (props) => {
             }}
             useNativeControls
             resizeMode={ResizeMode.CONTAIN}
+            isLooping={true}
           />
         ) : (
           showPlaceholder(false)

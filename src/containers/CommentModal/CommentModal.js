@@ -117,7 +117,10 @@ const CommentModal = (props) => {
     const usersSubscription = DataStore.observeQuery(Users).subscribe(({ users }) => {
       try {
         if (users) {
-          setAllUsers(users.sort((a, b) => a.name.localeCompare(b.name)));
+          const newUsers = users.sort((a, b) => a.name.localeCompare(b.name));
+          if(JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
+            setAllUsers(newUsers);
+          }
         }
       } catch (err) { console.log('error fetching Data', err) }
     });

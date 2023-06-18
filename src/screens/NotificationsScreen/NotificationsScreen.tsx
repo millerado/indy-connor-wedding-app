@@ -157,7 +157,9 @@ const NotificationsScreen = ({ navigation, route }) => {
         ]),
       { sort: (s) => s.displayTime(SortDirection.DESCENDING) }
     ).subscribe(({ items }) => {
-      setNotifications(items);
+      if(JSON.stringify(items) !== JSON.stringify(notifications)) {
+        setNotifications(items);
+      }
       setLoading(false);
     });
 

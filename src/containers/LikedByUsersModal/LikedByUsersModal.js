@@ -28,7 +28,7 @@ const LikedByUsersModal = (props) => {
           });
       
           // Quick check to make sure we're only updating state if the subscription caught a chance to the user associated with this post
-          if (newUsers !== allUsers) {
+          if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
             setAllUsers(newUsers);
           }
         }

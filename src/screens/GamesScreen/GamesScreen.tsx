@@ -64,7 +64,9 @@ const GamesScreen = ({ navigation, route }) => {
     const gamesSubscription = DataStore.observeQuery(Games, Predicates.ALL, {
       sort: (s) => s.name(SortDirection.ASCENDING),
     }).subscribe(({ items }) => {
-      setGames(items);
+      if(JSON.stringify(items) !== JSON.stringify(games)) {
+        setGames(items);  
+      }
       setDataLoading(false);
     });
 

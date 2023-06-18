@@ -963,6 +963,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "unreadNotifications": {
+                    "name": "unreadNotifications",
+                    "isArray": false,
+                    "type": "Int",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -1251,5 +1258,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.3.2",
-    "version": "74c9d06f2e76f8e6621a769fb77ac19a"
+    "version": "ed08913d882c98eeececfc94db828365"
 };

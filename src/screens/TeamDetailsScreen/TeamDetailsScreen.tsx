@@ -143,7 +143,7 @@ const TeamDetailsScreen = ({ navigation, route }) => {
             return obj;
           });
           const events = formattedPosts.filter((p) => p.olympicEvent);
-          if (events !== allPosts) {
+          if (JSON.stringify(events) !== JSON.stringify(allPosts)) {
             setAllPosts(events);
           }
         } catch (err) {

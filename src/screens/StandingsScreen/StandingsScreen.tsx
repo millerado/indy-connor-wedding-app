@@ -91,7 +91,7 @@ const StandingsScreen = () => {
         sort: (s) => s.rank(SortDirection.ASCENDING),
       }
     ).subscribe(({ items }) => {
-      if (items !== standingsTeams) {
+      if (JSON.stringify(items) !== JSON.stringify(standingsTeams)) {
         // Make sure it's not a change to a different Post
         setStandingsTeams(items);
       }
@@ -104,7 +104,7 @@ const StandingsScreen = () => {
         sort: (s) => s.rank(SortDirection.ASCENDING),
       }
     ).subscribe(({ items }) => {
-      if (items !== standingsPeople) {
+      if (JSON.stringify(items) !== JSON.stringify(standingsPeople)) {
         // Make sure it's not a change to a different Post
         setStandingsPeople(items);
       }
@@ -124,7 +124,7 @@ const StandingsScreen = () => {
             });
 
             // Quick check to make sure we're only updating state if the subscription caught a chance to the user associated with this post
-            if (newUsers !== users) {
+            if (JSON.stringify(newUsers) !== JSON.stringify(users)) {
               setUsers(newUsers);
             }
           }
@@ -139,7 +139,7 @@ const StandingsScreen = () => {
         try {
           if (items) {
             // Quick check to make sure we're only updating state if the subscription caught a chance to the user associated with this post
-            if (items !== teams) {
+            if (JSON.stringify(items) !== JSON.stringify(teams)) {
               setTeams(items);
             }
           }

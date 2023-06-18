@@ -223,7 +223,7 @@ const PostPreview = (props) => {
         });
         // console.log("Reactions data", reactionsData);
         // console.log('-- Filtered --', newReactions);
-        if (newReactions !== reactions) {
+        if (JSON.stringify(newReactions) !== JSON.stringify(reactions)) {
           // Make sure it's not a change to a different Post
           setReactions(newReactions);
         }
@@ -239,7 +239,9 @@ const PostPreview = (props) => {
             url: img.url,
           };
         });
-        setAdminFavorites(newFavorites);
+        if (JSON.stringify(newFavorites) !== JSON.stringify(adminFavorites)) {
+          setAdminFavorites(newFavorites);
+        }
       }
     });
 
@@ -249,7 +251,7 @@ const PostPreview = (props) => {
         sort: (s) => s.createdAt(previewMode ? SortDirection.DESCENDING : SortDirection.ASCENDING),
       }
     ).subscribe(({ items }) => {
-      if (items !== comments) {
+      if (JSON.stringify(items) !== JSON.stringify(comments)) {
         // Make sure it's not a change to a different Post
         setComments(items);
       }

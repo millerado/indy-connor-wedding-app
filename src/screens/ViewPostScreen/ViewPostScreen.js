@@ -27,7 +27,9 @@ const ViewPostScreen = ({ navigation, route }) => {
           ...item,
           image: item.image ? JSON.parse(item.image) : undefined,
         };
-        setPost(newPost);
+        if(JSON.stringify(newPost) !== JSON.stringify(post)) {
+          setPost(newPost);
+        }
       }
     });
 

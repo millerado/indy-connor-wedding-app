@@ -486,6 +486,7 @@ export const onCreateUsers = /* GraphQL */ `
       whereAreYouStaying
       teamsID
       admin
+      unreadNotifications
       createdAt
       updatedAt
       _version
@@ -504,6 +505,7 @@ export const onUpdateUsers = /* GraphQL */ `
       whereAreYouStaying
       teamsID
       admin
+      unreadNotifications
       createdAt
       updatedAt
       _version
@@ -522,6 +524,7 @@ export const onDeleteUsers = /* GraphQL */ `
       whereAreYouStaying
       teamsID
       admin
+      unreadNotifications
       createdAt
       updatedAt
       _version

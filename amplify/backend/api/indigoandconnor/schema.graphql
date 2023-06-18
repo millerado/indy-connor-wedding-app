@@ -81,6 +81,7 @@ type Users @model @auth(rules: [{allow: public}]) {
   whereAreYouStaying: String
   teamsID: ID! @index(name: "byTeams")
   admin: Boolean!
+  unreadNotifications: Int
 }
 
 type ExpoTokens @model @auth(rules: [{allow: public}]) {

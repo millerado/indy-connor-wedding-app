@@ -28,7 +28,7 @@ const UserScreen = ({ navigation, route }) => {
         obj.images = images;
         return obj;
       });
-      if (formattedPosts !== allPosts) {
+      if (JSON.stringify(formattedPosts) !== JSON.stringify(allPosts)) {
         setAllPosts(formattedPosts);
       }
       if (dataLoading) {

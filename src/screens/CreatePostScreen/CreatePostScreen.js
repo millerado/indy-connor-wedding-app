@@ -413,7 +413,7 @@ const CreatePostScreen = ({ navigation, route }) => {
       });
   
       // Quick check to make sure we're only updating state if the subscription caught a change that we care about
-      if (newUsers !== allUsers) {
+      if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
         setAllUsers(newUsers);
       }
     });
@@ -435,9 +435,13 @@ const CreatePostScreen = ({ navigation, route }) => {
         iconName: "close",
         label: "None",
         players: 'Nevermind, not playing a game',
-      })
-      setGames(items);
-      setGamesDropdown(g);
+      });
+      if (JSON.stringify(g) !== JSON.stringify(gamesDropdown)) {
+        setGamesDropdown(g);
+      }
+      if (JSON.stringify(items) !== JSON.stringify(games)) {
+        setGames(items);
+      }
     });
 
     const unsubscribe = NetInfo.addEventListener(state => {

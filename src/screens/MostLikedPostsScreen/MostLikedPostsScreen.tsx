@@ -71,7 +71,9 @@ const MostLikedPostsScreen = () => {
           obj.images = images;
           return obj;
         });
-        setAllPosts(formattedPosts);
+        if(JSON.stringify(formattedPosts) !== JSON.stringify(allPosts)) {
+          setAllPosts(formattedPosts);
+        }
         setDataLoading(false);
       } catch (err) {
         console.log("error fetching Data", err);
@@ -80,7 +82,9 @@ const MostLikedPostsScreen = () => {
 
     const reactionsSubscription = DataStore.observeQuery(Reactions).subscribe(({ items }) => {
       try {
-        setReactions(items);
+        if(JSON.stringify(items) !== JSON.stringify(reactions)) {
+          setReactions(items);
+        }
       } catch (err) {
         console.log("error fetching Data", err);
       }

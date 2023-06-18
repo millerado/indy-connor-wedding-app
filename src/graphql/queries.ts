@@ -612,6 +612,7 @@ export const getUsers = /* GraphQL */ `
       whereAreYouStaying
       teamsID
       admin
+      unreadNotifications
       createdAt
       updatedAt
       _version
@@ -635,6 +636,7 @@ export const listUsers = /* GraphQL */ `
         whereAreYouStaying
         teamsID
         admin
+        unreadNotifications
         createdAt
         updatedAt
         _version
@@ -667,6 +669,7 @@ export const syncUsers = /* GraphQL */ `
         whereAreYouStaying
         teamsID
         admin
+        unreadNotifications
         createdAt
         updatedAt
         _version
@@ -701,6 +704,7 @@ export const usersByTeamsID = /* GraphQL */ `
         whereAreYouStaying
         teamsID
         admin
+        unreadNotifications
         createdAt
         updatedAt
         _version

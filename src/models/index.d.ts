@@ -376,6 +376,7 @@ type EagerUsers = {
   readonly whereAreYouStaying?: string | null;
   readonly teamsID: string;
   readonly admin: boolean;
+  readonly unreadNotifications?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -392,6 +393,7 @@ type LazyUsers = {
   readonly whereAreYouStaying?: string | null;
   readonly teamsID: string;
   readonly admin: boolean;
+  readonly unreadNotifications?: number | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

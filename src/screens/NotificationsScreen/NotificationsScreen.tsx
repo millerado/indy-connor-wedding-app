@@ -170,7 +170,7 @@ const NotificationsScreen = ({ navigation, route }) => {
 
   return (
     <View style={ss.pageWrapper}>
-      {loading ? (
+      {loading || notifications.length === 0 ? (
         <View style={ss.pageActivityIndicatorWrapper}>
           <ActivityIndicator size={60} />
         </View>

@@ -155,4 +155,7 @@ export const allIcons = [
   { type: 'Ionicons', name: 'alert-circle-outline', iconName: 'alert', label: 'Alert' },
   { type: 'MaterialCommunityIcons', name: 'new-box', iconName: 'new', label: 'New' },
   { type: 'FontAwesome5', name: 'user-friends', iconName: 'friends', label: 'Friends' },
+  { type: 'FontAwesome5', name: 'archive', iconName: 'archive', label: 'Archive' },
+  { type: "MaterialIcons", name: "delete-forever", iconName: "delete", label: "Delete" },
+  { type: "MaterialIcons", name: "mark-email-read", iconName: "markAsRead", label: "Mark As Read" },
 ];

@@ -2,14 +2,24 @@ import { Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import DataStore from '../DataStore/DataStore';
-import { ExpoTokens, Notifications as NotificationModel, ScheduledNotifications } from "../../models";
+import { ExpoTokens, Notifications as NotificationModel, ScheduledNotifications, Users } from "../../models";
 
 export const getBadgeCount = () => {
   return Notifications.getBadgeCountAsync();
 }
 
-export const setBadgeCount = (count) => {
-  return Notifications.setBadgeCountAsync(count);
+export const setBadgeCount = async (count, userId, sendingUserId) => {
+  if ( userId === sendingUserId ) {
+    Notifications.setBadgeCountAsync(count);
+  }
+  
+  const oldUser = await DataStore.query(Users, userId);
+  // await DataStore.stop();
+  await DataStore.save(
+    Users.copyOf(oldUser, (updatedUser) => {
+      updatedUser.unreadNotifications = count;
+    })
+  );
 }
 
 const cleanMessageBody = (body) => {
@@ -98,32 +108,29 @@ export const sendUserScheduledPushNotification = async (userId, title, body, dat
 }
 
 // App-Facing function to send push notification to multiple users
-export const sendUsersPushNotifications = async (userIds, title, body, data, displayDate = new Date(), trigger) => {
+export const sendUsersPushNotifications = async (userIds, title, body, data, sendingUserId) => {
   const tokenRecords = await DataStore.query(ExpoTokens);
-  const allUnreadNotifications = await DataStore.query(
-    NotificationModel,
-    (n) =>
-      n.and(n => [
-        n.read.eq(false),
-        n.or(n => {
-          const filter = [];
-          for(let i = 0; i < userIds.length; i++) {
-            filter.push(n.userId.eq(userIds[i]));
-          }
-          return filter;
+  const allUsers = await DataStore.query(
+    Users,
+    (u) =>
+      u.or(u => {
+        const filter = [];
+        for(let i = 0; i < userIds.length; i++) {
+          filter.push(u.id.eq(userIds[i]));
         }
-      )])
+        return filter;
+      })
   );
-  // console.log('-- All Unread Notifications --', allUnrealNotifications);
 
   const usersForBulkSend = [];
   userIds.forEach(userId => {
-    storeNotification(userId, title, body, data, displayDate.toISOString());
+    storeNotification(userId, title, body, data, new Date().toISOString());
     // Build an array of userId, array of tokens
     const allUserTokens = tokenRecords.filter(t => t.userId === userId);
+    const unreadNotifications = allUsers.find(u => u.id === userId)?.unreadNotifications;
+    setBadgeCount(unreadNotifications + 1, userId, sendingUserId);
     if ( allUserTokens.length > 0 ) {
       const uniqueOneUserTokens = [ ...new Set(allUserTokens.map(t => t.token)) ];
-      const unreadNotifications = allUnreadNotifications.filter(n => n.userId === userId).length;
       
       usersForBulkSend.push({
         userId,
@@ -142,26 +149,23 @@ export const sendUsersPushNotifications = async (userIds, title, body, data, dis
 
 // sends push notification for all devices
 // used for global messaging
-export const sendGlobalPushNotification = async (title, body, data) => {
+export const sendGlobalPushNotification = async (title, body, data, sendingUserId) => {
   // console.log('-- Send Global Notification --', title, body, data);
   const tokenRecords = await DataStore.query(ExpoTokens);
   // const uniqueTokens = [ ...new Set(tokenRecords.map(t => t.token)) ]; // Don't need this for this app that doesn't have unauthed users, leaving here for T-Party next year
   const uniqueUsers = [ ...new Set(tokenRecords.map(t => t.userId)) ];
   // console.log('-- uniqueUsers --', uniqueUsers);
 
-  const allUnreadNotifications = await DataStore.query(
-    NotificationModel,
-    (n) => 
-    n.and(n => [
-      n.read.eq(false),
-      n.or(n => {
+  const allUsers = await DataStore.query(
+    Users,
+    (u) =>
+      u.or(u => {
         const filter = [];
         for(let i = 0; i < uniqueUsers.length; i++) {
-          filter.push(n.userId.eq(uniqueUsers[i]));
+          filter.push(u.id.eq(uniqueUsers[i]));
         }
         return filter;
       })
-    ])
   );
 
   const usersForBulkSend = [];
@@ -170,7 +174,8 @@ export const sendGlobalPushNotification = async (title, body, data) => {
     // Build an array of userId, array of tokens
     const allUserTokens = tokenRecords.filter(t => t.userId === userId);
     const uniqueOneUserTokens = [ ...new Set(allUserTokens.map(t => t.token)) ];
-    const unreadNotifications = allUnreadNotifications.filter(n => n.userId === userId).length;
+    const unreadNotifications = allUsers.find(u => u.id === userId)?.unreadNotifications;
+    setBadgeCount(unreadNotifications + 1, userId, sendingUserId);
     
     usersForBulkSend.push({
       userId,

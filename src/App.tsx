@@ -137,16 +137,17 @@ const App = () => {
 
     const notificationsSubscription = DataStore.observeQuery(NotificationsModel, (n) => n.and(n => [
       n.userId.eq(authStatus.userId),
-      n.displayTime.le(new Date().toISOString()),
-      // n.read.eq(false),
+      // n.displayTime.le(new Date().toISOString()), // Dates seem to get defined when useEffect is created, so filtering on the fly
     ]),
     ).subscribe(({ items }) => {
-      const numberUnread = items.filter((item) => !item.read).length;
+      const pastOnly = items.filter((n) => n.displayTime <= new Date().toISOString());
+      const numberUnread = pastOnly.filter((item) => !item.read).length;
       setNotificationDetails({
-        totalNotifications: items.length,
+        totalNotifications: pastOnly.length,
         unreadNotifications: numberUnread,
       });
-      setBadgeCount(numberUnread);
+      // console.log('-- Number Unread/Total --', numberUnread, pastOnly.length);
+      setBadgeCount(numberUnread, authStatus.userId, authStatus.userId);
     });
 
     return () => {

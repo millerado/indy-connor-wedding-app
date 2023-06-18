@@ -52,6 +52,7 @@ const CommentModal = (props) => {
         'Camp Conndigo',
         `${taggedBy} tagged you in a comment in the T Party App`,
         { targetType: 'post', id: postsID },
+        authStatus.userId,
       );
     }
   }

@@ -25,7 +25,7 @@ import {
   ConditionalWrapper,
   Avatar,
 } from "../../components";
-import { SnackbarContext } from "../../contexts";
+import { SnackbarContext, AuthContext } from "../../contexts";
 import { typography } from "../../styles";
 import { sendGlobalPushNotification, sendUsersPushNotifications, scheduleNotificationForAnotherUser, DataStore } from "../../utils";
 import styles from "./SendNotificationScreenStyles";
@@ -44,6 +44,7 @@ const SendNotificationScreen = ({ navigation }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const { setSnackbar } = useContext(SnackbarContext);
+  const authStatus = useContext(AuthContext).authStatus;
   const [notificationText, setNotificationText] = useState("");
   const [subject, setSubject] = useState("");
   const [notificationSending, setNotificationSending] = useState(false);
@@ -127,13 +128,14 @@ const SendNotificationScreen = ({ navigation }) => {
       });
     } else {
       if (sendToEveryone) {
-        sendGlobalPushNotification(subject, notificationText, {});
+        sendGlobalPushNotification(subject, notificationText, {}, authStatus.userId);
       } else {
         sendUsersPushNotifications(
           selectedUsers,
           subject,
           notificationText,
           {},
+          authStatus.userId,
         );
       }
     }

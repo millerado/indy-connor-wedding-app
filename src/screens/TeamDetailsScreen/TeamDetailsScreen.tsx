@@ -180,6 +180,7 @@ const TeamDetailsScreen = ({ navigation, route }) => {
         style={{ width: '100%' }}
         scrollEventThrottle={16}
         onScroll={scrollHandler}
+        overScrollMode="never"
       />
     </View>
   );

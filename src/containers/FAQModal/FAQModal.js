@@ -164,7 +164,7 @@ const FAQModal = (props) => {
                 value={sortOrder}
                 enablesReturnKeyAutomatically={true}
                 keyboardType='numeric'
-                style={[ss.textInput, ss.modalTextInput, ss.textInputWrapper, ss.inputSingleLine]}
+                style={[ss.textInput, ss.modalTextInput, ss.textInputWrapper]}
                 onChangeText={(text) => setSortOrder(text)}
                 onSubmitEditing={() => ref_question.current.focus()}
                 ref={ref_sortOrder}
@@ -178,11 +178,15 @@ const FAQModal = (props) => {
                 value={question}
                 enablesReturnKeyAutomatically={true}
                 keyboardType='default'
-                style={[ss.textInput, ss.modalTextInput, ss.textInputWrapper, ss.inputSingleLine]}
+                style={[ss.textInput, ss.modalTextInput, ss.textInputWrapper]}
                 onChangeText={(text) => setQuestion(text)}
                 onSubmitEditing={() => ref_answer.current.focus()}
                 ref={ref_question}
                 disabled={isLoading}
+                // style={[
+                //   ss.textInput,
+                //   ss.fullWidthTextInput,
+                // ]}
               />
               <TextInput
                 clearButtonMode="while-editing"

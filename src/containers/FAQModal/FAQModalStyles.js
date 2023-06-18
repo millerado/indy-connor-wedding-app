@@ -15,7 +15,7 @@ const styles = theme => {
       overflow: 'hidden',
     },
     textInputWrapper: {
-      marginBottom: 10,
+      // marginBottom: 10,
       borderColor: theme.colors.onSecondary,
       marginRight: 1,
     },

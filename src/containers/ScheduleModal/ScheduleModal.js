@@ -214,7 +214,7 @@ const ScheduleModal = (props) => {
                 value={sortOrder}
                 enablesReturnKeyAutomatically={true}
                 keyboardType='numeric'
-                style={[ss.textInput, ss.modalTextInput, ss.textInputWrapper, ss.inputSingleLine]}
+                style={[ss.textInput, ss.modalTextInput, ss.textInputWrapper]}
                 onChangeText={(text) => setSortOrder(text)}
                 onSubmitEditing={() => ref_title.current.focus()}
                 ref={ref_sortOrder}
@@ -229,7 +229,7 @@ const ScheduleModal = (props) => {
                 value={name}
                 enablesReturnKeyAutomatically={true}
                 keyboardType='default'
-                style={[ss.textInput, ss.modalTextInput, ss.textInputWrapper, ss.inputSingleLine]}
+                style={[ss.textInput, ss.modalTextInput, ss.textInputWrapper]}
                 onChangeText={(text) => setName(text)}
                 onSubmitEditing={() => ref_time.current.focus()}
                 ref={ref_title}
@@ -243,7 +243,7 @@ const ScheduleModal = (props) => {
                 dense
                 value={time}
                 enablesReturnKeyAutomatically={true}
-                style={[ss.textInput, ss.modalTextInput, ss.textInputWrapper, ss.inputSingleLine]}
+                style={[ss.textInput, ss.modalTextInput, ss.textInputWrapper]}
                 onChangeText={(text) => setTime(text)}
                 onSubmitEditing={() => ref_location.current.focus()}
                 ref={ref_time}
@@ -257,7 +257,7 @@ const ScheduleModal = (props) => {
                 dense
                 value={location}
                 enablesReturnKeyAutomatically={true}
-                style={[ss.textInput, ss.modalTextInput, ss.textInputWrapper, ss.inputSingleLine]}
+                style={[ss.textInput, ss.modalTextInput, ss.textInputWrapper]}
                 onChangeText={(text) => setLocation(text)}
                 onSubmitEditing={() => ref_description.current.focus()}
                 ref={ref_location}

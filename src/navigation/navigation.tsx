@@ -110,7 +110,7 @@ const Navigation = () => {
   return (
     <>
       <StatusBar
-        backgroundColor={theme.colors.tertiaryContainer}
+        backgroundColor={theme.colors.onPrimary}
         barStyle={theme.name === "Dark" ? "light-content" : "dark-content"}
       />
       <Tab.Navigator

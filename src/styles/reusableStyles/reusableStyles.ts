@@ -83,9 +83,6 @@ const reusableStyles = theme => {
     threeQuarterWidth: {
       width: width * .75
     },
-    inputSingleLine: {
-      height: typography.fontSizeM + (10 * 2),
-    },
     inputMultiLine: {
       minHeight: (typography.fontSizeM * 3) + (10 * 2),
     },

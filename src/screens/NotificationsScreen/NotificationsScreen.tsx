@@ -8,7 +8,7 @@ import React, {
 import { View, FlatList, Platform, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { SortDirection } from "aws-amplify";
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
 import {
   Divider,
   ActivityIndicator,
@@ -23,6 +23,7 @@ import { Notifications } from "../../models";
 import { typography, calcDimensions } from "../../styles";
 import { DataStore } from "../../utils";
 import styles from "./NotificationsScreenStyles";
+import { set } from "react-native-reanimated";
 
 const NotificationsScreen = ({ navigation, route }) => {
   const theme = useTheme();
@@ -87,54 +88,56 @@ const NotificationsScreen = ({ navigation, route }) => {
     }
 
     return (
-      <Swipeable
-        // renderLeftActions={renderLeftActions}
-        // onSwipeableLeftOpen={onSwipeLeft}
-        renderRightActions={renderRightActions}
-        onSwipeableRightOpen={onSwipeRight}
-      >
-        <ConditionalWrapper
-          condition={linking.targetType}
-          wrapper={(children) => (
-            <Pressable onPress={() => navToLink(linking.targetType, linking.id)}>
-              {children}
-            </Pressable>
-          )}
+      <GestureHandlerRootView>
+        <Swipeable
+          // renderLeftActions={renderLeftActions}
+          // onSwipeableLeftOpen={onSwipeLeft}
+          renderRightActions={renderRightActions}
+          onSwipeableRightOpen={onSwipeRight}
         >
-          <View style={{ padding: 10, flexDirection: "row", flex: 0, justifyContent: 'space-between', backgroundColor: theme.colors.background }}>
-            <View style={{ paddingRight: 10, justifyContent: "center", width: (typography.fontSizeL * 2) + 10 }}>
-              <Icon name={iconName} size={typography.fontSizeL * 2} />
-            </View>
-            <View style={{ justifyContent: "center", width: centerWidth }}>
-              {item.subject !== 'Camp Conndigo' && (
-                <Text size={TextSizes.L} bold>
-                  {item.subject}
-                </Text>
-              )}
-              <FormatTextWithMentions
-                text={item.messageBody}
-                size={TextSizes.L}
-                style={{ marginRight: 10 }}
-              />
-            </View>
-            {!item.read && (
-              <Pressable
-                onPress={() => {
-                  DataStore.save(
-                    Notifications.copyOf(item, (updated) => {
-                      updated.read = true;
-                    })
-                  );
-                }}
-              >
-                <View style={{ paddingLeft: 10, justifyContent: "center" }}>
-                  <Icon name={"new"} size={typography.fontSizeL * 2} />
-                </View>
+          <ConditionalWrapper
+            condition={linking.targetType}
+            wrapper={(children) => (
+              <Pressable onPress={() => navToLink(linking.targetType, linking.id)}>
+                {children}
               </Pressable>
             )}
-          </View>
-        </ConditionalWrapper>
-      </Swipeable>
+          >
+            <View style={{ padding: 10, flexDirection: "row", flex: 0, justifyContent: 'space-between', backgroundColor: theme.colors.background }}>
+              <View style={{ paddingRight: 10, justifyContent: "center", width: (typography.fontSizeL * 2) + 10 }}>
+                <Icon name={iconName} size={typography.fontSizeL * 2} />
+              </View>
+              <View style={{ justifyContent: "center", width: centerWidth }}>
+                {item.subject !== 'Camp Conndigo' && (
+                  <Text size={TextSizes.L} bold>
+                    {item.subject}
+                  </Text>
+                )}
+                <FormatTextWithMentions
+                  text={item.messageBody}
+                  size={TextSizes.L}
+                  style={{ marginRight: 10 }}
+                />
+              </View>
+              {!item.read && (
+                <Pressable
+                  onPress={() => {
+                    DataStore.save(
+                      Notifications.copyOf(item, (updated) => {
+                        updated.read = true;
+                      })
+                    );
+                  }}
+                >
+                  <View style={{ paddingLeft: 10, justifyContent: "center" }}>
+                    <Icon name={"new"} size={typography.fontSizeL * 2} />
+                  </View>
+                </Pressable>
+              )}
+            </View>
+          </ConditionalWrapper>
+        </Swipeable>
+      </GestureHandlerRootView>
     );
   }, []);
 

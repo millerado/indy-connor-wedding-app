@@ -8,6 +8,8 @@ import React, {
 import { View, FlatList, Platform, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { SortDirection } from "aws-amplify";
+import { RectButton } from 'react-native-gesture-handler';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 import {
   Divider,
   ActivityIndicator,
@@ -48,48 +50,92 @@ const NotificationsScreen = ({ navigation, route }) => {
     if (!item.read) {
       centerWidth = centerWidth - (typography.fontSizeL * 2 + 15);
     }
+
+    // Removed swiping to mark as read for now
+    // const renderLeftActions = () => {
+    //   return (
+    //     <View style={{backgroundColor: theme.colors.primary, flex: 1, alignItems: 'center', paddingLeft: 10, flexDirection: 'row'}}>
+    //       <Icon name="markAsRead" size={typography.fontSizeL * 1.5} color={theme.colors.onPrimary} style={{paddingRight: 10}} />
+    //       <Text color={theme.colors.onPrimary}>
+    //         Mark as Read
+    //       </Text>
+    //     </View>
+    //   );
+    // };
+    // const onSwipeLeft = () => {
+    //   // console.log('Swiped Left');
+    //   DataStore.save(
+    //     Notifications.copyOf(item, (updated) => {
+    //       updated.read = true;
+    //     })
+    //   );
+    // }
+
+    const renderRightActions = () => {
+      return (
+        <View style={{backgroundColor: theme.colors.error, flex: 1, alignItems: 'center', justifyContent: 'flex-end', paddingRight: 10, flexDirection: 'row'}}>
+          <Text color={theme.colors.onPrimary}>
+            Delete Forever
+          </Text>
+          <Icon name="delete" size={typography.fontSizeL * 1.5} color={theme.colors.onPrimary} style={{paddingLeft: 10}} />
+        </View>
+      );
+    };
+
+    const onSwipeRight = () => {
+      // console.log('Swiped Right');
+      DataStore.delete(item);
+    }
+
     return (
-      <ConditionalWrapper
-        condition={linking.targetType}
-        wrapper={(children) => (
-          <Pressable onPress={() => navToLink(linking.targetType, linking.id)}>
-            {children}
-          </Pressable>
-        )}
+      <Swipeable
+        // renderLeftActions={renderLeftActions}
+        // onSwipeableLeftOpen={onSwipeLeft}
+        renderRightActions={renderRightActions}
+        onSwipeableRightOpen={onSwipeRight}
       >
-        <View style={{ padding: 10, flexDirection: "row", flex: 0, justifyContent: 'space-between', }}>
-          <View style={{ paddingRight: 10, justifyContent: "center", width: (typography.fontSizeL * 2) + 10 }}>
-            <Icon name={iconName} size={typography.fontSizeL * 2} />
-          </View>
-          <View style={{ justifyContent: "center", width: centerWidth }}>
-            {item.subject !== 'Camp Conndigo' && (
-              <Text size={TextSizes.L} bold>
-                {item.subject}
-              </Text>
-            )}
-            <FormatTextWithMentions
-              text={item.messageBody}
-              size={TextSizes.L}
-              style={{ marginRight: 10 }}
-            />
-          </View>
-          {!item.read && (
-            <Pressable
-              onPress={() => {
-                DataStore.save(
-                  Notifications.copyOf(item, (updated) => {
-                    updated.read = true;
-                  })
-                );
-              }}
-            >
-              <View style={{ paddingLeft: 10, justifyContent: "center" }}>
-                <Icon name={"new"} size={typography.fontSizeL * 2} />
-              </View>
+        <ConditionalWrapper
+          condition={linking.targetType}
+          wrapper={(children) => (
+            <Pressable onPress={() => navToLink(linking.targetType, linking.id)}>
+              {children}
             </Pressable>
           )}
-        </View>
-      </ConditionalWrapper>
+        >
+          <View style={{ padding: 10, flexDirection: "row", flex: 0, justifyContent: 'space-between', backgroundColor: theme.colors.background }}>
+            <View style={{ paddingRight: 10, justifyContent: "center", width: (typography.fontSizeL * 2) + 10 }}>
+              <Icon name={iconName} size={typography.fontSizeL * 2} />
+            </View>
+            <View style={{ justifyContent: "center", width: centerWidth }}>
+              {item.subject !== 'Camp Conndigo' && (
+                <Text size={TextSizes.L} bold>
+                  {item.subject}
+                </Text>
+              )}
+              <FormatTextWithMentions
+                text={item.messageBody}
+                size={TextSizes.L}
+                style={{ marginRight: 10 }}
+              />
+            </View>
+            {!item.read && (
+              <Pressable
+                onPress={() => {
+                  DataStore.save(
+                    Notifications.copyOf(item, (updated) => {
+                      updated.read = true;
+                    })
+                  );
+                }}
+              >
+                <View style={{ paddingLeft: 10, justifyContent: "center" }}>
+                  <Icon name={"new"} size={typography.fontSizeL * 2} />
+                </View>
+              </Pressable>
+            )}
+          </View>
+        </ConditionalWrapper>
+      </Swipeable>
     );
   }, []);
 

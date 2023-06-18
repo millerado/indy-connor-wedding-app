@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { View, ScrollView} from "react-native";
 import { useTheme } from "react-native-paper";
 import { MentionInput } from 'react-native-controlled-mentions';
-import { DataStore, sendUserPushNotification } from "../../utils";
+import { DataStore, sendUsersPushNotifications } from "../../utils";
 import { Comments, Users } from "../../models";
 import {
   Text,
@@ -42,16 +42,17 @@ const CommentModal = (props) => {
     const regex = /@\[(.*?)\]\((.*?)\)/g;
     const matches = commentText.match(regex);
     if (matches) {
-      const userFirstName = authStatus.name.split(' ')[0];
-      matches.forEach((match) => {
+      const taggedBy = `@[${authStatus.name}](${authStatus.userId})`;
+      const userIds = matches.map((match) => {
         const [, username, userId] = match.match(/@\[(.*?)\]\((.*?)\)/);
-        sendUserPushNotification(
-          userId,
-          'T Party',
-          `${userFirstName} tagged you in a comment in the T Party App`,
-          { targetType: 'post', id: postsID }
-        );
+        return userId;
       });
+      sendUsersPushNotifications(
+        userIds,
+        'Camp Conndigo',
+        `${taggedBy} tagged you in a comment in the T Party App`,
+        { targetType: 'post', id: postsID },
+      );
     }
   }
 

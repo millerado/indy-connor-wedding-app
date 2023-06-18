@@ -33,28 +33,31 @@ const cleanMessageBody = (body) => {
   return messageBody;
 }
 
-// send push notification based on an expo token
-const sendPushNotification = async (token, title, body, data) => {
-  // console.log('-- Send Notification --', token, title, body, data);
+// send push notification based on an array of users
+const sendGroupPushNotification = async (usersAndTokens, title, body, data) => {
+  // console.log('-- Send Notification to Multiple Users --', usersAndTokens, title, body, data);
   const messageBody = cleanMessageBody(body);
-  
-  const message = {
-    to: token,
-    sound: 'default',
-    title,
-    body: messageBody,
-    data,
-    badge: 77,
-  };
 
-  await fetch('https://exp.host/--/api/v2/push/send', {
+  const payload = usersAndTokens.map((userAndToken) => {
+    return {
+      to: userAndToken.tokens,
+      sound: 'default',
+      title,
+      body: messageBody,
+      data,
+      badge: userAndToken.badge,
+    }
+  });
+  // console.log('-- Payload --', payload);
+
+  fetch('https://exp.host/--/api/v2/push/send', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
       'Accept-encoding': 'gzip, deflate',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(message),
+    body: JSON.stringify(payload),
   });
 }
 
@@ -82,36 +85,104 @@ const scheduleLocalNotification = async (title, body, data, trigger) => {
   });
 }
 
-// sends push notification to user, identified by userId
-// if userId is mapped to multiple devices (tokens), sends notification to all of them
-export const sendUserPushNotification = async (userId, title, body, data, displayDate = new Date(), trigger) => {
-  if (userId === null || userId === '') {
+// "Send" a local notification, won't be seen until the future
+export const sendUserScheduledPushNotification = async (userId, title, body, data, displayDate = new Date(), trigger) => {
+  if (userId === null || userId === '' || !trigger) {
     return;
   }
   // console.log('-- Send User Notification --', userId, title, body, data, displayDate, trigger);
 
   storeNotification(userId, title, body, data, displayDate.toISOString());
 
-  if (trigger) {
-    scheduleLocalNotification(title, body, data, trigger);
-  } else {
-    const tokenRecords = await DataStore.query(ExpoTokens, t => t.userId.eq(userId));
-    const uniqueTokens = [ ...new Set(tokenRecords.map(t => t.token)) ];
-    uniqueTokens.forEach(expoToken => {
-      sendPushNotification(expoToken, title, body, data);
-    });
+  scheduleLocalNotification(title, body, data, trigger);
+}
+
+// App-Facing function to send push notification to multiple users
+export const sendUsersPushNotifications = async (userIds, title, body, data, displayDate = new Date(), trigger) => {
+  const tokenRecords = await DataStore.query(ExpoTokens);
+  const allUnreadNotifications = await DataStore.query(
+    NotificationModel,
+    (n) =>
+      n.and(n => [
+        n.read.eq(false),
+        n.or(n => {
+          const filter = [];
+          for(let i = 0; i < userIds.length; i++) {
+            filter.push(n.userId.eq(userIds[i]));
+          }
+          return filter;
+        }
+      )])
+  );
+  // console.log('-- All Unread Notifications --', allUnrealNotifications);
+
+  const usersForBulkSend = [];
+  userIds.forEach(userId => {
+    storeNotification(userId, title, body, data, displayDate.toISOString());
+    // Build an array of userId, array of tokens
+    const allUserTokens = tokenRecords.filter(t => t.userId === userId);
+    if ( allUserTokens.length > 0 ) {
+      const uniqueOneUserTokens = [ ...new Set(allUserTokens.map(t => t.token)) ];
+      const unreadNotifications = allUnreadNotifications.filter(n => n.userId === userId).length;
+      
+      usersForBulkSend.push({
+        userId,
+        tokens: uniqueOneUserTokens.length === 1 ? uniqueOneUserTokens[0] : uniqueOneUserTokens,
+        badge: unreadNotifications + 1,
+      });
+    }
+  });
+
+  if(usersForBulkSend.length > 0) {
+    // console.log('-- usersForBulkSend --', usersForBulkSend);
+    // console.log('-- Sending Bulk Notification --', title, body, data);
+    sendGroupPushNotification(usersForBulkSend, title, body, data);
   }
 }
 
 // sends push notification for all devices
 // used for global messaging
 export const sendGlobalPushNotification = async (title, body, data) => {
+  // console.log('-- Send Global Notification --', title, body, data);
   const tokenRecords = await DataStore.query(ExpoTokens);
-  const uniqueTokens = [ ...new Set(tokenRecords.map(t => t.token)) ];
+  // const uniqueTokens = [ ...new Set(tokenRecords.map(t => t.token)) ]; // Don't need this for this app that doesn't have unauthed users, leaving here for T-Party next year
+  const uniqueUsers = [ ...new Set(tokenRecords.map(t => t.userId)) ];
+  // console.log('-- uniqueUsers --', uniqueUsers);
 
-  uniqueTokens.forEach(token => {
-    sendPushNotification(token, title, body, data);
+  const allUnreadNotifications = await DataStore.query(
+    NotificationModel,
+    (n) => 
+    n.and(n => [
+      n.read.eq(false),
+      n.or(n => {
+        const filter = [];
+        for(let i = 0; i < uniqueUsers.length; i++) {
+          filter.push(n.userId.eq(uniqueUsers[i]));
+        }
+        return filter;
+      })
+    ])
+  );
+
+  const usersForBulkSend = [];
+  uniqueUsers.forEach(async (userId) => {
+    storeNotification(userId, title, body, data, new Date().toISOString());
+    // Build an array of userId, array of tokens
+    const allUserTokens = tokenRecords.filter(t => t.userId === userId);
+    const uniqueOneUserTokens = [ ...new Set(allUserTokens.map(t => t.token)) ];
+    const unreadNotifications = allUnreadNotifications.filter(n => n.userId === userId).length;
+    
+    usersForBulkSend.push({
+      userId,
+      tokens: uniqueOneUserTokens.length === 1 ? uniqueOneUserTokens[0] : uniqueOneUserTokens,
+      badge: unreadNotifications + 1,
+    });
   });
+
+  if(usersForBulkSend.length > 0) {
+    // console.log('-- usersForBulkSend --', usersForBulkSend);
+    sendGroupPushNotification(usersForBulkSend, title, body, data);
+  }
 }
 
 export const scheduleNotificationForAnotherUser = async (userId, title, messageBody, data, scheduleTrigger, displayTime) => {
@@ -141,15 +212,6 @@ const storeNotification = async (userId, title, body, data, displayTime) => {
       displayTime
     })
   );
-}
-
-export const handleScheduledNotification = async (notification) => {
-  // console.log('-- Handle Scheduled Notification --', notification);
-  // const { userId, subject, messageBody, linking, displayTime } = notification;
-  // const data = JSON.parse(linking);
-  // const scheduleTrigger = JSON.parse(notification.scheduleTrigger);
-  // await scheduleNotificationForAnotherUser(userId, subject, messageBody, data, scheduleTrigger, displayTime);
-  // await DataStore.delete(notification);
 }
 
 export const registerForPushNotificationsAsync = async (userId) => {

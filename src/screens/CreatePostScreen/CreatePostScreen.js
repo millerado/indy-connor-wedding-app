@@ -27,7 +27,7 @@ import {
   ConditionalWrapper,
 } from "../../components";
 import { Posts, Users, Games } from "../../models";
-import { uploadImageS3, DataStore, sendUserPushNotification, gamePlayers, nth } from "../../utils";
+import { uploadImageS3, DataStore, sendUsersPushNotifications, gamePlayers, nth } from "../../utils";
 import { typography, calcDimensions } from "../../styles";
 import { AuthContext } from '../../contexts';
 import { TaggingUserSuggestions, ImageScroll } from '../../containers';
@@ -90,15 +90,12 @@ const CreatePostScreen = ({ navigation, route }) => {
     const iconType = selectedGame ? 'icon' : 'avatar';
     const iconDetails = selectedGame ? selectedGame.iconName : authStatus.image;
     
-
-    usersToNotify.forEach((user) => {
-      sendUserPushNotification(
-        user,
-        'Camp Conndigo',
-        messageBody,
-        { targetType: 'post', id: postId, icon: { iconType, iconDetails } }
-      );
-    });
+    sendUsersPushNotifications(
+      usersToNotify,
+      'Camp Conndigo',
+      messageBody,
+      { targetType: 'post', id: postId, icon: { iconType, iconDetails } },
+    );
   }
 
   const savePost = async () => {

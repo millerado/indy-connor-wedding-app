@@ -19,7 +19,7 @@ import {
   DefaultNotification,
 } from "./contexts";
 import { Users, ScheduledNotifications, Notifications as NotificationsModel } from "./models";
-import { registerForPushNotificationsAsync, DataStore, sendUserPushNotification, setBadgeCount, CalculateStandings } from "./utils";
+import { registerForPushNotificationsAsync, DataStore, sendUserScheduledPushNotification, setBadgeCount, CalculateStandings } from "./utils";
 
 const customFonts = {
   'Thasadith-Bold': require('./assets/fonts/Thasadith-Bold.ttf'),
@@ -122,7 +122,7 @@ const App = () => {
       items.forEach((item) => {
         const date = new Date(item.displayTime);
         if(date.getTime() > Date.now()) {
-          sendUserPushNotification(
+          sendUserScheduledPushNotification(
             authStatus.userId,
             item.subject,
             item.messageBody,

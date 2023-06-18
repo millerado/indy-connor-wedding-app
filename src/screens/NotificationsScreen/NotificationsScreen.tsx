@@ -14,7 +14,7 @@ import {
   TextSizes,
   Icon,
   ConditionalWrapper,
-  Button,
+  Text,
 } from "../../components";
 import { FormatTextWithMentions } from "../../containers";
 import { AuthContext } from "../../contexts";
@@ -46,7 +46,7 @@ const NotificationsScreen = ({ navigation, route }) => {
     const iconName = linking.icon?.iconDetails || "alert";
     let centerWidth = width - (typography.fontSizeL * 2 + 20);
     if (!item.read) {
-      centerWidth = centerWidth - (typography.fontSizeL * 2 + 10);
+      centerWidth = centerWidth - (typography.fontSizeL * 2 + 15);
     }
     return (
       <ConditionalWrapper
@@ -57,11 +57,16 @@ const NotificationsScreen = ({ navigation, route }) => {
           </Pressable>
         )}
       >
-        <View style={{ padding: 10, flexDirection: "row", flex: 0 }}>
-          <View style={{ paddingRight: 10, justifyContent: "center" }}>
+        <View style={{ padding: 10, flexDirection: "row", flex: 0, justifyContent: 'space-between', }}>
+          <View style={{ paddingRight: 10, justifyContent: "center", width: (typography.fontSizeL * 2) + 10 }}>
             <Icon name={iconName} size={typography.fontSizeL * 2} />
           </View>
           <View style={{ justifyContent: "center", width: centerWidth }}>
+            {item.subject !== 'Camp Conndigo' && (
+              <Text size={TextSizes.L} bold>
+                {item.subject}
+              </Text>
+            )}
             <FormatTextWithMentions
               text={item.messageBody}
               size={TextSizes.L}

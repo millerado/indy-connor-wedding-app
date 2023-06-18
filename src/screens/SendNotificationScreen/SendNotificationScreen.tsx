@@ -27,7 +27,7 @@ import {
 } from "../../components";
 import { SnackbarContext } from "../../contexts";
 import { typography } from "../../styles";
-import { sendGlobalPushNotification, sendUserPushNotification, scheduleNotificationForAnotherUser, DataStore } from "../../utils";
+import { sendGlobalPushNotification, sendUsersPushNotifications, scheduleNotificationForAnotherUser, DataStore } from "../../utils";
 import styles from "./SendNotificationScreenStyles";
 
 const days = [
@@ -69,7 +69,7 @@ const SendNotificationScreen = ({ navigation }) => {
       setSelectedMinute(minutes);
 
       setTimePickerVisible(false);
-      console.log({ hours, minutes });
+      // console.log({ hours, minutes });
     },
     [timePickerVisible]
   );
@@ -117,9 +117,7 @@ const SendNotificationScreen = ({ navigation }) => {
         minute: selectedMinute,
       };
       
-      // console.log('-- displayTime --', displayTime);
       // console.log('-- scheduleTrigger --', scheduleTrigger);
-      // console.log('-- Display Time in Local --', displayTime.toLocaleString());
 
       // Create Logic for Scheduling (Insert into that *other* table)
       // console.log('-- Target Users --', targetUsers);
@@ -131,9 +129,12 @@ const SendNotificationScreen = ({ navigation }) => {
       if (sendToEveryone) {
         sendGlobalPushNotification(subject, notificationText, {});
       } else {
-        selectedUsers.forEach((user) => {
-          sendUserPushNotification(user, subject, notificationText, {});
-        });
+        sendUsersPushNotifications(
+          selectedUsers,
+          subject,
+          notificationText,
+          {},
+        );
       }
     }
 

@@ -157,9 +157,9 @@ const NotificationsScreen = ({ navigation, route }) => {
         ]),
       { sort: (s) => s.displayTime(SortDirection.DESCENDING) }
     ).subscribe(({ items }) => {
-      if(JSON.stringify(items) !== JSON.stringify(notifications)) {
+      // if(JSON.stringify(items) !== JSON.stringify(notifications)) {
         setNotifications(items);
-      }
+      // }
       setLoading(false);
     });
 
@@ -168,20 +168,21 @@ const NotificationsScreen = ({ navigation, route }) => {
     };
   }, [authStatus]);
 
-  useEffect(() => {
-    console.log('-- Notifications Screen --');
-    const test = async () => {
-      const myNotifications = await DataStore.query(Notifications, (n) =>
-        n.userId.eq(authStatus.userId)
-      );
-      const everyoneElse = await DataStore.query(Notifications, (n) =>
-        n.userId.ne(authStatus.userId)
-      );
-      console.log('My Notifications', myNotifications.length);
-      console.log('Everyone Else', everyoneElse.length);
-    }
-    test();
-  }, [])
+  // For testing the SelectiveSync
+  // useEffect(() => {
+  //   console.log('-- Notifications Screen --');
+  //   const test = async () => {
+  //     const myNotifications = await DataStore.query(Notifications, (n) =>
+  //       n.userId.eq(authStatus.userId)
+  //     );
+  //     const everyoneElse = await DataStore.query(Notifications, (n) =>
+  //       n.userId.ne(authStatus.userId)
+  //     );
+  //     console.log('My Notifications', myNotifications.length);
+  //     console.log('Everyone Else', everyoneElse.length);
+  //   }
+  //   test();
+  // }, [])
 
   return (
     <View style={ss.pageWrapper}>

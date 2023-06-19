@@ -22,9 +22,9 @@ const CalculateStandings = () => {
             });
 
             // Quick check to make sure we're only updating state if the subscription caught a chance to the user associated with this post
-            if (JSON.stringify(newUsers) !== JSON.stringify(users)) {
+            // if (JSON.stringify(newUsers) !== JSON.stringify(users)) {
               setUsers(newUsers);
-            }
+            // }
           }
         } catch (err) {
           console.log("error fetching Data", err);
@@ -37,9 +37,9 @@ const CalculateStandings = () => {
         try {
           if (items) {
             // Quick check to make sure we're only updating state if the subscription caught a chance to the user associated with this post
-            if (JSON.stringify(items) !== JSON.stringify(teams)) {
+            // if (JSON.stringify(items) !== JSON.stringify(teams)) {
               setTeams(items);
-            }
+            // }
           }
         } catch (err) {
           console.log("error fetching Data", err);
@@ -52,23 +52,23 @@ const CalculateStandings = () => {
       (p) =>
         p.olympicEvent.eq(true)
     ).subscribe(({ items }) => {
-      if(JSON.stringify(items) !== JSON.stringify(events)) {
+      // if(JSON.stringify(items) !== JSON.stringify(events)) {
         setEvents(items);
-      }
+      // }
     });
 
     const teamsStandingsSubscription = DataStore.observeQuery(StandingsTeams).subscribe(({ items }) => {
-      if (JSON.stringify(items) !== JSON.stringify(standingsTeams)) {
+      // if (JSON.stringify(items) !== JSON.stringify(standingsTeams)) {
         // Make sure it's not a change to a different Post
         setStandingsTeams(items);
-      }
+      // }
     });
 
     const usersStandingsSubscription = DataStore.observeQuery(StandingsPeople).subscribe(({ items }) => {
-      if (JSON.stringify(items) !== JSON.stringify(standingsPeople)) {
+      // if (JSON.stringify(items) !== JSON.stringify(standingsPeople)) {
         // Make sure it's not a change to a different Post
         setStandingsPeople(items);
-      }
+      // }
     });
 
     return () => {

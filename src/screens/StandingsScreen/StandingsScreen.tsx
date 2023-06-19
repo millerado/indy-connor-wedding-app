@@ -91,10 +91,10 @@ const StandingsScreen = () => {
         sort: (s) => s.rank(SortDirection.ASCENDING),
       }
     ).subscribe(({ items }) => {
-      if (JSON.stringify(items) !== JSON.stringify(standingsTeams)) {
+      // if (JSON.stringify(items) !== JSON.stringify(standingsTeams)) {
         // Make sure it's not a change to a different Post
         setStandingsTeams(items);
-      }
+      // }
     });
 
     const usersStandingsSubscription = DataStore.observeQuery(
@@ -104,10 +104,10 @@ const StandingsScreen = () => {
         sort: (s) => s.rank(SortDirection.ASCENDING),
       }
     ).subscribe(({ items }) => {
-      if (JSON.stringify(items) !== JSON.stringify(standingsPeople)) {
+      // if (JSON.stringify(items) !== JSON.stringify(standingsPeople)) {
         // Make sure it's not a change to a different Post
         setStandingsPeople(items);
-      }
+      // }
     });
 
     const usersSubscription = DataStore.observeQuery(Users).subscribe(
@@ -124,9 +124,9 @@ const StandingsScreen = () => {
             });
 
             // Quick check to make sure we're only updating state if the subscription caught a chance to the user associated with this post
-            if (JSON.stringify(newUsers) !== JSON.stringify(users)) {
+            // if (JSON.stringify(newUsers) !== JSON.stringify(users)) {
               setUsers(newUsers);
-            }
+            // }
           }
         } catch (err) {
           console.log("error fetching Data", err);
@@ -139,9 +139,9 @@ const StandingsScreen = () => {
         try {
           if (items) {
             // Quick check to make sure we're only updating state if the subscription caught a chance to the user associated with this post
-            if (JSON.stringify(items) !== JSON.stringify(teams)) {
+            // if (JSON.stringify(items) !== JSON.stringify(teams)) {
               setTeams(items);
-            }
+            // }
           }
         } catch (err) {
           console.log("error fetching Data", err);

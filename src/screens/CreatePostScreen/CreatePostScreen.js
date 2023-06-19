@@ -414,9 +414,9 @@ const CreatePostScreen = ({ navigation, route }) => {
       });
   
       // Quick check to make sure we're only updating state if the subscription caught a change that we care about
-      if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
+      // if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
         setAllUsers(newUsers);
-      }
+      // }
     });
 
     const gamesSubscription = DataStore.observeQuery(Games, Predicates.ALL, {
@@ -437,12 +437,12 @@ const CreatePostScreen = ({ navigation, route }) => {
         label: "None",
         players: 'Nevermind, not playing a game',
       });
-      if (JSON.stringify(g) !== JSON.stringify(gamesDropdown)) {
+      // if (JSON.stringify(g) !== JSON.stringify(gamesDropdown)) {
         setGamesDropdown(g);
-      }
-      if (JSON.stringify(items) !== JSON.stringify(games)) {
+      // }
+      // if (JSON.stringify(items) !== JSON.stringify(games)) {
         setGames(items);
-      }
+      // }
     });
 
     const unsubscribe = NetInfo.addEventListener(state => {

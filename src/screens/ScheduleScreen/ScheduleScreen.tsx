@@ -101,9 +101,9 @@ const ScheduleScreen = ({ navigation, route }) => {
     const subscription = DataStore.observeQuery(Schedule).subscribe(
       ({ items }) => {
         try {
-          if(JSON.stringify(items) !== JSON.stringify(rawScheduleData)) {
+          // if(JSON.stringify(items) !== JSON.stringify(rawScheduleData)) {
             setRawScheduleData(items);
-          }
+          // }
           setDataLoading(false);
           // console.log('-- Fetched Data --', dt);
         } catch (err) {

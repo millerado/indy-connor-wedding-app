@@ -21,15 +21,16 @@ const ViewPostScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     const postsSubscription = DataStore.observeQuery(Posts, (p) => p.id.eq(postsID)).subscribe(({ items }) => {
+      const formattedPosts = items.map((post) => {
+        const obj = Object.assign({}, post);
+        const images = post.images?.length > 0 && post.images[0] !== null ? post.images.map((image) => {
+          return JSON.parse(image);
+        }) : undefined;
+        obj.images = images;
+        return obj;
+      });
       if (items.length > 0) {
-        const item = items[0];
-        const newPost = {
-          ...item,
-          image: item.image ? JSON.parse(item.image) : undefined,
-        };
-        if(JSON.stringify(newPost) !== JSON.stringify(post)) {
-          setPost(newPost);
-        }
+        setPost(formattedPosts[0]);
       }
     });
 

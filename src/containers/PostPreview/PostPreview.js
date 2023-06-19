@@ -23,7 +23,7 @@ import {
   Divider,
 } from "../../components";
 import { typography } from "../../styles";
-import { formatDate, DataStore, formatGameString } from "../../utils/";
+import { formatDate, DataStore, formatGameString, arraysEqual } from "../../utils/";
 import { AuthContext } from "../../contexts";
 import CommentModal from "../CommentModal/CommentModal";
 import LikedByUsersModal from "../LikedByUsersModal/LikedByUsersModal";
@@ -67,6 +67,7 @@ const PostPreview = (props) => {
   const eventDetails = olympicEvent ? JSON.parse(post.eventDetails) : null;
 
   const likePressHandler = async () => {
+    // console.log('-- likePressHandler --', isLiked, postsID, authStatus?.userId);
     if (authStatus?.isAuthed) {
       if (isLiked) {
         try {
@@ -222,11 +223,7 @@ const PostPreview = (props) => {
           return true;
         });
         // console.log("Reactions data", reactionsData);
-        // console.log('-- Filtered --', newReactions);
-        if (JSON.stringify(newReactions) !== JSON.stringify(reactions)) {
-          // Make sure it's not a change to a different Post
-          setReactions(newReactions);
-        }
+        setReactions(newReactions);
       }
     });
 
@@ -239,9 +236,9 @@ const PostPreview = (props) => {
             url: img.url,
           };
         });
-        if (JSON.stringify(newFavorites) !== JSON.stringify(adminFavorites)) {
+        // if (JSON.stringify(newFavorites) !== JSON.stringify(adminFavorites)) {
           setAdminFavorites(newFavorites);
-        }
+        // }
       }
     });
 
@@ -251,10 +248,10 @@ const PostPreview = (props) => {
         sort: (s) => s.createdAt(previewMode ? SortDirection.DESCENDING : SortDirection.ASCENDING),
       }
     ).subscribe(({ items }) => {
-      if (JSON.stringify(items) !== JSON.stringify(comments)) {
+      // if (JSON.stringify(items) !== JSON.stringify(comments)) {
         // Make sure it's not a change to a different Post
         setComments(items);
-      }
+      // }
     });
 
     const usersSubscription = DataStore.observeQuery(Users).subscribe(({ items }) => {
@@ -267,9 +264,9 @@ const PostPreview = (props) => {
       });
 
       // Quick check to make sure we're only updating state if the subscription caught a change that we care about
-      if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
+      // if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
         setAllUsers(newUsers);
-      }
+      // }
       setPostUser(newUsers.find((u) => u.id === post.userId));
     });
 

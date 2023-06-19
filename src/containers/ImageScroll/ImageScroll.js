@@ -119,9 +119,11 @@ const ImageScroll = (props) => {
                     key={index}
                   >
                     <>
-                      <View style={{position: 'absolute', right: 10, top: 10}} onPress={() => console.log('-- Press --')}>
-                        <Icon name={adminFavoritedImages.includes(image.url) ? "heart" : "heartOutline"} size={24} color={theme.colors.red} />
-                      </View>
+                      {authStatus.isAdmin && (
+                        <View style={{position: 'absolute', right: 10, top: 10}} onPress={() => console.log('-- Press --')}>
+                          <Icon name={adminFavoritedImages.includes(image.url) ? "heart" : "heartOutline"} size={24} color={theme.colors.red} />
+                        </View>
+                      )}
                       {images.length > 1 && (
                         <View style={ss.imageScrollIndicatorWrapper}>
                           {images.map((i, idx) => {

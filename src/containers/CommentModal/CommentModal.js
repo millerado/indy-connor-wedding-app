@@ -119,9 +119,9 @@ const CommentModal = (props) => {
       try {
         if (users) {
           const newUsers = users.sort((a, b) => a.name.localeCompare(b.name));
-          if(JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
+          // if(JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
             setAllUsers(newUsers);
-          }
+          // }
         }
       } catch (err) { console.log('error fetching Data', err) }
     });

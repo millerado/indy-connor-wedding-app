@@ -134,9 +134,9 @@ const InfoScreen = ({ navigation, route }) => {
         if (dataLoading || searchTerm === '') {
           setFAQData(items);
         }
-        if(JSON.stringify(items) !== JSON.stringify(allFAQData)) {
+        // if(JSON.stringify(items) !== JSON.stringify(allFAQData)) {
           setAllFAQData(items);
-        }
+        // }
         if (dataLoading) {
           setDataLoading(false);
         }

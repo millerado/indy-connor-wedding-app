@@ -180,9 +180,9 @@ const SendNotificationScreen = ({ navigation }) => {
       });
 
       // Quick check to make sure we're only updating state if the subscription caught a change that we care about
-      if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
+      // if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
         setAllUsers(newUsers);
-      }
+      // }
     });
 
     return () => {

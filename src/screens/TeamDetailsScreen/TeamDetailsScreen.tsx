@@ -143,9 +143,9 @@ const TeamDetailsScreen = ({ navigation, route }) => {
             return obj;
           });
           const events = formattedPosts.filter((p) => p.olympicEvent);
-          if (JSON.stringify(events) !== JSON.stringify(allPosts)) {
+          // if (JSON.stringify(events) !== JSON.stringify(allPosts)) {
             setAllPosts(events);
-          }
+          // }
         } catch (err) {
           console.log("error fetching Contents", err);
         }

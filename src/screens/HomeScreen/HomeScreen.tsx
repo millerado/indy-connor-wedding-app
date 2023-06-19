@@ -58,9 +58,9 @@ const HomeScreen = () => {
           obj.images = images;
           return obj;
         });
-        if(JSON.stringify(formattedPosts) !== JSON.stringify(allPosts)) {
+        // if(JSON.stringify(formattedPosts) !== JSON.stringify(allPosts)) {
           setAllPosts(formattedPosts);
-        }
+        // }
         setDataLoading(false);
       } catch (err) {
         console.log("error fetching Data", err);

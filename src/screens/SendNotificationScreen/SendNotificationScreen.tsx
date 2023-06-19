@@ -226,6 +226,7 @@ const SendNotificationScreen = ({ navigation }) => {
             value={notificationText}
             enablesReturnKeyAutomatically={true}
             keyboardType="default"
+            multiline={true}
             style={[ss.textInput, ss.fullWidthTextInput, ss.textInputWrapper, ss.inputMultiLine, {marginTop: 10}]}
             onChangeText={(text) => setNotificationText(text)}
             disabled={notificationSending}

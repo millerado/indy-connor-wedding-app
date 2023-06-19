@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { View } from "react-native";
 import { Storage } from "aws-amplify";
 import * as FileSystem from "expo-file-system";
-import { ResizeMode, Video } from "expo-av";
+import { ResizeMode, Video, Audio } from "expo-av";
 import { calcDimensions } from "../../styles";
 import ActivityIndicator from "../ActivityIndicator/ActivityIndicator";
 
@@ -62,6 +62,11 @@ const renderPlaceholder = (width, height, absolute) => {
   );
 };
 
+const triggerAudio = async (ref) => {
+  await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
+  ref.current.playAsync();
+};
+
 const VideoS3 = (props) => {
   const {
     fileName,
@@ -78,6 +83,12 @@ const VideoS3 = (props) => {
   const dimensions = calcDimensions();
   const videoPreviewWidth = dimensions.width;
   const videoPreviewHeight = dimensions.width * 0.8;
+  const ref = useRef(null);
+  const [status, setStatus] = useState({});
+
+  useEffect(() => {
+    if (status.isPlaying) triggerAudio(ref);
+  }, [ref, status.isPlaying]);
 
   const showPlaceholder = (absolute) => {
     if (typeof placeholder === "function") {
@@ -146,6 +157,10 @@ const VideoS3 = (props) => {
             useNativeControls
             resizeMode={ResizeMode.CONTAIN}
             isLooping={true}
+            isMuted={false}
+            volume={1.0}
+            onPlaybackStatusUpdate={(status) => setStatus(status)}
+            ref={ref}
           />
         ) : (
           showPlaceholder(false)

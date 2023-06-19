@@ -19,7 +19,7 @@ import {
   DefaultNotification,
 } from "./contexts";
 import { Users, ScheduledNotifications, Notifications as NotificationsModel } from "./models";
-import { registerForPushNotificationsAsync, DataStore, sendUserScheduledPushNotification, setBadgeCount, CalculateStandings } from "./utils";
+import { registerForPushNotificationsAsync, DataStore, configureDataStore, sendUserScheduledPushNotification, setBadgeCount, CalculateStandings } from "./utils";
 
 const customFonts = {
   'Thasadith-Bold': require('./assets/fonts/Thasadith-Bold.ttf'),
@@ -82,6 +82,7 @@ const App = () => {
     });
     // Tie in Notifications at the user level here (associate userId with their Notification Identifier)
     registerForPushNotificationsAsync(id);
+    // await configureDataStore(id, false);
     await AsyncStorage.setItem(
       "authStatus",
       JSON.stringify({
@@ -114,6 +115,12 @@ const App = () => {
   };
 
   useEffect(() => {
+    
+    // if(authStatus.isAuthed) {
+    //   console.log('-- Have a user, set the data store config --', authStatus.userId);
+    //   configureDataStore(authStatus.userId, true);
+    // }
+
     const scheduledNotificationsSubscription = DataStore.observeQuery(
       ScheduledNotifications,
       (p) => p.userId.eq(authStatus.userId)
@@ -137,21 +144,30 @@ const App = () => {
 
     const notificationsSubscription = DataStore.observeQuery(NotificationsModel, (n) => n.and(n => [
       n.userId.eq(authStatus.userId),
-      n.displayTime.le(new Date().toISOString()),
-      // n.read.eq(false),
+      // n.displayTime.le(new Date().toISOString()), // Dates seem to get defined when useEffect is created, so filtering on the fly
     ]),
     ).subscribe(({ items }) => {
-      const numberUnread = items.filter((item) => !item.read).length;
+      const pastOnly = items.filter((n) => n.displayTime <= new Date().toISOString());
+      const numberUnread = pastOnly.filter((item) => !item.read).length;
       setNotificationDetails({
-        totalNotifications: items.length,
+        totalNotifications: pastOnly.length,
         unreadNotifications: numberUnread,
       });
-      setBadgeCount(numberUnread);
+      // console.log('-- Number Unread/Total --', numberUnread, pastOnly.length);
+      setBadgeCount(numberUnread, authStatus.userId, authStatus.userId);
     });
 
     return () => {
+      // console.log('-- Use Effect Cleanup for --', authStatus.userId);
       scheduledNotificationsSubscription.unsubscribe();
       notificationsSubscription.unsubscribe();
+      // console.log('-- STUFF IS PAUSED --');
+      // let onReady = DataStore.clear();
+      // Promise.resolve(DataStore.clear());
+      // console.log('-- DataStore Cleared --');
+      // scheduledNotificationsSubscription.unsubscribe();
+      // notificationsSubscription.unsubscribe(); 
+      // Promise.resolve(configureDataStore(authStatus.userId, true));
     };
   }, [authStatus]);
 
@@ -174,6 +190,7 @@ const App = () => {
           setAuthStatus(JSON.parse(currentUser));
           registerForPushNotificationsAsync(JSON.parse(currentUser).userId);
           // console.log('currentUser', currentUser);
+          // await configureDataStore(JSON.parse(currentUser).userId, false);
         }
       } catch (e) {
         console.log("error fetching current theme", e);

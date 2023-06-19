@@ -95,6 +95,7 @@ const CreatePostScreen = ({ navigation, route }) => {
       'Camp Conndigo',
       messageBody,
       { targetType: 'post', id: postId, icon: { iconType, iconDetails } },
+      userId,
     );
   }
 

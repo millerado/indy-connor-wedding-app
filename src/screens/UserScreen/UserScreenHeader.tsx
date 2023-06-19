@@ -59,7 +59,7 @@ const UserScreenHeader = (props) => {
     camera: "loading",
   });
   const auth = useContext(AuthContext);
-  const { authStatus, setAuthStatus } = auth;
+  const { authStatus } = auth;
 
   const navigation = useNavigation();
 

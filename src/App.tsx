@@ -19,7 +19,7 @@ import {
   DefaultNotification,
 } from "./contexts";
 import { Users, ScheduledNotifications, Notifications as NotificationsModel } from "./models";
-import { registerForPushNotificationsAsync, DataStore, sendUserScheduledPushNotification, setBadgeCount, CalculateStandings } from "./utils";
+import { registerForPushNotificationsAsync, DataStore, configureDataStore, sendUserScheduledPushNotification, setBadgeCount, CalculateStandings } from "./utils";
 
 const customFonts = {
   'Thasadith-Bold': require('./assets/fonts/Thasadith-Bold.ttf'),
@@ -82,6 +82,7 @@ const App = () => {
     });
     // Tie in Notifications at the user level here (associate userId with their Notification Identifier)
     registerForPushNotificationsAsync(id);
+    // await configureDataStore(id, false);
     await AsyncStorage.setItem(
       "authStatus",
       JSON.stringify({
@@ -114,6 +115,12 @@ const App = () => {
   };
 
   useEffect(() => {
+    
+    // if(authStatus.isAuthed) {
+    //   console.log('-- Have a user, set the data store config --', authStatus.userId);
+    //   configureDataStore(authStatus.userId, true);
+    // }
+
     const scheduledNotificationsSubscription = DataStore.observeQuery(
       ScheduledNotifications,
       (p) => p.userId.eq(authStatus.userId)
@@ -151,8 +158,16 @@ const App = () => {
     });
 
     return () => {
+      // console.log('-- Use Effect Cleanup for --', authStatus.userId);
       scheduledNotificationsSubscription.unsubscribe();
       notificationsSubscription.unsubscribe();
+      // console.log('-- STUFF IS PAUSED --');
+      // let onReady = DataStore.clear();
+      // Promise.resolve(DataStore.clear());
+      // console.log('-- DataStore Cleared --');
+      // scheduledNotificationsSubscription.unsubscribe();
+      // notificationsSubscription.unsubscribe(); 
+      // Promise.resolve(configureDataStore(authStatus.userId, true));
     };
   }, [authStatus]);
 
@@ -175,6 +190,7 @@ const App = () => {
           setAuthStatus(JSON.parse(currentUser));
           registerForPushNotificationsAsync(JSON.parse(currentUser).userId);
           // console.log('currentUser', currentUser);
+          // await configureDataStore(JSON.parse(currentUser).userId, false);
         }
       } catch (e) {
         console.log("error fetching current theme", e);

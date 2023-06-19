@@ -168,6 +168,21 @@ const NotificationsScreen = ({ navigation, route }) => {
     };
   }, [authStatus]);
 
+  useEffect(() => {
+    console.log('-- Notifications Screen --');
+    const test = async () => {
+      const myNotifications = await DataStore.query(Notifications, (n) =>
+        n.userId.eq(authStatus.userId)
+      );
+      const everyoneElse = await DataStore.query(Notifications, (n) =>
+        n.userId.ne(authStatus.userId)
+      );
+      console.log('My Notifications', myNotifications.length);
+      console.log('Everyone Else', everyoneElse.length);
+    }
+    test();
+  }, [])
+
   return (
     <View style={ss.pageWrapper}>
       {loading || notifications.length === 0 ? (

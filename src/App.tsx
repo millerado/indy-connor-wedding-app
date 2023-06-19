@@ -219,19 +219,19 @@ const App = () => {
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
       const { targetType, id } = response.notification.request.content.data;
       // console.log('-- Notification Target and ID --', targetType, id);
-      if(targetType && id) { // Only worrying about linking if it's pointing somewhere
-        if(targetType === 'post') {
+      if(targetType) { // Only worrying about linking if it's pointing somewhere
+        if(targetType === 'post' && id) {
           // Push to a View Post
           nav.current.navigate('View Post', {
             postsID: id,
           });
-        } else if (targetType === 'user') {
+        } else if (targetType === 'user' && id) {
           // Push to a User View
           nav.current.navigate('User', {
             userId: id,
           });
         } else if (targetType === 'alert') {
-          nav.current.navigate('Notifications');
+          nav.current.navigate('Notifications', {});
         }
       }
     });

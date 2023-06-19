@@ -60,9 +60,7 @@ const HomeStackScreen = () => {
       <HomeStack.Screen name="User" component={UserScreen} options={({ route }) => ({ title: route.params.name || 'User' })} />
       <HomeStack.Screen name="Notifications" component={NotificationsScreen} options={{ 
         headerRight: () => (
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-            <NotificationsReadHeaderButton />
-          </View>
+          <NotificationsReadHeaderButton />
         )}} />
       <HomeStack.Screen name="View Post" component={ViewPostScreen} />
       <HomeStack.Screen name="Create Post" component={CreatePostScreen} options={({ route }) => ({ title: route.params.view === 'edit' ? 'Edit Post' : 'Create Post' })} />

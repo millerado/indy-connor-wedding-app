@@ -1,7 +1,7 @@
 import React, { useMemo, useContext } from "react";
-import { Pressable } from "react-native";
+import { Pressable, View } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Icon } from "../../components";
+import { Icon, Button, Text, TextSizes } from "../../components";
 import { typography } from "../../styles";
 import { NotificationContext, AuthContext } from "../../contexts";
 import { DataStore } from '../../utils';
@@ -40,7 +40,27 @@ const NotificationsReadHeaderButton = () => {
 
   if (notificationDetails.unreadNotifications > 0) {
     return (
-      <Pressable onPress={markAllAsRead}>
+      // <Button onPress={markAllAsRead} short>
+      //   <Text size={TextSizes.S} color={theme.colors.onPrimary} bold>
+      //     Mark Read
+      //   </Text>
+      // </Button>
+      // <Pressable onPress={markAllAsRead}>
+      //   <Icon
+      //     name="markAsRead"
+      //     color={theme.colors.primary}
+      //     size={typography.fontSizeXXL}
+      //   />
+      // </Pressable>
+      <Pressable onPress={markAllAsRead} style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{paddingRight: 5}}>
+          <Text size={TextSizes.XS}>
+            Mark
+          </Text>
+          <Text size={TextSizes.XS}>
+            Read
+          </Text>
+        </View>
         <Icon
           name="markAsRead"
           color={theme.colors.primary}

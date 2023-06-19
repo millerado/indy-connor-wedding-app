@@ -230,6 +230,8 @@ const App = () => {
           nav.current.navigate('User', {
             userId: id,
           });
+        } else if (targetType === 'alert') {
+          nav.current.navigate('Notifications');
         }
       }
     });

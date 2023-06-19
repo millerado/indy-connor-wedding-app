@@ -103,7 +103,7 @@ const NotificationsScreen = ({ navigation, route }) => {
               </Pressable>
             )}
           >
-            <View style={{ padding: 10, flexDirection: "row", flex: 0, justifyContent: 'space-between', backgroundColor: theme.colors.background }}>
+            <View style={{ padding: 10, flexDirection: "row", flex: 0, justifyContent: 'space-between', alignItems: 'center', backgroundColor: theme.colors.background }}>
               <View style={{ paddingRight: 10, justifyContent: "center", width: (typography.fontSizeL * 2) + 10 }}>
                 <Icon name={iconName} size={typography.fontSizeL * 2} />
               </View>

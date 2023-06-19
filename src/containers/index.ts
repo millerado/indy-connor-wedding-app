@@ -9,6 +9,7 @@ export { default as ImageScroll } from "./ImageScroll/ImageScroll";
 export { default as IntroModal } from "./IntroModal/IntroModal";
 export { default as LikedByUsersModal } from "./LikedByUsersModal/LikedByUsersModal";
 export { default as NotificationsHeaderButton } from './NotificationsHeaderButton/NotificationsHeaderButton';
+export { default as NotificationsReadHeaderButton } from './NotificationsReadHeaderButton/NotificationsReadHeaderButton';
 export { default as PostPreview } from "./PostPreview/PostPreview";
 export { default as ScheduleItem } from "./ScheduleItem/ScheduleItem";
 export { default as ScheduleModal } from "./ScheduleModal/ScheduleModal";

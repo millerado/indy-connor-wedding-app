@@ -3,7 +3,7 @@ import { StatusBar, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useTheme } from "react-native-paper";
-import { SettingsModal, NotificationsHeaderButton } from '../containers';
+import { SettingsModal, NotificationsHeaderButton, NotificationsReadHeaderButton } from '../containers';
 import { Icon } from '../components';
 import {
   CreatePostScreen,
@@ -58,7 +58,12 @@ const HomeStackScreen = () => {
           </View>
         )}} />
       <HomeStack.Screen name="User" component={UserScreen} options={({ route }) => ({ title: route.params.name || 'User' })} />
-      <HomeStack.Screen name="Notifications" component={NotificationsScreen} />
+      <HomeStack.Screen name="Notifications" component={NotificationsScreen} options={{ 
+        headerRight: () => (
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+            <NotificationsReadHeaderButton />
+          </View>
+        )}} />
       <HomeStack.Screen name="View Post" component={ViewPostScreen} />
       <HomeStack.Screen name="Create Post" component={CreatePostScreen} options={({ route }) => ({ title: route.params.view === 'edit' ? 'Edit Post' : 'Create Post' })} />
       <HomeStack.Screen name="Games List" component={GamesScreen} />

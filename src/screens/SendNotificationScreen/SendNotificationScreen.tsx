@@ -124,17 +124,17 @@ const SendNotificationScreen = ({ navigation }) => {
       // console.log('-- Target Users --', targetUsers);
       targetUsers.forEach((user) => {
         // console.log('-- Scheduling for User --', user);
-        scheduleNotificationForAnotherUser(user, subject, notificationText, {}, scheduleTrigger, displayTime.toISOString());
+        scheduleNotificationForAnotherUser(user, subject, notificationText, { targetType: 'alert' }, scheduleTrigger, displayTime.toISOString());
       });
     } else {
       if (sendToEveryone) {
-        sendGlobalPushNotification(subject, notificationText, {}, authStatus.userId);
+        sendGlobalPushNotification(subject, notificationText, { targetType: 'alert' }, authStatus.userId);
       } else {
         sendUsersPushNotifications(
           selectedUsers,
           subject,
           notificationText,
-          {},
+          { targetType: 'alert' },
           authStatus.userId,
         );
       }

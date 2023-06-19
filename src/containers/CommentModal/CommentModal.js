@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import { View, ScrollView} from "react-native";
+import { View, ScrollView } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MentionInput } from 'react-native-controlled-mentions';
 import { DataStore, sendUsersPushNotifications } from "../../utils";
@@ -115,12 +115,12 @@ const CommentModal = (props) => {
 
   useEffect(() => {
     // Subscribe to users
-    const usersSubscription = DataStore.observeQuery(Users).subscribe(({ users }) => {
+    const usersSubscription = DataStore.observeQuery(Users).subscribe(({ items }) => {
       try {
-        if (users) {
-          const newUsers = users.sort((a, b) => a.name.localeCompare(b.name));
+        if (items) {
+          const newUsers = items.sort((a, b) => a.name.localeCompare(b.name));
           // if(JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
-            setAllUsers(newUsers);
+          setAllUsers(newUsers);
           // }
         }
       } catch (err) { console.log('error fetching Data', err) }
@@ -197,7 +197,7 @@ const CommentModal = (props) => {
                         {
                           trigger: '@', // Should be a single character like '@' or '#'
                           renderSuggestions,
-                          textStyle: { fontWeight: 'bold', color: theme.colors.primaryContainer }, // The mention style in the input
+                          textStyle: { fontStyle: 'italic', color: theme.colors.primary }, // The mention style in the input
                           isBottomMentionSuggestionsRender: true,
                           isInsertSpaceAfterMention: true,
                         },

@@ -65,7 +65,6 @@ const ScheduleScreen = ({ navigation, route }) => {
         data={scheduleData.find((item) => item.day === route.title).data}
         renderItem={({ item }) => <ScheduleItem item={item} />}
         keyExtractor={keyExtractor}
-        stickyHeaderIndices={[0]}
         ItemSeparatorComponent={Divider}
         style={{ width: '100%', backgroundColor: theme.colors.background}}
         keyboardShouldPersistTaps="handled"

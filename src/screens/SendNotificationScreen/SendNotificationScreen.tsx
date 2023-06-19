@@ -221,7 +221,7 @@ const SendNotificationScreen = ({ navigation }) => {
           <TextInput
             clearButtonMode="while-editing"
             maxLength={150}
-            returnKeyType="done"
+            returnKeyType="default"
             label="Notification Message"
             value={notificationText}
             enablesReturnKeyAutomatically={true}

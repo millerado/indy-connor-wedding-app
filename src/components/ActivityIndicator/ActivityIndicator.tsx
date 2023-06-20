@@ -1,10 +1,11 @@
 import React from "react";
 import { MaterialIndicator, MaterialIndicatorProps } from 'react-native-indicators';
-import { withTheme } from 'react-native-paper';
+import { useTheme } from 'react-native-paper';
 
 const ActivityIndicator = (props: MaterialIndicatorProps) => {
+  const theme = useTheme();
   return (
-    <MaterialIndicator {...props} />
+    <MaterialIndicator {...props} color={theme.colors.primary} />
   )
 };
 
@@ -14,4 +15,4 @@ const defaultProps = {
 
 ActivityIndicator.defaultProps = defaultProps;
 
-export default withTheme(ActivityIndicator);
+export default ActivityIndicator;

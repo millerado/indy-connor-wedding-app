@@ -57,6 +57,14 @@ const InfoScreen = ({ navigation, route }) => {
     }
   , []);
 
+  const listEmptyComponent = useCallback(() => {
+    return (
+      <View style={ss.pageActivityIndicatorWrapper}>
+        <ActivityIndicator size={60} />
+      </View>
+    );
+  }, [ss]);
+
   function renderHeader() {
     return (
       <>
@@ -150,25 +158,21 @@ const InfoScreen = ({ navigation, route }) => {
   return (
     <View style={ss.pageWrapper}>
       <FAQModal showModal={showModal} closeModal={closeModal} modalType={'create'} />
-      {dataLoading || allFAQData.length === 0 ? (
-        <View style={ss.pageActivityIndicatorWrapper}>
-          <ActivityIndicator size={60} />
-        </View>
-      ) : (
-        <FlatList
-          data={FAQData}
-          renderItem={renderItem}
-          ListHeaderComponent={renderHeader()}
-          keyExtractor={keyExtractor}
-          ItemSeparatorComponent={listItemSeparator}
-          style={{ width: '100%'}}
-          keyboardShouldPersistTaps="handled"
-          keyboardDismissMode="on-drag"
-          removeClippedSubviews={Platform.OS === 'android'} // Saves memory, has issues on iOS
-          maxToRenderPerBatch={10} // Also the default
-          initialNumToRender={10} // Also the default
-        />
-      )}
+      <FlatList
+        data={FAQData}
+        renderItem={renderItem}
+        ListHeaderComponent={renderHeader()}
+        keyExtractor={keyExtractor}
+        ItemSeparatorComponent={listItemSeparator}
+        style={{ width: '100%'}}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        removeClippedSubviews={Platform.OS === 'android'} // Saves memory, has issues on iOS
+        maxToRenderPerBatch={10} // Also the default
+        initialNumToRender={10} // Also the default
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={listEmptyComponent}  
+      />
     </View>
   );
 }

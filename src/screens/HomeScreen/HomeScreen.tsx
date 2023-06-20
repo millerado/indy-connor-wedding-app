@@ -18,7 +18,6 @@ import styles from "./HomeScreenStyles";
 
 const HomeScreen = () => {
   const [allPosts, setAllPosts] = useState([]);
-  const [dataLoading, setDataLoading] = useState(true);
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
 
@@ -44,6 +43,14 @@ const HomeScreen = () => {
     return <Divider />;
   }, []);
 
+  const listEmptyComponent = useCallback(() => {
+    return (
+      <View style={ss.pageActivityIndicatorWrapper}>
+        <ActivityIndicator size={60} />
+      </View>
+    );
+  }, [ss]);
+
   useEffect(() => {
     const postSubscription = DataStore.observeQuery(Posts, Predicates.ALL, {
       sort: (s) => s.createdAt(SortDirection.DESCENDING),
@@ -61,7 +68,6 @@ const HomeScreen = () => {
         // if(JSON.stringify(formattedPosts) !== JSON.stringify(allPosts)) {
           setAllPosts(formattedPosts);
         // }
-        setDataLoading(false);
       } catch (err) {
         console.log("error fetching Data", err);
       }
@@ -74,26 +80,22 @@ const HomeScreen = () => {
     <>
       <IntroModal />
       <View style={ss.pageWrapper}>
-        {dataLoading || allPosts.length === 0 ? (
-          <View style={ss.pageActivityIndicatorWrapper}>
-            <ActivityIndicator size={60} />
-          </View>
-        ) : (
-          <FlatList
-            data={allPosts}
-            renderItem={renderItem}
-            keyExtractor={keyExtractor}
-            ItemSeparatorComponent={listItemSeparator}
-            stickyHeaderIndices={[0]}
-            ListHeaderComponent={listHeader}
-            removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
-            maxToRenderPerBatch={10} // Also the default
-            initialNumToRender={10} // Also the default
-            keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="on-drag"
-            style={{ width: '100%' }}
-          />
-        )}
+        <FlatList
+          data={allPosts}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          ItemSeparatorComponent={listItemSeparator}
+          stickyHeaderIndices={[0]}
+          ListHeaderComponent={listHeader}
+          removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
+          maxToRenderPerBatch={10} // Also the default
+          initialNumToRender={10} // Also the default
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          style={{ width: '100%' }}
+          contentContainerStyle={{ flexGrow: 1 }}
+          ListEmptyComponent={listEmptyComponent}  
+        />
       </View>
     </>
   );

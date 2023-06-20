@@ -58,11 +58,19 @@ const ScheduleScreen = ({ navigation, route }) => {
 
   const keyExtractor = useCallback((item) => item.id, []);
 
+  const listEmptyComponent = useCallback(() => {
+    return (
+      <View style={ss.pageActivityIndicatorWrapper}>
+        <ActivityIndicator size={60} />
+      </View>
+    );
+  }, [ss]);
+
   const renderScene = ({ route }) => {
     return (
       <FlatList
         key={route.key}
-        data={scheduleData.find((item) => item.day === route.title).data}
+        data={scheduleData.length === 0 ? [] : scheduleData.find((item) => item.day === route.title).data}
         renderItem={({ item }) => <ScheduleItem item={item} />}
         keyExtractor={keyExtractor}
         ItemSeparatorComponent={Divider}
@@ -72,6 +80,8 @@ const ScheduleScreen = ({ navigation, route }) => {
         removeClippedSubviews={Platform.OS === 'android'} // Saves memory, has issues on iOS
         maxToRenderPerBatch={10} // Also the default
         initialNumToRender={10} // Also the default
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={listEmptyComponent}  
       />
     );
   };
@@ -113,16 +123,6 @@ const ScheduleScreen = ({ navigation, route }) => {
 
     return () => subscription.unsubscribe();
   }, []);
-
-  if ( dataLoading || rawScheduleData.length === 0 ) {
-    return (
-      <View style={ss.pageWrapper}>
-        <View style={ss.pageActivityIndicatorWrapper}>
-          <ActivityIndicator size={60} />
-        </View>
-      </View>
-    )
-  }
   
   return (
     <>

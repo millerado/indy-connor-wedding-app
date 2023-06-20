@@ -25,6 +25,16 @@ const StandingsScreen = () => {
   const dimensions = calcDimensions();
 
   const renderScene = ({ route }) => {
+    if(standingsTeams.length === 0 || standingsPeople.length === 0) {
+      return(
+        <View style={ss.pageWrapper}>
+          <View style={ss.pageActivityIndicatorWrapper}>
+            <ActivityIndicator size={60} />
+          </View>
+        </View>
+      );
+    }
+
     return (
       <View style={ss.pageWrapper}>
         <ScrollView
@@ -157,20 +167,20 @@ const StandingsScreen = () => {
     };
   }, []);
 
-  if (
-    users.length === 0 ||
-    teams.length === 0 ||
-    standingsTeams.length === 0 ||
-    standingsPeople.length === 0
-  ) {
-    return (
-      <View style={ss.pageWrapper}>
-        <View style={ss.pageActivityIndicatorWrapper}>
-          <ActivityIndicator size={60} />
-        </View>
-      </View>
-    );
-  }
+  // if (
+  //   users.length === 0 ||
+  //   teams.length === 0 ||
+  //   standingsTeams.length === 0 ||
+  //   standingsPeople.length === 0
+  // ) {
+  //   return (
+  //     <View style={ss.pageWrapper}>
+  //       <View style={ss.pageActivityIndicatorWrapper}>
+  //         <ActivityIndicator size={60} />
+  //       </View>
+  //     </View>
+  //   );
+  // }
 
   return (
     // <View style={ss.pageWrapper}>

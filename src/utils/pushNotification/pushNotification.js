@@ -124,19 +124,21 @@ export const sendUsersPushNotifications = async (userIds, title, body, data, sen
 
   const usersForBulkSend = [];
   userIds.forEach(userId => {
-    storeNotification(userId, title, body, data, new Date().toISOString());
-    // Build an array of userId, array of tokens
-    const allUserTokens = tokenRecords.filter(t => t.userId === userId);
-    const unreadNotifications = allUsers.find(u => u.id === userId)?.unreadNotifications;
-    setBadgeCount(unreadNotifications + 1, userId, sendingUserId);
-    if ( allUserTokens.length > 0 ) {
-      const uniqueOneUserTokens = [ ...new Set(allUserTokens.map(t => t.token)) ];
-      
-      usersForBulkSend.push({
-        userId,
-        tokens: uniqueOneUserTokens.length === 1 ? uniqueOneUserTokens[0] : uniqueOneUserTokens,
-        badge: unreadNotifications + 1,
-      });
+    if(userId !== sendingUserId) {
+      storeNotification(userId, title, body, data, new Date().toISOString());
+      // Build an array of userId, array of tokens
+      const allUserTokens = tokenRecords.filter(t => t.userId === userId);
+      const unreadNotifications = allUsers.find(u => u.id === userId)?.unreadNotifications;
+      setBadgeCount(unreadNotifications + 1, userId, sendingUserId);
+      if ( allUserTokens.length > 0 ) {
+        const uniqueOneUserTokens = [ ...new Set(allUserTokens.map(t => t.token)) ];
+        
+        usersForBulkSend.push({
+          userId,
+          tokens: uniqueOneUserTokens.length === 1 ? uniqueOneUserTokens[0] : uniqueOneUserTokens,
+          badge: unreadNotifications + 1,
+        });
+      }
     }
   });
 

@@ -105,6 +105,16 @@ const TeamDetailsScreen = ({ navigation, route }) => {
     )
   }, [standingsPeople]);
 
+  const renderListEmpty = useCallback(() => {
+    return (
+      <View style={{ flex: 1, width: "100%", justifyContent: 'center', paddingHorizontal: 15, paddingTop: 15, paddingBottom: 40 }}>
+        <Text size={TextSizes.XXL}>
+          Nobody has played any games yet!
+        </Text>
+      </View>
+    )
+  }, []);
+
   const keyExtractor = useCallback((item) => item.id, []);
 
   const listItemSeparator = useCallback(() => {
@@ -181,6 +191,7 @@ const TeamDetailsScreen = ({ navigation, route }) => {
         scrollEventThrottle={16}
         onScroll={scrollHandler}
         overScrollMode="never"
+        ListEmptyComponent={renderListEmpty}
       />
     </View>
   );

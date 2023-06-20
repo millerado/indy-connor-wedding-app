@@ -22,7 +22,7 @@ const StandingsTeamRow = (props) => {
 
   const { index, teamId, teamName, iconName, description, points, allUsers, allTeams, allStandingsTeams, allStandingsPeople } = props;
 
-  if (!teamId || !teamName || !iconName || !points) {
+  if (!teamId || !teamName || !iconName) {
     return null;
   }
 

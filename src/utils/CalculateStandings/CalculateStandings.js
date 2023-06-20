@@ -81,9 +81,8 @@ const CalculateStandings = () => {
   }, []);
 
   useEffect(() => {
-    // Check lengths on all 5
+    // Check lengths on all 5 arrays
     if (users.length > 0 && teams.length > 0 && events.length > 0 && standingsTeams.length > 0 && standingsPeople.length > 0) {
-      // TO-DO: Need to do a timestamp check in here, make sure this is real
       const startTime = new Date();
       // console.log('-- Lets do this! --', startTime);
       const maxEventTime = new Date(Math.max(...events.map((e) => new Date(e.updatedAt))));

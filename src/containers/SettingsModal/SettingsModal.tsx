@@ -151,11 +151,11 @@ const SettingsModal = () => {
                     Most Liked Posts
                   </Button>
                 )}
-                {authStatus.isAdmin && (
+                {/* {authStatus.isAdmin && (
                   <Button onPress={resetDatastore} style={{marginTop: 10}}>
                     Debug Reset Datastore
                   </Button>
-                )}
+                )} */}
               </View>
             </ScrollView>
           </View>

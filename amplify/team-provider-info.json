@@ -1,4 +1,25 @@
 {
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-indigoandconnor-prod-234305-authRole",
+      "UnauthRoleArn": "arn:aws:iam::800476181102:role/amplify-indigoandconnor-prod-234305-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::800476181102:role/amplify-indigoandconnor-prod-234305-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-indigoandconnor-prod-234305-deployment",
+      "UnauthRoleName": "amplify-indigoandconnor-prod-234305-unauthRole",
+      "StackName": "amplify-indigoandconnor-prod-234305",
+      "StackId": "arn:aws:cloudformation:us-east-1:800476181102:stack/amplify-indigoandconnor-prod-234305/09f93050-0efb-11ee-9038-0eb879048017",
+      "AmplifyAppId": "d1w6j9dowe4tox"
+    },
+    "categories": {
+      "auth": {
+        "indigoandconnor": {}
+      },
+      "storage": {
+        "s3indigoandconnorstorage4ad011fe": {}
+      }
+    }
+  },
   "dev": {
     "awscloudformation": {
       "AuthRoleName": "amplify-indigoandconnor-dev-145032-authRole",

@@ -18,6 +18,7 @@ import {
   NotificationContext,
   DefaultNotification,
 } from "./contexts";
+import { WelcomeScreen } from './screens';
 import { Users, ScheduledNotifications, Notifications as NotificationsModel } from "./models";
 import { registerForPushNotificationsAsync, DataStore, configureDataStore, sendUserScheduledPushNotification, setBadgeCount, CalculateStandings } from "./utils";
 
@@ -120,6 +121,10 @@ const App = () => {
     //   console.log('-- Have a user, set the data store config --', authStatus.userId);
     //   configureDataStore(authStatus.userId, true);
     // }
+
+    if(!authStatus.isAuthed) {
+      return;
+    }
 
     const scheduledNotificationsSubscription = DataStore.observeQuery(
       ScheduledNotifications,
@@ -244,6 +249,7 @@ const App = () => {
     };
   }, []);
 
+
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       // This tells the splash screen to hide immediately! If we call this after
@@ -269,17 +275,23 @@ const App = () => {
                 value={{ snackbar: snackbarDetails, setSnackbar }}
               >
                 <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-                  <Navigation />
-                  <Snackbar
-                    visible={showSnackbar}
-                    onDismiss={onDismissSnackBar}
-                    action={snackbarDetails.action}
-                    duration={snackbarDetails.duration}
-                    onIconPress={snackbarDetails.onIconPress}
-                  >
-                    {snackbarDetails.message}
-                  </Snackbar>
-                  <CalculateStandings />
+                  {authStatus.userId ? (
+                    <>
+                      <Navigation />
+                      <Snackbar
+                        visible={showSnackbar}
+                        onDismiss={onDismissSnackBar}
+                        action={snackbarDetails.action}
+                        duration={snackbarDetails.duration}
+                        onIconPress={snackbarDetails.onIconPress}
+                      >
+                        {snackbarDetails.message}
+                      </Snackbar>
+                      <CalculateStandings />
+                    </>
+                  ) : (
+                    <WelcomeScreen />
+                  )}
                 </View>
               </SnackbarContext.Provider>
             </PaperProvider>

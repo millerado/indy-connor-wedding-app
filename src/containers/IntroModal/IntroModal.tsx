@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
 import { View, ScrollView, SafeAreaView } from "react-native";
 import { useTheme } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { appPasscode } from "../../../appConfig";
 import { Text, Modal, TextInput, Button, TextSizes } from "../../components";
+import { AuthContext } from "../../contexts";
 import SelectUserModal from "../SelectUserModal/SelectUserModal";
 import styles from "./IntroModalStyles";
 
@@ -12,6 +13,7 @@ const IntroModal = (props) => {
   const [passCodeError, setPassCodeError] = useState("");
   const [passCode, setPassCode] = useState("");
   const [showSelectUserModal, setShowSelectUserModal] = useState(false);
+  const authStatus = useContext(AuthContext).authStatus;
 
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
@@ -48,6 +50,12 @@ const IntroModal = (props) => {
   const closeSelectUserModal = () => {
     setShowSelectUserModal(false);
   };
+
+  useEffect(() => {
+    if(!authStatus.isAuthed) {
+      setShowSelectUserModal(true);
+    }
+  }, [authStatus])
 
   useEffect(() => {
     const checkOnboarding = async () => {

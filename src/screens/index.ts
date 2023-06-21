@@ -12,3 +12,4 @@ export { default as StandingsScreen } from "./StandingsScreen/StandingsScreen";
 export { default as TeamDetailsScreen } from "./TeamDetailsScreen/TeamDetailsScreen";
 export { default as UserScreen } from "./UserScreen/UserScreen";
 export { default as ViewPostScreen } from "./ViewPostScreen/ViewPostScreen";
+export { default as WelcomeScreen } from "./WelcomeScreen/WelcomeScreen";

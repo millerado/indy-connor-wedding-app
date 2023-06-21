@@ -161,7 +161,7 @@ const WelcomeScreen = () => {
             setView("selectUser");
           }
         } else {
-          setView("selectUser");
+          setView("passcode");
         }
       } catch (e) {
         console.log("-- Error loading onboarding data --", e);

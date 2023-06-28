@@ -50,7 +50,7 @@ const CommentModal = (props) => {
       sendUsersPushNotifications(
         userIds,
         'Camp Conndigo',
-        `${taggedBy} tagged you in a comment in the T Party App`,
+        `${taggedBy} tagged you in a comment in the Camp Conndigo App`,
         { targetType: 'post', id: postsID },
         authStatus.userId,
       );

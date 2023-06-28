@@ -141,7 +141,7 @@ const SettingsModal = () => {
                     Send Global Notification
                   </Button>
                 )}
-                {authStatus.isAuthed && (
+                {authStatus.isAdmin && (
                   <Button onPress={goToGamesPage} style={{marginTop: 10}}>
                     Manage Games
                   </Button>

@@ -59,7 +59,7 @@ const UserScreenHeader = (props) => {
     camera: "loading",
   });
   const auth = useContext(AuthContext);
-  const { authStatus } = auth;
+  const { authStatus, setAuthStatus } = auth;
 
   const navigation = useNavigation();
 
@@ -138,7 +138,6 @@ const UserScreenHeader = (props) => {
 
   // Handlers for updating user in DynamoDB
   const saveUserToDynamoDB = async (props) => {
-    // console.log('-- saveUserToDynamoDB --', props);
     const { updatePicture, updateAbout } = props;
     // Change userInDb to dbUser
     try {
@@ -151,6 +150,7 @@ const UserScreenHeader = (props) => {
           updatedUser.about = updateAbout ? updateAbout : oldUser.about;
         })
       );
+      setAuthStatus(newUser);
       setDbUser(newUser);
     } catch (err) {
       console.log("error posting User", err);

@@ -330,7 +330,7 @@ const UserScreenHeader = (props) => {
                       style={{
                         position: "absolute",
                         width: dimensions.width,
-                        height: dimensions.width,
+                        height: imageViewHeight,
                         alignItems: "center",
                         justifyContent: "center",
                       }}

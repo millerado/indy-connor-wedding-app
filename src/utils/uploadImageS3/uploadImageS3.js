@@ -79,7 +79,7 @@ const handleImagePicked = async (pickerResult, uploadImageCallback) => {
 
       for(let i = 0; i < uploadedImages.length; i++) {
         const image = uploadedImages[i];
-        console.log('-- uploadedImage --', image);
+        // console.log('-- uploadedImage --', image);
         // Handling for Android returning the wrong Width and Height
         // Orientation of 6 and 8 are Landscape, so we want to make sure we're using the large dimension as the Height in that case
         // If it's not 6 or 8, it's Portrait, so larger dimension in the Width

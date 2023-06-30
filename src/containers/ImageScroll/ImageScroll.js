@@ -120,7 +120,7 @@ const ImageScroll = (props) => {
                   >
                     <>
                       {authStatus.isAdmin && (
-                        <View style={{position: 'absolute', right: 10, top: 10}} onPress={() => console.log('-- Press --')}>
+                        <View style={{position: 'absolute', right: 10, top: 10}}>
                           <Icon name={adminFavoritedImages.includes(image.url) ? "heart" : "heartOutline"} size={24} color={theme.colors.red} />
                         </View>
                       )}

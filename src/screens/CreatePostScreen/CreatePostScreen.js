@@ -25,6 +25,7 @@ import {
   DropdownInput,
   MultiselectInput,
   ConditionalWrapper,
+  ImageS3,
 } from "../../components";
 import { Posts, Users, Games } from "../../models";
 import { uploadImageS3, DataStore, sendUsersPushNotifications, gamePlayers, nth } from "../../utils";
@@ -63,7 +64,7 @@ const CreatePostScreen = ({ navigation, route }) => {
   const uploadImageCallback = async (props) => {
     const { success, uploadedImages, errorSummary, errorDetails } = props;
     if (success) {
-      const newImages = [];
+      const newImages = [...images];
       for(let i = 0; i < uploadedImages.length; i++) {
         const img = uploadedImages[i];
         newImages.push({
@@ -194,18 +195,12 @@ const CreatePostScreen = ({ navigation, route }) => {
 
   const startPickImage = async () => {
     setShowMenu(false);
-    if (images) {
-      setImages([]);
-    }
     uploadImageS3.pickImage(uploadImageCallback, true);
     setImageLoading('uploading');
   }
 
   const startTakePhoto = async () => {
     setShowMenu(false);
-    if (images) {
-      setImages([]);
-    }
     uploadImageS3.takePhoto(uploadImageCallback);
     setImageLoading('uploading');
   }
@@ -219,6 +214,12 @@ const CreatePostScreen = ({ navigation, route }) => {
 
   const closeMenu = () => {
     setShowMenu(false);
+  }
+
+  const removeImageFromPost = (index) => {
+    const newImages = [...images];
+    newImages.splice(index, 1);
+    setImages(newImages);
   }
 
   const renderPlaceholder = () => {
@@ -466,7 +467,7 @@ const CreatePostScreen = ({ navigation, route }) => {
         style={{ flex: 1, width: "100%" }}
       >
         {dataPosting ? (
-          <View style={{ padding: 20, width: "100%", alignItems: "center" }}>
+          <View style={ss.pageActivityIndicatorWrapper}>
             <ActivityIndicator size={typography.fontSizeXXXL} />
           </View>
         ) : (
@@ -715,7 +716,32 @@ const CreatePostScreen = ({ navigation, route }) => {
                 disabled={!isConnected}
                 anchor={
                   images.length > 0 ? (
-                    <ImageScroll images={images} doubleTapHandler={openMenu} singleTapHandler={openMenu} tapDelay={500} />
+                    <View style={{flexDirection: 'row', width: '100%', flexWrap: 'wrap', justifyContent: 'space-evenly', paddingVertical: (8 / -2)}}>
+                      {images.map((image, index) => (
+                        <View style={{padding: dimensions.width * .01}} key={index}>
+                          <ImageS3 
+                            fileName={image.url}
+                            height={dimensions.width * .31}
+                            width={dimensions.width * .31}
+                            key={index}
+                            multipleImages={false}
+                          >
+                            <Pressable style={{position: 'absolute', right: 3, bottom: 3}} onPress={() => removeImageFromPost(index)}>
+                              <Icon name="delete" size={24} color={'white'} />
+                            </Pressable>
+                          </ImageS3>
+                        </View>
+                      ))}
+                      {imageLoading === 'uploading' ? (
+                        <View style={{padding: dimensions.width * .01, width: dimensions.width * .31, height: dimensions.width * .31, alignItems: 'center', justifyContent: 'center'}} key={'spinner'}>
+                          <ActivityIndicator size={dimensions.width * .2} />
+                        </View>
+                      ) : (
+                        <Pressable onPress={openMenu} disabled={!isConnected} style={{padding: dimensions.width * .01, width: dimensions.width * .31, height: dimensions.width * .31, alignItems: 'center', justifyContent: 'center'}} key={'addImage'}>
+                          <Icon name="addItem" size={dimensions.width * .2} />
+                        </Pressable>
+                      )}
+                    </View>
                   ) : (
                     <Pressable onPress={openMenu} disabled={!isConnected}>
                       {renderPlaceholder()}

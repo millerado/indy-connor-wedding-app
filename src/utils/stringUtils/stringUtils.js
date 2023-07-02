@@ -7,7 +7,7 @@ export const gamePlayers = (game, introText) => {
   const { minNumberOfPlayersPerTeam, maxNumberOfPlayersPerTeam, minNumberOfTeams, maxNumberOfTeams } = game;
   const intro = introText?.length > 0 ? `${introText} ` : '';
   const maxTeams = !maxNumberOfTeams ? '-or-more' : maxNumberOfTeams > minNumberOfTeams ? `-${maxNumberOfTeams}` : '';
-  return `${intro}${minNumberOfTeams}${maxTeams} ${maxNumberOfPlayersPerTeam === 1 ? 'players' : `teams of ${minNumberOfPlayersPerTeam}${maxNumberOfPlayersPerTeam > minNumberOfPlayersPerTeam ? `-${maxNumberOfPlayersPerTeam}` : ''}`}`
+  return `${intro}${minNumberOfTeams}${maxTeams} ${maxNumberOfPlayersPerTeam === 1 ? 'players' : `teams of ${minNumberOfPlayersPerTeam}${!maxNumberOfPlayersPerTeam ? '-or-more' : maxNumberOfPlayersPerTeam > minNumberOfPlayersPerTeam ? `-${maxNumberOfPlayersPerTeam}` : ''}`}`
 }
 
 export const formatGameString = (gameDetails, allUsers) => {

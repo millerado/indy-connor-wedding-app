@@ -22,7 +22,7 @@ const FormatTextWithMentions = ({ text, ...restOfProps }) => {
 
     // Regex matches on [username](userId)
     const regex = /@\[(.*?)\]\((.*?)\)/g;
-    const matches = text.match(regex);
+    const matchesUser = text.match(regex);
 
     // Regex matches on URLs
     const regexUrl = /(https?:\/\/[^\s]+)/g;
@@ -40,8 +40,8 @@ const FormatTextWithMentions = ({ text, ...restOfProps }) => {
     const regexBullet = /^•.*$/gm;
     const matchesBullet = text.match(regexBullet);
     
-    if (matches) {
-      matches.forEach((match) => {
+    if (matchesUser) {
+      matchesUser.forEach((match) => {
         const [, username, userId] = match.match(/@\[(.*?)\]\((.*?)\)/);
         text = reactStringReplace(text, match, (match, i) => (
           <Text key={`${i}${username}${userId}${match}`} onPress={() => goToUserScreen(userId, username)} color={theme.colors.primary} italic {...restOfProps}>{username}</Text>

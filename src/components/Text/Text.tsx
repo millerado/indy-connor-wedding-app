@@ -21,6 +21,7 @@ interface TextProps extends PaperTextProps {
   size?: TextSizes;
   bold?: boolean;
   italic?: boolean;
+  underline?: boolean;
   numberOfLines?: number;
   style?: any;
   color?: string | undefined
@@ -32,6 +33,7 @@ const Text = (props: TextProps) => {
     size = TextSizes.M,
     bold = false,
     italic = false,
+    underline = false,
     numberOfLines = 0,
     style,
     color = theme.colors.primary,
@@ -55,6 +57,7 @@ const Text = (props: TextProps) => {
         lineHeight: textSize * 1.3,
         color: color,
         fontStyle: italic ? "italic" : "normal",
+        textDecorationLine: underline ? "underline" : "none",
       }}
     />
   );

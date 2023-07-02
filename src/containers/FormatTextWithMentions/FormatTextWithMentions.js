@@ -52,7 +52,7 @@ const FormatTextWithMentions = ({ text, ...restOfProps }) => {
     if (matchesUrl) {
       matchesUrl.forEach((match) => {
         text = reactStringReplace(text, match, (match, i) => (
-          <Text key={`${i}${match}`} onPress={() => Linking.openURL(match)} color={theme.colors.primaryContainer} {...restOfProps}>{match}</Text>
+          <Text key={`${i}${match}`} onPress={() => Linking.openURL(match)} color={theme.colors.primary} {...restOfProps} italic underline>{match.replace('https://', '')}</Text>
         ));
       });
     }

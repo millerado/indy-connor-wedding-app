@@ -9,7 +9,7 @@ import { View, FlatList, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
 import { Predicates, SortDirection } from "aws-amplify";
 import { Posts } from "../../models";
-import { Text, TextSizes, ActivityIndicator, Divider } from "../../components";
+import { ActivityIndicator, Divider } from "../../components";
 import { AuthContext } from "../../contexts";
 import { IntroModal, AddPostListHeader } from "../../containers";
 import { DataStore } from "../../utils";
@@ -50,6 +50,10 @@ const HomeScreen = () => {
       </View>
     );
   }, [ss]);
+
+  const onRefresh = () => {
+    DataStore.start();
+  }
 
   useEffect(() => {
     const postSubscription = DataStore.observeQuery(Posts, Predicates.ALL, {
@@ -95,6 +99,8 @@ const HomeScreen = () => {
           style={{ width: '100%' }}
           contentContainerStyle={{ flexGrow: 1 }}
           ListEmptyComponent={listEmptyComponent}  
+          onRefresh={onRefresh}
+          refreshing={false}
         />
       </View>
     </>

@@ -73,23 +73,22 @@ const App = () => {
   const setUser = async (newUser: Users) => {
     const { id, name, image, about, admin, teamsID } = newUser;
     // console.log('-- Set User --', newUser);
-    if(id && id !== authStatus.userId) {
-      // console.log('-- User Change, Reset Datastore Stuff --');
-      // await DataStore.clear();
-      await DataStore.stop();
-      DataStore.configure({
-        syncExpressions: [
-          syncExpression(NotificationsModel, () => {
-            return n => n.userId.eq(id);
-          }),
-          syncExpression(ScheduledNotifications, () => {
-            return n => n.userId.eq(id);
-          }),
-        ]
-      });
-    } else {
-      DataStore.clear();
-    }
+    // if(id && id !== authStatus.userId) {
+    //   // console.log('-- User Change, Reset Datastore Stuff --');
+    //   // await DataStore.clear();
+    //   await DataStore.stop();
+    //   await DataStore.configure({
+    //     syncExpressions: [
+    //       syncExpression(NotificationsModel, () => {
+    //         return n => n.userId.eq(id);
+    //       }),
+    //       syncExpression(ScheduledNotifications, () => {
+    //         return n => n.userId.eq(id);
+    //       }),
+    //     ]
+    //   });
+    //   DataStore.start();
+    // }
 
     setAuthStatus({
       isAuthed: true,
@@ -188,6 +187,37 @@ const App = () => {
     prepare();
     fetchCurrentTheme();
     fetchCurrentUser();
+
+    // The listener for Notification Clicks, aka Notifications deep linking
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      const { targetType, id } = response.notification.request.content.data;
+      // console.log('-- Notification Target and ID --', targetType, id);
+      if(targetType) { // Only worrying about linking if it's pointing somewhere
+        if(targetType === 'post' && id) {
+          // Push to a View Post
+          nav.current.navigate('View Post', {
+            postsID: id,
+          });
+        } else if (targetType === 'user' && id) {
+          // Push to a User View
+          nav.current.navigate('User', {
+            userId: id,
+          });
+        } else if (targetType === 'alert') {
+          nav.current.navigate('Notifications', {});
+        } else if (targetType === 'guestbook') {
+          nav.current.navigate('Create Post', {});
+        }
+      }
+    });
+
+    return () => {
+      // We *only* need this if we're going to track a state (redux or otherwise) of all notifications. Otherwise this isn't needed
+      // Notifications.removeNotificationSubscription(notificationListener);
+      // This checks for notification clicks with the app open
+      Notifications.removeNotificationSubscription(responseListener);
+    };
+
   }, []);
 
 

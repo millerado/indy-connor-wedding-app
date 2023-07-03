@@ -7,7 +7,7 @@ import { GraphQLQuery } from '@aws-amplify/api';
 import { appPasscode } from "../../../appConfig";
 import * as queries from '../../graphql/queries'
 import { ListUsersQuery } from '../../API';
-import { Text, TextInput, Button, TextSizes } from "../../components";
+import { Text, TextInput, Button, TextSizes, ActivityIndicator } from "../../components";
 import { SingleUserInModal } from "../../containers";
 import { AuthContext, SnackbarContext } from "../../contexts";
 import { adminPasscode } from "../../../appConfig";
@@ -75,6 +75,14 @@ const WelcomeScreen = () => {
       setDisplayedUsers(allUsers);
     }
   };
+
+  const listEmptyComponent = useCallback(() => {
+    return (
+      <View style={ss.pageActivityIndicatorWrapper}>
+        <ActivityIndicator size={60} />
+      </View>
+    );
+  }, [ss]);
 
   const renderItem = ({ item: u, index }) => {
     return (
@@ -298,6 +306,7 @@ const WelcomeScreen = () => {
               initialNumToRender={10} // Also the default
               keyboardShouldPersistTaps="handled"
               keyboardDismissMode="on-drag"
+              ListEmptyComponent={listEmptyComponent}
               // style={ss.modalScrollView}
             />
           </View>

@@ -7,8 +7,8 @@ import React, {
 } from "react";
 import { View, FlatList, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Predicates, SortDirection, API, graphqlOperation } from "aws-amplify";
-import { useFocusEffect } from "@react-navigation/native";
+import { Predicates, SortDirection, API, graphqlOperation, Hub } from "aws-amplify";
+import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
 import { onCreatePosts, onUpdatePosts, onDeletePosts } from "../../graphql/subscriptions";
 import { listPosts } from '../../graphql/queries'
 import { Posts } from "../../models";
@@ -22,11 +22,22 @@ import styles from "./HomeScreenStyles";
 
 const HomeScreen = () => {
   const [allPosts, setAllPosts] = useState([]);
+  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
 
   const authContext = useContext(AuthContext);
   const { authStatus } = authContext;
+
+  Hub.listen("api", (data: any) => {
+    const { payload } = data;
+    if ( payload.event === CONNECTION_STATE_CHANGE ) {
+      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
+        loadPosts();
+      }
+      setPriorConnectionState(payload.data.connectionState);
+    }
+  });
 
   const formatPostItems = (items) => {
     if(items.length > 0) {
@@ -113,35 +124,33 @@ const HomeScreen = () => {
 
   // Sample with a filter
   // graphqlOperation(subscriptions.onCreatePosts, {filter: {postsID: {eq: "876f0317-ec70-4cbf-93fc-ef634a9fcb26"}}})
-  useFocusEffect(
-    useCallback(() => {
-      const createSub = API.graphql(
-        graphqlOperation(onCreatePosts)
-      ).subscribe({
-        next: ({ value }) => loadPosts(),
-      });
-      
-      const updateSub = API.graphql(
-        graphqlOperation(onUpdatePosts)
-      ).subscribe({
-        next: ({ value }) => loadPosts()
-      });
-      
-      const deleteSub = API.graphql(
-        graphqlOperation(onDeletePosts)
-      ).subscribe({
-        next: ({ value }) => loadPosts()
-      });
-  
-      loadPosts();
-  
-      return () => {
-        createSub.unsubscribe();
-        updateSub.unsubscribe();
-        deleteSub.unsubscribe();
-      }
-    }, [])
-  );
+  useEffect(() => {
+    const createSub = API.graphql(
+      graphqlOperation(onCreatePosts)
+    ).subscribe({
+      next: ({ value }) => loadPosts(),
+    });
+    
+    const updateSub = API.graphql(
+      graphqlOperation(onUpdatePosts)
+    ).subscribe({
+      next: ({ value }) => loadPosts()
+    });
+    
+    const deleteSub = API.graphql(
+      graphqlOperation(onDeletePosts)
+    ).subscribe({
+      next: ({ value }) => loadPosts()
+    });
+
+    loadPosts();
+
+    return () => {
+      createSub.unsubscribe();
+      updateSub.unsubscribe();
+      deleteSub.unsubscribe();
+    }
+  }, []);
 
   return (
     <>

@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { View, FlatList, Platform, Pressable, ImageBackground } from 'react-native';
 import { useTheme } from 'react-native-paper';
+import { API, graphqlOperation } from "aws-amplify";
+import { GraphQLQuery } from '@aws-amplify/api';
+import * as subscriptions from '../../graphql/subscriptions';
+import * as queries from '../../graphql/queries'
+import { ListFAQSQuery } from '../../API';
 import { FAQ } from '../../models';
 import { Divider, ActivityIndicator, TextInput, Icon } from '../../components';
 import { FAQModal, FAQItem } from '../../containers';
@@ -110,6 +115,51 @@ const InfoScreen = ({ navigation, route }) => {
     )
   }
 
+  const onRefresh = () => {
+    loadFAQ();
+  }
+
+  // Backup function that gets called if you're offline
+  const loadFaqFromDatastore = async () => {
+    try {
+      const items = await DataStore.query(FAQ);
+      items.sort((a, b) => a.sortOrder - b.sortOrder);
+      if (dataLoading || searchTerm === '') {
+        setFAQData(items);
+      }
+      setAllFAQData(items);
+      setDataLoading(false);
+    } catch (err) {
+      console.log('-- Error Loading FAQ Via Datastore --', err);
+    }
+  }
+
+  const loadFAQ = async () => {
+    try {
+      const allFaq = await API.graphql(
+        { 
+          query: queries.listFAQS,
+        }
+      );
+      // console.log('-- FAQ Loaded --', allFaq.data.listFAQS.items.length)
+
+      const unfilteredItems = allFaq?.data?.listFAQS?.items;
+      // Remove items where _deleted is true
+      const items = unfilteredItems.filter(item => !item._deleted);
+      if(items.length > 0) {
+        items.sort((a, b) => a.sortOrder - b.sortOrder);
+        if (dataLoading || searchTerm === '') {
+          setFAQData(items);
+        }
+        setAllFAQData(items);
+        setDataLoading(false);
+      }
+    } catch (err) {
+      console.log('-- Error Loading FAQ, Will Try Datastore --', err);
+      loadFaqFromDatastore();
+    }
+  }
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => authStatus?.isAdmin ? addNewButton() : null,
@@ -136,23 +186,31 @@ const InfoScreen = ({ navigation, route }) => {
   }, [searchTerm]);
 
   useEffect(() => {
-    const subscription = DataStore.observeQuery(FAQ).subscribe(({ items }) => {
-      try {
-        items.sort((a, b) => a.sortOrder - b.sortOrder);
-        if (dataLoading || searchTerm === '') {
-          setFAQData(items);
-        }
-        // if(JSON.stringify(items) !== JSON.stringify(allFAQData)) {
-          setAllFAQData(items);
-        // }
-        if (dataLoading) {
-          setDataLoading(false);
-        }
-        // console.log('-- Fetched Data --', dt);
-      } catch (err) { console.log('error fetching Data', err) }
+    const createSub = API.graphql(
+      graphqlOperation(subscriptions.onCreateFAQ)
+    ).subscribe({
+      next: ({ value }) => loadFAQ(),
+    });
+    
+    const updateSub = API.graphql(
+      graphqlOperation(subscriptions.onUpdateFAQ)
+    ).subscribe({
+      next: ({ value }) => loadFAQ()
+    });
+    
+    const deleteSub = API.graphql(
+      graphqlOperation(subscriptions.onDeleteFAQ)
+    ).subscribe({
+      next: ({ value }) => loadFAQ()
     });
 
-    return () => subscription.unsubscribe();
+    loadFAQ();
+
+    return () => {
+      createSub.unsubscribe();
+      updateSub.unsubscribe();
+      deleteSub.unsubscribe();
+    }
   }, []);
 
   return (
@@ -171,7 +229,9 @@ const InfoScreen = ({ navigation, route }) => {
         maxToRenderPerBatch={10} // Also the default
         initialNumToRender={10} // Also the default
         contentContainerStyle={{ flexGrow: 1 }}
-        ListEmptyComponent={listEmptyComponent}  
+        ListEmptyComponent={listEmptyComponent}
+        onRefresh={onRefresh}
+        refreshing={false}
       />
     </View>
   );

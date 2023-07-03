@@ -381,7 +381,7 @@ const UserScreenHeader = (props) => {
           <Text bold size={TextSizes.XL}>
             {hasPosted
               ? `${dbUser?.name.split(" ")[0]}'s Activities:`
-              : `${dbUser?.name.split(" ")[0]} hasn't been active yet yet`}
+              : `${dbUser?.name.split(" ")[0]} hasn't been active yet`}
           </Text>
         </View>
       </ScrollView>

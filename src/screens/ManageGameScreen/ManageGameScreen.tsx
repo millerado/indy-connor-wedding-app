@@ -210,7 +210,7 @@ const ManageGameScreen = ({ navigation, route }) => {
                   <NumberInput
                     value={minNumberOfTeams}
                     setValue={setMinNumberOfTeams}
-                    min={2}
+                    min={1}
                     max={100}
                   />
                 </View>
@@ -222,7 +222,7 @@ const ManageGameScreen = ({ navigation, route }) => {
                     <NumberInput
                       value={maxNumberOfTeams}
                       setValue={setMaxNumberOfTeams}
-                      min={2}
+                      min={1}
                       max={100}
                     />
                   </View>
@@ -264,7 +264,7 @@ const ManageGameScreen = ({ navigation, route }) => {
                     <NumberInput
                       value={minNumberOfPlayersPerTeam}
                       setValue={setMinNumberOfPlayersPerTeam}
-                      min={2}
+                      min={1}
                       max={100}
                     />
                   </View>
@@ -276,7 +276,7 @@ const ManageGameScreen = ({ navigation, route }) => {
                       <NumberInput
                         value={maxNumberOfPlayersPerTeam}
                         setValue={setMaxNumberOfPlayersPerTeam}
-                        min={2}
+                        min={1}
                         max={100}
                       />
                     </View>

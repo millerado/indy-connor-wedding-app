@@ -297,7 +297,7 @@ const CreatePostScreen = ({ navigation, route }) => {
       newTeams.push({
         id: 0,
         name: 'Everyone Else',
-        label: `Everyone Else (${playerString})`,
+        label: `${newTeams.length > 0 ? 'Everyone Else' : 'Participants'} (${playerString})`,
         points: points[0],
         players: [],
         minPlayers: minNumberOfPlayersForEveryoneElse,

@@ -2,10 +2,8 @@ import React, { useState, useEffect, useContext, useCallback, useMemo } from 're
 import { View, FlatList, Platform, Pressable, ImageBackground } from 'react-native';
 import { useTheme } from 'react-native-paper';
 import { API, graphqlOperation } from "aws-amplify";
-import { GraphQLQuery } from '@aws-amplify/api';
-import * as subscriptions from '../../graphql/subscriptions';
-import * as queries from '../../graphql/queries'
-import { ListFAQSQuery } from '../../API';
+import { onCreateFAQ, onUpdateFAQ, onDeleteFAQ} from '../../graphql/subscriptions';
+import { listFAQS } from '../../graphql/queries'
 import { FAQ } from '../../models';
 import { Divider, ActivityIndicator, TextInput, Icon } from '../../components';
 import { FAQModal, FAQItem } from '../../containers';
@@ -136,11 +134,7 @@ const InfoScreen = ({ navigation, route }) => {
 
   const loadFAQ = async () => {
     try {
-      const allFaq = await API.graphql(
-        { 
-          query: queries.listFAQS,
-        }
-      );
+      const allFaq = await API.graphql({ query: listFAQS });
       // console.log('-- FAQ Loaded --', allFaq.data.listFAQS.items.length)
 
       const unfilteredItems = allFaq?.data?.listFAQS?.items;
@@ -187,19 +181,19 @@ const InfoScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     const createSub = API.graphql(
-      graphqlOperation(subscriptions.onCreateFAQ)
+      graphqlOperation(onCreateFAQ)
     ).subscribe({
       next: ({ value }) => loadFAQ(),
     });
     
     const updateSub = API.graphql(
-      graphqlOperation(subscriptions.onUpdateFAQ)
+      graphqlOperation(onUpdateFAQ)
     ).subscribe({
       next: ({ value }) => loadFAQ()
     });
     
     const deleteSub = API.graphql(
-      graphqlOperation(subscriptions.onDeleteFAQ)
+      graphqlOperation(onDeleteFAQ)
     ).subscribe({
       next: ({ value }) => loadFAQ()
     });

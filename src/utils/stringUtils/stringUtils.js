@@ -26,6 +26,9 @@ export const formatGameString = (gameDetails, allUsers) => {
   if (teams.length === 2) { // Most games (a winning team and everyone else)
     return `${playerStringArrays[0]} defeated ${playerStringArrays[1]}`;
   }
+  if (teams.length === 1) { // A solo game (no teams)
+    return `${playerStringArrays[0]}`;
+  }
   // And a format for multiple teams (ex: Old College Try)
   let returnString = '';
   for (let i = 0; i < teams.length; i++) {

@@ -6,8 +6,7 @@ import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { Snackbar } from "./components";
-import Navigation from "./navigation/navigation";
+import { syncExpression } from 'aws-amplify';
 import { lightTheme, darkTheme } from "./styles";
 import {
   ThemeContext,
@@ -20,7 +19,8 @@ import {
 } from "./contexts";
 import { WelcomeScreen } from './screens';
 import { Users, ScheduledNotifications, Notifications as NotificationsModel } from "./models";
-import { registerForPushNotificationsAsync, DataStore, configureDataStore, sendUserScheduledPushNotification, setBadgeCount, CalculateStandings } from "./utils";
+import { registerForPushNotificationsAsync, DataStore } from "./utils";
+import AuthedApp from "./AuthedApp";
 
 const customFonts = {
   'Thasadith-Bold': require('./assets/fonts/Thasadith-Bold.ttf'),
@@ -72,6 +72,25 @@ const App = () => {
   // Pieces for the Auth Context
   const setUser = async (newUser: Users) => {
     const { id, name, image, about, admin, teamsID } = newUser;
+    // console.log('-- Set User --', newUser);
+    if(id && id !== authStatus.userId) {
+      // console.log('-- User Change, Reset Datastore Stuff --');
+      // await DataStore.clear();
+      await DataStore.stop();
+      DataStore.configure({
+        syncExpressions: [
+          syncExpression(NotificationsModel, () => {
+            return n => n.userId.eq(id);
+          }),
+          syncExpression(ScheduledNotifications, () => {
+            return n => n.userId.eq(id);
+          }),
+        ]
+      });
+    } else {
+      DataStore.clear();
+    }
+
     setAuthStatus({
       isAuthed: true,
       userId: id,
@@ -83,7 +102,6 @@ const App = () => {
     });
     // Tie in Notifications at the user level here (associate userId with their Notification Identifier)
     registerForPushNotificationsAsync(id);
-    // await configureDataStore(id, false);
     await AsyncStorage.setItem(
       "authStatus",
       JSON.stringify({
@@ -116,67 +134,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    
-    // if(authStatus.isAuthed) {
-    //   console.log('-- Have a user, set the data store config --', authStatus.userId);
-    //   configureDataStore(authStatus.userId, true);
-    // }
-
-    if(!authStatus.isAuthed) {
-      return;
-    }
-
-    const scheduledNotificationsSubscription = DataStore.observeQuery(
-      ScheduledNotifications,
-      (p) => p.userId.eq(authStatus.userId)
-    ).subscribe(({ items }) => {
-      // console.log('-- Scheduled Notifications --', items);
-      items.forEach((item) => {
-        const date = new Date(item.displayTime);
-        if(date.getTime() > Date.now()) {
-          sendUserScheduledPushNotification(
-            authStatus.userId,
-            item.subject,
-            item.messageBody,
-            JSON.parse(item.linking),
-            new Date(item.displayTime),
-            JSON.parse(item.scheduleTrigger),
-          );
-        }
-        DataStore.delete(ScheduledNotifications, item.id);
-      });
-    });
-
-    const notificationsSubscription = DataStore.observeQuery(NotificationsModel, (n) => n.and(n => [
-      n.userId.eq(authStatus.userId),
-      // n.displayTime.le(new Date().toISOString()), // Dates seem to get defined when useEffect is created, so filtering on the fly
-    ]),
-    ).subscribe(({ items }) => {
-      const pastOnly = items.filter((n) => n.displayTime <= new Date().toISOString());
-      const numberUnread = pastOnly.filter((item) => !item.read).length;
-      setNotificationDetails({
-        totalNotifications: pastOnly.length,
-        unreadNotifications: numberUnread,
-      });
-      // console.log('-- Number Unread/Total --', numberUnread, pastOnly.length);
-      setBadgeCount(numberUnread, authStatus.userId, authStatus.userId);
-    });
-
-    return () => {
-      // console.log('-- Use Effect Cleanup for --', authStatus.userId);
-      scheduledNotificationsSubscription.unsubscribe();
-      notificationsSubscription.unsubscribe();
-      // console.log('-- STUFF IS PAUSED --');
-      // let onReady = DataStore.clear();
-      // Promise.resolve(DataStore.clear());
-      // console.log('-- DataStore Cleared --');
-      // scheduledNotificationsSubscription.unsubscribe();
-      // notificationsSubscription.unsubscribe(); 
-      // Promise.resolve(configureDataStore(authStatus.userId, true));
-    };
-  }, [authStatus]);
-
-  useEffect(() => {
     const fetchCurrentTheme = async () => {
       try {
         const currentTheme = await AsyncStorage.getItem("themeName");
@@ -191,11 +148,23 @@ const App = () => {
     const fetchCurrentUser = async () => {
       try {
         const currentUser = await AsyncStorage.getItem("authStatus");
+        const userId = JSON.parse(currentUser).userId;
         if (currentUser) {
           setAuthStatus(JSON.parse(currentUser));
-          registerForPushNotificationsAsync(JSON.parse(currentUser).userId);
-          // console.log('currentUser', currentUser);
-          // await configureDataStore(JSON.parse(currentUser).userId, false);
+          registerForPushNotificationsAsync(userId);
+
+          // await DataStore.clear();
+          await DataStore.stop();
+          DataStore.configure({
+            syncExpressions: [
+              syncExpression(NotificationsModel, () => {
+                return n => n.userId.eq(userId);
+              }),
+              syncExpression(ScheduledNotifications, () => {
+                return n => n.userId.eq(userId);
+              }),
+            ]
+          });
         }
       } catch (e) {
         console.log("error fetching current theme", e);
@@ -219,34 +188,6 @@ const App = () => {
     prepare();
     fetchCurrentTheme();
     fetchCurrentUser();
-
-    // The listener for Notification Clicks, aka Notifications deep linking
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      const { targetType, id } = response.notification.request.content.data;
-      // console.log('-- Notification Target and ID --', targetType, id);
-      if(targetType) { // Only worrying about linking if it's pointing somewhere
-        if(targetType === 'post' && id) {
-          // Push to a View Post
-          nav.current.navigate('View Post', {
-            postsID: id,
-          });
-        } else if (targetType === 'user' && id) {
-          // Push to a User View
-          nav.current.navigate('User', {
-            userId: id,
-          });
-        } else if (targetType === 'alert') {
-          nav.current.navigate('Notifications', {});
-        }
-      }
-    });
-
-    return () => {
-      // We *only* need this if we're going to track a state (redux or otherwise) of all notifications. Otherwise this isn't needed
-      // Notifications.removeNotificationSubscription(notificationListener);
-      // This checks for notification clicks with the app open
-      Notifications.removeNotificationSubscription(responseListener);
-    };
   }, []);
 
 
@@ -276,19 +217,11 @@ const App = () => {
               >
                 <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
                   {authStatus.userId ? (
-                    <>
-                      <Navigation />
-                      <Snackbar
-                        visible={showSnackbar}
-                        onDismiss={onDismissSnackBar}
-                        action={snackbarDetails.action}
-                        duration={snackbarDetails.duration}
-                        onIconPress={snackbarDetails.onIconPress}
-                      >
-                        {snackbarDetails.message}
-                      </Snackbar>
-                      <CalculateStandings />
-                    </>
+                    <AuthedApp
+                      showSnackbar={showSnackbar}
+                      onDismissSnackBar={onDismissSnackBar}
+                      snackbarDetails={snackbarDetails}
+                    />
                   ) : (
                     <WelcomeScreen />
                   )}

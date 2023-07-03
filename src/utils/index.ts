@@ -1,4 +1,4 @@
-export { default as DataStore, configureDataStore } from './DataStore/DataStore';
+export { default as DataStore } from './DataStore/DataStore';
 export { default as downloadImageS3 } from './downloadImageS3/downloadImageS3';
 export { default as formatDate } from './formatDate/formatDate';
 export { sendUserScheduledPushNotification, sendUsersPushNotifications, sendGlobalPushNotification, registerForPushNotificationsAsync, savePushTokenAsync, scheduleNotificationForAnotherUser, setBadgeCount, getBadgeCount } from './pushNotification/pushNotification';

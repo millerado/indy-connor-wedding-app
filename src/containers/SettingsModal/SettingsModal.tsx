@@ -2,18 +2,14 @@ import React, { useMemo, useState, useContext } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "react-native-paper";
-import { Predicates } from "aws-amplify";
 import { Icon, Text, Button, Modal, TextSizes } from "../../components";
 import { typography } from "../../styles";
-import { ThemeContext, AuthContext } from "../../contexts";
+import { ThemeContext, AuthContext, UnauthedUser } from "../../contexts";
 import { DataStore } from '../../utils';
-import { Users, Teams, StandingsPeople, StandingsTeams } from '../../models';
-import SelectUserModal from '../SelectUserModal/SelectUserModal';
 import styles from "./SettingsModalStyles";
 
 const SettingsModal = () => {
   const [showModal, setShowModal] = useState(false);
-  const [showSelectUserModal, setShowSelectUserModal] = useState(false);
 
   const navigation = useNavigation();
 
@@ -22,7 +18,7 @@ const SettingsModal = () => {
   const { themeName, setThemeName } = themeContext;
 
   // Get the Auth Context
-  const authStatus = useContext(AuthContext).authStatus;
+  const { authStatus, setAuthStatus } = useContext(AuthContext);
 
   // Load theme for use in the file
   const theme = useTheme();
@@ -67,18 +63,15 @@ const SettingsModal = () => {
     navigation.push("Games List");
   };
 
-  const openSelectUserModal = () => {
+  const handleChangeUserPress = () => {
     closeModal();
     // Timeout only here to let one modal disappear before the other appears (iOS breaks if two mdoals are open)
     // ...Yes, this is ugly...
     setTimeout(() => {
-      setShowSelectUserModal(true);
+      setAuthStatus(UnauthedUser);
+      // setShowSelectUserModal(true);
     }, 350);
   }
-
-  const closeSelectUserModal = () => {
-    setShowSelectUserModal(false);
-  };
 
   const resetDatastore = async () => {
     await DataStore.stop();
@@ -91,7 +84,6 @@ const SettingsModal = () => {
       <Pressable onPress={openModal}>
         <Icon name='settings' color={theme.colors.primary} size={typography.fontSizeXXL} />
       </Pressable>
-      <SelectUserModal showModal={showSelectUserModal} closeModal={closeSelectUserModal} fullScreen={false} />
       <Modal
         isVisible={showModal}
         onBackButtonPress={closeModal}
@@ -133,7 +125,7 @@ const SettingsModal = () => {
                     View my User Profile
                   </Button>
                 )}
-                <Button onPress={openSelectUserModal} style={{marginTop: 10}}>
+                <Button onPress={handleChangeUserPress} style={{marginTop: 10}}>
                   {authStatus.isAuthed ? 'Change User' : 'Sign In to App'}
                 </Button>
                 {authStatus.isAdmin && (

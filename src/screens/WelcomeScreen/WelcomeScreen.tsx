@@ -2,13 +2,14 @@ import React, { useState, useEffect, useMemo, useContext, useCallback } from "re
 import { View, ScrollView, SafeAreaView, FlatList } from "react-native";
 import { useTheme } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Predicates, SortDirection } from "aws-amplify";
+import { API } from 'aws-amplify';
+import { GraphQLQuery } from '@aws-amplify/api';
 import { appPasscode } from "../../../appConfig";
+import * as queries from '../../graphql/queries'
+import { ListUsersQuery } from '../../API';
 import { Text, TextInput, Button, TextSizes } from "../../components";
 import { SingleUserInModal } from "../../containers";
 import { AuthContext, SnackbarContext } from "../../contexts";
-import { Users } from "../../models";
-import { DataStore } from "../../utils";
 import { adminPasscode } from "../../../appConfig";
 import styles from "./WelcomeScreenStyles";
 
@@ -74,7 +75,6 @@ const WelcomeScreen = () => {
       setDisplayedUsers(allUsers);
     }
   };
-
 
   const renderItem = ({ item: u, index }) => {
     return (
@@ -171,33 +171,62 @@ const WelcomeScreen = () => {
     checkOnboarding();
   }, []);
 
-  useEffect(() => {
-    // Subscribe to Users
-    const usersSubscription = DataStore.observeQuery(Users, Predicates.ALL, {
-      sort: (u) => u.name(SortDirection.ASCENDING),
-    }).subscribe(({ items }) => {
-      const newUsers = items.map((u) => {
-        return {
-          id: u.id,
-          name: u.name,
-          image: u.image ? JSON.parse(u.image) : undefined,
-          fullObject: u,
-        };
-      });
+  // CT 7/2/23: Moving from a Subscription to a GraphQL call so that I can reset datastore and not have it be an issue
+  // useEffect(() => {
+  //   // Subscribe to Users
+  //   const usersSubscription = DataStore.observeQuery(Users, Predicates.ALL, {
+  //     sort: (u) => u.name(SortDirection.ASCENDING),
+  //   }).subscribe(({ items }) => {
+  //     const newUsers = items.map((u) => {
+  //       return {
+  //         id: u.id,
+  //         name: u.name,
+  //         image: u.image ? JSON.parse(u.image) : undefined,
+  //         fullObject: u,
+  //       };
+  //     });
 
-      // Quick check to make sure we're only updating state if the subscription caught a change that we care about
-      // if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
-        setAllUsers(newUsers);
-        if (!searchText) {
+  //     // Quick check to make sure we're only updating state if the subscription caught a change that we care about
+  //     // if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
+  //       setAllUsers(newUsers);
+  //       if (!searchText) {
+  //         setDisplayedUsers(newUsers);
+  //       }
+  //     // }
+  //   });
+
+  //   return () => {
+  //     usersSubscription.unsubscribe();
+  //   };
+  // }, []);
+
+    useEffect(() => {
+      const getData = async () => {
+        // console.log('-- App UseEffect --');
+        const allUsers = await API.graphql<GraphQLQuery<ListUsersQuery>>(
+          { query: queries.listUsers }
+        );
+
+        const items = allUsers?.data?.listUsers?.items;
+        if(items) {
+          const newUsers = items.map((u) => {
+            return {
+              id: u.id,
+              name: u.name,
+              image: u.image ? JSON.parse(u.image) : undefined,
+              fullObject: u,
+            };
+          });
+          newUsers.sort((a, b) => a.name.localeCompare(b.name));
+    
+          setAllUsers(newUsers);
           setDisplayedUsers(newUsers);
         }
-      // }
-    });
 
-    return () => {
-      usersSubscription.unsubscribe();
-    };
-  }, []);
+        console.log('Set Users of Length', allUsers.data.listUsers.items.length);
+      };
+      getData();
+    }, []);
 
   return (
     <SafeAreaView style={[{backgroundColor: theme.colors.primary}]}>

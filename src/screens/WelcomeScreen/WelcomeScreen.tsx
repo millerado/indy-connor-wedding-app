@@ -231,7 +231,7 @@ const WelcomeScreen = () => {
           setDisplayedUsers(newUsers);
         }
 
-        console.log('Set Users of Length', allUsers.data.listUsers.items.length);
+        // console.log('Set Users of Length', allUsers.data.listUsers.items.length);
       };
       getData();
     }, []);

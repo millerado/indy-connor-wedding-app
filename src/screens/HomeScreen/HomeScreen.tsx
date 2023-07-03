@@ -16,6 +16,12 @@ import { DataStore } from "../../utils";
 import { PostPreview } from "../../containers";
 import styles from "./HomeScreenStyles";
 
+import { API, graphqlOperation } from 'aws-amplify';
+import { GraphQLQuery } from '@aws-amplify/api';
+import * as subscriptions from '../../graphql/subscriptions';
+import * as queries from '../../graphql/queries'
+import { ListPostsQuery } from '../../API';
+
 const HomeScreen = () => {
   const [allPosts, setAllPosts] = useState([]);
   const theme = useTheme();
@@ -23,6 +29,56 @@ const HomeScreen = () => {
 
   const authContext = useContext(AuthContext);
   const { authStatus } = authContext;
+
+  const formatPostItems = (items) => {
+    if(items.length > 0) {
+      const formattedPosts = items.map((post) => {
+        const obj = Object.assign({}, post);
+        const images = post.images?.length > 0 && post.images[0] !== null ? post.images.map((image) => {
+          return JSON.parse(image);
+        }) : undefined;
+        obj.images = images;
+        return obj;
+      });
+      return formattedPosts;
+    }
+    return [];
+  }
+
+  // Backup function that gets called if you're offline
+  const loadPostsFromDatastore = async () => {
+    try {
+      const posts = await DataStore.query(Posts, Predicates.ALL, {
+        sort: (s) => s.createdAt(SortDirection.DESCENDING),
+      });
+      const formattedPosts = formatPostItems(posts);
+      setAllPosts(formattedPosts);
+
+    } catch (err) {
+      console.log('-- Error Loading Posts Via Datastore --', err);
+    }
+  }
+
+  const loadPosts = async () => {
+    try {
+      const allUsers = await API.graphql<GraphQLQuery<ListPostsQuery>>(
+        { query: queries.listPosts }
+      );
+
+      const items = allUsers?.data?.listPosts?.items;
+      if(items.length > 0) {
+        items.sort((a, b) => {
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        });
+
+        const formattedPosts = formatPostItems(items);
+        setAllPosts(formattedPosts);
+      }
+    } catch (err) {
+      console.log('-- Error Loading Posts, Will Try Datastore --', err);
+      loadPostsFromDatastore();
+    }
+  };
 
   const renderItem = useCallback(({ item }) => {
     return (
@@ -52,32 +108,37 @@ const HomeScreen = () => {
   }, [ss]);
 
   const onRefresh = () => {
-    DataStore.start();
+    loadPosts();
   }
 
+  // Sample with a filter
+  // graphqlOperation(subscriptions.onCreatePosts, {filter: {postsID: {eq: "876f0317-ec70-4cbf-93fc-ef634a9fcb26"}}})
   useEffect(() => {
-    const postSubscription = DataStore.observeQuery(Posts, Predicates.ALL, {
-      sort: (s) => s.createdAt(SortDirection.DESCENDING),
-    }).subscribe(({ items }) => {
-      try {
-        // await DataStore.stop();
-        const formattedPosts = items.map((post) => {
-          const obj = Object.assign({}, post);
-          const images = post.images?.length > 0 && post.images[0] !== null ? post.images.map((image) => {
-            return JSON.parse(image);
-          }) : undefined;
-          obj.images = images;
-          return obj;
-        });
-        // if(JSON.stringify(formattedPosts) !== JSON.stringify(allPosts)) {
-          setAllPosts(formattedPosts);
-        // }
-      } catch (err) {
-        console.log("error fetching Data", err);
-      }
+    const createSub = API.graphql(
+      graphqlOperation(subscriptions.onCreatePosts)
+    ).subscribe({
+      next: ({ value }) => loadPosts(),
+    });
+    
+    const updateSub = API.graphql(
+      graphqlOperation(subscriptions.onUpdatePosts)
+    ).subscribe({
+      next: ({ value }) => loadPosts()
+    });
+    
+    const deleteSub = API.graphql(
+      graphqlOperation(subscriptions.onDeletePosts)
+    ).subscribe({
+      next: ({ value }) => loadPosts()
     });
 
-    return () => postSubscription.unsubscribe();
+    loadPosts();
+
+    return () => {
+      createSub.unsubscribe();
+      updateSub.unsubscribe();
+      deleteSub.unsubscribe();
+    }
   }, []);
 
   return (

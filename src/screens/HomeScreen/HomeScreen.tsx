@@ -53,31 +53,35 @@ const HomeScreen = () => {
   }, [ss]);
 
   const onRefresh = () => {
-    DataStore.start();
+    // DataStore.start();
+    fetchPosts();
   }
+
+  const fetchPosts = useCallback(async () => {
+    try {
+      const posts = await DataStore.query(Posts, Predicates.ALL, {
+        sort: (s) => s.createdAt(SortDirection.DESCENDING),
+      });
+      const formattedPosts = posts.map((post) => {
+        const obj = Object.assign({}, post);
+        const images = post.images?.length > 0 && post.images[0] !== null ? post.images.map((image) => {
+          return JSON.parse(image);
+        }) : undefined;
+        obj.images = images;
+        return obj;
+      });
+      setAllPosts(formattedPosts);
+    } catch (err) {
+      console.log("error fetching Data", err);
+    }
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
-      const postSubscription = DataStore.observeQuery(Posts, Predicates.ALL, {
-        sort: (s) => s.createdAt(SortDirection.DESCENDING),
-      }).subscribe(({ items }) => {
-        try {
-          // await DataStore.stop();
-          const formattedPosts = items.map((post) => {
-            const obj = Object.assign({}, post);
-            const images = post.images?.length > 0 && post.images[0] !== null ? post.images.map((image) => {
-              return JSON.parse(image);
-            }) : undefined;
-            obj.images = images;
-            return obj;
-          });
-          // if(JSON.stringify(formattedPosts) !== JSON.stringify(allPosts)) {
-            setAllPosts(formattedPosts);
-          // }
-        } catch (err) {
-          console.log("error fetching Data", err);
-        }
+      const postSubscription = DataStore.observe(Posts).subscribe((post) => {
+        fetchPosts();
       });
+      fetchPosts();
   
       return () => postSubscription.unsubscribe();
     }, [])

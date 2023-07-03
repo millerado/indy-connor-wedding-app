@@ -7,7 +7,9 @@ import React, {
 } from "react";
 import { View, FlatList, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Predicates, SortDirection } from "aws-amplify";
+import { Predicates, SortDirection, API, graphqlOperation } from "aws-amplify";
+import * as subscriptions from '../../graphql/subscriptions';
+import * as queries from '../../graphql/queries'
 import { Posts } from "../../models";
 import { ActivityIndicator, Divider } from "../../components";
 import { AuthContext } from "../../contexts";
@@ -16,11 +18,6 @@ import { DataStore } from "../../utils";
 import { PostPreview } from "../../containers";
 import styles from "./HomeScreenStyles";
 
-import { API, graphqlOperation } from 'aws-amplify';
-import { GraphQLQuery } from '@aws-amplify/api';
-import * as subscriptions from '../../graphql/subscriptions';
-import * as queries from '../../graphql/queries'
-import { ListPostsQuery } from '../../API';
 
 const HomeScreen = () => {
   const [allPosts, setAllPosts] = useState([]);
@@ -61,11 +58,13 @@ const HomeScreen = () => {
 
   const loadPosts = async () => {
     try {
-      const allUsers = await API.graphql<GraphQLQuery<ListPostsQuery>>(
+      const allUsers = await API.graphql(
         { query: queries.listPosts }
       );
 
-      const items = allUsers?.data?.listPosts?.items;
+      const unfilteredItems = allUsers?.data?.listPosts?.items;
+      // Remove items where _deleted is true
+      const items = unfilteredItems.filter(item => !item._deleted);
       if(items.length > 0) {
         items.sort((a, b) => {
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();

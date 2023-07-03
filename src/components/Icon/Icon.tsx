@@ -10,6 +10,32 @@ const fellowshipOfTheRing = require('../../assets/images/fellowshipOfTheRing.png
 const orderOfThePhoenix = require('../../assets/images/orderOfThePhoenix.png');
 const reproductiveJusticeLeague = require('../../assets/images/reproductiveJusticeLeague.png');
 const diamondDogs = require('../../assets/images/diamondDogs.png');
+const azul = require('../../assets/images/azul.png');
+const beerPong = require('../../assets/images/beerPong.png');
+const blindfoldedObstacleCourse = require('../../assets/images/blindfoldedObstacleCourse.png');
+const blindfoldedScoop = require('../../assets/images/blindfoldedScoop.png');
+const checkers = require('../../assets/images/checkers.png');
+const chess = require('../../assets/images/chess.png');
+const cornhole = require('../../assets/images/cornhole.png');
+const cottonballSprint = require('../../assets/images/cottonballSprint.png');
+const cupStacking = require('../../assets/images/cupStacking.png');
+const discGolf = require('../../assets/images/discGolf.png');
+const dominoes = require('../../assets/images/dominoes.png');
+const foursquare = require('../../assets/images/foursquare.png');
+const guessWho = require('../../assets/images/guessWho.png');
+const hiking = require('../../assets/images/hiking.png');
+const horseshoes = require('../../assets/images/horseshoes.png');
+const huesAndCues = require('../../assets/images/huesAndCues.png');
+const jenga = require('../../assets/images/jenga.png');
+const ladderball = require('../../assets/images/ladderball.png');
+const martiniSprint = require('../../assets/images/martiniSprint.png');
+const molkky = require('../../assets/images/molkky.png');
+const oldCollegeTry = require('../../assets/images/oldCollegeTry.png');
+const pingPong = require('../../assets/images/pingPong.png');
+const qwirkle = require('../../assets/images/qwirkle.png');
+const scattergories = require('../../assets/images/scattergories.png');
+const shuffleboard = require('../../assets/images/shuffleboard.png');
+const swing = require('../../assets/images/swing.png');
 
 interface IconProps {
   name: string;
@@ -88,6 +114,32 @@ export const allIcons = [
   { type: "Image", source: orderOfThePhoenix, iconName: 'orderOfThePhoenix', label: "Order of the Phoenix" },
   { type: "Image", source: reproductiveJusticeLeague, iconName: 'reproductiveJusticeLeague', label: "Reproductive Justice League" },
   { type: "Image", source: diamondDogs, iconName: 'diamondDogs', label: "Diamond Dogs" },
+  { type: "Image", source: azul, iconName: 'azul', label: "Azul" },
+  { type: "Image", source: beerPong, iconName: 'beerPong', label: "Beer Pong" },
+  { type: "Image", source: blindfoldedObstacleCourse, iconName: 'blindfoldedObstacleCourse', label: "Blindfolded Obstacle Course" },
+  { type: "Image", source: blindfoldedScoop, iconName: 'blindfoldedScoop', label: "Blindfolded Scoop" },
+  { type: "Image", source: checkers, iconName: 'checkers', label: "Checkers" },
+  { type: "Image", source: chess, iconName: 'chess', label: "Chess" },
+  { type: "Image", source: cornhole, iconName: 'cornhole', label: "Cornhole" },
+  { type: "Image", source: cottonballSprint, iconName: 'cottonballSprint', label: "Cottonball Sprint" },
+  { type: "Image", source: cupStacking, iconName: 'cupStacking', label: "Cup Stacking" },
+  { type: "Image", source: discGolf, iconName: 'discGolf', label: "Disc Golf" },
+  { type: "Image", source: dominoes, iconName: 'dominoes', label: "Dominoes" },
+  { type: "Image", source: foursquare, iconName: 'foursquare', label: "Foursquare" },
+  { type: "Image", source: guessWho, iconName: 'guessWho', label: "Guess Who" },
+  { type: "Image", source: hiking, iconName: 'hiking', label: "Hiking" },
+  { type: "Image", source: horseshoes, iconName: 'horseshoes', label: "Horseshoes" },
+  { type: "Image", source: huesAndCues, iconName: 'huesAndCues', label: "Hues and Cues" },
+  { type: "Image", source: jenga, iconName: 'jenga', label: "Jenga" },
+  { type: "Image", source: ladderball, iconName: 'ladderball', label: "Ladderball" },
+  { type: "Image", source: martiniSprint, iconName: 'martiniSprint', label: "Martini Sprint" },
+  { type: "Image", source: molkky, iconName: 'molkky', label: "Molkky" },
+  { type: "Image", source: oldCollegeTry, iconName: 'oldCollegeTry', label: "Old College Try" },
+  { type: "Image", source: pingPong, iconName: 'pingPong', label: "Ping Pong" },
+  { type: "Image", source: qwirkle, iconName: 'qwirkle', label: "Qwirkle" },
+  { type: "Image", source: scattergories, iconName: 'scattergories', label: "Scattergories" },
+  { type: "Image", source: shuffleboard, iconName: 'shuffleboard', label: "Shuffleboard" },
+  { type: "Image", source: swing, iconName: 'swing', label: "Swing" },
   { type: "MaterialIcons", name: "home", iconName: "home", label: "Home" },
   { type: "MaterialIcons", name: "home", iconName: "homeFocused", label: "Home Focused" },
   { type: "EvilIcons", name: "calendar", iconName: "calendar", label: "Calendar" },

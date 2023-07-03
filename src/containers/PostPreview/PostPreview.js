@@ -312,7 +312,11 @@ const PostPreview = (props) => {
           <View style={ss.leftSide}>
             {eventDetails ? (
               <View style={ss.avatarWrapper}>
-                <Icon name={eventDetails.game.iconName} color={theme.colors.primary} size={typography.fontSizeM * 2} />
+                {messageBody.toLowerCase().includes("#ohshit") ? (
+                  <Icon name={'ohShit'} color={theme.colors.primary} size={typography.fontSizeM * 2} />
+                ) : (
+                  <Icon name={eventDetails.game.iconName} color={theme.colors.primary} size={typography.fontSizeM * 2} />
+                )}
               </View>
             ) : (
               <Pressable onPress={goToUserScreen}>
@@ -375,7 +379,8 @@ const PostPreview = (props) => {
         ) : null}
         {messageBody ? (
           <View style={ss.captionWrapper}>
-            <FormatTextWithMentions text={messageBody} 
+            <FormatTextWithMentions
+              text={messageBody} 
               onTextLayout={onTextLayout}
               size="M"
               numberOfLines={captionExanded || !previewMode ? expandedLines : previewLines}

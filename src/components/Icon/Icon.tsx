@@ -36,6 +36,7 @@ const qwirkle = require('../../assets/images/qwirkle.png');
 const scattergories = require('../../assets/images/scattergories.png');
 const shuffleboard = require('../../assets/images/shuffleboard.png');
 const swing = require('../../assets/images/swing.png');
+const ohShit = require('../../assets/images/ohShit.png');
 
 interface IconProps {
   name: string;
@@ -140,6 +141,7 @@ export const allIcons = [
   { type: "Image", source: scattergories, iconName: 'scattergories', label: "Scattergories" },
   { type: "Image", source: shuffleboard, iconName: 'shuffleboard', label: "Shuffleboard" },
   { type: "Image", source: swing, iconName: 'swing', label: "Swing" },
+  { type: "Image", source: ohShit, iconName: 'ohShit', label: "Oh Shit" },
   { type: "MaterialIcons", name: "home", iconName: "home", label: "Home" },
   { type: "MaterialIcons", name: "home", iconName: "homeFocused", label: "Home Focused" },
   { type: "EvilIcons", name: "calendar", iconName: "calendar", label: "Calendar" },

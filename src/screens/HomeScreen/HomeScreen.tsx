@@ -8,6 +8,7 @@ import React, {
 import { View, FlatList, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
 import { Predicates, SortDirection } from "aws-amplify";
+import { useFocusEffect } from '@react-navigation/native';
 import { Posts } from "../../models";
 import { ActivityIndicator, Divider } from "../../components";
 import { AuthContext } from "../../contexts";
@@ -55,30 +56,32 @@ const HomeScreen = () => {
     DataStore.start();
   }
 
-  useEffect(() => {
-    const postSubscription = DataStore.observeQuery(Posts, Predicates.ALL, {
-      sort: (s) => s.createdAt(SortDirection.DESCENDING),
-    }).subscribe(({ items }) => {
-      try {
-        // await DataStore.stop();
-        const formattedPosts = items.map((post) => {
-          const obj = Object.assign({}, post);
-          const images = post.images?.length > 0 && post.images[0] !== null ? post.images.map((image) => {
-            return JSON.parse(image);
-          }) : undefined;
-          obj.images = images;
-          return obj;
-        });
-        // if(JSON.stringify(formattedPosts) !== JSON.stringify(allPosts)) {
-          setAllPosts(formattedPosts);
-        // }
-      } catch (err) {
-        console.log("error fetching Data", err);
-      }
-    });
-
-    return () => postSubscription.unsubscribe();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const postSubscription = DataStore.observeQuery(Posts, Predicates.ALL, {
+        sort: (s) => s.createdAt(SortDirection.DESCENDING),
+      }).subscribe(({ items }) => {
+        try {
+          // await DataStore.stop();
+          const formattedPosts = items.map((post) => {
+            const obj = Object.assign({}, post);
+            const images = post.images?.length > 0 && post.images[0] !== null ? post.images.map((image) => {
+              return JSON.parse(image);
+            }) : undefined;
+            obj.images = images;
+            return obj;
+          });
+          // if(JSON.stringify(formattedPosts) !== JSON.stringify(allPosts)) {
+            setAllPosts(formattedPosts);
+          // }
+        } catch (err) {
+          console.log("error fetching Data", err);
+        }
+      });
+  
+      return () => postSubscription.unsubscribe();
+    }, [])
+  );
 
   return (
     <>

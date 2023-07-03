@@ -8,7 +8,7 @@ import { DataStore, sendUserScheduledPushNotification, setBadgeCount, CalculateS
 const AuthedApp = (props) => {
   const { showSnackbar, onDismissSnackBar, snackbarDetails } = props;
   const authStatus = useContext(AuthContext).authStatus;
-  const { notificationDetails, setNotificationDetails } = useContext(NotificationContext);
+  const { setNotificationDetails } = useContext(NotificationContext);
 
   useEffect(() => {
     if(!authStatus.isAuthed) {

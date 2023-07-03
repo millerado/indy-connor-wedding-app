@@ -8,6 +8,7 @@ import React, {
 import { View, FlatList, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
 import { Predicates, SortDirection, API, graphqlOperation } from "aws-amplify";
+import { useFocusEffect } from "@react-navigation/native";
 import { onCreatePosts, onUpdatePosts, onDeletePosts } from "../../graphql/subscriptions";
 import { listPosts } from '../../graphql/queries'
 import { Posts } from "../../models";
@@ -112,33 +113,35 @@ const HomeScreen = () => {
 
   // Sample with a filter
   // graphqlOperation(subscriptions.onCreatePosts, {filter: {postsID: {eq: "876f0317-ec70-4cbf-93fc-ef634a9fcb26"}}})
-  useEffect(() => {
-    const createSub = API.graphql(
-      graphqlOperation(onCreatePosts)
-    ).subscribe({
-      next: ({ value }) => loadPosts(),
-    });
-    
-    const updateSub = API.graphql(
-      graphqlOperation(onUpdatePosts)
-    ).subscribe({
-      next: ({ value }) => loadPosts()
-    });
-    
-    const deleteSub = API.graphql(
-      graphqlOperation(onDeletePosts)
-    ).subscribe({
-      next: ({ value }) => loadPosts()
-    });
-
-    loadPosts();
-
-    return () => {
-      createSub.unsubscribe();
-      updateSub.unsubscribe();
-      deleteSub.unsubscribe();
-    }
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const createSub = API.graphql(
+        graphqlOperation(onCreatePosts)
+      ).subscribe({
+        next: ({ value }) => loadPosts(),
+      });
+      
+      const updateSub = API.graphql(
+        graphqlOperation(onUpdatePosts)
+      ).subscribe({
+        next: ({ value }) => loadPosts()
+      });
+      
+      const deleteSub = API.graphql(
+        graphqlOperation(onDeletePosts)
+      ).subscribe({
+        next: ({ value }) => loadPosts()
+      });
+  
+      loadPosts();
+  
+      return () => {
+        createSub.unsubscribe();
+        updateSub.unsubscribe();
+        deleteSub.unsubscribe();
+      }
+    }, [])
+  );
 
   return (
     <>

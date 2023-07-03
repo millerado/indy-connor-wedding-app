@@ -211,9 +211,7 @@ const WelcomeScreen = () => {
     useEffect(() => {
       const getData = async () => {
         // console.log('-- App UseEffect --');
-        const allUsers = await API.graphql<GraphQLQuery<ListUsersQuery>>(
-          { query: queries.listUsers }
-        );
+        const allUsers = await API.graphql({ query: queries.listUsers, variables: { limit: 999999999 } });
 
         const items = allUsers?.data?.listUsers?.items;
         if(items) {

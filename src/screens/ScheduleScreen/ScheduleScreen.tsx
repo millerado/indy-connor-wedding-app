@@ -2,6 +2,10 @@ import React, { useState, useEffect, useContext, useMemo, useCallback } from "re
 import { View, FlatList, Platform, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { TabView, TabBar } from 'react-native-tab-view';
+import { API, graphqlOperation, Hub } from "aws-amplify";
+import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
+import { onCreateSchedule, onUpdateSchedule, onDeleteSchedule} from '../../graphql/subscriptions';
+import { listSchedules } from '../../graphql/queries';
 import { Schedule } from "../../models";
 import {
   Text,
@@ -26,8 +30,8 @@ const ScheduleScreen = ({ navigation, route }) => {
   const ss = useMemo(() => styles(theme), [theme]);
   const [rawScheduleData, setRawScheduleData] = useState([]);
   const [scheduleData, setScheduleData] = useState([]);
-  const [dataLoading, setDataLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
   const [index, setIndex] = useState(0);
   const routes = [
     { key: 'friday', title: 'Friday' },
@@ -37,6 +41,16 @@ const ScheduleScreen = ({ navigation, route }) => {
 
   const authStatus = useContext(AuthContext).authStatus;
   const dimensions = calcDimensions();
+
+  Hub.listen("api", (data: any) => {
+    const { payload } = data;
+    if ( payload.event === CONNECTION_STATE_CHANGE ) {
+      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
+        loadSchedule();
+      }
+      setPriorConnectionState(payload.data.connectionState);
+    }
+  });
 
   const openModal = () => {
     setShowModal(true);
@@ -86,6 +100,31 @@ const ScheduleScreen = ({ navigation, route }) => {
     );
   };
 
+  const loadScheduleFromDatastore = async () => {
+    try {
+      const allSchedule = await DataStore.query(Schedule);
+      setRawScheduleData(allSchedule);
+    } catch (err) {
+      console.log('-- Error Loading Schedule From Datastore --', err);
+    }
+  }
+
+  const loadSchedule = async () => {
+    try {
+      const allSchedule = await API.graphql({ query: listSchedules, variables: { limit: 999999999 } });
+
+      const unfilteredItems = allSchedule?.data?.listSchedules?.items;
+      // Remove items where _deleted is true
+      const items = unfilteredItems.filter(item => !item._deleted);
+      if(items.length > 0) {
+        setRawScheduleData(items);
+      }
+    } catch (err) {
+      console.log('-- Error Loading Schedule, Will Try Datastore --', err);
+      loadScheduleFromDatastore();
+    }
+  }
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (authStatus?.isAdmin ? addNewButton() : null),
@@ -107,21 +146,31 @@ const ScheduleScreen = ({ navigation, route }) => {
   }, [rawScheduleData]);
 
   useEffect(() => {
-    const subscription = DataStore.observeQuery(Schedule).subscribe(
-      ({ items }) => {
-        try {
-          // if(JSON.stringify(items) !== JSON.stringify(rawScheduleData)) {
-            setRawScheduleData(items);
-          // }
-          setDataLoading(false);
-          // console.log('-- Fetched Data --', dt);
-        } catch (err) {
-          console.log("error fetching Data", err);
-        }
-      }
-    );
+    const createSub = API.graphql(
+      graphqlOperation(onCreateSchedule)
+    ).subscribe({
+      next: ({ value }) => loadSchedule(),
+    });
+    
+    const updateSub = API.graphql(
+      graphqlOperation(onUpdateSchedule)
+    ).subscribe({
+      next: ({ value }) => loadSchedule()
+    });
+    
+    const deleteSub = API.graphql(
+      graphqlOperation(onDeleteSchedule)
+    ).subscribe({
+      next: ({ value }) => loadSchedule()
+    });
 
-    return () => subscription.unsubscribe();
+    loadSchedule();
+
+    return () => {
+      createSub.unsubscribe();
+      updateSub.unsubscribe();
+      deleteSub.unsubscribe();
+    }
   }, []);
   
   return (

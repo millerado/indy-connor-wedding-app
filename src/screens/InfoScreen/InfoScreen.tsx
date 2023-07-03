@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { View, FlatList, Platform, Pressable, ImageBackground } from 'react-native';
 import { useTheme } from 'react-native-paper';
-import { API, graphqlOperation } from "aws-amplify";
+import { API, graphqlOperation, Hub } from "aws-amplify";
+import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
 import { onCreateFAQ, onUpdateFAQ, onDeleteFAQ} from '../../graphql/subscriptions';
 import { listFAQS } from '../../graphql/queries'
 import { FAQ } from '../../models';
@@ -20,10 +21,21 @@ const InfoScreen = ({ navigation, route }) => {
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const authStatus = useContext(AuthContext).authStatus;
   const dimensions = calcDimensions();
+
+  Hub.listen("api", (data: any) => {
+    const { payload } = data;
+    if ( payload.event === CONNECTION_STATE_CHANGE ) {
+      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
+        loadFAQ();
+      }
+      setPriorConnectionState(payload.data.connectionState);
+    }
+  });
 
   const closeModal = () => {
     setShowModal(false);
@@ -134,7 +146,7 @@ const InfoScreen = ({ navigation, route }) => {
 
   const loadFAQ = async () => {
     try {
-      const allFaq = await API.graphql({ query: listFAQS });
+      const allFaq = await API.graphql({ query: listFAQS, variables: { limit: 999999999 } });
       // console.log('-- FAQ Loaded --', allFaq.data.listFAQS.items.length)
 
       const unfilteredItems = allFaq?.data?.listFAQS?.items;

@@ -8,8 +8,8 @@ import React, {
 import { View, FlatList, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
 import { Predicates, SortDirection, API, graphqlOperation } from "aws-amplify";
-import * as subscriptions from '../../graphql/subscriptions';
-import * as queries from '../../graphql/queries'
+import { onCreatePosts, onUpdatePosts, onDeletePosts } from "../../graphql/subscriptions";
+import { listPosts } from '../../graphql/queries'
 import { Posts } from "../../models";
 import { ActivityIndicator, Divider } from "../../components";
 import { AuthContext } from "../../contexts";
@@ -59,7 +59,7 @@ const HomeScreen = () => {
   const loadPosts = async () => {
     try {
       const allUsers = await API.graphql(
-        { query: queries.listPosts }
+        { query: listPosts }
       );
 
       const unfilteredItems = allUsers?.data?.listPosts?.items;
@@ -114,19 +114,19 @@ const HomeScreen = () => {
   // graphqlOperation(subscriptions.onCreatePosts, {filter: {postsID: {eq: "876f0317-ec70-4cbf-93fc-ef634a9fcb26"}}})
   useEffect(() => {
     const createSub = API.graphql(
-      graphqlOperation(subscriptions.onCreatePosts)
+      graphqlOperation(onCreatePosts)
     ).subscribe({
       next: ({ value }) => loadPosts(),
     });
     
     const updateSub = API.graphql(
-      graphqlOperation(subscriptions.onUpdatePosts)
+      graphqlOperation(onUpdatePosts)
     ).subscribe({
       next: ({ value }) => loadPosts()
     });
     
     const deleteSub = API.graphql(
-      graphqlOperation(subscriptions.onDeletePosts)
+      graphqlOperation(onDeletePosts)
     ).subscribe({
       next: ({ value }) => loadPosts()
     });

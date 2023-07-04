@@ -1,4 +1,8 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
+import { API, graphqlOperation, Hub } from "aws-amplify";
+import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
+import { onCreateNotifications, onUpdateNotifications, onDeleteNotifications, onCreateScheduledNotifications, onUpdateScheduledNotifications, onDeleteScheduledNotifications} from './graphql/subscriptions';
+import { listNotifications, listScheduledNotifications } from './graphql/queries';
 import { Snackbar } from "./components";
 import Navigation from "./navigation/navigation";
 import { AuthContext, NotificationContext } from "./contexts";
@@ -7,20 +11,56 @@ import { DataStore, sendUserScheduledPushNotification, setBadgeCount, CalculateS
 
 const AuthedApp = (props) => {
   const { showSnackbar, onDismissSnackBar, snackbarDetails } = props;
+  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
   const authStatus = useContext(AuthContext).authStatus;
   const { setNotificationDetails } = useContext(NotificationContext);
 
-  useEffect(() => {
-    if(!authStatus.isAuthed) {
-      return;
+  Hub.listen("api", (data: any) => {
+    const { payload } = data;
+    if ( payload.event === CONNECTION_STATE_CHANGE ) {
+      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
+        loadNotifications();
+        loadScheduledNotifications();
+      }
+      setPriorConnectionState(payload.data.connectionState);
     }
+  });
 
-    const scheduledNotificationsSubscription = DataStore.observeQuery(
-      ScheduledNotifications,
-      (p) => p.userId.eq(authStatus.userId)
-    ).subscribe(({ items }) => {
-      // console.log('-- Scheduled Notifications --', items);
-      items.forEach((item) => {
+  const graphVariables = { filter: { userId: {eq: authStatus.userId} }, limit: 999999999 };
+
+  const loadNotifications = async () => {
+    try {
+      const allNotifications = await API.graphql({ query: listNotifications, variables: graphVariables });
+
+      const unfilteredItems = allNotifications?.data?.listNotifications?.items;
+      // Remove items where _deleted is true
+      const items = unfilteredItems.filter(item => !item._deleted);
+      if(items.length > 0) {
+        const pastOnly = items.filter((n) => n.displayTime <= new Date().toISOString());
+        const numberUnread = pastOnly.filter((item) => !item.read).length;
+        setNotificationDetails({
+          totalNotifications: pastOnly.length,
+          unreadNotifications: numberUnread,
+        });
+        // console.log('-- Number Unread/Total --', numberUnread, pastOnly.length);
+        setBadgeCount(numberUnread, authStatus.userId, authStatus.userId);
+      }
+    } catch (err) {
+      console.log('-- Error Loading Notifications, No DataStore for these --', err);
+    }
+  }
+
+  const loadScheduledNotifications = async () => {
+    try {
+      const allScheduledNotifications = await API.graphql({ query: listScheduledNotifications, variables: graphVariables });
+
+      const unfilteredItems = allScheduledNotifications?.data?.listScheduledNotifications?.items;
+      // Remove items where _deleted is true
+      const items = unfilteredItems.filter(item => !item._deleted);
+      if(items.length > 0) {
+        // Changing this to only 1 item
+        // Deleting one item should trigger the subscription to run and grab another
+        const item = items[0];
         const date = new Date(item.displayTime);
         if(date.getTime() > Date.now()) {
           sendUserScheduledPushNotification(
@@ -33,34 +73,61 @@ const AuthedApp = (props) => {
           );
         }
         DataStore.delete(ScheduledNotifications, item.id);
-      });
+      }
+    } catch (err) {
+      console.log('-- Error Loading Scheduled Notifications, No DataStore for these --', err);
+    }
+  }
+
+  useEffect(() => {
+    const createNotificationSub = API.graphql(
+      graphqlOperation(onCreateNotifications, graphVariables)
+    ).subscribe({
+      next: ({ value }) => loadNotifications(),
+    });
+    
+    const updateNotificationSub = API.graphql(
+      graphqlOperation(onUpdateNotifications, graphVariables)
+    ).subscribe({
+      next: ({ value }) => loadNotifications()
+    });
+    
+    const deleteNotificationSub = API.graphql(
+      graphqlOperation(onDeleteNotifications, graphVariables)
+    ).subscribe({
+      next: ({ value }) => loadNotifications()
     });
 
-    const notificationsSubscription = DataStore.observeQuery(NotificationsModel, (n) => n.and(n => [
-      n.userId.eq(authStatus.userId),
-      // n.displayTime.le(new Date().toISOString()), // Dates seem to get defined when useEffect is created, so filtering on the fly
-    ]),
-    ).subscribe(({ items }) => {
-      const pastOnly = items.filter((n) => n.displayTime <= new Date().toISOString());
-      const numberUnread = pastOnly.filter((item) => !item.read).length;
-      setNotificationDetails({
-        totalNotifications: pastOnly.length,
-        unreadNotifications: numberUnread,
-      });
-      // console.log('-- Number Unread/Total --', numberUnread, pastOnly.length);
-      setBadgeCount(numberUnread, authStatus.userId, authStatus.userId);
+    const createScheduledNotificationSub = API.graphql(
+      graphqlOperation(onCreateScheduledNotifications, graphVariables)
+    ).subscribe({
+      next: ({ value }) => loadScheduledNotifications(),
     });
 
-    // const testNotifications = DataStore.observeQuery(NotificationsModel).subscribe(({ items }) => {
-    //   console.log('-- All Notifications --', items.length);
-    // });
+    const updateScheduledNotificationSub = API.graphql(
+      graphqlOperation(onUpdateScheduledNotifications, graphVariables)
+    ).subscribe({
+      next: ({ value }) => loadScheduledNotifications()
+    });
+
+    const deleteScheduledNotificationSub = API.graphql(
+      graphqlOperation(onDeleteScheduledNotifications, graphVariables)
+    ).subscribe({
+      next: ({ value }) => loadScheduledNotifications()
+    });
+
+    loadNotifications();
+    loadScheduledNotifications();
 
     return () => {
-      scheduledNotificationsSubscription.unsubscribe();
-      notificationsSubscription.unsubscribe();
-      // testNotifications.unsubscribe();
-    };
-  }, [authStatus]);
+      createNotificationSub.unsubscribe();
+      updateNotificationSub.unsubscribe();
+      deleteNotificationSub.unsubscribe();
+      createScheduledNotificationSub.unsubscribe();
+      updateScheduledNotificationSub.unsubscribe();
+      deleteScheduledNotificationSub.unsubscribe();
+    }
+  }, []);
 
   return (
     <>

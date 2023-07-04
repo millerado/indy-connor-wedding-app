@@ -2,14 +2,16 @@ import React, { useState, useEffect, useMemo, useContext, useCallback } from "re
 import { View, ScrollView, SafeAreaView, FlatList } from "react-native";
 import { useTheme } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API } from 'aws-amplify';
-import { GraphQLQuery } from '@aws-amplify/api';
+import { API, graphqlOperation, Hub } from "aws-amplify";
+import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
+import { onCreateUsers, onUpdateUsers, onDeleteUsers} from '../../graphql/subscriptions';
 import { appPasscode } from "../../../appConfig";
-import * as queries from '../../graphql/queries'
-import { ListUsersQuery } from '../../API';
+import { listUsers } from '../../graphql/queries';
 import { Text, TextInput, Button, TextSizes, ActivityIndicator } from "../../components";
 import { SingleUserInModal } from "../../containers";
 import { AuthContext, SnackbarContext } from "../../contexts";
+import { Users } from "../../models";
+import { DataStore } from "../../utils";
 import { adminPasscode } from "../../../appConfig";
 import styles from "./WelcomeScreenStyles";
 
@@ -22,11 +24,22 @@ const WelcomeScreen = () => {
   const [searchText, setSearchText] = useState("");
   const [clickedUser, setClickedUser] = useState(undefined);
   const [adminPassword, setAdminPassword] = useState("");
+  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
 
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const { setAuthStatus } = useContext(AuthContext);
   const { setSnackbar } = useContext(SnackbarContext);
+
+  Hub.listen("api", (data: any) => {
+    const { payload } = data;
+    if ( payload.event === CONNECTION_STATE_CHANGE ) {
+      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
+        loadUsers();
+      }
+      setPriorConnectionState(payload.data.connectionState);
+    }
+  });
 
   const rowClickedHandler = (userId: string) => {
     const user = allUsers.find((u) => u.id === userId);
@@ -157,6 +170,49 @@ const WelcomeScreen = () => {
 
   const keyExtractor = useCallback((item) => item.id, []);
 
+  const formatUsers = useCallback((users) => {
+    const newUsers = users.map((u) => {
+      return {
+        id: u.id,
+        name: u.name,
+        image: u.image ? JSON.parse(u.image) : undefined,
+        fullObject: u,
+      };
+    });
+    newUsers.sort((a, b) => a.name.localeCompare(b.name));
+    return newUsers;
+  }, []);
+
+  const loadUsersFromDatastore = async () => {
+    try {
+      const allUsers = await DataStore.query(Users);
+      const formattedUsers = formatUsers(allUsers);
+      setAllUsers(formattedUsers);
+      setDisplayedUsers(formattedUsers);
+    } catch (err) {
+      console.log('-- Error Loading Schedule From Datastore --', err);
+    }
+  }
+
+  const loadUsers = async () => {
+    try {
+      const allUsers = await API.graphql({ query: listUsers, variables: { limit: 999999999 } });
+
+      const unfilteredItems = allUsers?.data?.listUsers?.items;
+      // Remove items where _deleted is true
+      const items = unfilteredItems.filter(item => !item._deleted);
+      if(items.length > 0) {
+        const formattedUsers = formatUsers(items);
+  
+        setAllUsers(formattedUsers);
+        setDisplayedUsers(formattedUsers);
+      }
+    } catch (err) {
+      console.log('-- Error Loading Users, Will Try Datastore --', err);
+      loadUsersFromDatastore();
+    } 
+  }
+
   useEffect(() => {
     const checkOnboarding = async () => {
       try {
@@ -179,60 +235,33 @@ const WelcomeScreen = () => {
     checkOnboarding();
   }, []);
 
-  // CT 7/2/23: Moving from a Subscription to a GraphQL call so that I can reset datastore and not have it be an issue
-  // useEffect(() => {
-  //   // Subscribe to Users
-  //   const usersSubscription = DataStore.observeQuery(Users, Predicates.ALL, {
-  //     sort: (u) => u.name(SortDirection.ASCENDING),
-  //   }).subscribe(({ items }) => {
-  //     const newUsers = items.map((u) => {
-  //       return {
-  //         id: u.id,
-  //         name: u.name,
-  //         image: u.image ? JSON.parse(u.image) : undefined,
-  //         fullObject: u,
-  //       };
-  //     });
-
-  //     // Quick check to make sure we're only updating state if the subscription caught a change that we care about
-  //     // if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
-  //       setAllUsers(newUsers);
-  //       if (!searchText) {
-  //         setDisplayedUsers(newUsers);
-  //       }
-  //     // }
-  //   });
-
-  //   return () => {
-  //     usersSubscription.unsubscribe();
-  //   };
-  // }, []);
-
-    useEffect(() => {
-      const getData = async () => {
-        // console.log('-- App UseEffect --');
-        const allUsers = await API.graphql({ query: queries.listUsers, variables: { limit: 999999999 } });
-
-        const items = allUsers?.data?.listUsers?.items;
-        if(items) {
-          const newUsers = items.map((u) => {
-            return {
-              id: u.id,
-              name: u.name,
-              image: u.image ? JSON.parse(u.image) : undefined,
-              fullObject: u,
-            };
-          });
-          newUsers.sort((a, b) => a.name.localeCompare(b.name));
+  useEffect(() => {
+    const createSub = API.graphql(
+      graphqlOperation(onCreateUsers)
+    ).subscribe({
+      next: ({ value }) => loadUsers(),
+    });
     
-          setAllUsers(newUsers);
-          setDisplayedUsers(newUsers);
-        }
+    const updateSub = API.graphql(
+      graphqlOperation(onUpdateUsers)
+    ).subscribe({
+      next: ({ value }) => loadUsers()
+    });
+    
+    const deleteSub = API.graphql(
+      graphqlOperation(onDeleteUsers)
+    ).subscribe({
+      next: ({ value }) => loadUsers()
+    });
 
-        // console.log('Set Users of Length', allUsers.data.listUsers.items.length);
-      };
-      getData();
-    }, []);
+    loadUsers();
+
+    return () => {
+      createSub.unsubscribe();
+      updateSub.unsubscribe();
+      deleteSub.unsubscribe();
+    }
+  }, []);
 
   return (
     <SafeAreaView style={[{backgroundColor: theme.colors.primary}]}>

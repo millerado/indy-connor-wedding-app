@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect, useState, useCallback } from 'react';
 import { View } from "react-native";
 import { useTheme } from "react-native-paper";
-import { SortDirection, API, graphqlOperation, Hub } from "aws-amplify";
+import { API, graphqlOperation, Hub } from "aws-amplify";
 import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
 import { onCreatePosts, onUpdatePosts, onDeletePosts} from '../../graphql/subscriptions';
 import { listPosts } from '../../graphql/queries'

@@ -28,6 +28,19 @@ const StandingsScreen = () => {
   ];
   const dimensions = calcDimensions();
 
+  Hub.listen("api", (data: any) => {
+    const { payload } = data;
+    if ( payload.event === CONNECTION_STATE_CHANGE ) {
+      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
+        loadTeamStandings();
+        loadPeopleStandings();
+        loadTeams();
+        loadUsers();
+      }
+      setPriorConnectionState(payload.data.connectionState);
+    }
+  });
+
   const renderScene = ({ route }) => {
     if(standingsTeams.length === 0 || standingsPeople.length === 0) {
       return(
@@ -140,7 +153,7 @@ const StandingsScreen = () => {
     }
   }
 
-  const loadTeamPeopleStandings = async () => {
+  const loadPeopleStandings = async () => {
     try {
       const allStandings = await API.graphql({ query: listStandingsPeople, variables: { limit: 999999999 } });
 
@@ -230,7 +243,7 @@ const StandingsScreen = () => {
 
   useEffect(() => {
     loadTeamStandings();
-    loadTeamPeopleStandings();
+    loadPeopleStandings();
     loadTeams();
     loadUsers();
 
@@ -273,19 +286,19 @@ const StandingsScreen = () => {
     const createPersonSubscription = API.graphql(
       graphqlOperation(onCreateStandingsPeople)
     ).subscribe({
-      next: ({ value }) => loadTeamPeopleStandings(),
+      next: ({ value }) => loadPeopleStandings(),
     });
 
     const updatePersonSubscription = API.graphql(
       graphqlOperation(onUpdateStandingsPeople)
     ).subscribe({
-      next: ({ value }) => loadTeamPeopleStandings(),
+      next: ({ value }) => loadPeopleStandings(),
     });
 
     const deletePersonSubscription = API.graphql(
       graphqlOperation(onDeleteStandingsPeople)
     ).subscribe({
-      next: ({ value }) => loadTeamPeopleStandings(),
+      next: ({ value }) => loadPeopleStandings(),
     });
 
     return () => {

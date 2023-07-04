@@ -153,17 +153,17 @@ const App = () => {
           registerForPushNotificationsAsync(userId);
 
           // await DataStore.clear();
-          await DataStore.stop();
-          DataStore.configure({
-            syncExpressions: [
-              syncExpression(NotificationsModel, () => {
-                return n => n.userId.eq(userId);
-              }),
-              syncExpression(ScheduledNotifications, () => {
-                return n => n.userId.eq(userId);
-              }),
-            ]
-          });
+          // await DataStore.stop();
+          // DataStore.configure({
+          //   syncExpressions: [
+          //     syncExpression(NotificationsModel, () => {
+          //       return n => n.userId.eq(userId);
+          //     }),
+          //     syncExpression(ScheduledNotifications, () => {
+          //       return n => n.userId.eq(userId);
+          //     }),
+          //   ]
+          // });
         }
       } catch (e) {
         console.log("error fetching current theme", e);

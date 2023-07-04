@@ -1,6 +1,5 @@
 export { default as AddCommentListView } from "./AddCommentListView/AddCommentListView";
 export { default as AddPostListHeader } from "./AddPostListHeader/AddPostListHeader";
-export { default as CaptionModal } from "./CaptionModal/CaptionModal";
 export { default as CommentModal } from "./CommentModal/CommentModal";
 export { default as FAQItem } from "./FAQItem/FAQItem";
 export { default as FAQModal } from "./FAQModal/FAQModal";

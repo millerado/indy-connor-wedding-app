@@ -230,7 +230,7 @@ const CreatePostScreen = ({ navigation, route }) => {
     const users = allUsers.map((user) => {
       return user.fullObject;
     });
-    return TaggingUserSuggestions(keyword, onSuggestionPress, users);
+    return TaggingUserSuggestions(keyword, onSuggestionPress, allUsers);
   };
 
   const handleSelectedGame = (item) => {

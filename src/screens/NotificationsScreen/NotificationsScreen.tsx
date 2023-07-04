@@ -158,7 +158,6 @@ const NotificationsScreen = ({ navigation, route }) => {
     return <Divider />;
   }, []);
 
-
   useEffect(() => {
     const createNotificationSub = API.graphql(
       graphqlOperation(onCreateNotifications, graphVariables)

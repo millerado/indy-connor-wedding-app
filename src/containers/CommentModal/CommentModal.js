@@ -3,7 +3,7 @@ import { View, ScrollView } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MentionInput } from 'react-native-controlled-mentions';
 import { DataStore, sendUsersPushNotifications } from "../../utils";
-import { Comments, Users } from "../../models";
+import { Comments } from "../../models";
 import {
   Text,
   Button,
@@ -19,10 +19,9 @@ const CommentModal = (props) => {
   const [commentText, setCommentText] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [allUsers, setAllUsers] = useState([]);
   const authStatus = useContext(AuthContext).authStatus;
 
-  const { showModal, modalType, closeModal, postsID, comment } = props;
+  const { showModal, modalType, closeModal, postsID, comment, allUsers } = props;
 
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
@@ -112,24 +111,6 @@ const CommentModal = (props) => {
   useEffect(() => {
     resetModal();
   }, [modalType, comment]);
-
-  useEffect(() => {
-    // Subscribe to users
-    const usersSubscription = DataStore.observeQuery(Users).subscribe(({ items }) => {
-      try {
-        if (items) {
-          const newUsers = items.sort((a, b) => a.name.localeCompare(b.name));
-          // if(JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
-          setAllUsers(newUsers);
-          // }
-        }
-      } catch (err) { console.log('error fetching Data', err) }
-    });
-
-    return () => {
-      usersSubscription.unsubscribe();
-    };
-  }, [postsID]);
 
   return (
     <Modal

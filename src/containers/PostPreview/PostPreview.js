@@ -262,6 +262,7 @@ const PostPreview = (props) => {
           image: u.image ? JSON.parse(u.image) : undefined,
         };
       });
+      newUsers.sort((a, b) => a.name.localeCompare(b.name));
 
       // Quick check to make sure we're only updating state if the subscription caught a change that we care about
       // if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
@@ -286,6 +287,7 @@ const PostPreview = (props) => {
           closeModal={closeCommentModal}
           modalType={"create"}
           postsID={postsID}
+          allUsers={allUsers}
         />
         <LikedByUsersModal
           showModal={showLikesModal}
@@ -431,13 +433,13 @@ const PostPreview = (props) => {
         {comments.length > 0 && (
           <Pressable onPress={goToPostScreen}>
             {previewMode ? (
-              <SingleComment comment={comments[0]} numberOfLines={2} />
+              <SingleComment comment={comments[0]} numberOfLines={2} allUsers={allUsers} />
             ) : (
               <>
                 {comments.map((comment, index) => (
                   <View key={comment.id}>
                     {index === 0 ? null : <Divider color={theme.colors.onTertiary} />}
-                    <SingleComment comment={comment} />
+                    <SingleComment comment={comment} allUsers={allUsers} />
                   </View>
                 ))}
               </>
@@ -453,9 +455,7 @@ const PostPreview = (props) => {
             )}
           </Pressable>
         )}
-        {previewMode && (
-          <AddCommentListView postsID={postsID} />
-        )}
+        <AddCommentListView postsID={postsID} allUsers={allUsers} />
       </View>
       <Portal>
         <Dialog visible={showUnauthedMessage} onDismiss={() => setShowUnauthedMessage(false)}>

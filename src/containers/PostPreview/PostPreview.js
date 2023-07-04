@@ -23,7 +23,7 @@ import {
   Divider,
 } from "../../components";
 import { typography } from "../../styles";
-import { formatDate, DataStore, formatGameString, arraysEqual } from "../../utils/";
+import { formatDate, DataStore, formatGameString } from "../../utils/";
 import { AuthContext } from "../../contexts";
 import CommentModal from "../CommentModal/CommentModal";
 import LikedByUsersModal from "../LikedByUsersModal/LikedByUsersModal";

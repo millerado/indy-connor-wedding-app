@@ -19,7 +19,6 @@ import { DataStore } from "../../utils";
 import { PostPreview } from "../../containers";
 import styles from "./HomeScreenStyles";
 
-
 const HomeScreen = () => {
   const [allPosts, setAllPosts] = useState([]);
   const [priorConnectionState, setPriorConnectionState] = useState(undefined);

@@ -11,7 +11,8 @@ import * as ImagePicker from "expo-image-picker";
 import { Menu, useTheme } from 'react-native-paper';
 import NetInfo from '@react-native-community/netinfo';
 import { MentionInput } from 'react-native-controlled-mentions';
-import { Predicates, SortDirection } from "aws-amplify";
+import { API } from "aws-amplify";
+import { listUsers, listGames } from '../../graphql/queries'
 import {
   Chip,
   Avatar,
@@ -31,7 +32,7 @@ import { Posts, Users, Games } from "../../models";
 import { uploadImageS3, DataStore, sendUsersPushNotifications, gamePlayers, nth } from "../../utils";
 import { typography, calcDimensions } from "../../styles";
 import { AuthContext } from '../../contexts';
-import { TaggingUserSuggestions, ImageScroll } from '../../containers';
+import { TaggingUserSuggestions } from '../../containers';
 import styles from "./CreatePostScreenStyles";
 
 const dimensions = calcDimensions();
@@ -348,6 +349,108 @@ const CreatePostScreen = ({ navigation, route }) => {
     );
   }
 
+  const loadUsersFromDatastore = async () => {
+    try {
+      const allUsers = DataStore.query(Users);
+      const formattedUsers = allUsers.map((u) => {
+        return {
+          id: u.id,
+          name: u.name,
+          image: u.image ? JSON.parse(u.image) : undefined,
+          fullObject: u,
+          label: u.name,
+          value: u.id,
+        };
+      });
+      
+      formattedUsers.sort((a, b) => a.name.localeCompare(b.name));
+
+      setAllUsers(formattedUsers);
+    } catch (err) {
+      console.log("Error loading users from Datastore", err);
+    }
+  };
+
+  const loadUsers = async () => {
+    try {
+      const allUsers = await API.graphql({ query: listUsers, variables: { limit: 999999999 } });
+
+      const unfilteredItems = allUsers?.data?.listUsers?.items;
+      // Remove items where _deleted is true
+      const items = unfilteredItems.filter(item => !item._deleted);
+      if(items.length > 0) {
+        const formattedUsers = items.map((u) => {
+          return {
+            id: u.id,
+            name: u.name,
+            image: u.image ? JSON.parse(u.image) : undefined,
+            fullObject: u,
+            label: u.name,
+            value: u.id,
+          };
+        });
+
+        formattedUsers.sort((a, b) => a.name.localeCompare(b.name));
+
+        setAllUsers(formattedUsers);
+      }
+    } catch (err) {
+      console.log('-- Error Loading Users, Will Try Datastore --', err);
+      loadUsersFromDatastore();
+    }
+  };
+
+  const formatGames = (games) => {
+    if(games.length > 0) {
+      const g = games.map((game, index) => {
+        return {
+          value: game.id,
+          iconName: game.iconName,
+          label: game.name,
+          players: gamePlayers(game),
+        }
+      });
+      g.sort((a, b) => a.label.localeCompare(b.label));
+      // And a "None" row to unselect a game
+      g.unshift({
+        value: null,
+        iconName: "close",
+        label: "None",
+        players: 'Nevermind, not playing a game',
+      });
+      setGamesDropdown(g);
+      setGames(games);
+    }
+  }
+
+  const loadGamesFromDatastore = async () => {
+    try {
+      const allGames = DataStore.query(Games);
+      if(allGames.length > 0) {
+        formatGames(allGames);
+      }
+    } catch (err) {
+      console.log("Error loading games from Datastore", err);
+    }
+  };
+
+  const loadGames = async () => {
+    try {
+      const allGames = await API.graphql({ query: listGames, variables: { limit: 999999999 } });
+
+      const unfilteredItems = allGames?.data?.listGames?.items;
+      // Remove items where _deleted is true
+      const items = unfilteredItems.filter(item => !item._deleted);
+      if(items.length > 0) {
+        formatGames(items);
+      }
+    } catch (err) {
+      console.log('-- Error Loading Games, Will Try Datastore --', err);
+      loadGamesFromDatastore();
+    }
+  };
+
+
   useEffect(() => {
     if (selectedGame) {
       let allTeamsValid = true;
@@ -400,59 +503,14 @@ const CreatePostScreen = ({ navigation, route }) => {
       });
     })();
 
-    const usersSubscription = DataStore.observeQuery(Users, Predicates.ALL, {
-      sort: (u) => u.name(SortDirection.ASCENDING),
-    }).subscribe(({ items }) => {
-      const newUsers = items.map((u) => {
-        return {
-          id: u.id,
-          name: u.name,
-          image: u.image ? JSON.parse(u.image) : undefined,
-          fullObject: u,
-          label: u.name,
-          value: u.id,
-        };
-      });
-  
-      // Quick check to make sure we're only updating state if the subscription caught a change that we care about
-      // if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
-        setAllUsers(newUsers);
-      // }
-    });
-
-    const gamesSubscription = DataStore.observeQuery(Games, Predicates.ALL, {
-      sort: (s) => s.name(SortDirection.ASCENDING),
-    }).subscribe(({ items }) => {
-      const g = items.map((game, index) => {
-        return {
-          value: game.id,
-          iconName: game.iconName,
-          label: game.name,
-          players: gamePlayers(game),
-        }
-      });
-      // And a "None" row to unselect a game
-      g.unshift({
-        value: null,
-        iconName: "close",
-        label: "None",
-        players: 'Nevermind, not playing a game',
-      });
-      // if (JSON.stringify(g) !== JSON.stringify(gamesDropdown)) {
-        setGamesDropdown(g);
-      // }
-      // if (JSON.stringify(items) !== JSON.stringify(games)) {
-        setGames(items);
-      // }
-    });
+    loadUsers();
+    loadGames();
 
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isInternetReachable);
     });
     return () => {
       unsubscribe();
-      usersSubscription.unsubscribe();
-      gamesSubscription.unsubscribe();
     };
   }, []);
 

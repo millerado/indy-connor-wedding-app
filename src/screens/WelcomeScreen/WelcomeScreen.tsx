@@ -67,8 +67,6 @@ const WelcomeScreen = () => {
         });
         await AsyncStorage.setItem("@onboardingProcess", jsonValue);
         setView("selectUser");
-        // setShowPassCodeModal(false);
-        // openSelectUserModal();
       } catch (e) {
         console.log("Error Updating Storage", e);
       }

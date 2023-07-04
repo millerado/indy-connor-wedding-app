@@ -14,7 +14,7 @@ import { listPosts } from '../../graphql/queries'
 import { Posts } from "../../models";
 import { ActivityIndicator, Divider } from "../../components";
 import { AuthContext } from "../../contexts";
-import { IntroModal, AddPostListHeader } from "../../containers";
+import { AddPostListHeader } from "../../containers";
 import { DataStore } from "../../utils";
 import { PostPreview } from "../../containers";
 import styles from "./HomeScreenStyles";
@@ -152,7 +152,6 @@ const HomeScreen = () => {
 
   return (
     <>
-      <IntroModal />
       <View style={ss.pageWrapper}>
         <FlatList
           data={allPosts}

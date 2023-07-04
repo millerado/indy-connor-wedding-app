@@ -293,6 +293,7 @@ const PostPreview = (props) => {
           showModal={showLikesModal}
           closeModal={handleHideLikesList}
           reactions={reactions}
+          allUsers={allUsers}
         />
         <Portal>
           <Dialog visible={deleteDialogVisible} onDismiss={hideDeleteDialog}>

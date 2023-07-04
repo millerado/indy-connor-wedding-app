@@ -7,11 +7,10 @@ import React, {
 } from "react";
 import { View, FlatList, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Predicates, SortDirection } from "aws-amplify";
 import { Posts, Reactions } from "../../models";
 import { ActivityIndicator, Divider } from "../../components";
 import { AuthContext } from "../../contexts";
-import { IntroModal, AddPostListHeader } from "../../containers";
+import {  AddPostListHeader } from "../../containers";
 import { DataStore } from "../../utils";
 import { PostPreview } from "../../containers";
 import styles from "./MostLikedPostsScreenStyles";
@@ -98,7 +97,6 @@ const MostLikedPostsScreen = () => {
 
   return (
     <>
-      <IntroModal />
       <View style={ss.pageWrapper}>
         {dataLoading || allPosts.length === 0 ? (
           <View style={ss.pageActivityIndicatorWrapper}>

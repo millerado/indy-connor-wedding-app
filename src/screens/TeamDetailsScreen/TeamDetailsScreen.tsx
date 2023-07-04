@@ -1,7 +1,10 @@
 import React, { useMemo, useEffect, useState, useCallback } from 'react';
-import { View, Image, FlatList } from "react-native";
+import { View } from "react-native";
 import { useTheme } from "react-native-paper";
-import { SortDirection } from "aws-amplify";
+import { SortDirection, API, graphqlOperation, Hub } from "aws-amplify";
+import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
+import { onCreatePosts, onUpdatePosts, onDeletePosts} from '../../graphql/subscriptions';
+import { listPosts } from '../../graphql/queries'
 import Animated, {
   Extrapolation,
   interpolate,
@@ -20,14 +23,25 @@ const fellowshipOfTheRing = require("../../assets/images/fellowshipOfTheRingFull
 const reproductiveJusticeLeague = require("../../assets/images/reproductiveJusticeLeagueFullSize.png");
 const orderOfThePhoenix = require("../../assets/images/orderOfThePhoenixFullSize.png");
 
-const TeamDetailsScreen = ({ navigation, route }) => {
+const TeamDetailsScreen = ({ route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const [teamUserIds, setTeamUserIds] = useState([]);
   const [standingsPeople, setStandingsPeople] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
+  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
   const { teamId, teamName, iconName, description, allUsers, allTeams, allStandingsTeams, allStandingsPeople } = route.params;
   const { width, height } = calcDimensions();
+
+  Hub.listen("api", (data: any) => {
+    const { payload } = data;
+    if ( payload.event === CONNECTION_STATE_CHANGE ) {
+      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
+        loadPosts();
+      }
+      setPriorConnectionState(payload.data.connectionState);
+    }
+  });
 
   const scrollY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler((event) => {
@@ -121,6 +135,70 @@ const TeamDetailsScreen = ({ navigation, route }) => {
     return <Divider height={5} margin={0} />;
   }, []);
 
+  const formatPostItems = (items) => {
+    if(items.length > 0) {
+      const formattedPosts = items.map((post) => {
+        const obj = Object.assign({}, post);
+        const images = post.images?.length > 0 && post.images[0] !== null ? post.images.map((image) => {
+          return JSON.parse(image);
+        }) : undefined;
+        obj.images = images;
+        return obj;
+      });
+      formattedPosts.sort((a, b) => {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      });
+      const events = formattedPosts.filter((p) => p.olympicEvent);
+      return events;
+    }
+    return [];
+  }
+
+  const loadPostsFromDataStore = async () => {
+    const allPostsData = await DataStore.query(
+      Posts,
+      (p) => p.or(p => {
+        const filter = [];
+        for(let i = 0; i < teamUserIds.length; i++) {
+          filter.push(p.usersInPost.contains(teamUserIds[i]));
+        }
+        return filter;
+      }),
+    );
+    const formattedPosts = formatPostItems(allPostsData);
+    setAllPosts(formattedPosts);
+  }
+
+  const loadPosts = async () => {
+    try {
+      const allPosts = await API.graphql({ query: listPosts, variables: { limit: 999999999, filter: { 
+        or: (p => {
+          const filter = [];
+          for(let i = 0; i < teamUserIds.length; i++) {
+            filter.push(p.usersInPost.contains(teamUserIds[i]));
+          }
+          return filter;
+        })
+      } } });
+      // console.log('-- FAQ Loaded --', allFaq.data.listFAQS.items.length)
+
+      const unfilteredItems = allPosts?.data?.listPosts?.items;
+      // Remove items where _deleted is true
+      const items = unfilteredItems.filter(item => !item._deleted);
+      if(items.length > 0) {
+        const formattedPosts = formatPostItems(items);
+        setAllPosts(formattedPosts);
+      }
+    } catch (err) {
+      console.log('-- Error Loading Posts, Will Try Datastore --', err);
+      loadPostsFromDataStore();
+    }
+  }
+
+  const onRefresh = () => {
+    loadPosts();
+  }
+
   useEffect(() => {
     if(allUsers) {
       const userIds = allUsers.filter((u) => u.teamId === teamId).map((u) => u.id);
@@ -132,38 +210,31 @@ const TeamDetailsScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     if(teamUserIds.length > 0) {
-      const postSubscription = DataStore.observeQuery(
-        Posts,
-        (p) => p.or(p => {
-          const filter = [];
-          for(let i = 0; i < teamUserIds.length; i++) {
-            filter.push(p.usersInPost.contains(teamUserIds[i]));
-          }
-          return filter;
-        }),
-        { sort: (s) => s.createdAt(SortDirection.DESCENDING) }
-      ).subscribe(({ items }) => {
-        try {
-          const formattedPosts = items.map((post) => {
-            const obj = Object.assign({}, post);
-            const images = post.images?.length > 0 && post.images[0] !== null ? post.images.map((image) => {
-              return JSON.parse(image);
-            }) : undefined;
-            obj.images = images;
-            return obj;
-          });
-          const events = formattedPosts.filter((p) => p.olympicEvent);
-          // if (JSON.stringify(events) !== JSON.stringify(allPosts)) {
-            setAllPosts(events);
-          // }
-        } catch (err) {
-          console.log("error fetching Contents", err);
-        }
+      const createSub = API.graphql(
+        graphqlOperation(onCreatePosts)
+      ).subscribe({
+        next: ({ value }) => loadPosts(),
+      });
+      
+      const updateSub = API.graphql(
+        graphqlOperation(onUpdatePosts)
+      ).subscribe({
+        next: ({ value }) => loadPosts()
+      });
+      
+      const deleteSub = API.graphql(
+        graphqlOperation(onDeletePosts)
+      ).subscribe({
+        next: ({ value }) => loadPosts()
       });
 
+      loadPosts();
+
       return () => {
-        postSubscription.unsubscribe();
-      };
+        createSub.unsubscribe();
+        updateSub.unsubscribe();
+        deleteSub.unsubscribe();
+      }
     }
   }, [teamUserIds]);
 
@@ -192,6 +263,8 @@ const TeamDetailsScreen = ({ navigation, route }) => {
         onScroll={scrollHandler}
         overScrollMode="never"
         ListEmptyComponent={renderListEmpty}
+        onRefresh={onRefresh}
+        refreshing={false}
       />
     </View>
   );

@@ -118,6 +118,7 @@ const StandingsScreen = () => {
       // Remove items where _deleted is true
       const items = unfilteredItems.filter(item => !item._deleted);
       if(items.length > 0) {
+        items.sort((a, b) => a.rank - b.rank);
         setStandingsTeams(items);
       }
     } catch (err) {
@@ -147,6 +148,7 @@ const StandingsScreen = () => {
       // Remove items where _deleted is true
       const items = unfilteredItems.filter(item => !item._deleted);
       if(items.length > 0) {
+        items.sort((a, b) => a.rank - b.rank);
         setStandingsPeople(items);
       }
     } catch (err) {

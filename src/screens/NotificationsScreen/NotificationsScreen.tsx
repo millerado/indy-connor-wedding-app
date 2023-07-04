@@ -7,8 +7,11 @@ import React, {
 } from "react";
 import { View, FlatList, Platform, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
-import { SortDirection } from "aws-amplify";
 import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
+import { API, graphqlOperation, Hub } from "aws-amplify";
+import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
+import { onCreateNotifications, onUpdateNotifications, onDeleteNotifications } from '../../graphql/subscriptions';
+import { listNotifications } from '../../graphql/queries';
 import {
   Divider,
   ActivityIndicator,
@@ -23,7 +26,6 @@ import { Notifications } from "../../models";
 import { typography, calcDimensions } from "../../styles";
 import { DataStore } from "../../utils";
 import styles from "./NotificationsScreenStyles";
-import { set } from "react-native-reanimated";
 
 const NotificationsScreen = ({ navigation, route }) => {
   const theme = useTheme();
@@ -31,8 +33,38 @@ const NotificationsScreen = ({ navigation, route }) => {
   const authStatus = useContext(AuthContext).authStatus;
   const [loading, setLoading] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
 
   const { width } = calcDimensions();
+
+  const graphVariables = { filter: { userId: {eq: authStatus.userId} }, limit: 999999999 };
+
+  Hub.listen("api", (data: any) => {
+    const { payload } = data;
+    if ( payload.event === CONNECTION_STATE_CHANGE ) {
+      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
+        loadNotifications();
+      }
+      setPriorConnectionState(payload.data.connectionState);
+    }
+  });
+
+  const loadNotifications = async () => {
+    try {
+      const allNotifications = await API.graphql({ query: listNotifications, variables: graphVariables });
+
+      const unfilteredItems = allNotifications?.data?.listNotifications?.items;
+      // Remove items where _deleted is true
+      const items = unfilteredItems.filter(item => !item._deleted && new Date(item.displayTime) <= new Date());
+      if(items.length > 0) {
+        items.sort((a, b) => new Date(b.displayTime) - new Date(a.displayTime));
+        setNotifications(items);
+        setLoading(false);
+      }
+    } catch (err) {
+      console.log('-- Error Loading Notifications, No DataStore for these --', err);
+    }
+  }
 
   const navToLink = (targetType, id) => {
     // console.log('-- Notification Navigation --', targetType, id);
@@ -50,26 +82,6 @@ const NotificationsScreen = ({ navigation, route }) => {
     if (!item.read) {
       centerWidth = centerWidth - (typography.fontSizeL * 2 + 15);
     }
-
-    // Removed swiping to mark as read for now
-    // const renderLeftActions = () => {
-    //   return (
-    //     <View style={{backgroundColor: theme.colors.primary, flex: 1, alignItems: 'center', paddingLeft: 10, flexDirection: 'row'}}>
-    //       <Icon name="markAsRead" size={typography.fontSizeL * 1.5} color={theme.colors.onPrimary} style={{paddingRight: 10}} />
-    //       <Text color={theme.colors.onPrimary}>
-    //         Mark as Read
-    //       </Text>
-    //     </View>
-    //   );
-    // };
-    // const onSwipeLeft = () => {
-    //   // console.log('Swiped Left');
-    //   DataStore.save(
-    //     Notifications.copyOf(item, (updated) => {
-    //       updated.read = true;
-    //     })
-    //   );
-    // }
 
     const renderRightActions = () => {
       return (
@@ -90,8 +102,6 @@ const NotificationsScreen = ({ navigation, route }) => {
     return (
       <GestureHandlerRootView>
         <Swipeable
-          // renderLeftActions={renderLeftActions}
-          // onSwipeableLeftOpen={onSwipeLeft}
           renderRightActions={renderRightActions}
           onSwipeableRightOpen={onSwipeRight}
         >
@@ -121,9 +131,10 @@ const NotificationsScreen = ({ navigation, route }) => {
               </View>
               {!item.read && (
                 <Pressable
-                  onPress={() => {
+                  onPress={async () => {
+                    const originalItem = await DataStore.query(Notifications, item.id);
                     DataStore.save(
-                      Notifications.copyOf(item, (updated) => {
+                      Notifications.copyOf(originalItem, (updated) => {
                         updated.read = true;
                       })
                     );
@@ -147,42 +158,34 @@ const NotificationsScreen = ({ navigation, route }) => {
     return <Divider />;
   }, []);
 
+
   useEffect(() => {
-    const notificationsSubscription = DataStore.observeQuery(
-      Notifications,
-      (n) =>
-        n.and((n) => [
-          n.userId.eq(authStatus.userId),
-          n.displayTime.le(new Date().toISOString()),
-        ]),
-      { sort: (s) => s.displayTime(SortDirection.DESCENDING) }
-    ).subscribe(({ items }) => {
-      // if(JSON.stringify(items) !== JSON.stringify(notifications)) {
-        setNotifications(items);
-      // }
-      setLoading(false);
+    const createNotificationSub = API.graphql(
+      graphqlOperation(onCreateNotifications, graphVariables)
+    ).subscribe({
+      next: ({ value }) => loadNotifications(),
+    });
+    
+    const updateNotificationSub = API.graphql(
+      graphqlOperation(onUpdateNotifications, graphVariables)
+    ).subscribe({
+      next: ({ value }) => loadNotifications()
+    });
+    
+    const deleteNotificationSub = API.graphql(
+      graphqlOperation(onDeleteNotifications, graphVariables)
+    ).subscribe({
+      next: ({ value }) => loadNotifications()
     });
 
-    return () => {
-      notificationsSubscription.unsubscribe();
-    };
-  }, [authStatus]);
+    loadNotifications();
 
-  // For testing the SelectiveSync
-  // useEffect(() => {
-  //   console.log('-- Notifications Screen --');
-  //   const test = async () => {
-  //     const myNotifications = await DataStore.query(Notifications, (n) =>
-  //       n.userId.eq(authStatus.userId)
-  //     );
-  //     const everyoneElse = await DataStore.query(Notifications, (n) =>
-  //       n.userId.ne(authStatus.userId)
-  //     );
-  //     console.log('My Notifications', myNotifications.length);
-  //     console.log('Everyone Else', everyoneElse.length);
-  //   }
-  //   test();
-  // }, [])
+    return () => {
+      createNotificationSub.unsubscribe();
+      updateNotificationSub.unsubscribe();
+      deleteNotificationSub.unsubscribe();
+    }
+  }, []);
 
   return (
     <View style={ss.pageWrapper}>

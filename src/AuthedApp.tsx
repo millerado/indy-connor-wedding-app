@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState, useRef } from "react";
 import { API, graphqlOperation, Hub } from "aws-amplify";
 import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
 import { onCreateNotifications, onUpdateNotifications, onDeleteNotifications, onCreateScheduledNotifications, onUpdateScheduledNotifications, onDeleteScheduledNotifications} from './graphql/subscriptions';
@@ -11,20 +11,21 @@ import { DataStore, sendUserScheduledPushNotification, setBadgeCount, CalculateS
 
 const AuthedApp = (props) => {
   const { showSnackbar, onDismissSnackBar, snackbarDetails } = props;
-  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
   const authStatus = useContext(AuthContext).authStatus;
   const { setNotifications } = useContext(DataContext);
+  const priorConnectionState = useRef(undefined);
 
-  Hub.listen("api", (data: any) => {
-    const { payload } = data;
-    if ( payload.event === CONNECTION_STATE_CHANGE ) {
-      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
-        loadNotifications();
-        loadScheduledNotifications();
-      }
-      setPriorConnectionState(payload.data.connectionState);
-    }
-  });
+  // Hub.listen("api", (data: any) => {
+  //   const { payload } = data;
+  //   if ( payload.event === CONNECTION_STATE_CHANGE ) {
+  //     if (priorConnectionState.current === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
+  //       console.log('-- Refresh from Connection (Notifications) --', payload.data.connectionState, priorConnectionState.current);
+  //       loadNotifications();
+  //       loadScheduledNotifications();
+  //     }
+  //     priorConnectionState.current = payload.data.connectionState;
+  //   }
+  // });
 
   const graphVariables = { filter: { userId: {eq: authStatus.userId} }, limit: 999999999 };
 

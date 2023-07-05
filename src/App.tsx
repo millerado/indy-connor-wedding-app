@@ -85,6 +85,7 @@ const App = () => {
   const [allStandingsTeams, setAllStandingsTeams] = useState([]);
   const responseListener = useRef();
   const nav = useRef();
+  const priorConnectionState = useRef(undefined);
 
   // Pieces for the Theme Context
   const theme = themeName === "Dark" ? darkTheme : lightTheme;
@@ -156,6 +157,17 @@ const App = () => {
     setShowSnackbar(false);
     setSnackbarDetails(DefaultSnackbar);
   };
+
+  // Hub.listen("api", (data: any) => {
+  //   const { payload } = data;
+  //   if ( payload.event === CONNECTION_STATE_CHANGE ) {
+  //     if (priorConnectionState.current === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
+  //       console.log('-- Refresh from Connection (all data) --', payload.data.connectionState, priorConnectionState.current);
+  //       onRefresh();
+  //     }
+  //     priorConnectionState.current = payload.data.connectionState;
+  //   }
+  // });
 
   const onRefresh = async () => {
     loadPosts(setAllPosts, allPosts);

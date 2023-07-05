@@ -54,10 +54,6 @@ const StandingsScreen = () => {
                   teamColor={team.colorCode}
                   description={team.description}
                   points={s.points}
-                  allUsers={allUsers}
-                  allTeams={allTeams}
-                  allStandingsTeams={allStandingsTeams}
-                  allStandingsPeople={allStandingsPeople}
                 />
               );
             })}

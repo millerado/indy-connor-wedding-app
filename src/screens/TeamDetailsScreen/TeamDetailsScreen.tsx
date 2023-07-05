@@ -21,12 +21,12 @@ const orderOfThePhoenix = require("../../assets/images/orderOfThePhoenixFullSize
 const TeamDetailsScreen = ({ route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-  const { teamId, teamName, iconName, description, allUsers: initialAllUsers = [], allTeams, allStandingsTeams, allStandingsPeople } = route.params;
+  const { teamId, iconName, description } = route.params;
   const [teamUserIds, setTeamUserIds] = useState([]);
   const [standingsPeople, setStandingsPeople] = useState([]);
   const [displayPosts, setDisplayPosts] = useState([]);
   const { width, height } = calcDimensions();
-  const { refreshData, allPosts, allUsers, allAdminFavorites, allComments, allReactions } = useContext(DataContext);
+  const { refreshData, allPosts, allTeams, allUsers, allAdminFavorites, allComments, allReactions, allStandingsPeople } = useContext(DataContext);
 
   const scrollY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler((event) => {

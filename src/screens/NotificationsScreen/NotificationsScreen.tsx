@@ -60,7 +60,7 @@ const NotificationsScreen = ({ navigation, route }) => {
 
     const onSwipeRight = () => {
       // console.log('Swiped Right');
-      DataStore.delete(item);
+      DataStore.delete(Notifications, item.id);
     }
 
     return (

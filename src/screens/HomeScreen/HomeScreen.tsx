@@ -4,98 +4,65 @@ import React, {
   useState,
   useMemo,
   useCallback,
+  useRef,
 } from "react";
 import { View, FlatList, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Predicates, SortDirection, API, graphqlOperation, Hub } from "aws-amplify";
+import { API, graphqlOperation, Hub } from "aws-amplify";
 import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
-import { onCreatePosts, onUpdatePosts, onDeletePosts } from "../../graphql/subscriptions";
-import { listPosts } from '../../graphql/queries'
-import { Posts } from "../../models";
+import { 
+  onCreatePosts, onUpdatePosts, onDeletePosts,
+  onCreateUsers, onUpdateUsers, onDeleteUsers,
+  onCreateAdminFavorites, onUpdateAdminFavorites, onDeleteAdminFavorites,
+  onCreateComments, onUpdateComments, onDeleteComments,
+  onCreateReactions, onUpdateReactions, onDeleteReactions,
+} from "../../graphql/subscriptions";
 import { ActivityIndicator, Divider } from "../../components";
 import { AuthContext } from "../../contexts";
 import { AddPostListHeader } from "../../containers";
-import { DataStore } from "../../utils";
 import { PostPreview } from "../../containers";
+import { loadPosts, loadUsers, loadAdminFavorites, loadComments, loadReactions } from "../../services";
 import styles from "./HomeScreenStyles";
 
 const HomeScreen = () => {
   const [allPosts, setAllPosts] = useState([]);
-  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
+  const [allUsers, setAllUsers] = useState([]);
+  const [allAdminFavorites, setAllAdminFavorites] = useState([]);
+  const [allComments, setAllComments] = useState([]);
+  const [allReactions, setAllReactions] = useState([]);
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
+  const priorConnectionState = useRef(undefined);
 
   const authContext = useContext(AuthContext);
   const { authStatus } = authContext;
 
-  Hub.listen("api", (data: any) => {
-    const { payload } = data;
-    if ( payload.event === CONNECTION_STATE_CHANGE ) {
-      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
-        loadPosts();
-      }
-      setPriorConnectionState(payload.data.connectionState);
-    }
-  });
-
-  const formatPostItems = (items) => {
-    if(items.length > 0) {
-      const formattedPosts = items.map((post) => {
-        const obj = Object.assign({}, post);
-        const images = post.images?.length > 0 && post.images[0] !== null ? post.images.map((image) => {
-          return JSON.parse(image);
-        }) : undefined;
-        obj.images = images;
-        return obj;
-      });
-      return formattedPosts;
-    }
-    return [];
-  }
-
-  // Backup function that gets called if you're offline
-  const loadPostsFromDatastore = async () => {
-    try {
-      const posts = await DataStore.query(Posts, Predicates.ALL, {
-        sort: (s) => s.createdAt(SortDirection.DESCENDING),
-      });
-      const formattedPosts = formatPostItems(posts);
-      setAllPosts(formattedPosts);
-
-    } catch (err) {
-      console.log('-- Error Loading Posts Via Datastore --', err);
-    }
-  }
-
-  const loadPosts = async () => {
-    try {
-      const allPosts = await API.graphql({ query: listPosts, variables: { limit: 999999999 } });
-
-      const unfilteredItems = allPosts?.data?.listPosts?.items;
-      // Remove items where _deleted is true
-      const items = unfilteredItems.filter(item => !item._deleted);
-      if(items.length > 0) {
-        items.sort((a, b) => {
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        });
-
-        const formattedPosts = formatPostItems(items);
-        setAllPosts(formattedPosts);
-      }
-    } catch (err) {
-      console.log('-- Error Loading Posts, Will Try Datastore --', err);
-      loadPostsFromDatastore();
-    }
-  };
+  // Hub.listen("api", (data: any) => {
+  //   const { payload } = data;
+  //   if ( payload.event === CONNECTION_STATE_CHANGE ) {
+  //     if (priorConnectionState.current === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
+  //       console.log('-- Hub Thinks Reconnected --');
+  //       onRefresh();
+  //     }
+  //     priorConnectionState.current = payload.data.connectionState;
+  //   }
+  // });
 
   const renderItem = useCallback(({ item }) => {
+    const postComments = allComments.filter((comment) => comment.postsID === item.id);
+    const postReactions = allReactions.filter((reaction) => reaction.postsID === item.id);
+
     return (
       <PostPreview
         post={item}
         previewMode
+        allUsers={allUsers}
+        allAdminFavorites={allAdminFavorites}
+        comments={postComments}
+        reactions={postReactions}
       />
     );
-  }, []);
+  }, [allUsers, allAdminFavorites, allComments, allReactions]);
 
   const listHeader = useCallback(() => {
     return <AddPostListHeader />;
@@ -115,63 +82,147 @@ const HomeScreen = () => {
     );
   }, [ss]);
 
-  const onRefresh = () => {
-    loadPosts();
+  const onRefresh = async () => {
+    loadPosts(setAllPosts, allPosts);
+    loadUsers(setAllUsers, allUsers);
+    loadAdminFavorites(setAllAdminFavorites, allAdminFavorites);
+    loadComments(setAllComments, undefined, allComments);
+    loadReactions(setAllReactions, undefined, allReactions);
   }
 
-  // Sample with a filter
-  // graphqlOperation(subscriptions.onCreatePosts, {filter: {postsID: {eq: "876f0317-ec70-4cbf-93fc-ef634a9fcb26"}}})
   useEffect(() => {
-    const createSub = API.graphql(
+    const postCreateSub = API.graphql(
       graphqlOperation(onCreatePosts)
     ).subscribe({
-      next: ({ value }) => loadPosts(),
+      next: ({ value }) => loadPosts(setAllPosts, allPosts),
     });
     
-    const updateSub = API.graphql(
+    const postUpdateSub = API.graphql(
       graphqlOperation(onUpdatePosts)
     ).subscribe({
-      next: ({ value }) => loadPosts()
+      next: ({ value }) => loadPosts(setAllPosts, allPosts)
     });
     
-    const deleteSub = API.graphql(
+    const postDeleteSub = API.graphql(
       graphqlOperation(onDeletePosts)
     ).subscribe({
-      next: ({ value }) => loadPosts()
+      next: ({ value }) => loadPosts(setAllPosts, allPosts)
     });
 
-    loadPosts();
+    const userCreateSub = API.graphql(
+      graphqlOperation(onCreateUsers)
+    ).subscribe({
+      next: ({ value }) => loadUsers(setAllUsers, allUsers),
+    });
+
+    const userUpdateSub = API.graphql(
+      graphqlOperation(onUpdateUsers)
+    ).subscribe({
+      next: ({ value }) => loadUsers(setAllUsers, allUsers)
+    });
+
+    const userDeleteSub = API.graphql(
+      graphqlOperation(onDeleteUsers)
+    ).subscribe({
+      next: ({ value }) => loadUsers(setAllUsers, allUsers)
+    });
+
+    const adminFavoriteCreateSub = API.graphql(
+      graphqlOperation(onCreateAdminFavorites)
+    ).subscribe({
+      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites),
+    });
+
+    const adminFavoriteUpdateSub = API.graphql(
+      graphqlOperation(onUpdateAdminFavorites)
+    ).subscribe({
+      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites)
+    });
+
+    const adminFavoriteDeleteSub = API.graphql(
+      graphqlOperation(onDeleteAdminFavorites)
+    ).subscribe({
+      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites)
+    });
+
+    const commentCreateSub = API.graphql(
+      graphqlOperation(onCreateComments)
+    ).subscribe({
+      next: ({ value }) => loadComments(setAllComments, undefined, allComments),
+    });
+
+    const commentUpdateSub = API.graphql(
+      graphqlOperation(onUpdateComments)
+    ).subscribe({
+      next: ({ value }) => loadComments(setAllComments, undefined, allComments)
+    });
+
+    const commentDeleteSub = API.graphql(
+      graphqlOperation(onDeleteComments)
+    ).subscribe({
+      next: ({ value }) => loadComments(setAllComments, undefined, allComments)
+    });
+
+    const reactionsCreateSub = API.graphql(
+      graphqlOperation(onCreateReactions)
+    ).subscribe({
+      next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions),
+    });
+
+    const reactionsUpdateSub = API.graphql(
+      graphqlOperation(onUpdateReactions)
+    ).subscribe({
+      next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions)
+    });
+
+    const reactionsDeleteSub = API.graphql(
+      graphqlOperation(onDeleteReactions)
+    ).subscribe({
+      next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions)
+    });
+
+    onRefresh();
 
     return () => {
-      createSub.unsubscribe();
-      updateSub.unsubscribe();
-      deleteSub.unsubscribe();
+      postCreateSub.unsubscribe();
+      postUpdateSub.unsubscribe();
+      postDeleteSub.unsubscribe();
+      userCreateSub.unsubscribe();
+      userUpdateSub.unsubscribe();
+      userDeleteSub.unsubscribe();
+      adminFavoriteCreateSub.unsubscribe();
+      adminFavoriteUpdateSub.unsubscribe();
+      adminFavoriteDeleteSub.unsubscribe();
+      commentCreateSub.unsubscribe();
+      commentUpdateSub.unsubscribe();
+      commentDeleteSub.unsubscribe();
+      reactionsCreateSub.unsubscribe();
+      reactionsUpdateSub.unsubscribe();
+      reactionsDeleteSub.unsubscribe();
     }
   }, []);
 
   return (
-    <>
-      <View style={ss.pageWrapper}>
-        <FlatList
-          data={allPosts}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
-          ItemSeparatorComponent={listItemSeparator}
-          stickyHeaderIndices={[0]}
-          ListHeaderComponent={listHeader}
-          removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
-          maxToRenderPerBatch={10} // Also the default
-          initialNumToRender={10} // Also the default
-          keyboardShouldPersistTaps="handled"
-          keyboardDismissMode="on-drag"
-          style={{ width: '100%' }}
-          contentContainerStyle={{ flexGrow: 1 }}
-          ListEmptyComponent={listEmptyComponent}  
-          onRefresh={onRefresh}
-          refreshing={false}
-        />
-      </View>
-    </>
+    <View style={ss.pageWrapper}>
+      <FlatList
+        data={allUsers.length > 0 ? allPosts : []}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        ItemSeparatorComponent={listItemSeparator}
+        stickyHeaderIndices={[0]}
+        ListHeaderComponent={listHeader}
+        removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
+        maxToRenderPerBatch={10} // Also the default
+        initialNumToRender={10} // Also the default
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        style={{ width: '100%' }}
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={listEmptyComponent}  
+        onRefresh={onRefresh}
+        refreshing={false}
+      />
+    </View>
   );
 };
 

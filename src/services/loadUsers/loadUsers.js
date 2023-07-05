@@ -1,5 +1,5 @@
 import { API } from "aws-amplify";
-import { listUsers } from '../../graphql/queries'
+import { listUsers } from '../../graphql/queries';
 import { Users } from "../../models";
 import { DataStore } from "../../utils";
 

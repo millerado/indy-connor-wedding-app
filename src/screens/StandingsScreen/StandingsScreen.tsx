@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useContext } from "react";
+import React, { useMemo, useState, useContext, useEffect } from "react";
 import { View, ScrollView, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { TabView, TabBar } from "react-native-tab-view";
@@ -12,6 +12,7 @@ const StandingsScreen = () => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const [index, setIndex] = useState(0);
+  const [sortedStandingsPeople, setSortedStandingsPeople] = useState([]);
   const routes = [
     { key: "teams", title: "Teams" },
     { key: "campers", title: "Campers" },
@@ -19,8 +20,37 @@ const StandingsScreen = () => {
   const dimensions = calcDimensions();
   const { allUsers, allTeams, allStandingsPeople, allStandingsTeams } = useContext(DataContext);
 
+  useEffect(() => {
+    if(allUsers.length > 0 && allStandingsPeople.length > 0) {
+      const allStandingsPeopleWithNames = allStandingsPeople.map((s) => {
+        const user = allUsers.find((u) => u.id === s.userId);
+        if (!user) {
+          return null;
+        }
+        return {
+          ...s,
+          name: user.name,
+        };
+      });
+      // If a user was deleted they still exist in standings, this removes them
+      const activeUsers = allStandingsPeopleWithNames.filter((s) => s?.name);
+      
+      // sort by: points (desc), gamesPlayed (desc), name (asc)
+      const sortedStandingsPeople = activeUsers.sort((a, b) => {
+        if (a.points === b.points) {
+          if (a.gamesPlayed === b.gamesPlayed) {
+            return a.name > b.name ? 1 : -1;
+          }
+          return b.gamesPlayed - a.gamesPlayed;
+        }
+        return b.points - a.points;
+      });
+      setSortedStandingsPeople(sortedStandingsPeople);
+    }
+  }, [allUsers, allStandingsPeople])
+
   const renderScene = ({ route }) => {
-    if(allStandingsTeams.length === 0 || allStandingsPeople.length === 0) {
+    if(allStandingsTeams.length === 0 || sortedStandingsPeople.length === 0) {
       return(
         <View style={ss.pageWrapper}>
           <View style={ss.pageActivityIndicatorWrapper}>
@@ -58,7 +88,7 @@ const StandingsScreen = () => {
               );
             })}
           {route.key === "campers" &&
-            allStandingsPeople.map((s, index) => {
+            sortedStandingsPeople.map((s, index) => {
               const user = allUsers.find((u) => u.id === s.userId);
               if (!user) {
                 return null;

@@ -8,7 +8,7 @@ const loadStandingsPeopleFromDatastore = async (setStandingsPeople, oldStandings
     const allStandings = await DataStore.query(StandingsPeople,
       Predicates.ALL,
       {
-        sort: (s) => s.rank(SortDirection.ASCENDING),
+        sort: (s) => s.points(SortDirection.DESCENDING),
       });
       if(JSON.stringify(allStandings) !== JSON.stringify(oldStandingsPeople)){
         setStandingsPeople(allStandings);
@@ -26,7 +26,7 @@ const loadStandingsPeople = async (setStandingsPeople, oldStandingsPeople) => {
     // Remove items where _deleted is true
     const items = unfilteredItems.filter(item => !item._deleted);
     if(items.length > 0) {
-      items.sort((a, b) => a.rank - b.rank);
+      items.sort((a, b) => b.points - a.points);
       if(JSON.stringify(items) !== JSON.stringify(oldStandingsPeople)){
         setStandingsPeople(items);
       }

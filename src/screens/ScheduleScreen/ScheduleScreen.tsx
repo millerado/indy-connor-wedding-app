@@ -2,11 +2,6 @@ import React, { useState, useEffect, useContext, useMemo, useCallback } from "re
 import { View, FlatList, Platform, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { TabView, TabBar } from 'react-native-tab-view';
-import { API, graphqlOperation, Hub } from "aws-amplify";
-import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
-import { onCreateSchedule, onUpdateSchedule, onDeleteSchedule} from '../../graphql/subscriptions';
-import { listSchedules } from '../../graphql/queries';
-import { Schedule } from "../../models";
 import {
   Text,
   Divider,
@@ -14,8 +9,7 @@ import {
   ActivityIndicator,
 } from "../../components";
 import { ScheduleItem, ScheduleModal } from "../../containers";
-import { DataStore } from "../../utils";
-import { AuthContext } from "../../contexts";
+import { AuthContext, DataContext } from "../../contexts";
 import { calcDimensions } from "../../styles";
 import styles from "./ScheduleScreenStyles";
 
@@ -28,10 +22,8 @@ const emptyScheduleData = [
 const ScheduleScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-  const [rawScheduleData, setRawScheduleData] = useState([]);
   const [scheduleData, setScheduleData] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
   const [index, setIndex] = useState(0);
   const routes = [
     { key: 'friday', title: 'Friday' },
@@ -40,17 +32,8 @@ const ScheduleScreen = ({ navigation, route }) => {
   ];
 
   const authStatus = useContext(AuthContext).authStatus;
+  const { allSchedule } = useContext(DataContext);
   const dimensions = calcDimensions();
-
-  Hub.listen("api", (data: any) => {
-    const { payload } = data;
-    if ( payload.event === CONNECTION_STATE_CHANGE ) {
-      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
-        loadSchedule();
-      }
-      setPriorConnectionState(payload.data.connectionState);
-    }
-  });
 
   const openModal = () => {
     setShowModal(true);
@@ -100,31 +83,6 @@ const ScheduleScreen = ({ navigation, route }) => {
     );
   };
 
-  const loadScheduleFromDatastore = async () => {
-    try {
-      const allSchedule = await DataStore.query(Schedule);
-      setRawScheduleData(allSchedule);
-    } catch (err) {
-      console.log('-- Error Loading Schedule From Datastore --', err);
-    }
-  }
-
-  const loadSchedule = async () => {
-    try {
-      const allSchedule = await API.graphql({ query: listSchedules, variables: { limit: 999999999 } });
-
-      const unfilteredItems = allSchedule?.data?.listSchedules?.items;
-      // Remove items where _deleted is true
-      const items = unfilteredItems.filter(item => !item._deleted);
-      if(items.length > 0) {
-        setRawScheduleData(items);
-      }
-    } catch (err) {
-      console.log('-- Error Loading Schedule, Will Try Datastore --', err);
-      loadScheduleFromDatastore();
-    }
-  }
-
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (authStatus?.isAdmin ? addNewButton() : null),
@@ -136,42 +94,14 @@ const ScheduleScreen = ({ navigation, route }) => {
     const days = "Friday,Saturday,Sunday".split(",");
     for (let i = 0; i < days.length; i++) {
       const day = days[i];
-      const dayData = rawScheduleData.filter((item) => item.day === day);
+      const dayData = allSchedule.filter((item) => item.day === day);
       if (dayData.length > 0) {
         dayData.sort((a, b) => a.sortOrder - b.sortOrder);
         newScheduleData[i].data = dayData;
       }
     }
     setScheduleData(newScheduleData);
-  }, [rawScheduleData]);
-
-  useEffect(() => {
-    const createSub = API.graphql(
-      graphqlOperation(onCreateSchedule)
-    ).subscribe({
-      next: ({ value }) => loadSchedule(),
-    });
-    
-    const updateSub = API.graphql(
-      graphqlOperation(onUpdateSchedule)
-    ).subscribe({
-      next: ({ value }) => loadSchedule()
-    });
-    
-    const deleteSub = API.graphql(
-      graphqlOperation(onDeleteSchedule)
-    ).subscribe({
-      next: ({ value }) => loadSchedule()
-    });
-
-    loadSchedule();
-
-    return () => {
-      createSub.unsubscribe();
-      updateSub.unsubscribe();
-      deleteSub.unsubscribe();
-    }
-  }, []);
+  }, [allSchedule]);
   
   return (
     <>

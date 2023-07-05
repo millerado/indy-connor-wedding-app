@@ -14,7 +14,8 @@ import {
   onCreateAdminFavorites, onUpdateAdminFavorites, onDeleteAdminFavorites,
   onCreateComments, onUpdateComments, onDeleteComments,
   onCreateReactions, onUpdateReactions, onDeleteReactions,
-  onCreateFAQ, onUpdateFAQ, onDeleteFAQ
+  onCreateFAQ, onUpdateFAQ, onDeleteFAQ,
+  onCreateSchedule, onUpdateSchedule, onDeleteSchedule,
 } from "./graphql/subscriptions";
 import { lightTheme, darkTheme } from "./styles";
 import {
@@ -28,7 +29,7 @@ import {
 import { WelcomeScreen } from './screens';
 import { Users } from "./models";
 import { registerForPushNotificationsAsync } from "./utils";
-import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions, loadFaqs } from "./services";
+import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions, loadFaqs, loadSchedule } from "./services";
 import AuthedApp from "./AuthedApp";
 
 const customFonts = {
@@ -73,6 +74,7 @@ const App = () => {
   const [allComments, setAllComments] = useState([]);
   const [allReactions, setAllReactions] = useState([]);
   const [allFaqs, setAllFaqs] = useState([]);
+  const [allSchedule, setAllSchedule] = useState([]);
   const responseListener = useRef();
   const nav = useRef();
 
@@ -154,6 +156,7 @@ const App = () => {
     loadComments(setAllComments, undefined, allComments);
     loadReactions(setAllReactions, undefined, allReactions);
     loadFaqs(setAllFaqs, allFaqs);
+    loadSchedule(setAllSchedule, allSchedule);
   }
 
   // Fetch user and prepare the app
@@ -354,6 +357,24 @@ const App = () => {
       next: ({ value }) => loadFaqs(setAllFaqs, allFaqs)
     });
 
+    const scheduleCreateSub = API.graphql(
+      graphqlOperation(onCreateSchedule)
+    ).subscribe({
+      next: ({ value }) => loadSchedule(setAllSchedule, allSchedule),
+    });
+
+    const scheduleUpdateSub = API.graphql(
+      graphqlOperation(onUpdateSchedule)
+    ).subscribe({
+      next: ({ value }) => loadSchedule(setAllSchedule, allSchedule)
+    });
+
+    const scheduleDeleteSub = API.graphql(
+      graphqlOperation(onDeleteSchedule)
+    ).subscribe({
+      next: ({ value }) => loadSchedule(setAllSchedule, allSchedule)
+    });
+
     onRefresh();
 
     return () => {
@@ -375,6 +396,9 @@ const App = () => {
       faqsCreateSub.unsubscribe();
       faqsUpdateSub.unsubscribe();
       faqsDeleteSub.unsubscribe();
+      scheduleCreateSub.unsubscribe();
+      scheduleUpdateSub.unsubscribe();
+      scheduleDeleteSub.unsubscribe();
     }
   }, []);
 
@@ -414,6 +438,7 @@ const App = () => {
               allReactions,
               allPosts,
               allFaqs,
+              allSchedule,
               setNotifications: updateNotifications, 
               totalNotifications: notificationDetails.totalNotifications, 
               unreadNotifications: notificationDetails.unreadNotifications, 

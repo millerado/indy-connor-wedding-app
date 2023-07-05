@@ -120,15 +120,15 @@ const WelcomeScreen = () => {
     );
   };
 
-  const listHeader = () => {
+  function renderHeader() {
     return (
       <View
         style={[
-          ss.modalHeader,
+          ss.modalHeaderLightBackground,
         ]}
       >
         <View style={{ flex: 1, alignItems: "center" }}>
-          <Text color={theme.colors.onModalHeader} bold size={TextSizes.L}>
+          <Text color={theme.colors.primary} bold size={TextSizes.L}>
             Let us know who you are
           </Text>
           <TextInput
@@ -147,8 +147,9 @@ const WelcomeScreen = () => {
           />
         </View>
       </View>
-    );
-  };
+    )
+  }
+
 
   const keyExtractor = useCallback((item) => item.id, []);
 
@@ -244,7 +245,7 @@ const WelcomeScreen = () => {
               data={displayedUsers}
               renderItem={renderItem}
               keyExtractor={keyExtractor}
-              ListHeaderComponent={listHeader}
+              ListHeaderComponent={renderHeader()}
               stickyHeaderIndices={[0]}
               removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
               maxToRenderPerBatch={10} // Also the default

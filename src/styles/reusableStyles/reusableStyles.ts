@@ -32,6 +32,15 @@ const reusableStyles = theme => {
       justifyContent: 'space-between',
       padding: 10,
     },
+    modalHeaderLightBackground: {
+      backgroundColor: theme.colors.background,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.primary,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      padding: 10,
+    },
     modalContentWrapper: {
       alignItems: 'center',
     },

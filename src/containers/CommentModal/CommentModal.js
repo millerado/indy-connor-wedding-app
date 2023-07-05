@@ -66,11 +66,12 @@ const CommentModal = (props) => {
     if (commentText) {
       // Update Item
       if (modalType === "update") {
-        const updatedItem = { ...comment };
+        const originalItem = await DataStore.query(Comments, comment.id);
+        const updatedItem = { ...originalItem };
         updatedItem.comment = commentText;
         // await DataStore.stop();
         await DataStore.save(
-          Comments.copyOf(comment, (updatedItem) => {
+          Comments.copyOf(originalItem, (updatedItem) => {
             updatedItem.comment = commentText;
           })
         );

@@ -46,8 +46,9 @@ const ManageGameScreen = ({ navigation, route }) => {
   const handleSave = async() => {
     if(view === 'editGame') {
       try { 
+        const originalItem = await DataStore.query(Games, item.id);
         await DataStore.save(
-          Games.copyOf(item, (i) => {
+          Games.copyOf(originalItem, (i) => {
             i.name = gameName;
             i.iconName = iconValue;
             i.minNumberOfTeams = minNumberOfTeams;

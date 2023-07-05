@@ -8,7 +8,7 @@ import CommentModal from "../CommentModal/CommentModal";
 import styles from "./AddCommentListViewStyles";
 
 const AddCommentListView = (props) => {
-  const { postsID, allUsers } = props;
+  const { postsID } = props;
   const authStatus = useContext(AuthContext).authStatus;
   const [showModal, setShowModal] = useState(false);
 
@@ -37,7 +37,6 @@ const AddCommentListView = (props) => {
           closeModal={closeModal}
           modalType={"create"}
           postsID={postsID}
-          allUsers={allUsers}
         />
         <Pressable onPress={openModal}>
           <View style={ss.addCommentWrapper}>

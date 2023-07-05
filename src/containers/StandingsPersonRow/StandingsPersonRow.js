@@ -25,7 +25,7 @@ const StandingsPersonRow = (props) => {
   }
 
   const goToLikingUserScreen = async (userId, name, image) => {
-    if(userId) {
+    if(userId && name) {
       navigation.push("User", {
         userId,
         name,

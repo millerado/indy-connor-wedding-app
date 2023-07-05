@@ -20,7 +20,7 @@ const formatAdminFavorites = async (items, oldAdminFavorites, setAdminFavorites)
 const loadAdminFavoritesFromDatastore = async (setAdminFavorites, oldAdminFavorites) => {
   try {
     const adminFavorites = await DataStore.query(AdminFavorites);
-    formatAdminFavorites(items, oldAdminFavorites, setAdminFavorites);
+    formatAdminFavorites(adminFavorites, oldAdminFavorites, setAdminFavorites);
   } catch (err) {
     console.log('-- Error Loading Admin Favorites Via Datastore --', err);
   }

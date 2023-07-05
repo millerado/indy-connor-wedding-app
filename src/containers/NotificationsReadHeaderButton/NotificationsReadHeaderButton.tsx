@@ -1,16 +1,16 @@
 import React, { useMemo, useContext } from "react";
 import { Pressable, View } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Icon, Button, Text, TextSizes } from "../../components";
+import { Icon, Text, TextSizes } from "../../components";
 import { typography } from "../../styles";
-import { NotificationContext, AuthContext } from "../../contexts";
+import { DataContext, AuthContext } from "../../contexts";
 import { DataStore } from '../../utils';
 import { Notifications } from '../../models';
 import styles from "./NotificationsReadHeaderButtonStyles";
 
 const NotificationsReadHeaderButton = () => {
   // Get the Auth Context
-  const notificationDetails = useContext(NotificationContext).notificationDetails;
+  const { unreadNotifications } = useContext(DataContext);
   const authStatus = useContext(AuthContext).authStatus;
 
   // Load theme for use in the file
@@ -38,7 +38,7 @@ const NotificationsReadHeaderButton = () => {
     }
   };
 
-  if (notificationDetails.unreadNotifications > 0) {
+  if (unreadNotifications > 0) {
     return (
       <Pressable onPress={markAllAsRead} style={{flexDirection: 'row', alignItems: 'center'}}>
         <View style={{paddingRight: 5}}>

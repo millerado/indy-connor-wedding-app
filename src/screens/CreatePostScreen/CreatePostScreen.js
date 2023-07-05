@@ -12,7 +12,7 @@ import { Menu, useTheme } from 'react-native-paper';
 import NetInfo from '@react-native-community/netinfo';
 import { MentionInput } from 'react-native-controlled-mentions';
 import { API } from "aws-amplify";
-import { listUsers, listGames } from '../../graphql/queries'
+import { listGames } from '../../graphql/queries'
 import {
   Chip,
   Avatar,
@@ -28,10 +28,10 @@ import {
   ConditionalWrapper,
   ImageS3,
 } from "../../components";
-import { Posts, Users, Games } from "../../models";
+import { Posts, Games } from "../../models";
 import { uploadImageS3, DataStore, sendUsersPushNotifications, gamePlayers, nth } from "../../utils";
 import { typography, calcDimensions } from "../../styles";
-import { AuthContext } from '../../contexts';
+import { AuthContext, DataContext } from '../../contexts';
 import { TaggingUserSuggestions } from '../../containers';
 import styles from "./CreatePostScreenStyles";
 
@@ -47,7 +47,6 @@ const CreatePostScreen = ({ navigation, route }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [error, setError] = useState(undefined);
   const [showErrorDetails, setShowErrorDetails] = useState(false);
-  const [allUsers, setAllUsers] = useState([]);
   const [photoPermissions, setPhotoPermissions] = useState({
     photos: 'loading',
     camera: 'loading',
@@ -61,6 +60,7 @@ const CreatePostScreen = ({ navigation, route }) => {
   const authStatus = useContext(AuthContext).authStatus;
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
+  const { allUsers } = useContext(DataContext);
 
   const uploadImageCallback = async (props) => {
     const { success, uploadedImages, errorSummary, errorDetails } = props;
@@ -349,57 +349,6 @@ const CreatePostScreen = ({ navigation, route }) => {
     );
   }
 
-  const loadUsersFromDatastore = async () => {
-    try {
-      const allUsers = DataStore.query(Users);
-      const formattedUsers = allUsers.map((u) => {
-        return {
-          id: u.id,
-          name: u.name,
-          image: u.image ? JSON.parse(u.image) : undefined,
-          fullObject: u,
-          label: u.name,
-          value: u.id,
-        };
-      });
-      
-      formattedUsers.sort((a, b) => a.name.localeCompare(b.name));
-
-      setAllUsers(formattedUsers);
-    } catch (err) {
-      console.log("Error loading users from Datastore", err);
-    }
-  };
-
-  const loadUsers = async () => {
-    try {
-      const allUsers = await API.graphql({ query: listUsers, variables: { limit: 999999999 } });
-
-      const unfilteredItems = allUsers?.data?.listUsers?.items;
-      // Remove items where _deleted is true
-      const items = unfilteredItems.filter(item => !item._deleted);
-      if(items.length > 0) {
-        const formattedUsers = items.map((u) => {
-          return {
-            id: u.id,
-            name: u.name,
-            image: u.image ? JSON.parse(u.image) : undefined,
-            fullObject: u,
-            label: u.name,
-            value: u.id,
-          };
-        });
-
-        formattedUsers.sort((a, b) => a.name.localeCompare(b.name));
-
-        setAllUsers(formattedUsers);
-      }
-    } catch (err) {
-      console.log('-- Error Loading Users, Will Try Datastore --', err);
-      loadUsersFromDatastore();
-    }
-  };
-
   const formatGames = (games) => {
     if(games.length > 0) {
       const g = games.map((game, index) => {
@@ -449,7 +398,6 @@ const CreatePostScreen = ({ navigation, route }) => {
       loadGamesFromDatastore();
     }
   };
-
 
   useEffect(() => {
     if (selectedGame) {
@@ -503,7 +451,6 @@ const CreatePostScreen = ({ navigation, route }) => {
       });
     })();
 
-    loadUsers();
     loadGames();
 
     const unsubscribe = NetInfo.addEventListener(state => {

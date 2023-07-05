@@ -104,7 +104,6 @@ const SingleComment = (props) => {
           modalType={"update"}
           postsID={comment.postsID}
           comment={comment}
-          allUsers={allUsers}
         />
         <Portal>
           <Dialog visible={deleteDialogVisible} onDismiss={hideDeleteDialog}>

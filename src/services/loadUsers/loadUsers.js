@@ -10,8 +10,12 @@ const formatUsers = async (items, setUsers, oldUsers) => {
       name: u.name,
       image: u.image ? JSON.parse(u.image) : undefined,
       teamId: u.teamsID,
+      fullObject: u,
+      label: u.name, // Used in Dropdowns
+      value: u.id, // Used in Dropdowns
     };
   });
+  newUsers.sort((a, b) => a.name.localeCompare(b.name));
   if(JSON.stringify(newUsers) !== JSON.stringify(oldUsers)) {
     setUsers(newUsers);
   }

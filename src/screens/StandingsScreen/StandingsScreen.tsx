@@ -1,22 +1,22 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useContext } from "react";
 import { View, ScrollView, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { TabView, TabBar } from "react-native-tab-view";
 import { SortDirection, Predicates, API, graphqlOperation, Hub } from "aws-amplify";
 import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
 import { onCreateStandingsPeople, onUpdateStandingsPeople, onDeleteStandingsPeople, onCreateStandingsTeams, onUpdateStandingsTeams, onDeleteStandingsTeams, onCreateUsers, onUpdateUsers, onDeleteUsers} from '../../graphql/subscriptions';
-import { listStandingsPeople, listStandingsTeams, listUsers, listTeams } from '../../graphql/queries';
+import { listStandingsPeople, listStandingsTeams, listTeams } from '../../graphql/queries';
 import { Teams, Users, StandingsTeams, StandingsPeople } from "../../models";
 import { ActivityIndicator, Text } from "../../components";
 import { DataStore } from "../../utils";
 import { StandingsTeamRow, StandingsPersonRow } from "../../containers";
+import { DataContext } from "../../contexts";
 import { calcDimensions } from "../../styles";
 import styles from "./StandingsScreenStyles";
 
 const StandingsScreen = () => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-  const [users, setUsers] = useState([]);
   const [teams, setTeams] = useState([]);
   const [standingsTeams, setStandingsTeams] = useState([]);
   const [standingsPeople, setStandingsPeople] = useState([]);
@@ -27,6 +27,7 @@ const StandingsScreen = () => {
     { key: "campers", title: "Campers" },
   ];
   const dimensions = calcDimensions();
+  const { allUsers } = useContext(DataContext);
 
   Hub.listen("api", (data: any) => {
     const { payload } = data;
@@ -35,7 +36,6 @@ const StandingsScreen = () => {
         loadTeamStandings();
         loadPeopleStandings();
         loadTeams();
-        loadUsers();
       }
       setPriorConnectionState(payload.data.connectionState);
     }
@@ -76,7 +76,7 @@ const StandingsScreen = () => {
                   teamColor={team.colorCode}
                   description={team.description}
                   points={s.points}
-                  allUsers={users}
+                  allUsers={allUsers}
                   allTeams={teams}
                   allStandingsTeams={standingsTeams}
                   allStandingsPeople={standingsPeople}
@@ -85,7 +85,7 @@ const StandingsScreen = () => {
             })}
           {route.key === "campers" &&
             standingsPeople.map((s, index) => {
-              const user = users.find((u) => u.id === s.userId);
+              const user = allUsers.find((u) => u.id === s.userId);
               if (!user) {
                 return null;
               }
@@ -170,25 +170,6 @@ const StandingsScreen = () => {
     }
   }
 
-  const loadUsersFromDatastore = async () => {
-    try {
-      const allUsers = await DataStore.query(Users);
-      if(allUsers) {
-        const newUsers = allUsers.map((u) => {
-          return {
-            id: u.id,
-            name: u.name,
-            image: u.image ? JSON.parse(u.image) : undefined,
-            teamId: u.teamsID,
-          };
-        });
-      }
-      setUsers(newUsers);
-    } catch (err) {
-      console.log('-- Error Loading Users From Datastore --', err);
-    }
-  }
-
   const loadTeamsFromDatastore = async () => {
     try {
       const allTeams = await DataStore.query(Teams);
@@ -216,54 +197,10 @@ const StandingsScreen = () => {
     }
   }
 
-  const loadUsers = async () => {
-    try {
-      const allUsers = await API.graphql({ query: listUsers, variables: { limit: 999999999 } });
-
-      const unfilteredItems = allUsers?.data?.listUsers?.items;
-      // Remove items where _deleted is true
-      const items = unfilteredItems.filter(item => !item._deleted);
-      if(items.length > 0) {
-        const newUsers = items.map((u) => {
-          return {
-            id: u.id,
-            name: u.name,
-            image: u.image ? JSON.parse(u.image) : undefined,
-            teamId: u.teamsID,
-          };
-        });
-
-        setUsers(newUsers);
-      }
-    } catch (err) {
-      console.log('-- Error Loading Users --', err);
-      loadUsersFromDatastore();
-    }
-  }
-
   useEffect(() => {
     loadTeamStandings();
     loadPeopleStandings();
     loadTeams();
-    loadUsers();
-
-    const createUserSubscription = API.graphql(
-      graphqlOperation(onCreateUsers)
-    ).subscribe({
-      next: ({ value }) => loadUsers(),
-    });
-
-    const updateUserSubscription = API.graphql(
-      graphqlOperation(onUpdateUsers)
-    ).subscribe({
-      next: ({ value }) => loadUsers(),
-    });
-
-    const deleteUserSubscription = API.graphql(
-      graphqlOperation(onDeleteUsers)
-    ).subscribe({
-      next: ({ value }) => loadUsers(),
-    });
 
     const createTeamSubscription = API.graphql(
       graphqlOperation(onCreateStandingsTeams)
@@ -302,9 +239,6 @@ const StandingsScreen = () => {
     });
 
     return () => {
-      createUserSubscription.unsubscribe();
-      updateUserSubscription.unsubscribe();
-      deleteUserSubscription.unsubscribe();
       createTeamSubscription.unsubscribe();
       updateTeamSubscription.unsubscribe();
       deleteTeamSubscription.unsubscribe();

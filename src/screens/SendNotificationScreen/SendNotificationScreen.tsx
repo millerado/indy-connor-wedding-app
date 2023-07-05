@@ -9,11 +9,6 @@ import React, {
 import { ScrollView, View, Keyboard, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { TimePickerModal } from "react-native-paper-dates";
-import { API, graphqlOperation, Hub } from "aws-amplify";
-import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
-import { onCreateUsers, onUpdateUsers, onDeleteUsers } from "../../graphql/subscriptions";
-import { listUsers } from '../../graphql/queries'
-import { Users } from "../../models";
 import {
   Icon,
   Text,
@@ -28,9 +23,9 @@ import {
   ConditionalWrapper,
   Avatar,
 } from "../../components";
-import { SnackbarContext, AuthContext } from "../../contexts";
+import { SnackbarContext, AuthContext, DataContext } from "../../contexts";
 import { typography } from "../../styles";
-import { sendGlobalPushNotification, sendUsersPushNotifications, scheduleNotificationForAnotherUser, DataStore } from "../../utils";
+import { sendGlobalPushNotification, sendUsersPushNotifications, scheduleNotificationForAnotherUser } from "../../utils";
 import styles from "./SendNotificationScreenStyles";
 
 const days = [
@@ -53,26 +48,15 @@ const SendNotificationScreen = ({ navigation }) => {
   const [notificationSending, setNotificationSending] = useState(false);
   const [scheduleForLater, setScheduleForLater] = useState(true);
   const [sendToEveryone, setSendToEveryone] = useState(true);
-  const [allUsers, setAllUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [timePickerVisible, setTimePickerVisible] = useState(false);
   const [selectedDay, setSelectedDay] = useState('friday');
   const [selectedHour, setSelectedHour] = useState(new Date().getHours());
   const [selectedMinute, setSelectedMinute] = useState(new Date().getMinutes());
   const [isValid, setIsValid] = useState(false);
-  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
   const refSubject = useRef();
   const refNotificationText = useRef();
-
-  Hub.listen("api", (data: any) => {
-    const { payload } = data;
-    if ( payload.event === CONNECTION_STATE_CHANGE ) {
-      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
-        loadUsers();
-      }
-      setPriorConnectionState(payload.data.connectionState);
-    }
-  });
+  const { allUsers } = useContext(DataContext);
 
   const onDismissTimePicker = useCallback(() => {
     setTimePickerVisible(false);
@@ -169,57 +153,6 @@ const SendNotificationScreen = ({ navigation }) => {
     setSelectedUsers(newUsers.filter((u) => u !== userId));
   };
 
-  const loadUsersFromDatastore = async () => {
-    try {
-      const allUsers = DataStore.query(Users);
-      const formattedUsers = allUsers.map((u) => {
-        return {
-          id: u.id,
-          name: u.name,
-          image: u.image ? JSON.parse(u.image) : undefined,
-          fullObject: u,
-          label: u.name,
-          value: u.id,
-        };
-      });
-      
-      formattedUsers.sort((a, b) => a.name.localeCompare(b.name));
-
-      setAllUsers(formattedUsers);
-    } catch (err) {
-      console.log("Error loading users from Datastore", err);
-    }
-  };
-
-  const loadUsers = async () => {
-    try {
-      const allUsers = await API.graphql({ query: listUsers, variables: { limit: 999999999 } });
-
-      const unfilteredItems = allUsers?.data?.listUsers?.items;
-      // Remove items where _deleted is true
-      const items = unfilteredItems.filter(item => !item._deleted);
-      if(items.length > 0) {
-        const formattedUsers = items.map((u) => {
-          return {
-            id: u.id,
-            name: u.name,
-            image: u.image ? JSON.parse(u.image) : undefined,
-            fullObject: u,
-            label: u.name,
-            value: u.id,
-          };
-        });
-
-        formattedUsers.sort((a, b) => a.name.localeCompare(b.name));
-
-        setAllUsers(formattedUsers);
-      }
-    } catch (err) {
-      console.log('-- Error Loading Users, Will Try Datastore --', err);
-      loadUsersFromDatastore();
-    }
-  };
-
   useEffect(() => {
     setIsValid(
       notificationText.length > 0 &&
@@ -228,34 +161,6 @@ const SendNotificationScreen = ({ navigation }) => {
         (sendToEveryone || (!sendToEveryone && selectedUsers.length > 0))
     );
   }, [notificationText, scheduleForLater, sendToEveryone, selectedUsers, selectedDay, selectedHour, selectedMinute]);
-
-  useEffect(() => {
-    const createSub = API.graphql(
-      graphqlOperation(onCreateUsers)
-    ).subscribe({
-      next: ({ value }) => loadUsers(),
-    });
-    
-    const updateSub = API.graphql(
-      graphqlOperation(onUpdateUsers)
-    ).subscribe({
-      next: ({ value }) => loadUsers()
-    });
-    
-    const deleteSub = API.graphql(
-      graphqlOperation(onDeleteUsers)
-    ).subscribe({
-      next: ({ value }) => loadUsers()
-    });
-
-    loadUsers();
-
-    return () => {
-      createSub.unsubscribe();
-      updateSub.unsubscribe();
-      deleteSub.unsubscribe();
-    }
-  }, []);
 
   return (
     <View style={ss.pageWrapper}>

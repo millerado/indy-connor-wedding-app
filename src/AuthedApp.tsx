@@ -5,15 +5,15 @@ import { onCreateNotifications, onUpdateNotifications, onDeleteNotifications, on
 import { listNotifications, listScheduledNotifications } from './graphql/queries';
 import { Snackbar } from "./components";
 import Navigation from "./navigation/navigation";
-import { AuthContext, NotificationContext } from "./contexts";
-import { ScheduledNotifications, Notifications as NotificationsModel } from "./models";
+import { AuthContext, DataContext } from "./contexts";
+import { ScheduledNotifications } from "./models";
 import { DataStore, sendUserScheduledPushNotification, setBadgeCount, CalculateStandings } from "./utils";
 
 const AuthedApp = (props) => {
   const { showSnackbar, onDismissSnackBar, snackbarDetails } = props;
   const [priorConnectionState, setPriorConnectionState] = useState(undefined);
   const authStatus = useContext(AuthContext).authStatus;
-  const { setNotificationDetails } = useContext(NotificationContext);
+  const { setNotifications } = useContext(DataContext);
 
   Hub.listen("api", (data: any) => {
     const { payload } = data;
@@ -38,10 +38,14 @@ const AuthedApp = (props) => {
       if(items.length > 0) {
         const pastOnly = items.filter((n) => n.displayTime <= new Date().toISOString());
         const numberUnread = pastOnly.filter((item) => !item.read).length;
-        setNotificationDetails({
-          totalNotifications: pastOnly.length,
-          unreadNotifications: numberUnread,
-        });
+        if(pastOnly.length > 0) {
+          pastOnly.sort((a, b) => new Date(b.displayTime) - new Date(a.displayTime));
+        }
+        setNotifications(
+          pastOnly.length, // totalNotifications
+          numberUnread, // unreadNotifications
+          pastOnly, // allNotifications
+        );
         // console.log('-- Number Unread/Total --', numberUnread, pastOnly.length);
         setBadgeCount(numberUnread, authStatus.userId, authStatus.userId);
       }

@@ -1,6 +1,5 @@
 import React, {
   useMemo,
-  useEffect,
   useState,
   useContext,
   useCallback,
@@ -8,10 +7,6 @@ import React, {
 import { View, FlatList, Platform, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
-import { API, graphqlOperation, Hub } from "aws-amplify";
-import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
-import { onCreateNotifications, onUpdateNotifications, onDeleteNotifications } from '../../graphql/subscriptions';
-import { listNotifications } from '../../graphql/queries';
 import {
   Divider,
   ActivityIndicator,
@@ -21,7 +16,7 @@ import {
   Text,
 } from "../../components";
 import { FormatTextWithMentions } from "../../containers";
-import { AuthContext } from "../../contexts";
+import { DataContext } from "../../contexts";
 import { Notifications } from "../../models";
 import { typography, calcDimensions } from "../../styles";
 import { DataStore } from "../../utils";
@@ -30,41 +25,10 @@ import styles from "./NotificationsScreenStyles";
 const NotificationsScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-  const authStatus = useContext(AuthContext).authStatus;
   const [loading, setLoading] = useState(false);
-  const [notifications, setNotifications] = useState([]);
-  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
+  const { allNotifications } = useContext(DataContext);
 
   const { width } = calcDimensions();
-
-  const graphVariables = { filter: { userId: {eq: authStatus.userId} }, limit: 999999999 };
-
-  Hub.listen("api", (data: any) => {
-    const { payload } = data;
-    if ( payload.event === CONNECTION_STATE_CHANGE ) {
-      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
-        loadNotifications();
-      }
-      setPriorConnectionState(payload.data.connectionState);
-    }
-  });
-
-  const loadNotifications = async () => {
-    try {
-      const allNotifications = await API.graphql({ query: listNotifications, variables: graphVariables });
-
-      const unfilteredItems = allNotifications?.data?.listNotifications?.items;
-      // Remove items where _deleted is true
-      const items = unfilteredItems.filter(item => !item._deleted && new Date(item.displayTime) <= new Date());
-      if(items.length > 0) {
-        items.sort((a, b) => new Date(b.displayTime) - new Date(a.displayTime));
-        setNotifications(items);
-        setLoading(false);
-      }
-    } catch (err) {
-      console.log('-- Error Loading Notifications, No DataStore for these --', err);
-    }
-  }
 
   const navToLink = (targetType, id) => {
     // console.log('-- Notification Navigation --', targetType, id);
@@ -158,43 +122,15 @@ const NotificationsScreen = ({ navigation, route }) => {
     return <Divider />;
   }, []);
 
-  useEffect(() => {
-    const createNotificationSub = API.graphql(
-      graphqlOperation(onCreateNotifications, graphVariables)
-    ).subscribe({
-      next: ({ value }) => loadNotifications(),
-    });
-    
-    const updateNotificationSub = API.graphql(
-      graphqlOperation(onUpdateNotifications, graphVariables)
-    ).subscribe({
-      next: ({ value }) => loadNotifications()
-    });
-    
-    const deleteNotificationSub = API.graphql(
-      graphqlOperation(onDeleteNotifications, graphVariables)
-    ).subscribe({
-      next: ({ value }) => loadNotifications()
-    });
-
-    loadNotifications();
-
-    return () => {
-      createNotificationSub.unsubscribe();
-      updateNotificationSub.unsubscribe();
-      deleteNotificationSub.unsubscribe();
-    }
-  }, []);
-
   return (
     <View style={ss.pageWrapper}>
-      {loading || notifications.length === 0 ? (
+      {loading || allNotifications?.length === 0 ? (
         <View style={ss.pageActivityIndicatorWrapper}>
           <ActivityIndicator size={60} />
         </View>
       ) : (
         <FlatList
-          data={notifications}
+          data={allNotifications}
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           ItemSeparatorComponent={listItemSeparator}
@@ -204,8 +140,6 @@ const NotificationsScreen = ({ navigation, route }) => {
           removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
           maxToRenderPerBatch={10} // Also the default
           initialNumToRender={10} // Also the default
-          onRefresh={loadNotifications}
-          refreshing={false}
         />
       )}
     </View>

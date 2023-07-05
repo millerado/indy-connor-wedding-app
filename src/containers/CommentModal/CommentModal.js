@@ -11,7 +11,7 @@ import {
   Modal,
   TextInput,
 } from "../../components";
-import { AuthContext } from "../../contexts";
+import { AuthContext, DataContext } from "../../contexts";
 import TaggingUserSuggestions from "../TaggingUserSuggestions/TaggingUserSuggestions";
 import styles from "./CommentModalStyles";
 
@@ -20,8 +20,9 @@ const CommentModal = (props) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const authStatus = useContext(AuthContext).authStatus;
+  const { allUsers } = useContext(DataContext);
 
-  const { showModal, modalType, closeModal, postsID, comment, allUsers } = props;
+  const { showModal, modalType, closeModal, postsID, comment } = props;
 
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);

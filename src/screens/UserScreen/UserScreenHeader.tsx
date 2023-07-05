@@ -187,11 +187,13 @@ const UserScreenHeader = (props) => {
 
   useEffect(() => {
     const headerRight = authStatus !== undefined && dbUser?.id === authStatus.userId && dbUser?.name ? addEditButton() : null;
-    const headerTitle = dbUser?.name ? dbUser.name : "User";
-    navigation.setOptions({
-      title: headerTitle,
-      headerRight: () => headerRight,
-    });
+    if(dbUser?.name) {
+      const headerTitle = dbUser?.name ? dbUser.name : "User";
+      navigation.setOptions({
+        title: headerTitle,
+        headerRight: () => headerRight,
+      });
+    }
   }, [authStatus, dbUser, editMode]);
 
   useEffect(() => {

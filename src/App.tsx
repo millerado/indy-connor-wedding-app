@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, createContext } from "react";
 import { View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { Provider as PaperProvider } from "react-native-paper";
@@ -6,7 +6,15 @@ import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { syncExpression } from 'aws-amplify';
+import { API, graphqlOperation, Hub } from "aws-amplify";
+import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
+import { 
+  onCreatePosts, onUpdatePosts, onDeletePosts,
+  onCreateUsers, onUpdateUsers, onDeleteUsers,
+  onCreateAdminFavorites, onUpdateAdminFavorites, onDeleteAdminFavorites,
+  onCreateComments, onUpdateComments, onDeleteComments,
+  onCreateReactions, onUpdateReactions, onDeleteReactions,
+} from "./graphql/subscriptions";
 import { lightTheme, darkTheme } from "./styles";
 import {
   ThemeContext,
@@ -14,12 +22,12 @@ import {
   DefaultSnackbar,
   AuthContext,
   UnauthedUser,
-  NotificationContext,
-  DefaultNotification,
+  DataContext,
 } from "./contexts";
 import { WelcomeScreen } from './screens';
-import { Users, ScheduledNotifications, Notifications as NotificationsModel } from "./models";
+import { Users } from "./models";
 import { registerForPushNotificationsAsync, DataStore } from "./utils";
+import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions } from "./services";
 import AuthedApp from "./AuthedApp";
 
 const customFonts = {
@@ -57,7 +65,12 @@ const App = () => {
   const [authStatus, setAuthStatus] = useState(UnauthedUser);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarDetails, setSnackbarDetails] = useState(DefaultSnackbar);
-  const [notificationDetails, setNotificationDetails] = useState(DefaultNotification);
+  const [notificationDetails, setNotificationDetails] = useState({ totalNotifications: 0, unreadNotifications: 0, allNotifications: [] });
+  const [allPosts, setAllPosts] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [allAdminFavorites, setAllAdminFavorites] = useState([]);
+  const [allComments, setAllComments] = useState([]);
+  const [allReactions, setAllReactions] = useState([]);
   const responseListener = useRef();
   const nav = useRef();
 
@@ -131,6 +144,14 @@ const App = () => {
     setShowSnackbar(false);
     setSnackbarDetails(DefaultSnackbar);
   };
+
+  const onRefresh = async () => {
+    loadPosts(setAllPosts, allPosts);
+    loadUsers(setAllUsers, allUsers);
+    loadAdminFavorites(setAllAdminFavorites, allAdminFavorites);
+    loadComments(setAllComments, undefined, allComments);
+    loadReactions(setAllReactions, undefined, allReactions);
+  }
 
   useEffect(() => {
     const fetchCurrentTheme = async () => {
@@ -217,9 +238,119 @@ const App = () => {
       // This checks for notification clicks with the app open
       Notifications.removeNotificationSubscription(responseListener);
     };
-
   }, []);
 
+  useEffect(() => {
+    const postCreateSub = API.graphql(
+      graphqlOperation(onCreatePosts)
+    ).subscribe({
+      next: ({ value }) => loadPosts(setAllPosts, allPosts),
+    });
+    
+    const postUpdateSub = API.graphql(
+      graphqlOperation(onUpdatePosts)
+    ).subscribe({
+      next: ({ value }) => loadPosts(setAllPosts, allPosts)
+    });
+    
+    const postDeleteSub = API.graphql(
+      graphqlOperation(onDeletePosts)
+    ).subscribe({
+      next: ({ value }) => loadPosts(setAllPosts, allPosts)
+    });
+
+    const userCreateSub = API.graphql(
+      graphqlOperation(onCreateUsers)
+    ).subscribe({
+      next: ({ value }) => loadUsers(setAllUsers, allUsers),
+    });
+
+    const userUpdateSub = API.graphql(
+      graphqlOperation(onUpdateUsers)
+    ).subscribe({
+      next: ({ value }) => loadUsers(setAllUsers, allUsers)
+    });
+
+    const userDeleteSub = API.graphql(
+      graphqlOperation(onDeleteUsers)
+    ).subscribe({
+      next: ({ value }) => loadUsers(setAllUsers, allUsers)
+    });
+
+    const adminFavoriteCreateSub = API.graphql(
+      graphqlOperation(onCreateAdminFavorites)
+    ).subscribe({
+      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites),
+    });
+
+    const adminFavoriteUpdateSub = API.graphql(
+      graphqlOperation(onUpdateAdminFavorites)
+    ).subscribe({
+      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites)
+    });
+
+    const adminFavoriteDeleteSub = API.graphql(
+      graphqlOperation(onDeleteAdminFavorites)
+    ).subscribe({
+      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites)
+    });
+
+    const commentCreateSub = API.graphql(
+      graphqlOperation(onCreateComments)
+    ).subscribe({
+      next: ({ value }) => loadComments(setAllComments, undefined, allComments),
+    });
+
+    const commentUpdateSub = API.graphql(
+      graphqlOperation(onUpdateComments)
+    ).subscribe({
+      next: ({ value }) => loadComments(setAllComments, undefined, allComments)
+    });
+
+    const commentDeleteSub = API.graphql(
+      graphqlOperation(onDeleteComments)
+    ).subscribe({
+      next: ({ value }) => loadComments(setAllComments, undefined, allComments)
+    });
+
+    const reactionsCreateSub = API.graphql(
+      graphqlOperation(onCreateReactions)
+    ).subscribe({
+      next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions),
+    });
+
+    const reactionsUpdateSub = API.graphql(
+      graphqlOperation(onUpdateReactions)
+    ).subscribe({
+      next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions)
+    });
+
+    const reactionsDeleteSub = API.graphql(
+      graphqlOperation(onDeleteReactions)
+    ).subscribe({
+      next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions)
+    });
+
+    onRefresh();
+
+    return () => {
+      postCreateSub.unsubscribe();
+      postUpdateSub.unsubscribe();
+      postDeleteSub.unsubscribe();
+      userCreateSub.unsubscribe();
+      userUpdateSub.unsubscribe();
+      userDeleteSub.unsubscribe();
+      adminFavoriteCreateSub.unsubscribe();
+      adminFavoriteUpdateSub.unsubscribe();
+      adminFavoriteDeleteSub.unsubscribe();
+      commentCreateSub.unsubscribe();
+      commentUpdateSub.unsubscribe();
+      commentDeleteSub.unsubscribe();
+      reactionsCreateSub.unsubscribe();
+      reactionsUpdateSub.unsubscribe();
+      reactionsDeleteSub.unsubscribe();
+    }
+  }, []);
 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
@@ -236,12 +367,31 @@ const App = () => {
     return null;
   }
 
+  const updateNotifications = (totalNotifications, unreadNotifications, allNotifications) => {
+    setNotificationDetails({
+      totalNotifications,
+      unreadNotifications,
+      allNotifications
+    });
+  }
+
   return (
     <ThemeContext.Provider value={{ themeName, setThemeName: saveTheme }}>
       <AuthContext.Provider value={{ authStatus, setAuthStatus: setUser }}>
-        <NotificationContext.Provider value={{ notificationDetails, setNotificationDetails }}>
-          <NavigationContainer ref={nav}>
-            <PaperProvider theme={theme}>
+        <NavigationContainer ref={nav}>
+          <PaperProvider theme={theme}>
+            <DataContext.Provider value={{ 
+              refreshData: onRefresh, 
+              allUsers, 
+              allComments, 
+              allAdminFavorites, 
+              allReactions, 
+              allPosts, 
+              setNotifications: updateNotifications, 
+              totalNotifications: notificationDetails.totalNotifications, 
+              unreadNotifications: notificationDetails.unreadNotifications, 
+              allNotifications: notificationDetails.allNotifications
+            }}>
               <SnackbarContext.Provider
                 value={{ snackbar: snackbarDetails, setSnackbar }}
               >
@@ -257,9 +407,9 @@ const App = () => {
                   )}
                 </View>
               </SnackbarContext.Provider>
-            </PaperProvider>
-          </NavigationContainer>
-        </NotificationContext.Provider>
+            </DataContext.Provider>
+          </PaperProvider>
+        </NavigationContainer>
       </AuthContext.Provider>
     </ThemeContext.Provider>
   );

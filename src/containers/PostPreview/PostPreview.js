@@ -222,7 +222,6 @@ const PostPreview = (props) => {
           closeModal={closeCommentModal}
           modalType={"create"}
           postsID={postsID}
-          allUsers={allUsers}
         />
         <LikedByUsersModal
           showModal={showLikesModal}
@@ -391,7 +390,7 @@ const PostPreview = (props) => {
             )}
           </Pressable>
         )}
-        <AddCommentListView postsID={postsID} allUsers={allUsers} />
+        <AddCommentListView postsID={postsID} />
       </View>
       <Portal>
         <Dialog visible={showUnauthedMessage} onDismiss={() => setShowUnauthedMessage(false)}>

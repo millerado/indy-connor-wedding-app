@@ -7,45 +7,20 @@ import React, {
 } from "react";
 import { View, FlatList, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
-import { API, graphqlOperation, Hub } from "aws-amplify";
-import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
-import { 
-  onCreatePosts, onUpdatePosts, onDeletePosts,
-  onCreateUsers, onUpdateUsers, onDeleteUsers,
-  onCreateAdminFavorites, onUpdateAdminFavorites, onDeleteAdminFavorites,
-  onCreateComments, onUpdateComments, onDeleteComments,
-  onCreateReactions, onUpdateReactions, onDeleteReactions,
-} from "../../graphql/subscriptions";
 import { ActivityIndicator, Divider } from "../../components";
-import { AuthContext } from "../../contexts";
+import { AuthContext, DataContext } from "../../contexts";
 import { AddPostListHeader } from "../../containers";
 import { PostPreview } from "../../containers";
-import { loadPosts, loadUsers, loadAdminFavorites, loadComments, loadReactions } from "../../services";
 import styles from "./MostLikedPostsScreenStyles";
 
 const MostLikedPostsScreen = () => {
-  const [allPosts, setAllPosts] = useState([]);
-  const [allUsers, setAllUsers] = useState([]);
-  const [allAdminFavorites, setAllAdminFavorites] = useState([]);
-  const [allComments, setAllComments] = useState([]);
-  const [allReactions, setAllReactions] = useState([]);
   const [sortedPosts, setSortedPosts] = useState([]);
-  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
 
   const authContext = useContext(AuthContext);
   const { authStatus } = authContext;
-
-  // Hub.listen("api", (data: any) => {
-  //   const { payload } = data;
-  //   if ( payload.event === CONNECTION_STATE_CHANGE ) {
-  //     if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
-  //       onRefresh();
-  //     }
-  //     setPriorConnectionState(payload.data.connectionState);
-  //   }
-  // });
+  const { refreshData, allUsers, allComments, allAdminFavorites, allReactions, allPosts } = useContext(DataContext);
 
   const renderItem = useCallback(({ item }) => {
     const postComments = allComments.filter((comment) => comment.postsID === item.id);
@@ -74,11 +49,7 @@ const MostLikedPostsScreen = () => {
   }, []);
 
   const onRefresh = async () => {
-    loadPosts(setAllPosts, allPosts);
-    loadUsers(setAllUsers, allUsers);
-    loadAdminFavorites(setAllAdminFavorites, allAdminFavorites);
-    loadComments(setAllComments, undefined, allComments);
-    loadReactions(setAllReactions, undefined, allReactions);
+    refreshData();
   }
 
   useEffect(() => {
@@ -93,118 +64,6 @@ const MostLikedPostsScreen = () => {
     const sorted = formattedPosts.sort((a, b) => b.reactionCount - a.reactionCount);
     setSortedPosts(sorted);
   }, [allReactions, allPosts]);
-
-  useEffect(() => {
-    const postCreateSub = API.graphql(
-      graphqlOperation(onCreatePosts)
-    ).subscribe({
-      next: ({ value }) => loadPosts(setAllPosts, allPosts),
-    });
-    
-    const postUpdateSub = API.graphql(
-      graphqlOperation(onUpdatePosts)
-    ).subscribe({
-      next: ({ value }) => loadPosts(setAllPosts, allPosts)
-    });
-    
-    const postDeleteSub = API.graphql(
-      graphqlOperation(onDeletePosts)
-    ).subscribe({
-      next: ({ value }) => loadPosts(setAllPosts, allPosts)
-    });
-
-    const userCreateSub = API.graphql(
-      graphqlOperation(onCreateUsers)
-    ).subscribe({
-      next: ({ value }) => loadUsers(setAllUsers, allUsers),
-    });
-
-    const userUpdateSub = API.graphql(
-      graphqlOperation(onUpdateUsers)
-    ).subscribe({
-      next: ({ value }) => loadUsers(setAllUsers, allUsers)
-    });
-
-    const userDeleteSub = API.graphql(
-      graphqlOperation(onDeleteUsers)
-    ).subscribe({
-      next: ({ value }) => loadUsers(setAllUsers, allUsers)
-    });
-
-    const adminFavoriteCreateSub = API.graphql(
-      graphqlOperation(onCreateAdminFavorites)
-    ).subscribe({
-      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites),
-    });
-
-    const adminFavoriteUpdateSub = API.graphql(
-      graphqlOperation(onUpdateAdminFavorites)
-    ).subscribe({
-      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites)
-    });
-
-    const adminFavoriteDeleteSub = API.graphql(
-      graphqlOperation(onDeleteAdminFavorites)
-    ).subscribe({
-      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites)
-    });
-
-    const commentCreateSub = API.graphql(
-      graphqlOperation(onCreateComments)
-    ).subscribe({
-      next: ({ value }) => loadComments(setAllComments, undefined, allComments),
-    });
-
-    const commentUpdateSub = API.graphql(
-      graphqlOperation(onUpdateComments)
-    ).subscribe({
-      next: ({ value }) => loadComments(setAllComments, undefined, allComments)
-    });
-
-    const commentDeleteSub = API.graphql(
-      graphqlOperation(onDeleteComments)
-    ).subscribe({
-      next: ({ value }) => loadComments(setAllComments, undefined, allComments)
-    });
-
-    const reactionsCreateSub = API.graphql(
-      graphqlOperation(onCreateReactions)
-    ).subscribe({
-      next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions),
-    });
-
-    const reactionsUpdateSub = API.graphql(
-      graphqlOperation(onUpdateReactions)
-    ).subscribe({
-      next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions)
-    });
-
-    const reactionsDeleteSub = API.graphql(
-      graphqlOperation(onDeleteReactions)
-    ).subscribe({
-      next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions)
-    });
-
-    onRefresh();
-
-    return () => {
-      postCreateSub.unsubscribe();
-      postUpdateSub.unsubscribe();
-      postDeleteSub.unsubscribe();
-      userCreateSub.unsubscribe();
-      userUpdateSub.unsubscribe();
-      userDeleteSub.unsubscribe();
-      adminFavoriteCreateSub.unsubscribe();
-      adminFavoriteUpdateSub.unsubscribe();
-      adminFavoriteDeleteSub.unsubscribe();
-      commentCreateSub.unsubscribe();
-      commentUpdateSub.unsubscribe();
-      commentDeleteSub.unsubscribe();
-      reactionsCreateSub.unsubscribe();
-      reactionsUpdateSub.unsubscribe();
-      reactionsDeleteSub.unsubscribe();
-    }
-  }, []);
 
   return (
     <View style={ss.pageWrapper}>

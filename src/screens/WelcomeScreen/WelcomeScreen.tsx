@@ -2,16 +2,10 @@ import React, { useState, useEffect, useMemo, useContext, useCallback } from "re
 import { View, ScrollView, SafeAreaView, FlatList } from "react-native";
 import { useTheme } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { API, graphqlOperation, Hub } from "aws-amplify";
-import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
-import { onCreateUsers, onUpdateUsers, onDeleteUsers} from '../../graphql/subscriptions';
 import { appPasscode } from "../../../appConfig";
-import { listUsers } from '../../graphql/queries';
 import { Text, TextInput, Button, TextSizes, ActivityIndicator } from "../../components";
 import { SingleUserInModal } from "../../containers";
-import { AuthContext, SnackbarContext } from "../../contexts";
-import { Users } from "../../models";
-import { DataStore } from "../../utils";
+import { AuthContext, SnackbarContext, DataContext } from "../../contexts";
 import { adminPasscode } from "../../../appConfig";
 import styles from "./WelcomeScreenStyles";
 
@@ -19,27 +13,16 @@ const WelcomeScreen = () => {
   const [view, setView] = useState("passcode");
   const [passCodeError, setPassCodeError] = useState("");
   const [passCode, setPassCode] = useState("");
-  const [allUsers, setAllUsers] = useState([]);
   const [displayedUsers, setDisplayedUsers] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [clickedUser, setClickedUser] = useState(undefined);
   const [adminPassword, setAdminPassword] = useState("");
-  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
 
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const { setAuthStatus } = useContext(AuthContext);
   const { setSnackbar } = useContext(SnackbarContext);
-
-  Hub.listen("api", (data: any) => {
-    const { payload } = data;
-    if ( payload.event === CONNECTION_STATE_CHANGE ) {
-      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
-        loadUsers();
-      }
-      setPriorConnectionState(payload.data.connectionState);
-    }
-  });
+  const { allUsers } = useContext(DataContext);
 
   const rowClickedHandler = (userId: string) => {
     const user = allUsers.find((u) => u.id === userId);
@@ -76,6 +59,7 @@ const WelcomeScreen = () => {
   };
 
   const updateSearchtext = (text: string) => {
+    console.log("updateSearchtext", text);
     setSearchText(text);
     if (text.length > 0) {
       const filteredUsers = allUsers.filter((u) =>
@@ -136,7 +120,7 @@ const WelcomeScreen = () => {
     );
   };
 
-  const listHeader = useCallback(() => {
+  const listHeader = () => {
     return (
       <View
         style={[
@@ -164,52 +148,16 @@ const WelcomeScreen = () => {
         </View>
       </View>
     );
-  }, []);
+  };
 
   const keyExtractor = useCallback((item) => item.id, []);
 
-  const formatUsers = useCallback((users) => {
-    const newUsers = users.map((u) => {
-      return {
-        id: u.id,
-        name: u.name,
-        image: u.image ? JSON.parse(u.image) : undefined,
-        fullObject: u,
-      };
-    });
-    newUsers.sort((a, b) => a.name.localeCompare(b.name));
-    return newUsers;
-  }, []);
-
-  const loadUsersFromDatastore = async () => {
-    try {
-      const allUsers = await DataStore.query(Users);
-      const formattedUsers = formatUsers(allUsers);
-      setAllUsers(formattedUsers);
-      setDisplayedUsers(formattedUsers);
-    } catch (err) {
-      console.log('-- Error Loading Schedule From Datastore --', err);
+  useEffect(() => {
+    if(displayedUsers.length === 0 || searchText.length === 0) {
+      // console.log('-- UseEffect Setting Users --');
+      setDisplayedUsers(allUsers);
     }
-  }
-
-  const loadUsers = async () => {
-    try {
-      const allUsers = await API.graphql({ query: listUsers, variables: { limit: 999999999 } });
-
-      const unfilteredItems = allUsers?.data?.listUsers?.items;
-      // Remove items where _deleted is true
-      const items = unfilteredItems.filter(item => !item._deleted);
-      if(items.length > 0) {
-        const formattedUsers = formatUsers(items);
-  
-        setAllUsers(formattedUsers);
-        setDisplayedUsers(formattedUsers);
-      }
-    } catch (err) {
-      console.log('-- Error Loading Users, Will Try Datastore --', err);
-      loadUsersFromDatastore();
-    } 
-  }
+  }, [allUsers]);
 
   useEffect(() => {
     const checkOnboarding = async () => {
@@ -231,34 +179,6 @@ const WelcomeScreen = () => {
     };
 
     checkOnboarding();
-  }, []);
-
-  useEffect(() => {
-    const createSub = API.graphql(
-      graphqlOperation(onCreateUsers)
-    ).subscribe({
-      next: ({ value }) => loadUsers(),
-    });
-    
-    const updateSub = API.graphql(
-      graphqlOperation(onUpdateUsers)
-    ).subscribe({
-      next: ({ value }) => loadUsers()
-    });
-    
-    const deleteSub = API.graphql(
-      graphqlOperation(onDeleteUsers)
-    ).subscribe({
-      next: ({ value }) => loadUsers()
-    });
-
-    loadUsers();
-
-    return () => {
-      createSub.unsubscribe();
-      updateSub.unsubscribe();
-      deleteSub.unsubscribe();
-    }
   }, []);
 
   return (

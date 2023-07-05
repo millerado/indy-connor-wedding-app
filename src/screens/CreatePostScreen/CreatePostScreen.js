@@ -11,8 +11,6 @@ import * as ImagePicker from "expo-image-picker";
 import { Menu, useTheme } from 'react-native-paper';
 import NetInfo from '@react-native-community/netinfo';
 import { MentionInput } from 'react-native-controlled-mentions';
-import { API } from "aws-amplify";
-import { listGames } from '../../graphql/queries'
 import {
   Chip,
   Avatar,
@@ -28,7 +26,7 @@ import {
   ConditionalWrapper,
   ImageS3,
 } from "../../components";
-import { Posts, Games } from "../../models";
+import { Posts } from "../../models";
 import { uploadImageS3, DataStore, sendUsersPushNotifications, gamePlayers, nth } from "../../utils";
 import { typography, calcDimensions } from "../../styles";
 import { AuthContext, DataContext } from '../../contexts';
@@ -60,7 +58,7 @@ const CreatePostScreen = ({ navigation, route }) => {
   const authStatus = useContext(AuthContext).authStatus;
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-  const { allUsers } = useContext(DataContext);
+  const { allUsers, allGames } = useContext(DataContext);
 
   const uploadImageCallback = async (props) => {
     const { success, uploadedImages, errorSummary, errorDetails } = props;
@@ -308,7 +306,7 @@ const CreatePostScreen = ({ navigation, route }) => {
       setTeams(newTeams);
     } else {
       // They selected None
-      console.log('-- No Game Selected, RESET --');
+      // console.log('-- No Game Selected, RESET --');
       setTeams([]);
     }
   };
@@ -372,32 +370,11 @@ const CreatePostScreen = ({ navigation, route }) => {
     }
   }
 
-  const loadGamesFromDatastore = async () => {
-    try {
-      const allGames = DataStore.query(Games);
-      if(allGames.length > 0) {
-        formatGames(allGames);
-      }
-    } catch (err) {
-      console.log("Error loading games from Datastore", err);
+  useEffect(() => {
+    if(allGames.length > 0) {
+      formatGames(allGames)
     }
-  };
-
-  const loadGames = async () => {
-    try {
-      const allGames = await API.graphql({ query: listGames, variables: { limit: 999999999 } });
-
-      const unfilteredItems = allGames?.data?.listGames?.items;
-      // Remove items where _deleted is true
-      const items = unfilteredItems.filter(item => !item._deleted);
-      if(items.length > 0) {
-        formatGames(items);
-      }
-    } catch (err) {
-      console.log('-- Error Loading Games, Will Try Datastore --', err);
-      loadGamesFromDatastore();
-    }
-  };
+  }, [allGames])
 
   useEffect(() => {
     if (selectedGame) {
@@ -450,8 +427,6 @@ const CreatePostScreen = ({ navigation, route }) => {
         camera: cameraPermission,
       });
     })();
-
-    loadGames();
 
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isInternetReachable);

@@ -16,6 +16,7 @@ import {
   onCreateReactions, onUpdateReactions, onDeleteReactions,
   onCreateFAQ, onUpdateFAQ, onDeleteFAQ,
   onCreateSchedule, onUpdateSchedule, onDeleteSchedule,
+  onCreateGames, onUpdateGames, onDeleteGames,
 } from "./graphql/subscriptions";
 import { lightTheme, darkTheme } from "./styles";
 import {
@@ -29,7 +30,7 @@ import {
 import { WelcomeScreen } from './screens';
 import { Users } from "./models";
 import { registerForPushNotificationsAsync } from "./utils";
-import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions, loadFaqs, loadSchedule } from "./services";
+import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions, loadFaqs, loadSchedule, loadGames } from "./services";
 import AuthedApp from "./AuthedApp";
 
 const customFonts = {
@@ -75,6 +76,7 @@ const App = () => {
   const [allReactions, setAllReactions] = useState([]);
   const [allFaqs, setAllFaqs] = useState([]);
   const [allSchedule, setAllSchedule] = useState([]);
+  const [allGames, setAllGames] = useState([]);
   const responseListener = useRef();
   const nav = useRef();
 
@@ -157,6 +159,7 @@ const App = () => {
     loadReactions(setAllReactions, undefined, allReactions);
     loadFaqs(setAllFaqs, allFaqs);
     loadSchedule(setAllSchedule, allSchedule);
+    loadGames(setAllGames, allGames);
   }
 
   // Fetch user and prepare the app
@@ -375,6 +378,24 @@ const App = () => {
       next: ({ value }) => loadSchedule(setAllSchedule, allSchedule)
     });
 
+    const gamesCreateSub = API.graphql(
+      graphqlOperation(onCreateGames)
+    ).subscribe({
+      next: ({ value }) => loadGames(setAllGames, allGames),
+    });
+
+    const gamesUpdateSub = API.graphql(
+      graphqlOperation(onUpdateGames)
+    ).subscribe({
+      next: ({ value }) => loadGames(setAllGames, allGames)
+    });
+
+    const gamesDeleteSub = API.graphql(
+      graphqlOperation(onDeleteGames)
+    ).subscribe({
+      next: ({ value }) => loadGames(setAllGames, allGames)
+    });
+
     onRefresh();
 
     return () => {
@@ -399,6 +420,9 @@ const App = () => {
       scheduleCreateSub.unsubscribe();
       scheduleUpdateSub.unsubscribe();
       scheduleDeleteSub.unsubscribe();
+      gamesCreateSub.unsubscribe();
+      gamesUpdateSub.unsubscribe();
+      gamesDeleteSub.unsubscribe();
     }
   }, []);
 
@@ -439,6 +463,7 @@ const App = () => {
               allPosts,
               allFaqs,
               allSchedule,
+              allGames,
               setNotifications: updateNotifications, 
               totalNotifications: notificationDetails.totalNotifications, 
               unreadNotifications: notificationDetails.unreadNotifications, 

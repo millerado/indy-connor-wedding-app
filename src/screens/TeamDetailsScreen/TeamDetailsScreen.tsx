@@ -3,7 +3,13 @@ import { View } from "react-native";
 import { useTheme } from "react-native-paper";
 import { API, graphqlOperation, Hub } from "aws-amplify";
 import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
-import { onCreatePosts, onUpdatePosts, onDeletePosts} from '../../graphql/subscriptions';
+import { 
+  onCreatePosts, onUpdatePosts, onDeletePosts,
+  onCreateUsers, onUpdateUsers, onDeleteUsers,
+  onCreateAdminFavorites, onUpdateAdminFavorites, onDeleteAdminFavorites,
+  onCreateComments, onUpdateComments, onDeleteComments,
+  onCreateReactions, onUpdateReactions, onDeleteReactions,
+} from "../../graphql/subscriptions";
 import { listPosts } from '../../graphql/queries'
 import Animated, {
   Extrapolation,
@@ -17,6 +23,7 @@ import { StandingsPersonRow, PostPreview } from '../../containers';
 import { Posts } from "../../models";
 import { calcDimensions, typography } from "../../styles";
 import { DataStore } from "../../utils";
+import { loadPosts, loadUsers, loadAdminFavorites, loadComments, loadReactions } from "../../services";
 import styles from './TeamDetailsScreenStyles';
 const diamondDogs = require("../../assets/images/diamondDogsFullSize.png");
 const fellowshipOfTheRing = require("../../assets/images/fellowshipOfTheRingFullSize.png");
@@ -26,22 +33,26 @@ const orderOfThePhoenix = require("../../assets/images/orderOfThePhoenixFullSize
 const TeamDetailsScreen = ({ route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
+  const { teamId, teamName, iconName, description, allUsers: initialAllUsers, allTeams, allStandingsTeams, allStandingsPeople } = route.params;
   const [teamUserIds, setTeamUserIds] = useState([]);
   const [standingsPeople, setStandingsPeople] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
+  const [allUsers, setAllUsers] = useState(initialAllUsers);
+  const [allAdminFavorites, setAllAdminFavorites] = useState([]);
+  const [allComments, setAllComments] = useState([]);
+  const [allReactions, setAllReactions] = useState([]);
   const [priorConnectionState, setPriorConnectionState] = useState(undefined);
-  const { teamId, teamName, iconName, description, allUsers, allTeams, allStandingsTeams, allStandingsPeople } = route.params;
   const { width, height } = calcDimensions();
 
-  Hub.listen("api", (data: any) => {
-    const { payload } = data;
-    if ( payload.event === CONNECTION_STATE_CHANGE ) {
-      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
-        loadPosts();
-      }
-      setPriorConnectionState(payload.data.connectionState);
-    }
-  });
+  // Hub.listen("api", (data: any) => {
+  //   const { payload } = data;
+  //   if ( payload.event === CONNECTION_STATE_CHANGE ) {
+  //     if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
+  //       loadPosts();
+  //     }
+  //     setPriorConnectionState(payload.data.connectionState);
+  //   }
+  // });
 
   const scrollY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler((event) => {
@@ -78,13 +89,20 @@ const TeamDetailsScreen = ({ route }) => {
   });
 
   const renderItem = useCallback(({ item }) => {
+    const postComments = allComments.filter((comment) => comment.postsID === item.id);
+    const postReactions = allReactions.filter((reaction) => reaction.postsID === item.id);
+
     return (
       <PostPreview
         post={item}
         previewMode
+        allUsers={allUsers}
+        allAdminFavorites={allAdminFavorites}
+        comments={postComments}
+        reactions={postReactions}
       />
     );
-  }, []);
+  }, [allUsers, allAdminFavorites, allComments, allReactions]);
 
   const listHeader = useCallback(() => {
     return (
@@ -117,7 +135,7 @@ const TeamDetailsScreen = ({ route }) => {
         </View>
       </View>
     )
-  }, [standingsPeople]);
+  }, [standingsPeople, allUsers]);
 
   const renderListEmpty = useCallback(() => {
     return (
@@ -149,7 +167,9 @@ const TeamDetailsScreen = ({ route }) => {
         return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       });
       const events = formattedPosts.filter((p) => p.olympicEvent);
-      return events;
+      if(JSON.stringify(events) !== JSON.stringify(allPosts)) {
+        setAllPosts(events);
+      }
     }
     return [];
   }
@@ -165,8 +185,7 @@ const TeamDetailsScreen = ({ route }) => {
         return filter;
       }),
     );
-    const formattedPosts = formatPostItems(allPostsData);
-    setAllPosts(formattedPosts);
+    formatPostItems(allPostsData);
   }
 
   const loadPosts = async () => {
@@ -186,8 +205,7 @@ const TeamDetailsScreen = ({ route }) => {
       // Remove items where _deleted is true
       const items = unfilteredItems.filter(item => !item._deleted);
       if(items.length > 0) {
-        const formattedPosts = formatPostItems(items);
-        setAllPosts(formattedPosts);
+        formatPostItems(items);
       }
     } catch (err) {
       console.log('-- Error Loading Posts, Will Try Datastore --', err);
@@ -195,12 +213,16 @@ const TeamDetailsScreen = ({ route }) => {
     }
   }
 
-  const onRefresh = () => {
+  const onRefresh = async () => {
     loadPosts();
+    loadUsers(setAllUsers, allUsers);
+    loadAdminFavorites(setAllAdminFavorites, allAdminFavorites);
+    loadComments(setAllComments, undefined, allComments);
+    loadReactions(setAllReactions, undefined, allReactions);
   }
 
   useEffect(() => {
-    if(allUsers) {
+    if(allUsers && standingsPeople.length === 0 && teamId) {
       const userIds = allUsers.filter((u) => u.teamId === teamId).map((u) => u.id);
       setTeamUserIds(userIds);
       const oneTeamStandings = allStandingsPeople.filter((s) => userIds.includes(s.userId));
@@ -210,30 +232,114 @@ const TeamDetailsScreen = ({ route }) => {
 
   useEffect(() => {
     if(teamUserIds.length > 0) {
-      const createSub = API.graphql(
+      const postCreateSub = API.graphql(
         graphqlOperation(onCreatePosts)
       ).subscribe({
         next: ({ value }) => loadPosts(),
       });
       
-      const updateSub = API.graphql(
+      const postUpdateSub = API.graphql(
         graphqlOperation(onUpdatePosts)
       ).subscribe({
         next: ({ value }) => loadPosts()
       });
       
-      const deleteSub = API.graphql(
+      const postDeleteSub = API.graphql(
         graphqlOperation(onDeletePosts)
       ).subscribe({
         next: ({ value }) => loadPosts()
       });
 
-      loadPosts();
+      const userCreateSub = API.graphql(
+        graphqlOperation(onCreateUsers)
+      ).subscribe({
+        next: ({ value }) => loadUsers(setAllUsers, allUsers),
+      });
+
+      const userUpdateSub = API.graphql(
+        graphqlOperation(onUpdateUsers)
+      ).subscribe({
+        next: ({ value }) => loadUsers(setAllUsers, allUsers)
+      });
+
+      const userDeleteSub = API.graphql(
+        graphqlOperation(onDeleteUsers)
+      ).subscribe({
+        next: ({ value }) => loadUsers(setAllUsers, allUsers)
+      });
+
+      const adminFavoriteCreateSub = API.graphql(
+        graphqlOperation(onCreateAdminFavorites)
+      ).subscribe({
+        next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites),
+      });
+
+      const adminFavoriteUpdateSub = API.graphql(
+        graphqlOperation(onUpdateAdminFavorites)
+      ).subscribe({
+        next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites)
+      });
+
+      const adminFavoriteDeleteSub = API.graphql(
+        graphqlOperation(onDeleteAdminFavorites)
+      ).subscribe({
+        next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites)
+      });
+
+      const commentCreateSub = API.graphql(
+        graphqlOperation(onCreateComments)
+      ).subscribe({
+        next: ({ value }) => loadComments(setAllComments, undefined, allComments),
+      });
+
+      const commentUpdateSub = API.graphql(
+        graphqlOperation(onUpdateComments)
+      ).subscribe({
+        next: ({ value }) => loadComments(setAllComments, undefined, allComments)
+      });
+
+      const commentDeleteSub = API.graphql(
+        graphqlOperation(onDeleteComments)
+      ).subscribe({
+        next: ({ value }) => loadComments(setAllComments, undefined, allComments)
+      });
+
+      const reactionsCreateSub = API.graphql(
+        graphqlOperation(onCreateReactions)
+      ).subscribe({
+        next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions),
+      });
+
+      const reactionsUpdateSub = API.graphql(
+        graphqlOperation(onUpdateReactions)
+      ).subscribe({
+        next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions)
+      });
+
+      const reactionsDeleteSub = API.graphql(
+        graphqlOperation(onDeleteReactions)
+      ).subscribe({
+        next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions)
+      });
+
+      onRefresh();
 
       return () => {
-        createSub.unsubscribe();
-        updateSub.unsubscribe();
-        deleteSub.unsubscribe();
+        postCreateSub.unsubscribe();
+        postUpdateSub.unsubscribe();
+        postDeleteSub.unsubscribe();
+        userCreateSub.unsubscribe();
+        userUpdateSub.unsubscribe();
+        userDeleteSub.unsubscribe();
+        adminFavoriteCreateSub.unsubscribe();
+        adminFavoriteUpdateSub.unsubscribe();
+        adminFavoriteDeleteSub.unsubscribe();
+        commentCreateSub.unsubscribe();
+        commentUpdateSub.unsubscribe();
+        commentDeleteSub.unsubscribe();
+        reactionsCreateSub.unsubscribe();
+        reactionsUpdateSub.unsubscribe();
+        reactionsDeleteSub.unsubscribe();
       }
     }
   }, [teamUserIds]);

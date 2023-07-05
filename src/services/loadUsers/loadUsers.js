@@ -9,6 +9,7 @@ const formatUsers = async (items, setUsers, oldUsers) => {
       id: u.id,
       name: u.name,
       image: u.image ? JSON.parse(u.image) : undefined,
+      teamId: u.teamsID,
     };
   });
   if(JSON.stringify(newUsers) !== JSON.stringify(oldUsers)) {

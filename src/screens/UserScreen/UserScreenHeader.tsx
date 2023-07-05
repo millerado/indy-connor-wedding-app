@@ -222,6 +222,9 @@ const UserScreenHeader = (props) => {
       : dimensions.width
     : dimensions.width * 0.33;
   // console.log('-- dbUser --', dbUser);
+
+  const displayName = dbUser?.name ? dbUser.name : nameProp ? nameProp : "";
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -231,7 +234,7 @@ const UserScreenHeader = (props) => {
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
       >
-        {authStatus && dbUser && (
+        {dbUser && (
           <>
             {editMode && (
               <>
@@ -377,13 +380,15 @@ const UserScreenHeader = (props) => {
             <Text size={TextSizes.M}>{about}</Text>
           </View>
         )}
-        <View style={{ padding: 10 }}>
-          <Text bold size={TextSizes.XL}>
-            {hasPosted
-              ? `${dbUser?.name.split(" ")[0]}'s Activities:`
-              : `${dbUser?.name.split(" ")[0]} hasn't been active yet`}
-          </Text>
-        </View>
+        {displayName !== '' && (
+          <View style={{ padding: 10 }}>
+            <Text bold size={TextSizes.XL}>
+              {hasPosted
+                ? `${displayName.split(" ")[0]}'s Activities:`
+                : `${displayName.split(" ")[0]} hasn't been active yet`}
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );

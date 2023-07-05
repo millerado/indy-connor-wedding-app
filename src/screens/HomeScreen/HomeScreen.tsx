@@ -69,9 +69,9 @@ const HomeScreen = () => {
 
   const loadPosts = async () => {
     try {
-      const allUsers = await API.graphql({ query: listPosts, variables: { limit: 999999999 } });
+      const allPosts = await API.graphql({ query: listPosts, variables: { limit: 999999999 } });
 
-      const unfilteredItems = allUsers?.data?.listPosts?.items;
+      const unfilteredItems = allPosts?.data?.listPosts?.items;
       // Remove items where _deleted is true
       const items = unfilteredItems.filter(item => !item._deleted);
       if(items.length > 0) {

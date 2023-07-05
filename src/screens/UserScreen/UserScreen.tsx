@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { View, FlatList, Platform } from "react-native";
-import { SortDirection } from "aws-amplify";
+import { API, graphqlOperation, Hub } from "aws-amplify";
+import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
+import { onCreatePosts, onUpdatePosts, onDeletePosts } from '../../graphql/subscriptions';
+import { listPosts } from '../../graphql/queries';
 import { useTheme } from "react-native-paper";
 import { Posts } from "../../models";
 import { Divider, ActivityIndicator } from "../../components";
@@ -17,8 +20,19 @@ const UserScreen = ({ navigation, route }) => {
   // console.log("-- Nav props --", userId, name, picture);
   const [allPosts, setAllPosts] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
+  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
 
-  const loadPosts = async (items) => {
+  Hub.listen("api", (data: any) => {
+    const { payload } = data;
+    if ( payload.event === CONNECTION_STATE_CHANGE ) {
+      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
+        loadPosts();
+      }
+      setPriorConnectionState(payload.data.connectionState);
+    }
+  });
+
+  const formatPosts = async (items) => {
     try {
       const formattedPosts = items.map((post) => {
         const obj = Object.assign({}, post);
@@ -28,9 +42,8 @@ const UserScreen = ({ navigation, route }) => {
         obj.images = images;
         return obj;
       });
-      // if (JSON.stringify(formattedPosts) !== JSON.stringify(allPosts)) {
-        setAllPosts(formattedPosts);
-      // }
+      formattedPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setAllPosts(formattedPosts);
       if (dataLoading) {
         setDataLoading(false);
       }
@@ -39,6 +52,35 @@ const UserScreen = ({ navigation, route }) => {
       console.log("error fetching Contents", err);
     }
   };
+
+  const loadPostsFromDatastore = async () => {
+    try {
+      const allPosts = await DataStore.query(Posts, p => p.usersInPost.contains(userId));
+      if(allPosts.length > 0) {
+        formatPosts(allPosts);
+      }
+    } catch (err) {
+      console.log('-- Error Loading User Posts --', err);
+    }
+  }
+
+  const graphVariables = { filter: { usersInPost: {contains: userId} }, limit: 999999999 };
+
+  const loadPosts = async () => {
+    try {
+      const allPosts = await API.graphql({ query: listPosts, variables: graphVariables });
+
+      const unfilteredItems = allPosts?.data?.listPosts?.items;
+      // Remove items where _deleted is true
+      const items = unfilteredItems.filter(item => !item._deleted);
+      if(items.length > 0) {
+        formatPosts(items);
+      }
+    } catch (err) {
+      console.log('-- Error Loading User Posts, Try with Datastore --', err);
+      loadPostsFromDatastore();
+    }
+  }
 
   const renderItem = useCallback(({ item }) => {
     return (
@@ -67,18 +109,31 @@ const UserScreen = ({ navigation, route }) => {
   }, []);
 
   useEffect(() => {
-    const postSubscription = DataStore.observeQuery(
-      Posts,
-      (p) => p.usersInPost.contains(userId),
-      // (p) => p.userId.eq(userId),
-      { sort: (s) => s.createdAt(SortDirection.DESCENDING) }
-    ).subscribe(({ items }) => {
-      loadPosts(items);
+    const createSub = API.graphql(
+      graphqlOperation(onCreatePosts, graphVariables)
+    ).subscribe({
+      next: ({ value }) => loadPosts(),
+    });
+    
+    const updateSub = API.graphql(
+      graphqlOperation(onUpdatePosts, graphVariables)
+    ).subscribe({
+      next: ({ value }) => loadPosts()
+    });
+    
+    const deleteSub = API.graphql(
+      graphqlOperation(onDeletePosts, graphVariables)
+    ).subscribe({
+      next: ({ value }) => loadPosts()
     });
 
+    loadPosts();
+
     return () => {
-      postSubscription.unsubscribe();
-    };
+      createSub.unsubscribe();
+      updateSub.unsubscribe();
+      deleteSub.unsubscribe();
+    }
   }, []);
 
   return (

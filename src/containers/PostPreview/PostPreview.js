@@ -100,6 +100,7 @@ const PostPreview = (props) => {
           console.log("Error saving reaction", error);
         }
       }
+      setIsLiked(!isLiked); // Immediate UI update before the subscription updates
     } else {
       setShowUnauthedMessage(true);
     }

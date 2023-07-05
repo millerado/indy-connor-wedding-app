@@ -80,7 +80,9 @@ const ImageScroll = (props) => {
         return adminFavoriteURLs.includes(img.url);
       }).map((img) => img.url);
       setAdminFavoritedImages(favoritedImages);
-    };
+    } else {
+      setAdminFavoritedImages([]);
+    }
   }, [adminFavorites, images]);
 
   return (

@@ -204,6 +204,8 @@ const NotificationsScreen = ({ navigation, route }) => {
           removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
           maxToRenderPerBatch={10} // Also the default
           initialNumToRender={10} // Also the default
+          onRefresh={loadNotifications}
+          refreshing={false}
         />
       )}
     </View>

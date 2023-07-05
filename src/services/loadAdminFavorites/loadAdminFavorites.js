@@ -33,9 +33,7 @@ const loadAdminFavorites = async (setAdminFavorites, oldAdminFavorites) => {
     const unfilteredItems = allAdminFavorites?.data?.listAdminFavorites?.items;
     // Remove items where _deleted is true
     const items = unfilteredItems.filter(item => !item._deleted);
-    if(items.length > 0) {
-      formatAdminFavorites(items, oldAdminFavorites, setAdminFavorites);
-    }
+    formatAdminFavorites(items, oldAdminFavorites, setAdminFavorites);
   } catch (err) {
     console.log('-- Error Loading Admin Favorites, try Datastore --', err);
     loadAdminFavoritesFromDatastore(setAdminFavorites, oldAdminFavorites);

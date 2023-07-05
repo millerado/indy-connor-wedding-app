@@ -381,7 +381,7 @@ const UserScreenHeader = (props) => {
           </View>
         )}
         {displayName !== '' && (
-          <View style={{ padding: 10 }}>
+          <View style={{ paddingHorizontal: 10, paddingTop: 10, }}>
             <Text bold size={TextSizes.XL}>
               {hasPosted
                 ? `${displayName.split(" ")[0]}'s Activities:`

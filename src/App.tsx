@@ -14,6 +14,7 @@ import {
   onCreateAdminFavorites, onUpdateAdminFavorites, onDeleteAdminFavorites,
   onCreateComments, onUpdateComments, onDeleteComments,
   onCreateReactions, onUpdateReactions, onDeleteReactions,
+  onCreateFAQ, onUpdateFAQ, onDeleteFAQ
 } from "./graphql/subscriptions";
 import { lightTheme, darkTheme } from "./styles";
 import {
@@ -26,8 +27,8 @@ import {
 } from "./contexts";
 import { WelcomeScreen } from './screens';
 import { Users } from "./models";
-import { registerForPushNotificationsAsync, DataStore } from "./utils";
-import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions } from "./services";
+import { registerForPushNotificationsAsync } from "./utils";
+import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions, loadFaqs } from "./services";
 import AuthedApp from "./AuthedApp";
 
 const customFonts = {
@@ -71,6 +72,7 @@ const App = () => {
   const [allAdminFavorites, setAllAdminFavorites] = useState([]);
   const [allComments, setAllComments] = useState([]);
   const [allReactions, setAllReactions] = useState([]);
+  const [allFaqs, setAllFaqs] = useState([]);
   const responseListener = useRef();
   const nav = useRef();
 
@@ -151,8 +153,10 @@ const App = () => {
     loadAdminFavorites(setAllAdminFavorites, allAdminFavorites);
     loadComments(setAllComments, undefined, allComments);
     loadReactions(setAllReactions, undefined, allReactions);
+    loadFaqs(setAllFaqs, allFaqs);
   }
 
+  // Fetch user and prepare the app
   useEffect(() => {
     const fetchCurrentTheme = async () => {
       try {
@@ -240,6 +244,7 @@ const App = () => {
     };
   }, []);
 
+  // Manage data subscriptions throughout app
   useEffect(() => {
     const postCreateSub = API.graphql(
       graphqlOperation(onCreatePosts)
@@ -331,6 +336,24 @@ const App = () => {
       next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions)
     });
 
+    const faqsCreateSub = API.graphql(
+      graphqlOperation(onCreateFAQ)
+    ).subscribe({
+      next: ({ value }) => loadFaqs(setAllFaqs, allFaqs),
+    });
+
+    const faqsUpdateSub = API.graphql(
+      graphqlOperation(onUpdateFAQ)
+    ).subscribe({
+      next: ({ value }) => loadFaqs(setAllFaqs, allFaqs)
+    });
+
+    const faqsDeleteSub = API.graphql(
+      graphqlOperation(onDeleteFAQ)
+    ).subscribe({
+      next: ({ value }) => loadFaqs(setAllFaqs, allFaqs)
+    });
+
     onRefresh();
 
     return () => {
@@ -349,6 +372,9 @@ const App = () => {
       reactionsCreateSub.unsubscribe();
       reactionsUpdateSub.unsubscribe();
       reactionsDeleteSub.unsubscribe();
+      faqsCreateSub.unsubscribe();
+      faqsUpdateSub.unsubscribe();
+      faqsDeleteSub.unsubscribe();
     }
   }, []);
 
@@ -384,9 +410,10 @@ const App = () => {
               refreshData: onRefresh, 
               allUsers, 
               allComments, 
-              allAdminFavorites, 
-              allReactions, 
-              allPosts, 
+              allAdminFavorites,
+              allReactions,
+              allPosts,
+              allFaqs,
               setNotifications: updateNotifications, 
               totalNotifications: notificationDetails.totalNotifications, 
               unreadNotifications: notificationDetails.unreadNotifications, 

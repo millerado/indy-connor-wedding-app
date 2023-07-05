@@ -1,41 +1,24 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { View, FlatList, Platform, Pressable, ImageBackground } from 'react-native';
 import { useTheme } from 'react-native-paper';
-import { API, graphqlOperation, Hub } from "aws-amplify";
-import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
-import { onCreateFAQ, onUpdateFAQ, onDeleteFAQ} from '../../graphql/subscriptions';
-import { listFAQS } from '../../graphql/queries'
-import { FAQ } from '../../models';
 import { Divider, ActivityIndicator, TextInput, Icon } from '../../components';
 import { FAQModal, FAQItem } from '../../containers';
 import { calcDimensions } from '../../styles';
-import { DataStore } from '../../utils';
-import { AuthContext } from '../../contexts';
+import { AuthContext, DataContext } from '../../contexts';
 import styles from './InfoScreenStyles';
 const resortMap = require('../../assets/images/rmmcMap.png');
 
 const InfoScreen = ({ navigation, route }) => {
   const [FAQData, setFAQData] = useState([]);
-  const [allFAQData, setAllFAQData] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [priorConnectionState, setPriorConnectionState] = useState(undefined);
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const authStatus = useContext(AuthContext).authStatus;
+  const { refreshData, allFaqs } = useContext(DataContext);
   const dimensions = calcDimensions();
-
-  Hub.listen("api", (data: any) => {
-    const { payload } = data;
-    if ( payload.event === CONNECTION_STATE_CHANGE ) {
-      if (priorConnectionState === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
-        loadFAQ();
-      }
-      setPriorConnectionState(payload.data.connectionState);
-    }
-  });
 
   const closeModal = () => {
     setShowModal(false);
@@ -126,45 +109,17 @@ const InfoScreen = ({ navigation, route }) => {
   }
 
   const onRefresh = () => {
-    loadFAQ();
+    refreshData();
   }
 
-  // Backup function that gets called if you're offline
-  const loadFaqFromDatastore = async () => {
-    try {
-      const items = await DataStore.query(FAQ);
-      items.sort((a, b) => a.sortOrder - b.sortOrder);
+  useEffect(() => {
+    if(allFaqs.length > 0) {
       if (dataLoading || searchTerm === '') {
-        setFAQData(items);
+        setFAQData(allFaqs);
       }
-      setAllFAQData(items);
       setDataLoading(false);
-    } catch (err) {
-      console.log('-- Error Loading FAQ Via Datastore --', err);
     }
-  }
-
-  const loadFAQ = async () => {
-    try {
-      const allFaq = await API.graphql({ query: listFAQS, variables: { limit: 999999999 } });
-      // console.log('-- FAQ Loaded --', allFaq.data.listFAQS.items.length)
-
-      const unfilteredItems = allFaq?.data?.listFAQS?.items;
-      // Remove items where _deleted is true
-      const items = unfilteredItems.filter(item => !item._deleted);
-      if(items.length > 0) {
-        items.sort((a, b) => a.sortOrder - b.sortOrder);
-        if (dataLoading || searchTerm === '') {
-          setFAQData(items);
-        }
-        setAllFAQData(items);
-        setDataLoading(false);
-      }
-    } catch (err) {
-      console.log('-- Error Loading FAQ, Will Try Datastore --', err);
-      loadFaqFromDatastore();
-    }
-  }
+  }, [allFaqs]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -173,51 +128,23 @@ const InfoScreen = ({ navigation, route }) => {
   }, [authStatus, theme]);
 
   useEffect(() => {
-    if (allFAQData !== FAQData && searchTerm !== '') {
-      setFAQData(allFAQData);
+    if (allFaqs !== FAQData && searchTerm !== '') {
+      setFAQData(allFaqs);
     } else if (searchTerm === '') {
-      setFAQData(allFAQData);
+      setFAQData(allFaqs);
     }
-  }, [allFAQData, searchTerm]);
+  }, [allFaqs, searchTerm]);
 
   useEffect(() => {
     // Search FAQ Question and Answer for search terms
     if (searchTerm !== '') {
-      const searchResults = allFAQData.filter(item => {
+      const searchResults = allFaqs.filter(item => {
         return item.question.toLowerCase().includes(searchTerm.toLowerCase()) || item.answer.toLowerCase().includes(searchTerm.toLowerCase());
       }
       );
       setFAQData(searchResults);
     }
   }, [searchTerm]);
-
-  useEffect(() => {
-    const createSub = API.graphql(
-      graphqlOperation(onCreateFAQ)
-    ).subscribe({
-      next: ({ value }) => loadFAQ(),
-    });
-    
-    const updateSub = API.graphql(
-      graphqlOperation(onUpdateFAQ)
-    ).subscribe({
-      next: ({ value }) => loadFAQ()
-    });
-    
-    const deleteSub = API.graphql(
-      graphqlOperation(onDeleteFAQ)
-    ).subscribe({
-      next: ({ value }) => loadFAQ()
-    });
-
-    loadFAQ();
-
-    return () => {
-      createSub.unsubscribe();
-      updateSub.unsubscribe();
-      deleteSub.unsubscribe();
-    }
-  }, []);
 
   return (
     <View style={ss.pageWrapper}>

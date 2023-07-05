@@ -8,6 +8,8 @@ export const DataContext = React.createContext({
   allReactions: [],
   allPosts: [],
   allAdminFavorites: [],
+  allFaqs: [],
+  allSchedule: [],
   totalNotifications: 0,
   unreadNotifications: 0,
   allNotifications: [],

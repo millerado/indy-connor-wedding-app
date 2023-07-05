@@ -5,4 +5,7 @@ export { default as loadGames } from './loadGames/loadGames';
 export { default as loadPosts } from './loadPosts/loadPosts';
 export { default as loadReactions } from './loadReactions/loadReactions';
 export { default as loadSchedule } from './loadSchedule/loadSchedule';
+export { default as loadStandingsPeople } from './loadStandingsPeople/loadStandingsPeople';
+export { default as loadStandingsTeams } from './loadStandingsTeams/loadStandingsTeams';
+export { default as loadTeams } from './loadTeams/loadTeams';
 export { default as loadUsers } from './loadUsers/loadUsers';

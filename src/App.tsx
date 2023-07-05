@@ -17,6 +17,9 @@ import {
   onCreateFAQ, onUpdateFAQ, onDeleteFAQ,
   onCreateSchedule, onUpdateSchedule, onDeleteSchedule,
   onCreateGames, onUpdateGames, onDeleteGames,
+  onCreateTeams, onUpdateTeams, onDeleteTeams,
+  onCreateStandingsPeople, onUpdateStandingsPeople, onDeleteStandingsPeople,
+  onCreateStandingsTeams, onUpdateStandingsTeams, onDeleteStandingsTeams,
 } from "./graphql/subscriptions";
 import { lightTheme, darkTheme } from "./styles";
 import {
@@ -30,7 +33,7 @@ import {
 import { WelcomeScreen } from './screens';
 import { Users } from "./models";
 import { registerForPushNotificationsAsync } from "./utils";
-import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions, loadFaqs, loadSchedule, loadGames } from "./services";
+import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions, loadFaqs, loadSchedule, loadGames, loadTeams, loadStandingsPeople, loadStandingsTeams } from "./services";
 import AuthedApp from "./AuthedApp";
 
 const customFonts = {
@@ -77,6 +80,9 @@ const App = () => {
   const [allFaqs, setAllFaqs] = useState([]);
   const [allSchedule, setAllSchedule] = useState([]);
   const [allGames, setAllGames] = useState([]);
+  const [allTeams, setAllTeams] = useState([]);
+  const [allStandingsPeople, setAllStandingsPeople] = useState([]);
+  const [allStandingsTeams, setAllStandingsTeams] = useState([]);
   const responseListener = useRef();
   const nav = useRef();
 
@@ -160,6 +166,9 @@ const App = () => {
     loadFaqs(setAllFaqs, allFaqs);
     loadSchedule(setAllSchedule, allSchedule);
     loadGames(setAllGames, allGames);
+    loadTeams(setAllTeams, allTeams);
+    loadStandingsPeople(setAllStandingsPeople, allStandingsPeople);
+    loadStandingsTeams(setAllStandingsTeams, allStandingsTeams);
   }
 
   // Fetch user and prepare the app
@@ -396,6 +405,60 @@ const App = () => {
       next: ({ value }) => loadGames(setAllGames, allGames)
     });
 
+    const teamsCreateSub = API.graphql(
+      graphqlOperation(onCreateTeams)
+    ).subscribe({
+      next: ({ value }) => loadTeams(setAllTeams, allTeams),
+    });
+
+    const teamsUpdateSub = API.graphql(
+      graphqlOperation(onUpdateTeams)
+    ).subscribe({
+      next: ({ value }) => loadTeams(setAllTeams, allTeams)
+    });
+
+    const teamsDeleteSub = API.graphql(
+      graphqlOperation(onDeleteTeams)
+    ).subscribe({
+      next: ({ value }) => loadTeams(setAllTeams, allTeams)
+    });
+
+    const standingsPeopleCreateSub = API.graphql(
+      graphqlOperation(onCreateStandingsPeople)
+    ).subscribe({
+      next: ({ value }) => loadStandingsPeople(setAllStandingsPeople, allStandingsPeople),
+    });
+
+    const standingsPeopleUpdateSub = API.graphql(
+      graphqlOperation(onUpdateStandingsPeople)
+    ).subscribe({
+      next: ({ value }) => loadStandingsPeople(setAllStandingsPeople, allStandingsPeople)
+    });
+
+    const standingsPeopleDeleteSub = API.graphql(
+      graphqlOperation(onDeleteStandingsPeople)
+    ).subscribe({
+      next: ({ value }) => loadStandingsPeople(setAllStandingsPeople, allStandingsPeople)
+    });
+
+    const standingsTeamsCreateSub = API.graphql(
+      graphqlOperation(onCreateStandingsTeams)
+    ).subscribe({
+      next: ({ value }) => loadStandingsTeams(setAllStandingsTeams, allStandingsTeams),
+    });
+
+    const standingsTeamsUpdateSub = API.graphql(
+      graphqlOperation(onUpdateStandingsTeams)
+    ).subscribe({
+      next: ({ value }) => loadStandingsTeams(setAllStandingsTeams, allStandingsTeams)
+    });
+
+    const standingsTeamsDeleteSub = API.graphql(
+      graphqlOperation(onDeleteStandingsTeams)
+    ).subscribe({
+      next: ({ value }) => loadStandingsTeams(setAllStandingsTeams, allStandingsTeams)
+    });
+
     onRefresh();
 
     return () => {
@@ -423,6 +486,15 @@ const App = () => {
       gamesCreateSub.unsubscribe();
       gamesUpdateSub.unsubscribe();
       gamesDeleteSub.unsubscribe();
+      teamsCreateSub.unsubscribe();
+      teamsUpdateSub.unsubscribe();
+      teamsDeleteSub.unsubscribe();
+      standingsPeopleCreateSub.unsubscribe();
+      standingsPeopleUpdateSub.unsubscribe();
+      standingsPeopleDeleteSub.unsubscribe();
+      standingsTeamsCreateSub.unsubscribe();
+      standingsTeamsUpdateSub.unsubscribe();
+      standingsTeamsDeleteSub.unsubscribe();
     }
   }, []);
 
@@ -464,6 +536,9 @@ const App = () => {
               allFaqs,
               allSchedule,
               allGames,
+              allTeams,
+              allStandingsPeople,
+              allStandingsTeams,
               setNotifications: updateNotifications, 
               totalNotifications: notificationDetails.totalNotifications, 
               unreadNotifications: notificationDetails.unreadNotifications, 

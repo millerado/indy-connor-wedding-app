@@ -1,13 +1,11 @@
 import React, {
   useMemo,
-  useEffect,
   useState,
   useContext,
   useCallback,
 } from "react";
 import { View, FlatList, Platform, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
-import { SortDirection } from "aws-amplify";
 import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
 import {
   Divider,
@@ -18,19 +16,17 @@ import {
   Text,
 } from "../../components";
 import { FormatTextWithMentions } from "../../containers";
-import { AuthContext } from "../../contexts";
+import { DataContext } from "../../contexts";
 import { Notifications } from "../../models";
 import { typography, calcDimensions } from "../../styles";
 import { DataStore } from "../../utils";
 import styles from "./NotificationsScreenStyles";
-import { set } from "react-native-reanimated";
 
 const NotificationsScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-  const authStatus = useContext(AuthContext).authStatus;
   const [loading, setLoading] = useState(false);
-  const [notifications, setNotifications] = useState([]);
+  const { allNotifications } = useContext(DataContext);
 
   const { width } = calcDimensions();
 
@@ -51,26 +47,6 @@ const NotificationsScreen = ({ navigation, route }) => {
       centerWidth = centerWidth - (typography.fontSizeL * 2 + 15);
     }
 
-    // Removed swiping to mark as read for now
-    // const renderLeftActions = () => {
-    //   return (
-    //     <View style={{backgroundColor: theme.colors.primary, flex: 1, alignItems: 'center', paddingLeft: 10, flexDirection: 'row'}}>
-    //       <Icon name="markAsRead" size={typography.fontSizeL * 1.5} color={theme.colors.onPrimary} style={{paddingRight: 10}} />
-    //       <Text color={theme.colors.onPrimary}>
-    //         Mark as Read
-    //       </Text>
-    //     </View>
-    //   );
-    // };
-    // const onSwipeLeft = () => {
-    //   // console.log('Swiped Left');
-    //   DataStore.save(
-    //     Notifications.copyOf(item, (updated) => {
-    //       updated.read = true;
-    //     })
-    //   );
-    // }
-
     const renderRightActions = () => {
       return (
         <View style={{backgroundColor: theme.colors.error, flex: 1, alignItems: 'center', justifyContent: 'flex-end', paddingRight: 10, flexDirection: 'row'}}>
@@ -84,14 +60,12 @@ const NotificationsScreen = ({ navigation, route }) => {
 
     const onSwipeRight = () => {
       // console.log('Swiped Right');
-      DataStore.delete(item);
+      DataStore.delete(Notifications, item.id);
     }
 
     return (
       <GestureHandlerRootView>
         <Swipeable
-          // renderLeftActions={renderLeftActions}
-          // onSwipeableLeftOpen={onSwipeLeft}
           renderRightActions={renderRightActions}
           onSwipeableRightOpen={onSwipeRight}
         >
@@ -121,9 +95,10 @@ const NotificationsScreen = ({ navigation, route }) => {
               </View>
               {!item.read && (
                 <Pressable
-                  onPress={() => {
+                  onPress={async () => {
+                    const originalItem = await DataStore.query(Notifications, item.id);
                     DataStore.save(
-                      Notifications.copyOf(item, (updated) => {
+                      Notifications.copyOf(originalItem, (updated) => {
                         updated.read = true;
                       })
                     );
@@ -147,52 +122,15 @@ const NotificationsScreen = ({ navigation, route }) => {
     return <Divider />;
   }, []);
 
-  useEffect(() => {
-    const notificationsSubscription = DataStore.observeQuery(
-      Notifications,
-      (n) =>
-        n.and((n) => [
-          n.userId.eq(authStatus.userId),
-          n.displayTime.le(new Date().toISOString()),
-        ]),
-      { sort: (s) => s.displayTime(SortDirection.DESCENDING) }
-    ).subscribe(({ items }) => {
-      // if(JSON.stringify(items) !== JSON.stringify(notifications)) {
-        setNotifications(items);
-      // }
-      setLoading(false);
-    });
-
-    return () => {
-      notificationsSubscription.unsubscribe();
-    };
-  }, [authStatus]);
-
-  // For testing the SelectiveSync
-  // useEffect(() => {
-  //   console.log('-- Notifications Screen --');
-  //   const test = async () => {
-  //     const myNotifications = await DataStore.query(Notifications, (n) =>
-  //       n.userId.eq(authStatus.userId)
-  //     );
-  //     const everyoneElse = await DataStore.query(Notifications, (n) =>
-  //       n.userId.ne(authStatus.userId)
-  //     );
-  //     console.log('My Notifications', myNotifications.length);
-  //     console.log('Everyone Else', everyoneElse.length);
-  //   }
-  //   test();
-  // }, [])
-
   return (
     <View style={ss.pageWrapper}>
-      {loading || notifications.length === 0 ? (
+      {loading || allNotifications?.length === 0 ? (
         <View style={ss.pageActivityIndicatorWrapper}>
           <ActivityIndicator size={60} />
         </View>
       ) : (
         <FlatList
-          data={notifications}
+          data={allNotifications}
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           ItemSeparatorComponent={listItemSeparator}

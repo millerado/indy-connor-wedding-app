@@ -20,14 +20,14 @@ const StandingsTeamRow = (props) => {
   const dimensions = calcDimensions();
   const navigation = useNavigation();
 
-  const { index, teamId, teamName, iconName, description, points, allUsers, allTeams, allStandingsTeams, allStandingsPeople } = props;
+  const { index, teamId, teamName, iconName, description, points } = props;
 
   if (!teamId || !teamName || !iconName) {
     return null;
   }
 
   const goToTeamScreen = () => {
-    navigation.push("Team Details", { teamId, teamName, iconName, description, allUsers, allTeams, allStandingsPeople, allStandingsTeams });
+    navigation.push("Team Details", { teamId, teamName, iconName, description });
   }
 
   return (

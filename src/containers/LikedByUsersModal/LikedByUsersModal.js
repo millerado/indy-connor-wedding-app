@@ -1,44 +1,15 @@
-import React, { useMemo, useEffect, useState } from "react";
+import React, { useMemo} from "react";
 import { View, ScrollView } from "react-native";
 import { useTheme } from "react-native-paper";
 import { Modal } from "../../components";
-import { DataStore } from '../../utils';
-import { Users } from "../../models";
 import SingleLikingUser from "../SingleLikingUser/SingleLikingUser";
 import styles from "./LikedByUsersModalStyles";
 
 const LikedByUsersModal = (props) => {
-  const { showModal, closeModal, reactions } = props;
-  const [allUsers, setAllUsers] = useState([]);
+  const { showModal, closeModal, reactions, allUsers } = props;
 
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-
-  useEffect(() => {
-    // Subscribe to Users
-    const usersSubscription = DataStore.observeQuery(Users).subscribe(({ items }) => {
-      try {
-        if (items) {
-          const newUsers = items.map((u) => {
-            return {
-              id: u.id,
-              name: u.name,
-              image: u.image ? JSON.parse(u.image) : undefined,
-            };
-          });
-      
-          // Quick check to make sure we're only updating state if the subscription caught a chance to the user associated with this post
-          // if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
-          setAllUsers(newUsers);
-          // }
-        }
-      } catch (err) { console.log('error fetching Data', err) }
-    });
-
-    return () => {
-      usersSubscription.unsubscribe();
-    };
-  }, [showModal]);
 
   return (
     <Modal

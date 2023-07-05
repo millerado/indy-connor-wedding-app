@@ -44,7 +44,8 @@ const ScheduleModal = (props) => {
       // Update Item
       if (name && time && day && location && description && sortOrder) {
         try {
-          const updatedItem = {...item};
+          const originalItem = await DataStore.query(Schedule, item.id);
+          const updatedItem = {...originalItem};
           updatedItem.name = name;
           updatedItem.time = time;
           updatedItem.day = day;
@@ -54,7 +55,7 @@ const ScheduleModal = (props) => {
         
           // await DataStore.stop();
           await DataStore.save(
-            Schedule.copyOf(item, updatedItem => {
+            Schedule.copyOf(originalItem, updatedItem => {
               updatedItem.name = name;
               updatedItem.time = time;
               updatedItem.day = day;

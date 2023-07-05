@@ -1,11 +1,9 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useContext } from "react";
 import { View, FlatList, Platform } from "react-native";
-import { SortDirection } from "aws-amplify";
 import { useTheme } from "react-native-paper";
-import { Posts } from "../../models";
 import { Divider, ActivityIndicator } from "../../components";
 import { PostPreview } from '../../containers';
-import { DataStore } from "../../utils";
+import { DataContext } from "../../contexts";
 import UserScreenHeader from "./UserScreenHeader";
 import styles from "./UserScreenStyles";
 
@@ -14,40 +12,25 @@ const UserScreen = ({ navigation, route }) => {
   const ss = useMemo(() => styles(theme), [theme]);
 
   const { userId, name, picture } = route.params;
-  // console.log("-- Nav props --", userId, name, picture);
-  const [allPosts, setAllPosts] = useState([]);
+  const [displayPosts, setDisplayPosts] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
-
-  const loadPosts = async (items) => {
-    try {
-      const formattedPosts = items.map((post) => {
-        const obj = Object.assign({}, post);
-        const images = post.images?.length > 0 && post.images[0] !== null ? post.images.map((image) => {
-          return JSON.parse(image);
-        }) : undefined;
-        obj.images = images;
-        return obj;
-      });
-      // if (JSON.stringify(formattedPosts) !== JSON.stringify(allPosts)) {
-        setAllPosts(formattedPosts);
-      // }
-      if (dataLoading) {
-        setDataLoading(false);
-      }
-      // console.log('-- postsData --', postsData);
-    } catch (err) {
-      console.log("error fetching Contents", err);
-    }
-  };
+  const { refreshData, allPosts, allUsers, allAdminFavorites, allComments, allReactions } = useContext(DataContext);
 
   const renderItem = useCallback(({ item }) => {
+    const postComments = allComments.filter((comment) => comment.postsID === item.id);
+    const postReactions = allReactions.filter((reaction) => reaction.postsID === item.id);
+
     return (
       <PostPreview
         post={item}
         previewMode
+        allUsers={allUsers}
+        allAdminFavorites={allAdminFavorites}
+        comments={postComments}
+        reactions={postReactions}
       />
-    )
-  }, [allPosts]);
+    );
+  }, [allUsers, allAdminFavorites, allComments, allReactions]);
 
   const listHeader = useCallback(() => {
     return (
@@ -58,7 +41,7 @@ const UserScreen = ({ navigation, route }) => {
         userId={userId}
       />
     );
-  }, [name, picture, userId, allPosts]);
+  }, [name, picture, userId, allPosts.length]);
 
   const keyExtractor = useCallback((item) => item.id, []);
 
@@ -66,30 +49,35 @@ const UserScreen = ({ navigation, route }) => {
     return <Divider height={5} margin={0} />;
   }, []);
 
-  useEffect(() => {
-    const postSubscription = DataStore.observeQuery(
-      Posts,
-      (p) => p.usersInPost.contains(userId),
-      // (p) => p.userId.eq(userId),
-      { sort: (s) => s.createdAt(SortDirection.DESCENDING) }
-    ).subscribe(({ items }) => {
-      loadPosts(items);
-    });
+  const onRefresh = async () => {
+    try {
+      refreshData();
+    } catch (err) {
+      console.log('-- Error refreshing --', err);
+    }
+  }
 
-    return () => {
-      postSubscription.unsubscribe();
-    };
-  }, []);
+  useEffect(() => {
+    if(userId && allPosts.length > 0) {
+      // Filter allPosts to posts where userId is in the array of usersInPost
+      const filteredPosts = allPosts.filter((post) => post.usersInPost.includes(userId));
+      if(JSON.stringify(filteredPosts) !== JSON.stringify(displayPosts)) {
+        setDisplayPosts(filteredPosts);
+      }
+      setDataLoading(false);
+    }
+
+  }, [allPosts, userId])
 
   return (
     <View style={ss.pageWrapper}>
-      {dataLoading ? (
+      {dataLoading || allUsers.length === 0 ? (
         <View style={ss.pageActivityIndicatorWrapper}>
-          <ActivityIndicator size={30} />
+          <ActivityIndicator size={60} />
         </View>
       ) : (
         <FlatList
-          data={allPosts}
+          data={displayPosts}
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           ItemSeparatorComponent={listItemSeparator}
@@ -99,6 +87,8 @@ const UserScreen = ({ navigation, route }) => {
           initialNumToRender={10} // Also the default
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
+          onRefresh={onRefresh}
+          refreshing={false}
         />
       )}
     </View>

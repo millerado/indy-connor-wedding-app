@@ -37,7 +37,9 @@ const ImageScroll = (props) => {
       if (adminFavoritedImages.includes(img.url)) {
         const adminFavoriteId = adminFavorites.find((fav) => fav.url === img.url).id;
         try {
-          await DataStore.delete(AdminFavorites, adminFavoriteId);
+          if(adminFavoriteId) {
+            await DataStore.delete(AdminFavorites, adminFavoriteId);
+          }
         } catch (error) {
           console.log("Error deleting Admin Favorite", error);
         }
@@ -80,7 +82,9 @@ const ImageScroll = (props) => {
         return adminFavoriteURLs.includes(img.url);
       }).map((img) => img.url);
       setAdminFavoritedImages(favoritedImages);
-    };
+    } else {
+      setAdminFavoritedImages([]);
+    }
   }, [adminFavorites, images]);
 
   return (

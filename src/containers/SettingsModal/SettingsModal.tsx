@@ -5,7 +5,7 @@ import { useTheme } from "react-native-paper";
 import { Icon, Text, Button, Modal, TextSizes } from "../../components";
 import { typography } from "../../styles";
 import { ThemeContext, AuthContext, UnauthedUser } from "../../contexts";
-import { DataStore } from '../../utils';
+// import { DataStore } from '../../utils';
 import styles from "./SettingsModalStyles";
 
 const SettingsModal = () => {
@@ -69,15 +69,14 @@ const SettingsModal = () => {
     // ...Yes, this is ugly...
     setTimeout(() => {
       setAuthStatus(UnauthedUser);
-      // setShowSelectUserModal(true);
     }, 350);
   }
 
-  const resetDatastore = async () => {
-    await DataStore.stop();
-    await DataStore.clear();
-    await DataStore.start();
-  }
+  // const resetDatastore = async () => {
+  //   await DataStore.stop();
+  //   await DataStore.clear();
+  //   await DataStore.start();
+  // }
 
   return (
     <>

@@ -3,7 +3,7 @@ import { View, ScrollView } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MentionInput } from 'react-native-controlled-mentions';
 import { DataStore, sendUsersPushNotifications } from "../../utils";
-import { Comments, Users } from "../../models";
+import { Comments } from "../../models";
 import {
   Text,
   Button,
@@ -11,7 +11,7 @@ import {
   Modal,
   TextInput,
 } from "../../components";
-import { AuthContext } from "../../contexts";
+import { AuthContext, DataContext } from "../../contexts";
 import TaggingUserSuggestions from "../TaggingUserSuggestions/TaggingUserSuggestions";
 import styles from "./CommentModalStyles";
 
@@ -19,8 +19,8 @@ const CommentModal = (props) => {
   const [commentText, setCommentText] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [allUsers, setAllUsers] = useState([]);
   const authStatus = useContext(AuthContext).authStatus;
+  const { allUsers } = useContext(DataContext);
 
   const { showModal, modalType, closeModal, postsID, comment } = props;
 
@@ -67,11 +67,12 @@ const CommentModal = (props) => {
     if (commentText) {
       // Update Item
       if (modalType === "update") {
-        const updatedItem = { ...comment };
+        const originalItem = await DataStore.query(Comments, comment.id);
+        const updatedItem = { ...originalItem };
         updatedItem.comment = commentText;
         // await DataStore.stop();
         await DataStore.save(
-          Comments.copyOf(comment, (updatedItem) => {
+          Comments.copyOf(originalItem, (updatedItem) => {
             updatedItem.comment = commentText;
           })
         );
@@ -112,24 +113,6 @@ const CommentModal = (props) => {
   useEffect(() => {
     resetModal();
   }, [modalType, comment]);
-
-  useEffect(() => {
-    // Subscribe to users
-    const usersSubscription = DataStore.observeQuery(Users).subscribe(({ items }) => {
-      try {
-        if (items) {
-          const newUsers = items.sort((a, b) => a.name.localeCompare(b.name));
-          // if(JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
-          setAllUsers(newUsers);
-          // }
-        }
-      } catch (err) { console.log('error fetching Data', err) }
-    });
-
-    return () => {
-      usersSubscription.unsubscribe();
-    };
-  }, [postsID]);
 
   return (
     <Modal

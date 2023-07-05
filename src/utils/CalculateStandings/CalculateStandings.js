@@ -1,107 +1,41 @@
-import React, { useState, useEffect } from "react";
-import { Teams, Users, StandingsTeams, StandingsPeople, Posts } from "../../models";
+import React, { useState, useEffect, memo, useContext, useRef } from "react";
+import { StandingsPeople, StandingsTeams } from "../../models";
 import DataStore from '../DataStore/DataStore';
+import { DataContext } from "../../contexts";
 
 const CalculateStandings = () => {
-  const [users, setUsers] = useState([]);
-  const [teams, setTeams] = useState([]);
   const [events, setEvents] = useState([]);
-  const [standingsTeams, setStandingsTeams] = useState([]);
-  const [standingsPeople, setStandingsPeople] = useState([]);
-
-  useEffect(() => {
-    const usersSubscription = DataStore.observeQuery(Users).subscribe(
-      ({ items }) => {
-        try {
-          if (items) {
-            const newUsers = items.map((u) => {
-              return {
-                id: u.id,
-                teamId: u.teamsID,
-              };
-            });
-
-            // Quick check to make sure we're only updating state if the subscription caught a chance to the user associated with this post
-            // if (JSON.stringify(newUsers) !== JSON.stringify(users)) {
-              setUsers(newUsers);
-            // }
-          }
-        } catch (err) {
-          console.log("error fetching Data", err);
-        }
-      }
-    );
-
-    const teamsSubscription = DataStore.observeQuery(Teams).subscribe(
-      ({ items }) => {
-        try {
-          if (items) {
-            // Quick check to make sure we're only updating state if the subscription caught a chance to the user associated with this post
-            // if (JSON.stringify(items) !== JSON.stringify(teams)) {
-              setTeams(items);
-            // }
-          }
-        } catch (err) {
-          console.log("error fetching Data", err);
-        }
-      }
-    );
-
-    const eventsSubscription = DataStore.observeQuery(
-      Posts,
-      (p) =>
-        p.olympicEvent.eq(true)
-    ).subscribe(({ items }) => {
-      // if(JSON.stringify(items) !== JSON.stringify(events)) {
-        setEvents(items);
-      // }
-    });
-
-    const teamsStandingsSubscription = DataStore.observeQuery(StandingsTeams).subscribe(({ items }) => {
-      // if (JSON.stringify(items) !== JSON.stringify(standingsTeams)) {
-        // Make sure it's not a change to a different Post
-        setStandingsTeams(items);
-      // }
-    });
-
-    const usersStandingsSubscription = DataStore.observeQuery(StandingsPeople).subscribe(({ items }) => {
-      // if (JSON.stringify(items) !== JSON.stringify(standingsPeople)) {
-        // Make sure it's not a change to a different Post
-        setStandingsPeople(items);
-      // }
-    });
-
-    return () => {
-      usersSubscription.unsubscribe();
-      teamsSubscription.unsubscribe();
-      eventsSubscription.unsubscribe();
-      teamsStandingsSubscription.unsubscribe();
-      usersStandingsSubscription.unsubscribe();
-    };
-  }, []);
-
+  const { allUsers, allPosts, allTeams, allStandingsPeople, allStandingsTeams } = useContext(DataContext);
+  const isCalculating = useRef(false);
+  
   useEffect(() => {
     // Check lengths on all 5 arrays
-    if (users.length > 0 && teams.length > 0 && events.length > 0 && standingsTeams.length > 0 && standingsPeople.length > 0) {
+    if (allUsers.length > 0 && allTeams.length > 0 && events.length > 0 && allStandingsTeams.length > 0 && allStandingsPeople.length > 0) {
+      // console.log('-- Running Calc Standings --', allUsers.length, allTeams.length, events.length, allStandingsTeams.length, allStandingsPeople.length);
       const startTime = new Date();
       // console.log('-- Lets do this! --', startTime);
       const maxEventTime = new Date(Math.max(...events.map((e) => new Date(e.updatedAt))));
-      const maxTeamStandingsTime = new Date(Math.max(...standingsTeams.map((s) => new Date(s.updatedAt))));
-      const maxPeopleStandingsTime = new Date(Math.max(...standingsPeople.map((s) => new Date(s.updatedAt))));
+      const maxTeamStandingsTime = new Date(Math.max(...allStandingsTeams.map((s) => new Date(s.lastCalculationTime))));
+      const maxPeopleStandingsTime = new Date(Math.max(...allStandingsPeople.map((s) => new Date(s.lastCalculationTime))));
+      // console.log('-- Max Event Time --', maxEventTime);
+      // console.log('-- Max Team Standings Time --', maxTeamStandingsTime);
+      // console.log('-- Max People Standings Time --', maxPeopleStandingsTime);
 
-      if(maxEventTime > maxTeamStandingsTime || maxEventTime > maxPeopleStandingsTime) {
+      if((maxEventTime > maxTeamStandingsTime || maxEventTime > maxPeopleStandingsTime) && !isCalculating.current) {
+        isCalculating.current = true;
         // console.log('-- Something Changed, need to calc --');
-        const participants = users.map((u) => {
+        const participants = allUsers.map((u) => {
           return {
             id: u.id,
             teamId: u.teamId,
+            name: u.name,
             points: 0,
             gamesPlayed: 0,
             rank: 0,
           }
         });
 
-        const teamsWithPoints = teams.map((t) => {
+        const teamsWithPoints = allTeams.map((t) => {
           return {
             id: t.id,
             points: 0,
@@ -130,14 +64,26 @@ const CalculateStandings = () => {
           }
         });
 
-        // Sort participants by points
+        // Sort participants by points, then by gamesPlayed, then by name if tied
         participants.sort((a, b) => {
           if(a.points > b.points) {
             return -1;
           } else if(a.points < b.points) {
             return 1;
           } else {
-            return 0;
+            if(a.gamesPlayed > b.gamesPlayed) {
+              return -1;
+            } else if(a.gamesPlayed < b.gamesPlayed) {
+              return 1;
+            } else {
+              if(a.name < b.name) {
+                return -1;
+              } else if(a.name > b.name) {
+                return 1;
+              } else {
+                return 0;
+              }
+            }
           }
         });
 
@@ -163,17 +109,19 @@ const CalculateStandings = () => {
 
         // console.log('-- Participants --', participants);
         // console.log('-- Teams --', teamsWithPoints);
+        // console.log('-- allStandingsPeople --', allStandingsPeople);
 
         let playersAdded = 0;
         let playerUpdated = 0;
         let teamsAdded = 0;
         let teamsUpdated = 0;
         // Update standings
-        participants.forEach((p) => {
-          const standing = standingsPeople.find((s) => s.userId === p.id);
+        participants.forEach( async (p) => {
+          const standing = allStandingsPeople.find((s) => s.userId === p.id);
           if(standing) {
-            if( standing.points !== p.points || standing.gamesPlayed !== p.gamesPlayed || standing.rank !== p.rank) {
-              DataStore.save(StandingsPeople.copyOf(standing, (updated) => {
+            if( standing.points !== p.points || standing.gamesPlayed !== p.gamesPlayed) {
+              const originalItem = await DataStore.query(StandingsPeople, standing.id);
+              DataStore.save(StandingsPeople.copyOf(originalItem, (updated) => {
                 updated.points = p.points;
                 updated.gamesPlayed = p.gamesPlayed;
                 updated.rank = p.rank;
@@ -193,11 +141,12 @@ const CalculateStandings = () => {
           }
         });
 
-        teamsWithPoints.forEach((t) => {
-          const standing = standingsTeams.find((s) => s.teamId === t.id);
+        teamsWithPoints.forEach( async (t) => {
+          const standing = allStandingsTeams.find((s) => s.teamId === t.id);
           if(standing) {
-            if( standing.points !== t.points || standing.rank !== t.rank) {
-              DataStore.save(StandingsTeams.copyOf(standing, (updated) => {
+            if( standing.points !== t.points) {
+              const originalItem = await DataStore.query(StandingsTeams, standing.id);
+              DataStore.save(StandingsTeams.copyOf(originalItem, (updated) => {
                 updated.points = t.points;
                 updated.rank = t.rank;
                 updated.lastCalculationTime = startTime.toISOString();
@@ -216,13 +165,21 @@ const CalculateStandings = () => {
         });
 
         // console.log('-- Standings Updated --', playersAdded, 'players added,', playerUpdated, 'players updated,', teamsAdded, 'teams added,', teamsUpdated, 'teams updated,', new Date());
+        isCalculating.current = false;
       }
     }
-  }, [users, teams, events]);
+  }, [allUsers, allTeams, events, allStandingsTeams, allStandingsPeople]);
+
+  useEffect(() => {
+    const newEvents = allPosts.filter((p) => p.olympicEvent);
+    if(JSON.stringify(newEvents) !== JSON.stringify(events)) {
+      setEvents(newEvents);
+    }
+  }, [allPosts])
 
   // console.log('-- Data Lengths --', users.length, teams.length, events.length, standingsTeams.length, standingsPeople.length);
 
   return <></>;
 };
 
-export default CalculateStandings;
+export default memo(CalculateStandings);

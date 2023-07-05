@@ -36,14 +36,15 @@ const FAQModal = (props) => {
       // Update Item
       if (question && answer && sortOrder) {
         try {
-          const updatedItem = {...item};
+          const originalItem = await DataStore.query(FAQ, item.id);
+          const updatedItem = {...originalItem};
           updatedItem.question = question;
           updatedItem.answer = answer;
           updatedItem.sortOrder = parseInt(sortOrder);
         
           // await DataStore.stop();
           await DataStore.save(
-            FAQ.copyOf(item, updatedItem => {
+            FAQ.copyOf(originalItem, updatedItem => {
               updatedItem.question = question;
               updatedItem.answer = answer;
               updatedItem.sortOrder = parseInt(sortOrder);

@@ -1,37 +1,39 @@
 import React, {
   useContext,
-  useEffect,
-  useState,
   useMemo,
   useCallback,
 } from "react";
 import { View, FlatList, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Predicates, SortDirection } from "aws-amplify";
-import { Posts } from "../../models";
 import { ActivityIndicator, Divider } from "../../components";
-import { AuthContext } from "../../contexts";
-import { IntroModal, AddPostListHeader } from "../../containers";
-import { DataStore } from "../../utils";
+import { AuthContext, DataContext } from "../../contexts";
+import { AddPostListHeader } from "../../containers";
 import { PostPreview } from "../../containers";
 import styles from "./HomeScreenStyles";
 
 const HomeScreen = () => {
-  const [allPosts, setAllPosts] = useState([]);
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
 
   const authContext = useContext(AuthContext);
   const { authStatus } = authContext;
+  const { refreshData, allUsers, allComments, allAdminFavorites, allReactions, allPosts } = useContext(DataContext);
 
   const renderItem = useCallback(({ item }) => {
+    const postComments = allComments.filter((comment) => comment.postsID === item.id);
+    const postReactions = allReactions.filter((reaction) => reaction.postsID === item.id);
+
     return (
       <PostPreview
         post={item}
         previewMode
+        allUsers={allUsers}
+        allAdminFavorites={allAdminFavorites}
+        comments={postComments}
+        reactions={postReactions}
       />
     );
-  }, []);
+  }, [allUsers, allAdminFavorites, allComments, allReactions]);
 
   const listHeader = useCallback(() => {
     return <AddPostListHeader />;
@@ -51,59 +53,31 @@ const HomeScreen = () => {
     );
   }, [ss]);
 
-  const onRefresh = () => {
-    DataStore.start();
+  const onRefresh = async () => {
+    refreshData();
   }
 
-  useEffect(() => {
-    const postSubscription = DataStore.observeQuery(Posts, Predicates.ALL, {
-      sort: (s) => s.createdAt(SortDirection.DESCENDING),
-    }).subscribe(({ items }) => {
-      try {
-        // await DataStore.stop();
-        const formattedPosts = items.map((post) => {
-          const obj = Object.assign({}, post);
-          const images = post.images?.length > 0 && post.images[0] !== null ? post.images.map((image) => {
-            return JSON.parse(image);
-          }) : undefined;
-          obj.images = images;
-          return obj;
-        });
-        // if(JSON.stringify(formattedPosts) !== JSON.stringify(allPosts)) {
-          setAllPosts(formattedPosts);
-        // }
-      } catch (err) {
-        console.log("error fetching Data", err);
-      }
-    });
-
-    return () => postSubscription.unsubscribe();
-  }, []);
-
   return (
-    <>
-      <IntroModal />
-      <View style={ss.pageWrapper}>
-        <FlatList
-          data={allPosts}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
-          ItemSeparatorComponent={listItemSeparator}
-          stickyHeaderIndices={[0]}
-          ListHeaderComponent={listHeader}
-          removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
-          maxToRenderPerBatch={10} // Also the default
-          initialNumToRender={10} // Also the default
-          keyboardShouldPersistTaps="handled"
-          keyboardDismissMode="on-drag"
-          style={{ width: '100%' }}
-          contentContainerStyle={{ flexGrow: 1 }}
-          ListEmptyComponent={listEmptyComponent}  
-          onRefresh={onRefresh}
-          refreshing={false}
-        />
-      </View>
-    </>
+    <View style={ss.pageWrapper}>
+      <FlatList
+        data={allUsers.length > 0 ? allPosts : []}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        ItemSeparatorComponent={listItemSeparator}
+        stickyHeaderIndices={[0]}
+        ListHeaderComponent={listHeader}
+        removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
+        maxToRenderPerBatch={10} // Also the default
+        initialNumToRender={10} // Also the default
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        style={{ width: '100%' }}
+        contentContainerStyle={{ flexGrow: 1 }}
+        ListEmptyComponent={listEmptyComponent}  
+        onRefresh={onRefresh}
+        refreshing={false}
+      />
+    </View>
   );
 };
 

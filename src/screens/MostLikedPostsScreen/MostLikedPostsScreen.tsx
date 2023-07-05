@@ -7,34 +7,36 @@ import React, {
 } from "react";
 import { View, FlatList, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Predicates, SortDirection } from "aws-amplify";
-import { Posts, Reactions } from "../../models";
 import { ActivityIndicator, Divider } from "../../components";
-import { AuthContext } from "../../contexts";
-import { IntroModal, AddPostListHeader } from "../../containers";
-import { DataStore } from "../../utils";
+import { AuthContext, DataContext } from "../../contexts";
+import { AddPostListHeader } from "../../containers";
 import { PostPreview } from "../../containers";
 import styles from "./MostLikedPostsScreenStyles";
 
 const MostLikedPostsScreen = () => {
-  const [allPosts, setAllPosts] = useState([]);
   const [sortedPosts, setSortedPosts] = useState([]);
-  const [reactions, setReactions] = useState([]); 
-  const [dataLoading, setDataLoading] = useState(true);
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
 
   const authContext = useContext(AuthContext);
   const { authStatus } = authContext;
+  const { refreshData, allUsers, allComments, allAdminFavorites, allReactions, allPosts } = useContext(DataContext);
 
   const renderItem = useCallback(({ item }) => {
+    const postComments = allComments.filter((comment) => comment.postsID === item.id);
+    const postReactions = allReactions.filter((reaction) => reaction.postsID === item.id);
+
     return (
       <PostPreview
         post={item}
         previewMode
+        allUsers={allUsers}
+        allAdminFavorites={allAdminFavorites}
+        comments={postComments}
+        reactions={postReactions}
       />
     );
-  }, []);
+  }, [allUsers, allAdminFavorites, allComments, allReactions]);
 
   const listHeader = useCallback(() => {
     return <AddPostListHeader />;
@@ -46,81 +48,47 @@ const MostLikedPostsScreen = () => {
     return <Divider height={5} margin={0} />;
   }, []);
 
+  const onRefresh = async () => {
+    refreshData();
+  }
+
   useEffect(() => {
     // Get count of Reaction for each post
     const formattedPosts = allPosts.map((post) => {
       const obj = Object.assign({}, post);
-      const reactionCount = reactions.filter((reaction) => reaction.postsID === post.id).length;
+      const reactionCount = allReactions.filter((reaction) => reaction.postsID === post.id).length;
       obj.reactionCount = reactionCount;
       return obj;
     });
     // Sort posts by reaction count
     const sorted = formattedPosts.sort((a, b) => b.reactionCount - a.reactionCount);
     setSortedPosts(sorted);
-  }, [reactions, allPosts]);
-
-  useEffect(() => {
-    const postSubscription = DataStore.observeQuery(Posts).subscribe(({ items }) => {
-      try {
-        // await DataStore.stop();
-        const formattedPosts = items.map((post) => {
-          const obj = Object.assign({}, post);
-          const images = post.images?.length > 0 && post.images[0] !== null ? post.images.map((image) => {
-            return JSON.parse(image);
-          }) : undefined;
-          obj.images = images;
-          return obj;
-        });
-        // if(JSON.stringify(formattedPosts) !== JSON.stringify(allPosts)) {
-          setAllPosts(formattedPosts);
-        // }
-        setDataLoading(false);
-      } catch (err) {
-        console.log("error fetching Data", err);
-      }
-    });
-
-    const reactionsSubscription = DataStore.observeQuery(Reactions).subscribe(({ items }) => {
-      try {
-        // if(JSON.stringify(items) !== JSON.stringify(reactions)) {
-          setReactions(items);
-        // }
-      } catch (err) {
-        console.log("error fetching Data", err);
-      }
-    });
-
-    return () => {
-      postSubscription.unsubscribe();
-      reactionsSubscription.unsubscribe();
-    };
-  }, []);
+  }, [allReactions, allPosts]);
 
   return (
-    <>
-      <IntroModal />
-      <View style={ss.pageWrapper}>
-        {dataLoading || allPosts.length === 0 ? (
-          <View style={ss.pageActivityIndicatorWrapper}>
-            <ActivityIndicator size={60} />
-          </View>
-        ) : (
-          <FlatList
-            data={sortedPosts}
-            renderItem={renderItem}
-            keyExtractor={keyExtractor}
-            ItemSeparatorComponent={listItemSeparator}
-            ListHeaderComponent={listHeader}
-            removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
-            maxToRenderPerBatch={10} // Also the default
-            initialNumToRender={10} // Also the default
-            keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="on-drag"
-            style={{ width: '100%' }}
-          />
-        )}
-      </View>
-    </>
+    <View style={ss.pageWrapper}>
+      {sortedPosts.length === 0 ? (
+        <View style={ss.pageActivityIndicatorWrapper}>
+          <ActivityIndicator size={60} />
+        </View>
+      ) : (
+        <FlatList
+          data={sortedPosts}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          ItemSeparatorComponent={listItemSeparator}
+          ListHeaderComponent={listHeader}
+          removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
+          maxToRenderPerBatch={10} // Also the default
+          initialNumToRender={10} // Also the default
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="on-drag"
+          style={{ width: '100%' }}
+          onRefresh={onRefresh}
+          refreshing={false}
+        />
+      )}
+    </View>
   );
 };
 

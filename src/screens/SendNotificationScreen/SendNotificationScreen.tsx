@@ -8,9 +8,7 @@ import React, {
 } from "react";
 import { ScrollView, View, Keyboard, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Predicates, SortDirection } from "aws-amplify";
 import { TimePickerModal } from "react-native-paper-dates";
-import { Users } from "../../models";
 import {
   Icon,
   Text,
@@ -25,9 +23,9 @@ import {
   ConditionalWrapper,
   Avatar,
 } from "../../components";
-import { SnackbarContext, AuthContext } from "../../contexts";
+import { SnackbarContext, AuthContext, DataContext } from "../../contexts";
 import { typography } from "../../styles";
-import { sendGlobalPushNotification, sendUsersPushNotifications, scheduleNotificationForAnotherUser, DataStore } from "../../utils";
+import { sendGlobalPushNotification, sendUsersPushNotifications, scheduleNotificationForAnotherUser } from "../../utils";
 import styles from "./SendNotificationScreenStyles";
 
 const days = [
@@ -50,7 +48,6 @@ const SendNotificationScreen = ({ navigation }) => {
   const [notificationSending, setNotificationSending] = useState(false);
   const [scheduleForLater, setScheduleForLater] = useState(true);
   const [sendToEveryone, setSendToEveryone] = useState(true);
-  const [allUsers, setAllUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [timePickerVisible, setTimePickerVisible] = useState(false);
   const [selectedDay, setSelectedDay] = useState('friday');
@@ -59,6 +56,7 @@ const SendNotificationScreen = ({ navigation }) => {
   const [isValid, setIsValid] = useState(false);
   const refSubject = useRef();
   const refNotificationText = useRef();
+  const { allUsers } = useContext(DataContext);
 
   const onDismissTimePicker = useCallback(() => {
     setTimePickerVisible(false);
@@ -163,32 +161,6 @@ const SendNotificationScreen = ({ navigation }) => {
         (sendToEveryone || (!sendToEveryone && selectedUsers.length > 0))
     );
   }, [notificationText, scheduleForLater, sendToEveryone, selectedUsers, selectedDay, selectedHour, selectedMinute]);
-
-  useEffect(() => {
-    const usersSubscription = DataStore.observeQuery(Users, Predicates.ALL, {
-      sort: (u) => u.name(SortDirection.ASCENDING),
-    }).subscribe(({ items }) => {
-      const newUsers = items.map((u) => {
-        return {
-          id: u.id,
-          name: u.name,
-          image: u.image ? JSON.parse(u.image) : undefined,
-          fullObject: u,
-          label: u.name,
-          value: u.id,
-        };
-      });
-
-      // Quick check to make sure we're only updating state if the subscription caught a change that we care about
-      // if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
-        setAllUsers(newUsers);
-      // }
-    });
-
-    return () => {
-      usersSubscription.unsubscribe();
-    };
-  }, []);
 
   return (
     <View style={ss.pageWrapper}>

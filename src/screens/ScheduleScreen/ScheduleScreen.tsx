@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext, useMemo, useCallback } from "re
 import { View, FlatList, Platform, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
 import { TabView, TabBar } from 'react-native-tab-view';
-import { Schedule } from "../../models";
 import {
   Text,
   Divider,
@@ -10,8 +9,7 @@ import {
   ActivityIndicator,
 } from "../../components";
 import { ScheduleItem, ScheduleModal } from "../../containers";
-import { DataStore } from "../../utils";
-import { AuthContext } from "../../contexts";
+import { AuthContext, DataContext } from "../../contexts";
 import { calcDimensions } from "../../styles";
 import styles from "./ScheduleScreenStyles";
 
@@ -24,9 +22,7 @@ const emptyScheduleData = [
 const ScheduleScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-  const [rawScheduleData, setRawScheduleData] = useState([]);
   const [scheduleData, setScheduleData] = useState([]);
-  const [dataLoading, setDataLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [index, setIndex] = useState(0);
   const routes = [
@@ -36,6 +32,7 @@ const ScheduleScreen = ({ navigation, route }) => {
   ];
 
   const authStatus = useContext(AuthContext).authStatus;
+  const { allSchedule } = useContext(DataContext);
   const dimensions = calcDimensions();
 
   const openModal = () => {
@@ -97,32 +94,14 @@ const ScheduleScreen = ({ navigation, route }) => {
     const days = "Friday,Saturday,Sunday".split(",");
     for (let i = 0; i < days.length; i++) {
       const day = days[i];
-      const dayData = rawScheduleData.filter((item) => item.day === day);
+      const dayData = allSchedule.filter((item) => item.day === day);
       if (dayData.length > 0) {
         dayData.sort((a, b) => a.sortOrder - b.sortOrder);
         newScheduleData[i].data = dayData;
       }
     }
     setScheduleData(newScheduleData);
-  }, [rawScheduleData]);
-
-  useEffect(() => {
-    const subscription = DataStore.observeQuery(Schedule).subscribe(
-      ({ items }) => {
-        try {
-          // if(JSON.stringify(items) !== JSON.stringify(rawScheduleData)) {
-            setRawScheduleData(items);
-          // }
-          setDataLoading(false);
-          // console.log('-- Fetched Data --', dt);
-        } catch (err) {
-          console.log("error fetching Data", err);
-        }
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  }, []);
+  }, [allSchedule]);
   
   return (
     <>

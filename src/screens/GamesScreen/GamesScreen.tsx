@@ -1,20 +1,17 @@
-import React, { useMemo, useEffect, useState, useContext, useCallback } from 'react';
+import React, { useMemo, useEffect, useContext, useCallback } from 'react';
 import { View, Pressable, FlatList, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Predicates, SortDirection } from "aws-amplify";
 import { Text, TextSizes, Icon, ActivityIndicator, Divider } from '../../components';
-import { DataStore, gamePlayers } from '../../utils';
-import { Games } from '../../models';
+import { gamePlayers } from '../../utils';
 import { typography } from '../../styles';
-import { AuthContext } from '../../contexts';
+import { AuthContext, DataContext } from '../../contexts';
 import styles from './GamesScreenStyles';
 
 const GamesScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const authStatus = useContext(AuthContext).authStatus;
-  const [games, setGames] = useState([]);
-  const [dataLoading, setDataLoading] = useState(true);
+  const {allGames, refreshData} = useContext(DataContext);
 
   const addNewButton = () => {
     return (
@@ -60,30 +57,15 @@ const GamesScreen = ({ navigation, route }) => {
     });
   }, [authStatus, theme]);
 
-  useEffect(() => {
-    const gamesSubscription = DataStore.observeQuery(Games, Predicates.ALL, {
-      sort: (s) => s.name(SortDirection.ASCENDING),
-    }).subscribe(({ items }) => {
-      // if(JSON.stringify(items) !== JSON.stringify(games)) {
-        setGames(items);  
-      // }
-      setDataLoading(false);
-    });
-
-    return () => {
-      gamesSubscription.unsubscribe();
-    };
-  }, []);
-
   return (
     <View style={ss.pageWrapper}>
-      {dataLoading || games.length === 0 ? (
+      {allGames.length === 0 ? (
         <View style={ss.pageActivityIndicatorWrapper}>
           <ActivityIndicator size={60} />
         </View>
       ) : (
         <FlatList
-          data={games}
+          data={allGames}
           renderItem={(item) => renderGameRow(item)}
           keyExtractor={keyExtractor}
           ItemSeparatorComponent={Divider}

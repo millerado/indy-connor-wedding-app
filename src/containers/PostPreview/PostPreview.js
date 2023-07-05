@@ -9,12 +9,11 @@ import React, {
 import { View, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Dialog, Menu, Portal, useTheme } from "react-native-paper";
-import { SortDirection } from "aws-amplify";
 import _ from "lodash";
 import SingleComment from "../SingleComment/SingleComment";
 import AddCommentListView from "../AddCommentListView/AddCommentListView";
 import ImageScroll from "../ImageScroll/ImageScroll";
-import { Reactions, Users, Comments, Posts, AdminFavorites } from "../../models";
+import { Reactions, Posts } from "../../models";
 import {
   Icon,
   Text,
@@ -23,7 +22,7 @@ import {
   Divider,
 } from "../../components";
 import { typography } from "../../styles";
-import { formatDate, DataStore, formatGameString, arraysEqual } from "../../utils/";
+import { formatDate, DataStore, formatGameString } from "../../utils/";
 import { AuthContext } from "../../contexts";
 import CommentModal from "../CommentModal/CommentModal";
 import LikedByUsersModal from "../LikedByUsersModal/LikedByUsersModal";
@@ -37,7 +36,15 @@ const PostPreview = (props) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
 
-  const { post, previewMode = true, postUser: initialPostUser, reactions: initialReactions, comments: initialComments } = props;
+  const { 
+    post, 
+    previewMode = true, 
+    postUser: initialPostUser, 
+    allUsers, 
+    allAdminFavorites: adminFavorites,
+    comments,
+    reactions,
+  } = props;
   if (!post) {
     return null;
   }
@@ -47,15 +54,11 @@ const PostPreview = (props) => {
   const [captionTextExandable, setCaptionTextExandable] = useState(false);
   const [captionExanded, setCaptionExanded] = useState(true);
   const [showUnauthedMessage, setShowUnauthedMessage] = useState(false);
-  const [allUsers, setAllUsers] = useState([]);
   const [postUser, setPostUser] = useState(initialPostUser || {
     id: "",
     name: "",
     image: undefined,
   });
-  const [reactions, setReactions] = useState(initialReactions || []);
-  const [adminFavorites, setAdminFavorites] = useState([]);
-  const [comments, setComments] = useState(initialComments || []);
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [showLikesModal, setShowLikesModal] = useState(false);
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
@@ -97,6 +100,7 @@ const PostPreview = (props) => {
           console.log("Error saving reaction", error);
         }
       }
+      setIsLiked(!isLiked); // Immediate UI update before the subscription updates
     } else {
       setShowUnauthedMessage(true);
     }
@@ -204,79 +208,11 @@ const PostPreview = (props) => {
   }, [reactions, authStatus]);
 
   useEffect(() => {
-    const reactionsSubscription = DataStore.observeQuery(Reactions, (r) =>
-      r.postsID.eq(postsID)
-    ).subscribe(({ items }) => {
-      if (items) {
-        const reactionsSet = new Set();
-
-        const newReactions = items.map((reaction) => {
-          return {
-            userId: reaction.userId,
-            reactionType: reaction.reactionType,
-          };
-        }).filter((reaction) => {
-          if (reactionsSet.has(reaction.userId)) {
-            return false;
-          }
-          reactionsSet.add(reaction.userId);
-          return true;
-        });
-        // console.log("Reactions data", reactionsData);
-        setReactions(newReactions);
-      }
-    });
-
-    const adminFavoritesSubscriptions = DataStore.observeQuery(AdminFavorites).subscribe(({ items }) => {
-      if (items) {
-        const newFavorites = items.map((favorite) => {
-          const img = JSON.parse(favorite.image);
-          return {
-            id: favorite.id,
-            url: img.url,
-          };
-        });
-        // if (JSON.stringify(newFavorites) !== JSON.stringify(adminFavorites)) {
-          setAdminFavorites(newFavorites);
-        // }
-      }
-    });
-
-    const commentsSubscription = DataStore.observeQuery(Comments, (c) =>
-      c.postsID.eq(postsID),
-      {
-        sort: (s) => s.createdAt(previewMode ? SortDirection.DESCENDING : SortDirection.ASCENDING),
-      }
-    ).subscribe(({ items }) => {
-      // if (JSON.stringify(items) !== JSON.stringify(comments)) {
-        // Make sure it's not a change to a different Post
-        setComments(items);
-      // }
-    });
-
-    const usersSubscription = DataStore.observeQuery(Users).subscribe(({ items }) => {
-      const newUsers = items.map((u) => {
-        return {
-          id: u.id,
-          name: u.name,
-          image: u.image ? JSON.parse(u.image) : undefined,
-        };
-      });
-
-      // Quick check to make sure we're only updating state if the subscription caught a change that we care about
-      // if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
-        setAllUsers(newUsers);
-      // }
-      setPostUser(newUsers.find((u) => u.id === post.userId));
-    });
-
-    return () => {
-      commentsSubscription.unsubscribe();
-      reactionsSubscription.unsubscribe();
-      usersSubscription.unsubscribe();
-      adminFavoritesSubscriptions.unsubscribe();
-    };
-  }, [postsID]);
+    const postingUser = allUsers.find((u) => u.id === post.userId);
+    if (postingUser) {
+      setPostUser(postingUser);
+    }
+  }, [allUsers]);
 
   return (
     <>
@@ -291,6 +227,7 @@ const PostPreview = (props) => {
           showModal={showLikesModal}
           closeModal={handleHideLikesList}
           reactions={reactions}
+          allUsers={allUsers}
         />
         <Portal>
           <Dialog visible={deleteDialogVisible} onDismiss={hideDeleteDialog}>
@@ -431,13 +368,13 @@ const PostPreview = (props) => {
         {comments.length > 0 && (
           <Pressable onPress={goToPostScreen}>
             {previewMode ? (
-              <SingleComment comment={comments[0]} numberOfLines={2} />
+              <SingleComment comment={comments[0]} numberOfLines={2} allUsers={allUsers} />
             ) : (
               <>
                 {comments.map((comment, index) => (
                   <View key={comment.id}>
                     {index === 0 ? null : <Divider color={theme.colors.onTertiary} />}
-                    <SingleComment comment={comment} />
+                    <SingleComment comment={comment} allUsers={allUsers} />
                   </View>
                 ))}
               </>
@@ -453,9 +390,7 @@ const PostPreview = (props) => {
             )}
           </Pressable>
         )}
-        {previewMode && (
-          <AddCommentListView postsID={postsID} />
-        )}
+        <AddCommentListView postsID={postsID} />
       </View>
       <Portal>
         <Dialog visible={showUnauthedMessage} onDismiss={() => setShowUnauthedMessage(false)}>

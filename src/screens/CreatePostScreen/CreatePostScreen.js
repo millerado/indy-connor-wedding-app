@@ -11,7 +11,6 @@ import * as ImagePicker from "expo-image-picker";
 import { Menu, useTheme } from 'react-native-paper';
 import NetInfo from '@react-native-community/netinfo';
 import { MentionInput } from 'react-native-controlled-mentions';
-import { Predicates, SortDirection } from "aws-amplify";
 import {
   Chip,
   Avatar,
@@ -27,11 +26,11 @@ import {
   ConditionalWrapper,
   ImageS3,
 } from "../../components";
-import { Posts, Users, Games } from "../../models";
+import { Posts } from "../../models";
 import { uploadImageS3, DataStore, sendUsersPushNotifications, gamePlayers, nth } from "../../utils";
 import { typography, calcDimensions } from "../../styles";
-import { AuthContext } from '../../contexts';
-import { TaggingUserSuggestions, ImageScroll } from '../../containers';
+import { AuthContext, DataContext } from '../../contexts';
+import { TaggingUserSuggestions } from '../../containers';
 import styles from "./CreatePostScreenStyles";
 
 const dimensions = calcDimensions();
@@ -46,7 +45,6 @@ const CreatePostScreen = ({ navigation, route }) => {
   const [showMenu, setShowMenu] = useState(false);
   const [error, setError] = useState(undefined);
   const [showErrorDetails, setShowErrorDetails] = useState(false);
-  const [allUsers, setAllUsers] = useState([]);
   const [photoPermissions, setPhotoPermissions] = useState({
     photos: 'loading',
     camera: 'loading',
@@ -60,6 +58,7 @@ const CreatePostScreen = ({ navigation, route }) => {
   const authStatus = useContext(AuthContext).authStatus;
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
+  const { allUsers, allGames } = useContext(DataContext);
 
   const uploadImageCallback = async (props) => {
     const { success, uploadedImages, errorSummary, errorDetails } = props;
@@ -230,7 +229,7 @@ const CreatePostScreen = ({ navigation, route }) => {
     const users = allUsers.map((user) => {
       return user.fullObject;
     });
-    return TaggingUserSuggestions(keyword, onSuggestionPress, users);
+    return TaggingUserSuggestions(keyword, onSuggestionPress, allUsers);
   };
 
   const handleSelectedGame = (item) => {
@@ -307,7 +306,7 @@ const CreatePostScreen = ({ navigation, route }) => {
       setTeams(newTeams);
     } else {
       // They selected None
-      console.log('-- No Game Selected, RESET --');
+      // console.log('-- No Game Selected, RESET --');
       setTeams([]);
     }
   };
@@ -347,6 +346,35 @@ const CreatePostScreen = ({ navigation, route }) => {
       </Button>
     );
   }
+
+  const formatGames = (games) => {
+    if(games.length > 0) {
+      const g = games.map((game, index) => {
+        return {
+          value: game.id,
+          iconName: game.iconName,
+          label: game.name,
+          players: gamePlayers(game),
+        }
+      });
+      g.sort((a, b) => a.label.localeCompare(b.label));
+      // And a "None" row to unselect a game
+      g.unshift({
+        value: null,
+        iconName: "close",
+        label: "None",
+        players: 'Nevermind, not playing a game',
+      });
+      setGamesDropdown(g);
+      setGames(games);
+    }
+  }
+
+  useEffect(() => {
+    if(allGames.length > 0) {
+      formatGames(allGames)
+    }
+  }, [allGames])
 
   useEffect(() => {
     if (selectedGame) {
@@ -400,59 +428,11 @@ const CreatePostScreen = ({ navigation, route }) => {
       });
     })();
 
-    const usersSubscription = DataStore.observeQuery(Users, Predicates.ALL, {
-      sort: (u) => u.name(SortDirection.ASCENDING),
-    }).subscribe(({ items }) => {
-      const newUsers = items.map((u) => {
-        return {
-          id: u.id,
-          name: u.name,
-          image: u.image ? JSON.parse(u.image) : undefined,
-          fullObject: u,
-          label: u.name,
-          value: u.id,
-        };
-      });
-  
-      // Quick check to make sure we're only updating state if the subscription caught a change that we care about
-      // if (JSON.stringify(newUsers) !== JSON.stringify(allUsers)) {
-        setAllUsers(newUsers);
-      // }
-    });
-
-    const gamesSubscription = DataStore.observeQuery(Games, Predicates.ALL, {
-      sort: (s) => s.name(SortDirection.ASCENDING),
-    }).subscribe(({ items }) => {
-      const g = items.map((game, index) => {
-        return {
-          value: game.id,
-          iconName: game.iconName,
-          label: game.name,
-          players: gamePlayers(game),
-        }
-      });
-      // And a "None" row to unselect a game
-      g.unshift({
-        value: null,
-        iconName: "close",
-        label: "None",
-        players: 'Nevermind, not playing a game',
-      });
-      // if (JSON.stringify(g) !== JSON.stringify(gamesDropdown)) {
-        setGamesDropdown(g);
-      // }
-      // if (JSON.stringify(items) !== JSON.stringify(games)) {
-        setGames(items);
-      // }
-    });
-
     const unsubscribe = NetInfo.addEventListener(state => {
       setIsConnected(state.isInternetReachable);
     });
     return () => {
       unsubscribe();
-      usersSubscription.unsubscribe();
-      gamesSubscription.unsubscribe();
     };
   }, []);
 

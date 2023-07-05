@@ -1,31 +1,56 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useContext, useEffect } from "react";
 import { View, ScrollView, Pressable } from "react-native";
 import { useTheme } from "react-native-paper";
-import { SortDirection, Predicates } from "aws-amplify";
 import { TabView, TabBar } from "react-native-tab-view";
-import { Teams, Users, StandingsTeams, StandingsPeople } from "../../models";
 import { ActivityIndicator, Text } from "../../components";
-import { DataStore } from "../../utils";
 import { StandingsTeamRow, StandingsPersonRow } from "../../containers";
+import { DataContext } from "../../contexts";
 import { calcDimensions } from "../../styles";
 import styles from "./StandingsScreenStyles";
 
 const StandingsScreen = () => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-  const [users, setUsers] = useState([]);
-  const [teams, setTeams] = useState([]);
-  const [standingsTeams, setStandingsTeams] = useState([]);
-  const [standingsPeople, setStandingsPeople] = useState([]);
   const [index, setIndex] = useState(0);
+  const [sortedStandingsPeople, setSortedStandingsPeople] = useState([]);
   const routes = [
     { key: "teams", title: "Teams" },
     { key: "campers", title: "Campers" },
   ];
   const dimensions = calcDimensions();
+  const { allUsers, allTeams, allStandingsPeople, allStandingsTeams } = useContext(DataContext);
+
+  useEffect(() => {
+    if(allUsers.length > 0 && allStandingsPeople.length > 0) {
+      const allStandingsPeopleWithNames = allStandingsPeople.map((s) => {
+        const user = allUsers.find((u) => u.id === s.userId);
+        if (!user) {
+          return null;
+        }
+        return {
+          ...s,
+          name: user.name,
+        };
+      });
+      // If a user was deleted they still exist in standings, this removes them
+      const activeUsers = allStandingsPeopleWithNames.filter((s) => s?.name);
+      
+      // sort by: points (desc), gamesPlayed (desc), name (asc)
+      const sortedStandingsPeople = activeUsers.sort((a, b) => {
+        if (a.points === b.points) {
+          if (a.gamesPlayed === b.gamesPlayed) {
+            return a.name > b.name ? 1 : -1;
+          }
+          return b.gamesPlayed - a.gamesPlayed;
+        }
+        return b.points - a.points;
+      });
+      setSortedStandingsPeople(sortedStandingsPeople);
+    }
+  }, [allUsers, allStandingsPeople])
 
   const renderScene = ({ route }) => {
-    if(standingsTeams.length === 0 || standingsPeople.length === 0) {
+    if(allStandingsTeams.length === 0 || sortedStandingsPeople.length === 0) {
       return(
         <View style={ss.pageWrapper}>
           <View style={ss.pageActivityIndicatorWrapper}>
@@ -43,8 +68,8 @@ const StandingsScreen = () => {
           style={{ flex: 1, width: "100%" }}
         >
           {route.key === "teams" &&
-            standingsTeams.map((s, index) => {
-              const team = teams.find((t) => t.id === s.teamId);
+            allStandingsTeams.map((s, index) => {
+              const team = allTeams.find((t) => t.id === s.teamId);
               if (!team) {
                 return null;
               }
@@ -59,20 +84,16 @@ const StandingsScreen = () => {
                   teamColor={team.colorCode}
                   description={team.description}
                   points={s.points}
-                  allUsers={users}
-                  allTeams={teams}
-                  allStandingsTeams={standingsTeams}
-                  allStandingsPeople={standingsPeople}
                 />
               );
             })}
           {route.key === "campers" &&
-            standingsPeople.map((s, index) => {
-              const user = users.find((u) => u.id === s.userId);
+            sortedStandingsPeople.map((s, index) => {
+              const user = allUsers.find((u) => u.id === s.userId);
               if (!user) {
                 return null;
               }
-              const team = teams.find((t) => t.id === user.teamId);
+              const team = allTeams.find((t) => t.id === user.teamId);
               if (!team) {
                 return null;
               }
@@ -93,97 +114,12 @@ const StandingsScreen = () => {
     );
   };
 
-  useEffect(() => {
-    const teamsStandingsSubscription = DataStore.observeQuery(
-      StandingsTeams,
-      Predicates.ALL,
-      {
-        sort: (s) => s.rank(SortDirection.ASCENDING),
-      }
-    ).subscribe(({ items }) => {
-      // if (JSON.stringify(items) !== JSON.stringify(standingsTeams)) {
-        // Make sure it's not a change to a different Post
-        setStandingsTeams(items);
-      // }
-    });
-
-    const usersStandingsSubscription = DataStore.observeQuery(
-      StandingsPeople,
-      Predicates.ALL,
-      {
-        sort: (s) => s.rank(SortDirection.ASCENDING),
-      }
-    ).subscribe(({ items }) => {
-      // if (JSON.stringify(items) !== JSON.stringify(standingsPeople)) {
-        // Make sure it's not a change to a different Post
-        setStandingsPeople(items);
-      // }
-    });
-
-    const usersSubscription = DataStore.observeQuery(Users).subscribe(
-      ({ items }) => {
-        try {
-          if (items) {
-            const newUsers = items.map((u) => {
-              return {
-                id: u.id,
-                name: u.name,
-                image: u.image ? JSON.parse(u.image) : undefined,
-                teamId: u.teamsID,
-              };
-            });
-
-            // Quick check to make sure we're only updating state if the subscription caught a chance to the user associated with this post
-            // if (JSON.stringify(newUsers) !== JSON.stringify(users)) {
-              setUsers(newUsers);
-            // }
-          }
-        } catch (err) {
-          console.log("error fetching Data", err);
-        }
-      }
-    );
-
-    const teamsSubscription = DataStore.observeQuery(Teams).subscribe(
-      ({ items }) => {
-        try {
-          if (items) {
-            // Quick check to make sure we're only updating state if the subscription caught a chance to the user associated with this post
-            // if (JSON.stringify(items) !== JSON.stringify(teams)) {
-              setTeams(items);
-            // }
-          }
-        } catch (err) {
-          console.log("error fetching Data", err);
-        }
-      }
-    );
-
-    return () => {
-      teamsStandingsSubscription.unsubscribe();
-      usersStandingsSubscription.unsubscribe();
-      usersSubscription.unsubscribe();
-      teamsSubscription.unsubscribe();
-    };
-  }, []);
-
-  // if (
-  //   users.length === 0 ||
-  //   teams.length === 0 ||
-  //   standingsTeams.length === 0 ||
-  //   standingsPeople.length === 0
-  // ) {
-  //   return (
-  //     <View style={ss.pageWrapper}>
-  //       <View style={ss.pageActivityIndicatorWrapper}>
-  //         <ActivityIndicator size={60} />
-  //       </View>
-  //     </View>
-  //   );
-  // }
+  // console.log('-- Number of Teams --', teams.length);
+  // console.log('-- Number of Users --', users.length);
+  // console.log('-- Number of Team Standings --', standingsTeams.length);
+  // console.log('-- Number of People Standings --', standingsPeople.length);
 
   return (
-    // <View style={ss.pageWrapper}>
     <TabView
       navigationState={{ index, routes }}
       renderScene={renderScene}
@@ -231,7 +167,6 @@ const StandingsScreen = () => {
         />
       )}
     />
-    // </View>
   );
 };
 

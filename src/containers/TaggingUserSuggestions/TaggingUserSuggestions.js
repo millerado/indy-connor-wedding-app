@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { View, ScrollView, Pressable } from "react-native";
-import { useTheme } from "react-native-paper";
 import {
   Avatar,
   Text,
@@ -9,7 +8,6 @@ import {
 import { typography } from "../../styles";
 
 const TaggingUserSuggestions = (keyword, onSuggestionPress, allUsers) => {
-  const theme = useTheme();
   // Weird fix up here to avoid screen flicker/flash
   // BUG: undefined on the first call, the correct string (fx "ma") on the second call
   // console.log(keyword)
@@ -21,19 +19,12 @@ const TaggingUserSuggestions = (keyword, onSuggestionPress, allUsers) => {
     return () => clearTimeout(timeout);
   }, [keyword]);
 
-  if (calmKeyword == null || allUsers.length === 0) {
+  if (calmKeyword == null || allUsers?.length === 0) {
     return null;
   }
   // End of weird fix up here to avoid screen flicker/flash
-  const fixedUserIds = allUsers.map((user) => {
-    return ({
-      id: user.id,
-      name: user.name,
-      image: user.image ? JSON.parse(user.image) : undefined,
-    })
-  });
 
-  const filteredUsers = fixedUserIds.filter(user => user.name.toLocaleLowerCase().includes(calmKeyword.toLocaleLowerCase()));
+  const filteredUsers = allUsers.filter(user => user.name.toLocaleLowerCase().includes(calmKeyword.toLocaleLowerCase()));
   return (
     <ScrollView keyboardShouldPersistTaps='handled' style={{ maxHeight: (typography.fontSizeM * 2 * Math.min(5, filteredUsers.length)) + (Math.min(5, filteredUsers.length) * 10) + 10 }}>
       {filteredUsers

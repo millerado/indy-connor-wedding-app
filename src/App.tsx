@@ -6,7 +6,21 @@ import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
-import { syncExpression } from 'aws-amplify';
+import { API, graphqlOperation, Hub } from "aws-amplify";
+import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
+import { 
+  onCreatePosts, onUpdatePosts, onDeletePosts,
+  onCreateUsers, onUpdateUsers, onDeleteUsers,
+  onCreateAdminFavorites, onUpdateAdminFavorites, onDeleteAdminFavorites,
+  onCreateComments, onUpdateComments, onDeleteComments,
+  onCreateReactions, onUpdateReactions, onDeleteReactions,
+  onCreateFAQ, onUpdateFAQ, onDeleteFAQ,
+  onCreateSchedule, onUpdateSchedule, onDeleteSchedule,
+  onCreateGames, onUpdateGames, onDeleteGames,
+  onCreateTeams, onUpdateTeams, onDeleteTeams,
+  onCreateStandingsPeople, onUpdateStandingsPeople, onDeleteStandingsPeople,
+  onCreateStandingsTeams, onUpdateStandingsTeams, onDeleteStandingsTeams,
+} from "./graphql/subscriptions";
 import { lightTheme, darkTheme } from "./styles";
 import {
   ThemeContext,
@@ -14,12 +28,12 @@ import {
   DefaultSnackbar,
   AuthContext,
   UnauthedUser,
-  NotificationContext,
-  DefaultNotification,
+  DataContext,
 } from "./contexts";
 import { WelcomeScreen } from './screens';
-import { Users, ScheduledNotifications, Notifications as NotificationsModel } from "./models";
-import { registerForPushNotificationsAsync, DataStore } from "./utils";
+import { Users } from "./models";
+import { registerForPushNotificationsAsync } from "./utils";
+import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions, loadFaqs, loadSchedule, loadGames, loadTeams, loadStandingsPeople, loadStandingsTeams } from "./services";
 import AuthedApp from "./AuthedApp";
 
 const customFonts = {
@@ -57,9 +71,21 @@ const App = () => {
   const [authStatus, setAuthStatus] = useState(UnauthedUser);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarDetails, setSnackbarDetails] = useState(DefaultSnackbar);
-  const [notificationDetails, setNotificationDetails] = useState(DefaultNotification);
+  const [notificationDetails, setNotificationDetails] = useState({ totalNotifications: 0, unreadNotifications: 0, allNotifications: [] });
+  const [allPosts, setAllPosts] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+  const [allAdminFavorites, setAllAdminFavorites] = useState([]);
+  const [allComments, setAllComments] = useState([]);
+  const [allReactions, setAllReactions] = useState([]);
+  const [allFaqs, setAllFaqs] = useState([]);
+  const [allSchedule, setAllSchedule] = useState([]);
+  const [allGames, setAllGames] = useState([]);
+  const [allTeams, setAllTeams] = useState([]);
+  const [allStandingsPeople, setAllStandingsPeople] = useState([]);
+  const [allStandingsTeams, setAllStandingsTeams] = useState([]);
   const responseListener = useRef();
   const nav = useRef();
+  const priorConnectionState = useRef(undefined);
 
   // Pieces for the Theme Context
   const theme = themeName === "Dark" ? darkTheme : lightTheme;
@@ -73,23 +99,22 @@ const App = () => {
   const setUser = async (newUser: Users) => {
     const { id, name, image, about, admin, teamsID } = newUser;
     // console.log('-- Set User --', newUser);
-    if(id && id !== authStatus.userId) {
-      // console.log('-- User Change, Reset Datastore Stuff --');
-      // await DataStore.clear();
-      await DataStore.stop();
-      DataStore.configure({
-        syncExpressions: [
-          syncExpression(NotificationsModel, () => {
-            return n => n.userId.eq(id);
-          }),
-          syncExpression(ScheduledNotifications, () => {
-            return n => n.userId.eq(id);
-          }),
-        ]
-      });
-    } else {
-      DataStore.clear();
-    }
+    // if(id && id !== authStatus.userId) {
+    //   // console.log('-- User Change, Reset Datastore Stuff --');
+    //   // await DataStore.clear();
+    //   await DataStore.stop();
+    //   await DataStore.configure({
+    //     syncExpressions: [
+    //       syncExpression(NotificationsModel, () => {
+    //         return n => n.userId.eq(id);
+    //       }),
+    //       syncExpression(ScheduledNotifications, () => {
+    //         return n => n.userId.eq(id);
+    //       }),
+    //     ]
+    //   });
+    //   DataStore.start();
+    // }
 
     setAuthStatus({
       isAuthed: true,
@@ -133,6 +158,32 @@ const App = () => {
     setSnackbarDetails(DefaultSnackbar);
   };
 
+  // Hub.listen("api", (data: any) => {
+  //   const { payload } = data;
+  //   if ( payload.event === CONNECTION_STATE_CHANGE ) {
+  //     if (priorConnectionState.current === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
+  //       console.log('-- Refresh from Connection (all data) --', payload.data.connectionState, priorConnectionState.current);
+  //       onRefresh();
+  //     }
+  //     priorConnectionState.current = payload.data.connectionState;
+  //   }
+  // });
+
+  const onRefresh = async () => {
+    loadPosts(setAllPosts, allPosts);
+    loadUsers(setAllUsers, allUsers);
+    loadAdminFavorites(setAllAdminFavorites, allAdminFavorites);
+    loadComments(setAllComments, undefined, allComments);
+    loadReactions(setAllReactions, undefined, allReactions);
+    loadFaqs(setAllFaqs, allFaqs);
+    loadSchedule(setAllSchedule, allSchedule);
+    loadGames(setAllGames, allGames);
+    loadTeams(setAllTeams, allTeams);
+    loadStandingsPeople(setAllStandingsPeople, allStandingsPeople);
+    loadStandingsTeams(setAllStandingsTeams, allStandingsTeams);
+  }
+
+  // Fetch user and prepare the app
   useEffect(() => {
     const fetchCurrentTheme = async () => {
       try {
@@ -154,17 +205,17 @@ const App = () => {
           registerForPushNotificationsAsync(userId);
 
           // await DataStore.clear();
-          await DataStore.stop();
-          DataStore.configure({
-            syncExpressions: [
-              syncExpression(NotificationsModel, () => {
-                return n => n.userId.eq(userId);
-              }),
-              syncExpression(ScheduledNotifications, () => {
-                return n => n.userId.eq(userId);
-              }),
-            ]
-          });
+          // await DataStore.stop();
+          // DataStore.configure({
+          //   syncExpressions: [
+          //     syncExpression(NotificationsModel, () => {
+          //       return n => n.userId.eq(userId);
+          //     }),
+          //     syncExpression(ScheduledNotifications, () => {
+          //       return n => n.userId.eq(userId);
+          //     }),
+          //   ]
+          // });
         }
       } catch (e) {
         console.log("error fetching current theme", e);
@@ -188,8 +239,276 @@ const App = () => {
     prepare();
     fetchCurrentTheme();
     fetchCurrentUser();
+
+    // The listener for Notification Clicks, aka Notifications deep linking
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      const { targetType, id } = response.notification.request.content.data;
+      // console.log('-- Notification Target and ID --', targetType, id);
+      if(targetType) { // Only worrying about linking if it's pointing somewhere
+        if(targetType === 'post' && id) {
+          // Push to a View Post
+          nav.current.navigate('View Post', {
+            postsID: id,
+          });
+        } else if (targetType === 'user' && id) {
+          // Push to a User View
+          nav.current.navigate('User', {
+            userId: id,
+          });
+        } else if (targetType === 'alert') {
+          nav.current.navigate('Notifications', {});
+        } else if (targetType === 'guestbook') {
+          nav.current.navigate('Create Post', {});
+        }
+      }
+    });
+
+    return () => {
+      // We *only* need this if we're going to track a state (redux or otherwise) of all notifications. Otherwise this isn't needed
+      // Notifications.removeNotificationSubscription(notificationListener);
+      // This checks for notification clicks with the app open
+      Notifications.removeNotificationSubscription(responseListener);
+    };
   }, []);
 
+  // Manage data subscriptions throughout app
+  useEffect(() => {
+    const postCreateSub = API.graphql(
+      graphqlOperation(onCreatePosts)
+    ).subscribe({
+      next: ({ value }) => loadPosts(setAllPosts, allPosts),
+    });
+    
+    const postUpdateSub = API.graphql(
+      graphqlOperation(onUpdatePosts)
+    ).subscribe({
+      next: ({ value }) => loadPosts(setAllPosts, allPosts)
+    });
+    
+    const postDeleteSub = API.graphql(
+      graphqlOperation(onDeletePosts)
+    ).subscribe({
+      next: ({ value }) => loadPosts(setAllPosts, allPosts)
+    });
+
+    const userCreateSub = API.graphql(
+      graphqlOperation(onCreateUsers)
+    ).subscribe({
+      next: ({ value }) => loadUsers(setAllUsers, allUsers),
+    });
+
+    const userUpdateSub = API.graphql(
+      graphqlOperation(onUpdateUsers)
+    ).subscribe({
+      next: ({ value }) => loadUsers(setAllUsers, allUsers)
+    });
+
+    const userDeleteSub = API.graphql(
+      graphqlOperation(onDeleteUsers)
+    ).subscribe({
+      next: ({ value }) => loadUsers(setAllUsers, allUsers)
+    });
+
+    const adminFavoriteCreateSub = API.graphql(
+      graphqlOperation(onCreateAdminFavorites)
+    ).subscribe({
+      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites),
+    });
+
+    const adminFavoriteUpdateSub = API.graphql(
+      graphqlOperation(onUpdateAdminFavorites)
+    ).subscribe({
+      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites)
+    });
+
+    const adminFavoriteDeleteSub = API.graphql(
+      graphqlOperation(onDeleteAdminFavorites)
+    ).subscribe({
+      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites)
+    });
+
+    const commentCreateSub = API.graphql(
+      graphqlOperation(onCreateComments)
+    ).subscribe({
+      next: ({ value }) => loadComments(setAllComments, undefined, allComments),
+    });
+
+    const commentUpdateSub = API.graphql(
+      graphqlOperation(onUpdateComments)
+    ).subscribe({
+      next: ({ value }) => loadComments(setAllComments, undefined, allComments)
+    });
+
+    const commentDeleteSub = API.graphql(
+      graphqlOperation(onDeleteComments)
+    ).subscribe({
+      next: ({ value }) => loadComments(setAllComments, undefined, allComments)
+    });
+
+    const reactionsCreateSub = API.graphql(
+      graphqlOperation(onCreateReactions)
+    ).subscribe({
+      next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions),
+    });
+
+    const reactionsUpdateSub = API.graphql(
+      graphqlOperation(onUpdateReactions)
+    ).subscribe({
+      next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions)
+    });
+
+    const reactionsDeleteSub = API.graphql(
+      graphqlOperation(onDeleteReactions)
+    ).subscribe({
+      next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions)
+    });
+
+    const faqsCreateSub = API.graphql(
+      graphqlOperation(onCreateFAQ)
+    ).subscribe({
+      next: ({ value }) => loadFaqs(setAllFaqs, allFaqs),
+    });
+
+    const faqsUpdateSub = API.graphql(
+      graphqlOperation(onUpdateFAQ)
+    ).subscribe({
+      next: ({ value }) => loadFaqs(setAllFaqs, allFaqs)
+    });
+
+    const faqsDeleteSub = API.graphql(
+      graphqlOperation(onDeleteFAQ)
+    ).subscribe({
+      next: ({ value }) => loadFaqs(setAllFaqs, allFaqs)
+    });
+
+    const scheduleCreateSub = API.graphql(
+      graphqlOperation(onCreateSchedule)
+    ).subscribe({
+      next: ({ value }) => loadSchedule(setAllSchedule, allSchedule),
+    });
+
+    const scheduleUpdateSub = API.graphql(
+      graphqlOperation(onUpdateSchedule)
+    ).subscribe({
+      next: ({ value }) => loadSchedule(setAllSchedule, allSchedule)
+    });
+
+    const scheduleDeleteSub = API.graphql(
+      graphqlOperation(onDeleteSchedule)
+    ).subscribe({
+      next: ({ value }) => loadSchedule(setAllSchedule, allSchedule)
+    });
+
+    const gamesCreateSub = API.graphql(
+      graphqlOperation(onCreateGames)
+    ).subscribe({
+      next: ({ value }) => loadGames(setAllGames, allGames),
+    });
+
+    const gamesUpdateSub = API.graphql(
+      graphqlOperation(onUpdateGames)
+    ).subscribe({
+      next: ({ value }) => loadGames(setAllGames, allGames)
+    });
+
+    const gamesDeleteSub = API.graphql(
+      graphqlOperation(onDeleteGames)
+    ).subscribe({
+      next: ({ value }) => loadGames(setAllGames, allGames)
+    });
+
+    const teamsCreateSub = API.graphql(
+      graphqlOperation(onCreateTeams)
+    ).subscribe({
+      next: ({ value }) => loadTeams(setAllTeams, allTeams),
+    });
+
+    const teamsUpdateSub = API.graphql(
+      graphqlOperation(onUpdateTeams)
+    ).subscribe({
+      next: ({ value }) => loadTeams(setAllTeams, allTeams)
+    });
+
+    const teamsDeleteSub = API.graphql(
+      graphqlOperation(onDeleteTeams)
+    ).subscribe({
+      next: ({ value }) => loadTeams(setAllTeams, allTeams)
+    });
+
+    const standingsPeopleCreateSub = API.graphql(
+      graphqlOperation(onCreateStandingsPeople)
+    ).subscribe({
+      next: ({ value }) => loadStandingsPeople(setAllStandingsPeople, allStandingsPeople),
+    });
+
+    const standingsPeopleUpdateSub = API.graphql(
+      graphqlOperation(onUpdateStandingsPeople)
+    ).subscribe({
+      next: ({ value }) => loadStandingsPeople(setAllStandingsPeople, allStandingsPeople)
+    });
+
+    const standingsPeopleDeleteSub = API.graphql(
+      graphqlOperation(onDeleteStandingsPeople)
+    ).subscribe({
+      next: ({ value }) => loadStandingsPeople(setAllStandingsPeople, allStandingsPeople)
+    });
+
+    const standingsTeamsCreateSub = API.graphql(
+      graphqlOperation(onCreateStandingsTeams)
+    ).subscribe({
+      next: ({ value }) => loadStandingsTeams(setAllStandingsTeams, allStandingsTeams),
+    });
+
+    const standingsTeamsUpdateSub = API.graphql(
+      graphqlOperation(onUpdateStandingsTeams)
+    ).subscribe({
+      next: ({ value }) => loadStandingsTeams(setAllStandingsTeams, allStandingsTeams)
+    });
+
+    const standingsTeamsDeleteSub = API.graphql(
+      graphqlOperation(onDeleteStandingsTeams)
+    ).subscribe({
+      next: ({ value }) => loadStandingsTeams(setAllStandingsTeams, allStandingsTeams)
+    });
+
+    onRefresh();
+
+    return () => {
+      postCreateSub.unsubscribe();
+      postUpdateSub.unsubscribe();
+      postDeleteSub.unsubscribe();
+      userCreateSub.unsubscribe();
+      userUpdateSub.unsubscribe();
+      userDeleteSub.unsubscribe();
+      adminFavoriteCreateSub.unsubscribe();
+      adminFavoriteUpdateSub.unsubscribe();
+      adminFavoriteDeleteSub.unsubscribe();
+      commentCreateSub.unsubscribe();
+      commentUpdateSub.unsubscribe();
+      commentDeleteSub.unsubscribe();
+      reactionsCreateSub.unsubscribe();
+      reactionsUpdateSub.unsubscribe();
+      reactionsDeleteSub.unsubscribe();
+      faqsCreateSub.unsubscribe();
+      faqsUpdateSub.unsubscribe();
+      faqsDeleteSub.unsubscribe();
+      scheduleCreateSub.unsubscribe();
+      scheduleUpdateSub.unsubscribe();
+      scheduleDeleteSub.unsubscribe();
+      gamesCreateSub.unsubscribe();
+      gamesUpdateSub.unsubscribe();
+      gamesDeleteSub.unsubscribe();
+      teamsCreateSub.unsubscribe();
+      teamsUpdateSub.unsubscribe();
+      teamsDeleteSub.unsubscribe();
+      standingsPeopleCreateSub.unsubscribe();
+      standingsPeopleUpdateSub.unsubscribe();
+      standingsPeopleDeleteSub.unsubscribe();
+      standingsTeamsCreateSub.unsubscribe();
+      standingsTeamsUpdateSub.unsubscribe();
+      standingsTeamsDeleteSub.unsubscribe();
+    }
+  }, []);
 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
@@ -206,12 +525,37 @@ const App = () => {
     return null;
   }
 
+  const updateNotifications = (totalNotifications, unreadNotifications, allNotifications) => {
+    setNotificationDetails({
+      totalNotifications,
+      unreadNotifications,
+      allNotifications
+    });
+  }
+
   return (
     <ThemeContext.Provider value={{ themeName, setThemeName: saveTheme }}>
       <AuthContext.Provider value={{ authStatus, setAuthStatus: setUser }}>
-        <NotificationContext.Provider value={{ notificationDetails, setNotificationDetails }}>
-          <NavigationContainer ref={nav}>
-            <PaperProvider theme={theme}>
+        <NavigationContainer ref={nav}>
+          <PaperProvider theme={theme}>
+            <DataContext.Provider value={{ 
+              refreshData: onRefresh, 
+              allUsers, 
+              allComments, 
+              allAdminFavorites,
+              allReactions,
+              allPosts,
+              allFaqs,
+              allSchedule,
+              allGames,
+              allTeams,
+              allStandingsPeople,
+              allStandingsTeams,
+              setNotifications: updateNotifications, 
+              totalNotifications: notificationDetails.totalNotifications, 
+              unreadNotifications: notificationDetails.unreadNotifications, 
+              allNotifications: notificationDetails.allNotifications
+            }}>
               <SnackbarContext.Provider
                 value={{ snackbar: snackbarDetails, setSnackbar }}
               >
@@ -227,9 +571,9 @@ const App = () => {
                   )}
                 </View>
               </SnackbarContext.Provider>
-            </PaperProvider>
-          </NavigationContainer>
-        </NotificationContext.Provider>
+            </DataContext.Provider>
+          </PaperProvider>
+        </NavigationContainer>
       </AuthContext.Provider>
     </ThemeContext.Provider>
   );

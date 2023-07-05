@@ -2,7 +2,7 @@ import React, { memo, useState, useEffect, useContext, useMemo } from "react";
 import { View, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Dialog, Portal, Menu, useTheme } from "react-native-paper";
-import { Comments, Users } from "../../models";
+import { Comments } from "../../models";
 import {
   Avatar,
   Divider,
@@ -21,7 +21,7 @@ import styles from "./SingleCommentStyles";
 const SingleComment = (props) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-  const { numberOfLines, comment } = props;
+  const { numberOfLines, comment, allUsers } = props;
   if (!comment) {
     return null;
   }
@@ -86,36 +86,14 @@ const SingleComment = (props) => {
     setDeleteDialogVisible(false);
   };
 
-  const fetchUser = async () => {
-    // await DataStore.stop();
-    const user = await DataStore.query(Users, comment.userId);
-    if (user) {
-      const newUser = {
-        id: user.id,
-        name: user.name,
-        image: user.image ? JSON.parse(user.image) : undefined,
-      };
-      // Quick check to make sure we're only updating state if the subscription caught a chance to the user associated with this post
-      if (newUser !== commentUser) {
-        setCommentUser(newUser);
+  useEffect(() => {
+    if (comment.userId && allUsers.length > 0) {
+      const user = allUsers.find((user) => user.id === comment.userId);
+      if (user) {
+        setCommentUser(user);
       }
     }
-  };
-
-  useEffect(() => {
-    // Subscribe to Users
-    const usersSubscription = DataStore.observe(Users).subscribe((u) => {
-      fetchUser();
-    });
-
-    if (comment.userId) {
-      fetchUser();
-    }
-
-    return () => {
-      usersSubscription.unsubscribe();
-    };
-  }, [comment.userId]);
+  }, [comment.userId, allUsers]);
 
   if (commentUser.id) {
     return (

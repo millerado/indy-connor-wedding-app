@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo } from 'react';
 import { View, FlatList, Platform, Pressable, ImageBackground } from 'react-native';
 import { useTheme } from 'react-native-paper';
-import { FAQ } from '../../models';
 import { Divider, ActivityIndicator, TextInput, Icon } from '../../components';
 import { FAQModal, FAQItem } from '../../containers';
 import { calcDimensions } from '../../styles';
-import { DataStore } from '../../utils';
-import { AuthContext } from '../../contexts';
+import { AuthContext, DataContext } from '../../contexts';
 import styles from './InfoScreenStyles';
 const resortMap = require('../../assets/images/rmmcMap.png');
 
 const InfoScreen = ({ navigation, route }) => {
   const [FAQData, setFAQData] = useState([]);
-  const [allFAQData, setAllFAQData] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -20,6 +17,7 @@ const InfoScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const authStatus = useContext(AuthContext).authStatus;
+  const { refreshData, allFaqs } = useContext(DataContext);
   const dimensions = calcDimensions();
 
   const closeModal = () => {
@@ -110,6 +108,19 @@ const InfoScreen = ({ navigation, route }) => {
     )
   }
 
+  const onRefresh = () => {
+    refreshData();
+  }
+
+  useEffect(() => {
+    if(allFaqs.length > 0) {
+      if (dataLoading || searchTerm === '') {
+        setFAQData(allFaqs);
+      }
+      setDataLoading(false);
+    }
+  }, [allFaqs]);
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => authStatus?.isAdmin ? addNewButton() : null,
@@ -117,43 +128,23 @@ const InfoScreen = ({ navigation, route }) => {
   }, [authStatus, theme]);
 
   useEffect(() => {
-    if (allFAQData !== FAQData && searchTerm !== '') {
-      setFAQData(allFAQData);
+    if (allFaqs !== FAQData && searchTerm !== '') {
+      setFAQData(allFaqs);
     } else if (searchTerm === '') {
-      setFAQData(allFAQData);
+      setFAQData(allFaqs);
     }
-  }, [allFAQData, searchTerm]);
+  }, [allFaqs, searchTerm]);
 
   useEffect(() => {
     // Search FAQ Question and Answer for search terms
     if (searchTerm !== '') {
-      const searchResults = allFAQData.filter(item => {
+      const searchResults = allFaqs.filter(item => {
         return item.question.toLowerCase().includes(searchTerm.toLowerCase()) || item.answer.toLowerCase().includes(searchTerm.toLowerCase());
       }
       );
       setFAQData(searchResults);
     }
   }, [searchTerm]);
-
-  useEffect(() => {
-    const subscription = DataStore.observeQuery(FAQ).subscribe(({ items }) => {
-      try {
-        items.sort((a, b) => a.sortOrder - b.sortOrder);
-        if (dataLoading || searchTerm === '') {
-          setFAQData(items);
-        }
-        // if(JSON.stringify(items) !== JSON.stringify(allFAQData)) {
-          setAllFAQData(items);
-        // }
-        if (dataLoading) {
-          setDataLoading(false);
-        }
-        // console.log('-- Fetched Data --', dt);
-      } catch (err) { console.log('error fetching Data', err) }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   return (
     <View style={ss.pageWrapper}>
@@ -171,7 +162,9 @@ const InfoScreen = ({ navigation, route }) => {
         maxToRenderPerBatch={10} // Also the default
         initialNumToRender={10} // Also the default
         contentContainerStyle={{ flexGrow: 1 }}
-        ListEmptyComponent={listEmptyComponent}  
+        ListEmptyComponent={listEmptyComponent}
+        onRefresh={onRefresh}
+        refreshing={false}
       />
     </View>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useContext, useCallback } from "react";
-import { View, ScrollView, SafeAreaView, FlatList } from "react-native";
+import { View, ScrollView, SafeAreaView, FlatList, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { appPasscode } from "../../../appConfig";
@@ -234,8 +234,8 @@ const WelcomeScreen = () => {
           </View>
           <View style={{ paddingTop: 10 }}>
             <Text size={TextSizes.L}>
-              This app is in the public iOS and Android store, so we need this
-              passcode to ensure only guests of our wedding can access the content
+              This app is in the public {Platform.OS === "android" ? 'Android Play Store' : 'iOS App Store'}, so we need this
+              passcode to ensure only guests of our wedding can access the content.
             </Text>
           </View>
         </ScrollView>

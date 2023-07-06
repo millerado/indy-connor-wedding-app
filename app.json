@@ -21,7 +21,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.connortyrrell.campconndigo",
-      "buildNumber": "1.0.8"
+      "buildNumber": "6"
     },
     "android": {
       "adaptiveIcon": {
@@ -30,7 +30,7 @@
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.connortyrrell.campconndigo",
-      "versionCode": 5,
+      "versionCode": 6,
       "permissions": [
         "android.permission.NOTIFICATIONS",
         "android.permission.CAMERA",

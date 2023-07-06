@@ -36,7 +36,7 @@ const StandingsScreen = () => {
       const activeUsers = allStandingsPeopleWithNames.filter((s) => s?.name);
       
       // sort by: points (desc), gamesPlayed (desc), name (asc)
-      const sortedStandingsPeople = activeUsers.sort((a, b) => {
+      const newStandingsPeople = activeUsers.sort((a, b) => {
         if (a.points === b.points) {
           if (a.gamesPlayed === b.gamesPlayed) {
             return a.name > b.name ? 1 : -1;
@@ -45,9 +45,11 @@ const StandingsScreen = () => {
         }
         return b.points - a.points;
       });
-      setSortedStandingsPeople(sortedStandingsPeople);
+      if(JSON.stringify(newStandingsPeople) !== JSON.stringify(sortedStandingsPeople)) {
+        setSortedStandingsPeople(newStandingsPeople);
+      }
     }
-  }, [allUsers, allStandingsPeople])
+  }, [allUsers, allStandingsPeople]);
 
   const renderScene = ({ route }) => {
     if(allStandingsTeams.length === 0 || sortedStandingsPeople.length === 0) {

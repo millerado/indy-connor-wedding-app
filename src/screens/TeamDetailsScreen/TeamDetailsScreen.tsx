@@ -138,8 +138,33 @@ const TeamDetailsScreen = ({ route }) => {
         setTeamUserIds(userIds);
       }
       const oneTeamStandings = allStandingsPeople.filter((s) => userIds.includes(s.userId));
-      if(JSON.stringify(oneTeamStandings) !== JSON.stringify(standingsPeople)) {
-        setStandingsPeople(oneTeamStandings);
+
+      const allStandingsPeopleWithNames = oneTeamStandings.map((s) => {
+        const user = allUsers.find((u) => u.id === s.userId);
+        if (!user) {
+          return null;
+        }
+        return {
+          ...s,
+          name: user.name,
+        };
+      });
+      // If a user was deleted they still exist in standings, this removes them
+      const activeUsers = allStandingsPeopleWithNames.filter((s) => s?.name);
+      
+      // sort by: points (desc), gamesPlayed (desc), name (asc)
+      const sortedStandingsPeople = activeUsers.sort((a, b) => {
+        if (a.points === b.points) {
+          if (a.gamesPlayed === b.gamesPlayed) {
+            return a.name > b.name ? 1 : -1;
+          }
+          return b.gamesPlayed - a.gamesPlayed;
+        }
+        return b.points - a.points;
+      });
+
+      if(JSON.stringify(sortedStandingsPeople) !== JSON.stringify(standingsPeople)) {
+        setStandingsPeople(sortedStandingsPeople);
       }
     }
   }, [allUsers, allStandingsPeople]);

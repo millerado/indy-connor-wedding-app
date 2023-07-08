@@ -283,7 +283,7 @@ export const savePushTokenAsync = async (token, userId) => {
   }
 
   if (needsToSaveNew) {
-    console.log('Saving new token')
+    // console.log('Saving new token')
     await DataStore.save(
       new ExpoTokens({
         token,

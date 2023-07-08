@@ -2,7 +2,7 @@
   "expo": {
     "name": "Conndigo",
     "slug": "camp-conndigo",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -21,7 +21,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.connortyrrell.campconndigo",
-      "buildNumber": "6"
+      "buildNumber": "7"
     },
     "android": {
       "adaptiveIcon": {
@@ -30,7 +30,7 @@
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.connortyrrell.campconndigo",
-      "versionCode": 6,
+      "versionCode": 7,
       "permissions": [
         "android.permission.NOTIFICATIONS",
         "android.permission.CAMERA",

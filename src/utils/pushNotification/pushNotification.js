@@ -252,7 +252,7 @@ export const registerForPushNotificationsAsync = async (userId) => {
 };
 
 export const savePushTokenAsync = async (token, userId) => {
-  console.log('-- Save Push Token --', token, userId);
+  // console.log('-- Save Push Token --', token, userId);
   // Legacy code for an app with using the app anonymously. Leaving to make reusing this code later easier
   userId = userId ? userId : "";
 
@@ -261,7 +261,7 @@ export const savePushTokenAsync = async (token, userId) => {
     expoToken.token.eq(token)
   );
 
-  console.log('tokenRecords', tokenRecords.length);
+  // console.log('tokenRecords', tokenRecords.length);
 
   let needsToSaveNew = false;
   if (tokenRecords.length === 1) {

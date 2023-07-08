@@ -88,6 +88,7 @@ const App = () => {
   const responseListener = useRef();
   const nav = useRef();
   const priorConnectionState = useRef(undefined);
+  const lastRefreshTime = useRef(undefined);
 
   // Pieces for the Theme Context
   const theme = themeName === "Dark" ? darkTheme : lightTheme;
@@ -160,18 +161,24 @@ const App = () => {
     setSnackbarDetails(DefaultSnackbar);
   };
 
-  // Hub.listen("api", (data: any) => {
-  //   const { payload } = data;
-  //   if ( payload.event === CONNECTION_STATE_CHANGE ) {
-  //     if (priorConnectionState.current === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
-  //       console.log('-- Refresh from Connection (all data) --', payload.data.connectionState, priorConnectionState.current);
-  //       onRefresh();
-  //     }
-  //     priorConnectionState.current = payload.data.connectionState;
-  //   }
-  // });
+  Hub.listen("api", (data: any) => {
+    const { payload } = data;
+    if ( payload.event === CONNECTION_STATE_CHANGE ) {
+      if (priorConnectionState.current === ConnectionState.Connecting && payload.data.connectionState === ConnectionState.Connected) {
+        // console.log('-- Refresh from Connection (all data) --', payload.data.connectionState, priorConnectionState.current);
+        if(lastRefreshTime.current && (new Date().getTime() - lastRefreshTime.current.getTime()) < 30000) {
+          // console.log('-- And do a refresh --');
+          onRefresh();
+        } else {
+          // console.log('-- But not a refresh --');
+        }
+      }
+      priorConnectionState.current = payload.data.connectionState;
+    }
+  });
 
   const onRefresh = async () => {
+    lastRefreshTime.current = new Date();
     loadPosts(setAllPosts, allPosts);
     loadUsers(setAllUsers, allUsers);
     loadAdminFavorites(setAllAdminFavorites, allAdminFavorites);

@@ -18,7 +18,7 @@ const StandingsPersonRow = (props) => {
   const ss = useMemo(() => styles(theme), [theme]);
   const navigation = useNavigation();
 
-  const { index, user, points, gamesPlayed, teamIcon, showTeamIcon } = props;
+  const { index, user, points, gamesPlayed, teamIcon, showTeamIcon, showRightIcon } = props;
 
   if (!user) {
     return null;
@@ -46,8 +46,8 @@ const StandingsPersonRow = (props) => {
   }
 
   return (
-    <Pressable onPress={() => goToLikingUserScreen(user.id, user?.name, user?.image)} key={index} style={{paddingLeft: showTeamIcon ? 0 : (typography.fontSizeM * 2) + 10}}>
-      {index > 0 && showTeamIcon && <Divider />}
+    <Pressable onPress={() => goToLikingUserScreen(user.id, user?.name, user?.image)} key={index} style={{paddingLeft: showTeamIcon || showRightIcon ? 0 : (typography.fontSizeM * 2) + 10}}>
+      {index > 0 && ( showTeamIcon || showRightIcon ) && <Divider />}
       <View style={ss.rowWrapper}>
         <View style={ss.userWrapper}>
           <Avatar
@@ -68,6 +68,9 @@ const StandingsPersonRow = (props) => {
         </View>
         {showTeamIcon && (
           <Icon name={teamIcon} size={typography.fontSizeM * 2} />
+        )}
+        {showRightIcon && (
+          <Icon name={showRightIcon} size={typography.fontSizeM * 2} />
         )}
       </View>
     </Pressable>

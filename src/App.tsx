@@ -582,10 +582,11 @@ const App = () => {
               allTeams,
               allStandingsPeople,
               allStandingsTeams,
+              allExpoTokens,
               setNotifications: updateNotifications, 
               totalNotifications: notificationDetails.totalNotifications, 
               unreadNotifications: notificationDetails.unreadNotifications, 
-              allNotifications: notificationDetails.allNotifications
+              allNotifications: notificationDetails.allNotifications,
             }}>
               <SnackbarContext.Provider
                 value={{ snackbar: snackbarDetails, setSnackbar }}

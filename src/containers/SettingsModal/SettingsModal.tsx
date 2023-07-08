@@ -58,6 +58,11 @@ const SettingsModal = () => {
     navigation.push("Most Liked Posts");
   }
 
+  const goToLoggedInUsersPage = async () => {
+    closeModal();
+    navigation.push("Logged In Users");
+  }
+
   const goToGamesPage = async () => {
     closeModal();
     navigation.push("Games List");
@@ -140,6 +145,11 @@ const SettingsModal = () => {
                 {authStatus.isAdmin && (
                   <Button onPress={goToMostLikedPage} style={{marginTop: 10}}>
                     Most Liked Posts
+                  </Button>
+                )}
+                {authStatus.isAdmin && (
+                  <Button onPress={goToLoggedInUsersPage} style={{marginTop: 10}}>
+                    See Logged In Users
                   </Button>
                 )}
                 {/* {authStatus.isAdmin && (

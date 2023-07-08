@@ -3,6 +3,7 @@ export { default as GamesScreen } from "./GamesScreen/GamesScreen";
 export { default as ManageGameScreen } from "./ManageGameScreen/ManageGameScreen";
 export { default as HomeScreen } from "./HomeScreen/HomeScreen";
 export { default as InfoScreen } from "./InfoScreen/InfoScreen";
+export { default as LoggedInUsersScreen } from "./LoggedInUsersScreen/LoggedInUsersScreen";
 export { default as MapScreen } from "./MapScreen/MapScreen";
 export { default as MostLikedPostsScreen } from "./MostLikedPostsScreen/MostLikedPostsScreen";
 export { default as NotificationsScreen } from "./NotificationsScreen/NotificationsScreen";

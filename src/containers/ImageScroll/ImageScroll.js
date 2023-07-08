@@ -27,9 +27,6 @@ const ImageScroll = (props) => {
   const [adminFavoritedImages, setAdminFavoritedImages] = useState([]);
 
   const { images, previewMode, doubleTapHandler, singleTapHandler, tapDelay, adminFavorites } = props;
-  if (!images || images.length === 0) {
-    return null;
-  }
 
   // Building a process to intercept double-taps for Admins to like individual Images
   const handleDoubleTap = async (img) => {    
@@ -61,7 +58,7 @@ const ImageScroll = (props) => {
   }
   
   useEffect(() => {
-    if(images.length > 1) {
+    if(images?.length > 1) {
       // Find the image with the highest height/width ratio
       const imageRatios = images.map((image) => {
         return image.height / image.width;
@@ -76,7 +73,7 @@ const ImageScroll = (props) => {
   }, [images]);
 
   useEffect(() => {
-    if(adminFavorites) {
+    if(adminFavorites && images?.length > 0) {
       const adminFavoriteURLs = adminFavorites.map((fav) => fav.url);
       const favoritedImages = images.filter((img) => {
         return adminFavoriteURLs.includes(img.url);
@@ -88,64 +85,70 @@ const ImageScroll = (props) => {
   }, [adminFavorites, images]);
 
   return (
-    <View style={ss.imageWrapper}>
-      <ConditionalWrapper
-        condition={!previewMode}
-        wrapper={(children) => (
-          <ZoomableView maxZoom={10} style={ss.zoomWrapper} height={dimensions.width * (images[0].height / images[0].width)} width={dimensions.width}>{children}</ZoomableView>
-        )}>
-        <ConditionalWrapper
-          condition={images.length > 1}
-          wrapper={(children) => (
-            <ScrollView horizontal pagingEnabled>{children}</ScrollView>
-          )}>
-          {images.map((image, index) => {
-            return (
-              <ConditionalWrapper
-              condition={image.type !== 'video' && doubleTapHandler && singleTapHandler && tapDelay}
-              key={index}
+    <>
+      {!images || images?.length === 0 ? (
+        <></>
+      ) : (
+        <View style={ss.imageWrapper}>
+          <ConditionalWrapper
+            condition={!previewMode}
+            wrapper={(children) => (
+              <ZoomableView maxZoom={10} style={ss.zoomWrapper} height={dimensions.width * (images[0].height / images[0].width)} width={dimensions.width}>{children}</ZoomableView>
+            )}>
+            <ConditionalWrapper
+              condition={images.length > 1}
               wrapper={(children) => (
-                <DoubleTap doubleTap={() => handleDoubleTap(image)} singleTap={singleTapHandler} delay={tapDelay} key={index}>{children}</DoubleTap>
+                <ScrollView horizontal pagingEnabled>{children}</ScrollView>
               )}>
-                {image.type === 'video' ? (
-                  <VideoS3
-                    fileName={image.url}
-                    height={imageDimensions.height || image.height}
-                    width={imageDimensions.width || image.width}
-                    key={index}
-                  />
-                ) : (
-                  <ImageS3
-                    fileName={image.url}
-                    height={imageDimensions.height || image.height}
-                    width={imageDimensions.width || image.width}
-                    multipleImages
-                    key={index}
-                  >
-                    <>
-                      {authStatus.isAdmin && (
-                        <View style={{position: 'absolute', right: 10, top: 10}}>
-                          <Icon name={adminFavoritedImages.includes(image.url) ? "heart" : "heartOutline"} size={24} color={theme.colors.red} />
-                        </View>
-                      )}
-                      {images.length > 1 && (
-                        <View style={ss.imageScrollIndicatorWrapper}>
-                          {images.map((i, idx) => {
-                            return (
-                              <Icon name="circle" size={12} key={idx} color={idx === index ? theme.colors.primary : theme.colors.onPrimary} />
-                            );
-                          })}
-                        </View>
-                      )}
-                    </>
-                  </ImageS3>
-                )}
-              </ConditionalWrapper>
-            );
-          })}
-        </ConditionalWrapper>
-      </ConditionalWrapper>
-    </View>
+              {images.map((image, index) => {
+                return (
+                  <ConditionalWrapper
+                  condition={image.type !== 'video' && doubleTapHandler && singleTapHandler && tapDelay}
+                  key={index}
+                  wrapper={(children) => (
+                    <DoubleTap doubleTap={() => handleDoubleTap(image)} singleTap={singleTapHandler} delay={tapDelay} key={index}>{children}</DoubleTap>
+                  )}>
+                    {image.type === 'video' ? (
+                      <VideoS3
+                        fileName={image.url}
+                        height={imageDimensions.height || image.height}
+                        width={imageDimensions.width || image.width}
+                        key={index}
+                      />
+                    ) : (
+                      <ImageS3
+                        fileName={image.url}
+                        height={imageDimensions.height || image.height}
+                        width={imageDimensions.width || image.width}
+                        multipleImages
+                        key={index}
+                      >
+                        <>
+                          {authStatus.isAdmin && (
+                            <View style={{position: 'absolute', right: 10, top: 10}}>
+                              <Icon name={adminFavoritedImages.includes(image.url) ? "heart" : "heartOutline"} size={24} color={theme.colors.red} />
+                            </View>
+                          )}
+                          {images.length > 1 && (
+                            <View style={ss.imageScrollIndicatorWrapper}>
+                              {images.map((i, idx) => {
+                                return (
+                                  <Icon name="circle" size={12} key={idx} color={idx === index ? theme.colors.primary : theme.colors.onPrimary} />
+                                );
+                              })}
+                            </View>
+                          )}
+                        </>
+                      </ImageS3>
+                    )}
+                  </ConditionalWrapper>
+                );
+              })}
+            </ConditionalWrapper>
+          </ConditionalWrapper>
+        </View>
+      )}
+    </>
   );
 };
 

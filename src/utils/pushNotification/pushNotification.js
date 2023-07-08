@@ -252,29 +252,42 @@ export const registerForPushNotificationsAsync = async (userId) => {
 };
 
 export const savePushTokenAsync = async (token, userId) => {
+  console.log('-- Save Push Token --', token, userId);
   // Legacy code for an app with using the app anonymously. Leaving to make reusing this code later easier
   userId = userId ? userId : "";
 
+  // Change this to GraphQL
   const tokenRecords = await DataStore.query(ExpoTokens, expoToken =>
     expoToken.token.eq(token)
   );
 
-  if (tokenRecords.length === 0) {
-    // if no token record exists for the userId, insert it
-    // this will work for auth'ed user with valid userId
-    // or unauth'ed user with empty userId
+  console.log('tokenRecords', tokenRecords.length);
+
+  let needsToSaveNew = false;
+  if (tokenRecords.length === 1) {
+    if(tokenRecords[0].userId !== userId) {
+      // This token is changing users, delete the old token
+      // console.log('Deleting old token')
+      await DataStore.delete(tokenRecords[0].id);
+      needsToSaveNew = true;
+    }
+  } else if (tokenRecords.length > 1) {
+    // Somehow this token is in the system more than once, delete them all
+    // console.log('Deleting all tokens')
+    await DataStore.delete(ExpoTokens, (t) => t.token.eq(token));
+    needsToSaveNew = true;
+  } else if (tokenRecords.length === 0) {
+    // This token is not in the system, save it
+    // console.log('Need to save new token')
+    needsToSaveNew = true;
+  }
+
+  if (needsToSaveNew) {
+    console.log('Saving new token')
     await DataStore.save(
       new ExpoTokens({
         token,
         userId
-      })
-    );
-  } else if (tokenRecords[0].userId !== userId) {
-    // if token record exists in the DB, but the userId is different
-    // update the userId (aka only one user on this phone)
-    await DataStore.save(
-      ExpoTokens.copyOf(tokenRecords[0], updated => {
-        updated.userId = userId;
       })
     );
   }

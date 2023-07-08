@@ -25,7 +25,7 @@ const loadCommentsFromDatastore = async (setComments, postsID, oldComments) => {
 
 const loadComments = async (setComments, postsID, oldComments) => {
   try {
-    variables = { limit: 999999999 };
+    let variables = { limit: 999999999 };
     if(postsID) {
       variables = { ...variables, filter: { postsID: { eq: postsID } } };
     }

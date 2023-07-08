@@ -20,6 +20,7 @@ import {
   onCreateTeams, onUpdateTeams, onDeleteTeams,
   onCreateStandingsPeople, onUpdateStandingsPeople, onDeleteStandingsPeople,
   onCreateStandingsTeams, onUpdateStandingsTeams, onDeleteStandingsTeams,
+  onCreateExpoTokens, onUpdateExpoTokens, onDeleteExpoTokens,
 } from "./graphql/subscriptions";
 import { lightTheme, darkTheme } from "./styles";
 import {
@@ -33,7 +34,7 @@ import {
 import { WelcomeScreen } from './screens';
 import { Users } from "./models";
 import { registerForPushNotificationsAsync } from "./utils";
-import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions, loadFaqs, loadSchedule, loadGames, loadTeams, loadStandingsPeople, loadStandingsTeams } from "./services";
+import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions, loadFaqs, loadSchedule, loadGames, loadTeams, loadStandingsPeople, loadStandingsTeams, loadExpoTokens } from "./services";
 import AuthedApp from "./AuthedApp";
 
 const customFonts = {
@@ -83,6 +84,7 @@ const App = () => {
   const [allTeams, setAllTeams] = useState([]);
   const [allStandingsPeople, setAllStandingsPeople] = useState([]);
   const [allStandingsTeams, setAllStandingsTeams] = useState([]);
+  const [allExpoTokens, setAllExpoTokens] = useState([]);
   const responseListener = useRef();
   const nav = useRef();
   const priorConnectionState = useRef(undefined);
@@ -181,6 +183,7 @@ const App = () => {
     loadTeams(setAllTeams, allTeams);
     loadStandingsPeople(setAllStandingsPeople, allStandingsPeople);
     loadStandingsTeams(setAllStandingsTeams, allStandingsTeams);
+    loadExpoTokens(setAllExpoTokens, allExpoTokens);
   }
 
   // Fetch user and prepare the app
@@ -471,6 +474,24 @@ const App = () => {
       next: ({ value }) => loadStandingsTeams(setAllStandingsTeams, allStandingsTeams)
     });
 
+    const expoTokensCreateSub = API.graphql(
+      graphqlOperation(onCreateExpoTokens)
+    ).subscribe({
+      next: ({ value }) => loadExpoTokens(setAllExpoTokens, allExpoTokens),
+    });
+
+    const expoTokensUpdateSub = API.graphql(
+      graphqlOperation(onUpdateExpoTokens)
+    ).subscribe({
+      next: ({ value }) => loadExpoTokens(setAllExpoTokens, allExpoTokens)
+    });
+
+    const expoTokensDeleteSub = API.graphql(
+      graphqlOperation(onDeleteExpoTokens)
+    ).subscribe({
+      next: ({ value }) => loadExpoTokens(setAllExpoTokens, allExpoTokens)
+    });
+
     onRefresh();
 
     return () => {
@@ -507,6 +528,9 @@ const App = () => {
       standingsTeamsCreateSub.unsubscribe();
       standingsTeamsUpdateSub.unsubscribe();
       standingsTeamsDeleteSub.unsubscribe();
+      expoTokensCreateSub.unsubscribe();
+      expoTokensUpdateSub.unsubscribe();
+      expoTokensDeleteSub.unsubscribe();
     }
   }, []);
 

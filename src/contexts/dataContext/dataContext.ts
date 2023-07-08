@@ -17,4 +17,5 @@ export const DataContext = React.createContext({
   totalNotifications: 0,
   unreadNotifications: 0,
   allNotifications: [],
+  allExpoTokens: [],
 });

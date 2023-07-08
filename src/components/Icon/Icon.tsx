@@ -14,6 +14,7 @@ const azul = require('../../assets/images/azul.png');
 const beerPong = require('../../assets/images/beerPong.png');
 const blindfoldedObstacleCourse = require('../../assets/images/blindfoldedObstacleCourse.png');
 const blindfoldedScoop = require('../../assets/images/blindfoldedScoop.png');
+const bocce = require('../../assets/images/bocce.png');
 const checkers = require('../../assets/images/checkers.png');
 const chess = require('../../assets/images/chess.png');
 const cornhole = require('../../assets/images/cornhole.png');
@@ -30,13 +31,14 @@ const jenga = require('../../assets/images/jenga.png');
 const ladderball = require('../../assets/images/ladderball.png');
 const martiniSprint = require('../../assets/images/martiniSprint.png');
 const molkky = require('../../assets/images/molkky.png');
+const ohShit = require('../../assets/images/ohShit.png');
 const oldCollegeTry = require('../../assets/images/oldCollegeTry.png');
 const pingPong = require('../../assets/images/pingPong.png');
 const qwirkle = require('../../assets/images/qwirkle.png');
 const scattergories = require('../../assets/images/scattergories.png');
 const shuffleboard = require('../../assets/images/shuffleboard.png');
 const swing = require('../../assets/images/swing.png');
-const ohShit = require('../../assets/images/ohShit.png');
+const wavelength = require('../../assets/images/wavelength.png');
 
 interface IconProps {
   name: string;
@@ -119,6 +121,7 @@ export const allIcons = [
   { type: "Image", source: beerPong, iconName: 'beerPong', label: "Beer Pong" },
   { type: "Image", source: blindfoldedObstacleCourse, iconName: 'blindfoldedObstacleCourse', label: "Blindfolded Obstacle Course" },
   { type: "Image", source: blindfoldedScoop, iconName: 'blindfoldedScoop', label: "Blindfolded Scoop" },
+  { type: "Image", source: bocce, iconName: 'bocce', label: "Bocce" },
   { type: "Image", source: checkers, iconName: 'checkers', label: "Checkers" },
   { type: "Image", source: chess, iconName: 'chess', label: "Chess" },
   { type: "Image", source: cornhole, iconName: 'cornhole', label: "Cornhole" },
@@ -135,13 +138,14 @@ export const allIcons = [
   { type: "Image", source: ladderball, iconName: 'ladderball', label: "Ladderball" },
   { type: "Image", source: martiniSprint, iconName: 'martiniSprint', label: "Martini Sprint" },
   { type: "Image", source: molkky, iconName: 'molkky', label: "Molkky" },
+  { type: "Image", source: ohShit, iconName: 'ohShit', label: "Oh Shit" },
   { type: "Image", source: oldCollegeTry, iconName: 'oldCollegeTry', label: "Old College Try" },
   { type: "Image", source: pingPong, iconName: 'pingPong', label: "Ping Pong" },
   { type: "Image", source: qwirkle, iconName: 'qwirkle', label: "Qwirkle" },
   { type: "Image", source: scattergories, iconName: 'scattergories', label: "Scattergories" },
   { type: "Image", source: shuffleboard, iconName: 'shuffleboard', label: "Shuffleboard" },
   { type: "Image", source: swing, iconName: 'swing', label: "Swing" },
-  { type: "Image", source: ohShit, iconName: 'ohShit', label: "Oh Shit" },
+  { type: "Image", source: wavelength, iconName: 'wavelength', label: 'Wavelength' },
   { type: "MaterialIcons", name: "home", iconName: "home", label: "Home" },
   { type: "MaterialIcons", name: "home", iconName: "homeFocused", label: "Home Focused" },
   { type: "EvilIcons", name: "calendar", iconName: "calendar", label: "Calendar" },

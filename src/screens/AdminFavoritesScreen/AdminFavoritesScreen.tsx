@@ -8,6 +8,7 @@ import styles from './AdminFavoritesScreenStyles';
 
 const AdminFavoritesScreen = ({ navigation, route }) => {
   const [allImagePosts, setAllImagePosts] = useState([]);
+  const [viewAdminFavorites, setViewAdminFavorites] = useState([]);
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const { allAdminFavorites, allPosts } = useContext(DataContext);
@@ -17,7 +18,7 @@ const AdminFavoritesScreen = ({ navigation, route }) => {
   const renderItem = useCallback(({ item }) => {
     if(allImagePosts.length > 0) {
       const imagePost = allImagePosts.find((post) => post.url === item.url);
-      console.log('-- Found Post --', imagePost);
+      // console.log('-- Found Post --', imagePost);
 
       return (
         <ImageScroll
@@ -36,7 +37,19 @@ const AdminFavoritesScreen = ({ navigation, route }) => {
     } else {
       return null
     }
-  }, [allImagePosts]);
+  }, [allImagePosts, allAdminFavorites]);
+
+  const onRefresh = async () => {
+    setViewAdminFavorites(allAdminFavorites);
+  }
+
+  useEffect(() => {
+    if(allAdminFavorites.length > 0) {
+      if(viewAdminFavorites.length === 0) {
+        setViewAdminFavorites(allAdminFavorites);
+      }
+    }
+  }, [allAdminFavorites])
 
   useEffect(() => {
     const postPicsToArray = async () => {
@@ -54,14 +67,16 @@ const AdminFavoritesScreen = ({ navigation, route }) => {
           }
         }
       }
-      if(JSON.stringify(pics) !== JSON.stringify(allImagePosts)) {
+  
+      if(JSON.stringify(allImagePosts) !== JSON.stringify(pics)) {
         setAllImagePosts(pics);
       }
     }
+
     if(allPosts.length > 0) {
       postPicsToArray();
     }
-  }, [allPosts])
+  }, [allPosts]);
 
   return (
     <View style={ss.pageWrapper}>
@@ -71,7 +86,7 @@ const AdminFavoritesScreen = ({ navigation, route }) => {
         </View>
       ) : (
         <FlatList
-          data={allAdminFavorites}
+          data={viewAdminFavorites}
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           ItemSeparatorComponent={Divider}
@@ -81,6 +96,8 @@ const AdminFavoritesScreen = ({ navigation, route }) => {
           removeClippedSubviews={Platform.OS === 'android'} // Saves memory, has issues on iOS
           maxToRenderPerBatch={10} // Also the default
           initialNumToRender={10} // Also the default
+          onRefresh={onRefresh}
+          refreshing={false}
         />
       )}
     </View>

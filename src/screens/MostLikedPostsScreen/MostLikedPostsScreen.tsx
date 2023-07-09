@@ -62,7 +62,8 @@ const MostLikedPostsScreen = () => {
     });
     // Sort posts by reaction count
     const sorted = formattedPosts.sort((a, b) => b.reactionCount - a.reactionCount);
-    setSortedPosts(sorted);
+    const filtered = sorted.filter((post) => post.images?.length > 0);
+    setSortedPosts(filtered);
   }, [allReactions, allPosts]);
 
   return (

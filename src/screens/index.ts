@@ -1,3 +1,4 @@
+export { default as AdminFavoritesScreen } from "./AdminFavoritesScreen/AdminFavoritesScreen";
 export { default as CreatePostScreen } from "./CreatePostScreen/CreatePostScreen";
 export { default as GamesScreen } from "./GamesScreen/GamesScreen";
 export { default as ManageGameScreen } from "./ManageGameScreen/ManageGameScreen";

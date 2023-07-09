@@ -1,11 +1,9 @@
-import React, { useMemo, useEffect, useContext, useCallback } from 'react';
-import { View, Pressable, FlatList, Platform } from "react-native";
+import React, { useMemo, useContext, useCallback } from 'react';
+import { View, FlatList, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
-import { Text, TextSizes, Icon, ActivityIndicator, Divider } from '../../components';
+import { ActivityIndicator, Divider } from '../../components';
 import { StandingsPersonRow } from '../../containers';
-import { gamePlayers } from '../../utils';
-import { typography } from '../../styles';
-import { AuthContext, DataContext } from '../../contexts';
+import { DataContext } from '../../contexts';
 import styles from './LoggedInUsersScreenStyles';
 
 const LoggedInUsersScreen = ({ navigation, route }) => {

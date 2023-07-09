@@ -6,6 +6,7 @@ import { useTheme } from "react-native-paper";
 import { SettingsModal, NotificationsHeaderButton, NotificationsReadHeaderButton } from '../containers';
 import { Icon } from '../components';
 import {
+  AdminFavoritesScreen,
   CreatePostScreen,
   GamesScreen,
   HomeScreen,
@@ -70,6 +71,7 @@ const HomeStackScreen = () => {
       <HomeStack.Screen name="Most Liked Posts" component={MostLikedPostsScreen} />
       <HomeStack.Screen name="Send Notification" component={SendNotificationScreen} />
       <HomeStack.Screen name="Logged In Users" component={LoggedInUsersScreen} />
+      <HomeStack.Screen name="Admin Favorites" component={AdminFavoritesScreen} />
     </HomeStack.Navigator>
   );
 };

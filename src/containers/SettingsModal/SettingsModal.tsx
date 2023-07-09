@@ -67,6 +67,11 @@ const SettingsModal = () => {
     closeModal();
     navigation.push("Games List");
   };
+  
+  const goToAdminFavoritesPage = async () => {
+    closeModal();
+    navigation.push("Admin Favorites");
+  };
 
   const handleChangeUserPress = () => {
     closeModal();
@@ -150,6 +155,11 @@ const SettingsModal = () => {
                 {authStatus.isAdmin && (
                   <Button onPress={goToLoggedInUsersPage} style={{marginTop: 10}}>
                     See Logged In Users
+                  </Button>
+                )}
+                {authStatus.isAdmin && (
+                  <Button onPress={goToAdminFavoritesPage} style={{marginTop: 10}}>
+                    See Admin Favorites
                   </Button>
                 )}
                 {/* {authStatus.isAdmin && (

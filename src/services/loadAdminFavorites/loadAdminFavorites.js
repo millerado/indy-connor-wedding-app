@@ -9,6 +9,8 @@ const formatAdminFavorites = async (items, oldAdminFavorites, setAdminFavorites)
     return {
       id: favorite.id,
       url: img.url,
+      width: img.width,
+      height: img.height,
     };
   });
 

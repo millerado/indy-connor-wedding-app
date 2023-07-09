@@ -3,32 +3,21 @@ import { listComments } from '../../graphql/queries'
 import { Comments } from "../../models";
 import { DataStore } from "../../utils";
 
-const loadCommentsFromDatastore = async (setComments, postsID, oldComments) => {
+const loadCommentsFromDatastore = async (setComments, oldComments) => {
   try {
-    if(postsID) {
-      const comments = await DataStore.query(Comments, c => c.postsID.eq(postsID));
-      comments.sort((a, b) => (a.createdAt > b.createdAt) ? 1 : -1);
-      if(JSON.stringify(comments) !== JSON.stringify(oldComments)) {
-        setComments(comments);
-      }
-    } else {
-      const comments = await DataStore.query(Comments);
-      comments.sort((a, b) => (a.createdAt > b.createdAt) ? 1 : -1);
-      if(JSON.stringify(comments) !== JSON.stringify(oldComments)) {
-        setComments(comments);
-      }
+    const comments = await DataStore.query(Comments);
+    comments.sort((a, b) => (a.createdAt > b.createdAt) ? 1 : -1);
+    if(JSON.stringify(comments) !== JSON.stringify(oldComments)) {
+      setComments(comments);
     }
   } catch (err) {
     console.log('-- Error Loading Comments Via Datastore --', err);
   }
 }
 
-const loadComments = async (setComments, postsID, oldComments) => {
+const loadComments = async (setComments, oldComments) => {
   try {
     let variables = { limit: 999999999 };
-    if(postsID) {
-      variables = { ...variables, filter: { postsID: { eq: postsID } } };
-    }
     const allComments = await API.graphql({ query: listComments, variables: variables });
 
     const unfilteredItems = allComments?.data?.listComments?.items;
@@ -42,7 +31,7 @@ const loadComments = async (setComments, postsID, oldComments) => {
     }
   } catch (err) {
     console.log('-- Error Loading Comments, Try Datastore --', err);
-    loadCommentsFromDatastore(setComments, postsID, oldComments);
+    loadCommentsFromDatastore(setComments, oldComments);
   }
 };
 

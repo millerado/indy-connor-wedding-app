@@ -25,31 +25,20 @@ import { DataStore } from "../../utils";
   //   }
   // }
 
-  const loadReactionsFromDatastore = async (setReactions, postsID, oldReactions) => {
+  const loadReactionsFromDatastore = async (setReactions, oldReactions) => {
     try {
-      if(postsID) {
-        const reactions = await DataStore.query(Reactions, r => r.postsID.eq(postsID));
-        if(JSON.stringify(reactions) !== JSON.stringify(oldReactions)) {
-          setReactions(reactions);
-        }
-      } else {
-        const reactions = await DataStore.query(Reactions);
-        if(JSON.stringify(reactions) !== JSON.stringify(oldReactions)) {
-          setReactions(reactions);
-        }
+      const reactions = await DataStore.query(Reactions);
+      if(JSON.stringify(reactions) !== JSON.stringify(oldReactions)) {
+        setReactions(reactions);
       }
-
     } catch (err) {
       console.log('-- Error Loading Reactions Via Datastore --', err);
     }
   }
 
-  const loadReactions = async (setReactions, postsID, oldReactions) => {
+  const loadReactions = async (setReactions, oldReactions) => {
     try {
-      variables = { limit: 999999999 };
-      if(postsID) {
-        variables = { ...variables, filter: { postsID: { eq: postsID } } };
-      }
+      const variables = { limit: 999999999 };
       const allReactions = await API.graphql({ query: listReactions, variables: variables });
 
       const unfilteredItems = allReactions?.data?.listReactions?.items;
@@ -62,7 +51,7 @@ import { DataStore } from "../../utils";
       }
     } catch (err) {
       console.log('-- Error Loading Reactions, Trying Datastore --', err);
-      loadReactionsFromDatastore(setReactions, postsID, oldReactions);
+      loadReactionsFromDatastore(setReactions, oldReactions);
     }
   };
 

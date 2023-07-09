@@ -101,23 +101,6 @@ const App = () => {
   // Pieces for the Auth Context
   const setUser = async (newUser: Users) => {
     const { id, name, image, about, admin, teamsID } = newUser;
-    // console.log('-- Set User --', newUser);
-    // if(id && id !== authStatus.userId) {
-    //   // console.log('-- User Change, Reset Datastore Stuff --');
-    //   // await DataStore.clear();
-    //   await DataStore.stop();
-    //   await DataStore.configure({
-    //     syncExpressions: [
-    //       syncExpression(NotificationsModel, () => {
-    //         return n => n.userId.eq(id);
-    //       }),
-    //       syncExpression(ScheduledNotifications, () => {
-    //         return n => n.userId.eq(id);
-    //       }),
-    //     ]
-    //   });
-    //   DataStore.start();
-    // }
 
     setAuthStatus({
       isAuthed: true,
@@ -182,8 +165,8 @@ const App = () => {
     loadPosts(setAllPosts, allPosts);
     loadUsers(setAllUsers, allUsers);
     loadAdminFavorites(setAllAdminFavorites, allAdminFavorites);
-    loadComments(setAllComments, undefined, allComments);
-    loadReactions(setAllReactions, undefined, allReactions);
+    loadComments(setAllComments, allComments);
+    loadReactions(setAllReactions, allReactions);
     loadFaqs(setAllFaqs, allFaqs);
     loadSchedule(setAllSchedule, allSchedule);
     loadGames(setAllGames, allGames);
@@ -213,19 +196,6 @@ const App = () => {
         if (currentUser) {
           setAuthStatus(JSON.parse(currentUser));
           registerForPushNotificationsAsync(userId);
-
-          // await DataStore.clear();
-          // await DataStore.stop();
-          // DataStore.configure({
-          //   syncExpressions: [
-          //     syncExpression(NotificationsModel, () => {
-          //       return n => n.userId.eq(userId);
-          //     }),
-          //     syncExpression(ScheduledNotifications, () => {
-          //       return n => n.userId.eq(userId);
-          //     }),
-          //   ]
-          // });
         }
       } catch (e) {
         console.log("error fetching current theme", e);
@@ -340,37 +310,37 @@ const App = () => {
     const commentCreateSub = API.graphql(
       graphqlOperation(onCreateComments)
     ).subscribe({
-      next: ({ value }) => loadComments(setAllComments, undefined, allComments),
+      next: ({ value }) => loadComments(setAllComments, allComments),
     });
 
     const commentUpdateSub = API.graphql(
       graphqlOperation(onUpdateComments)
     ).subscribe({
-      next: ({ value }) => loadComments(setAllComments, undefined, allComments)
+      next: ({ value }) => loadComments(setAllComments, allComments)
     });
 
     const commentDeleteSub = API.graphql(
       graphqlOperation(onDeleteComments)
     ).subscribe({
-      next: ({ value }) => loadComments(setAllComments, undefined, allComments)
+      next: ({ value }) => loadComments(setAllComments, allComments)
     });
 
     const reactionsCreateSub = API.graphql(
       graphqlOperation(onCreateReactions)
     ).subscribe({
-      next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions),
+      next: ({ value }) => loadReactions(setAllReactions, allReactions),
     });
 
     const reactionsUpdateSub = API.graphql(
       graphqlOperation(onUpdateReactions)
     ).subscribe({
-      next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions)
+      next: ({ value }) => loadReactions(setAllReactions, allReactions)
     });
 
     const reactionsDeleteSub = API.graphql(
       graphqlOperation(onDeleteReactions)
     ).subscribe({
-      next: ({ value }) => loadReactions(setAllReactions, undefined, allReactions)
+      next: ({ value }) => loadReactions(setAllReactions, allReactions)
     });
 
     const faqsCreateSub = API.graphql(

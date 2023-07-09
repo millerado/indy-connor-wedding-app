@@ -28,7 +28,6 @@ const AdminFavoritesScreen = ({ navigation, route }) => {
           singleTapHandler={() => imagePost ? 
             navigation.push("View Post", {
               postsID: imagePost.postId,
-              // post: post,
             }) :
             console.log('Single Tap')}
           doubleTapHandler={() => console.log('Double Tap')}

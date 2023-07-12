@@ -112,7 +112,9 @@ const App = () => {
       teamId: teamsID,
     });
     // Tie in Notifications at the user level here (associate userId with their Notification Identifier)
-    registerForPushNotificationsAsync(id);
+    if(id) {
+      registerForPushNotificationsAsync(id);
+    }
     await AsyncStorage.setItem(
       "authStatus",
       JSON.stringify({

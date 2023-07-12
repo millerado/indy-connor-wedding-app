@@ -1,7 +1,7 @@
 import { StyleSheet, Dimensions } from 'react-native';
 import typography from '../typography/typography';
 
-const dim = Dimensions.get('screen');
+const dim = Dimensions.get('window');
 const { width, height } = dim;
 
 const reusableStyles = theme => {

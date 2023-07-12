@@ -150,7 +150,6 @@ const WelcomeScreen = () => {
     )
   }
 
-
   const keyExtractor = useCallback((item) => item.id, []);
 
   useEffect(() => {
@@ -163,16 +162,22 @@ const WelcomeScreen = () => {
   useEffect(() => {
     const checkOnboarding = async () => {
       try {
-        const jsonValue = await AsyncStorage.getItem("@onboardingProcess");
-        if (jsonValue) {
-          const value = JSON.parse(jsonValue);
-          if (!value.passcodeConfirmed) {
-            setView("passcode");
-          } else {
-            setView("selectUser");
-          }
+        if(Platform.OS === 'ios') {
+          // iOS is an unlisted app, no need to show Passcode screen
+          setView("selectUser");
+          console.log('-- iOS, skip passcode --');
         } else {
-          setView("passcode");
+          const jsonValue = await AsyncStorage.getItem("@onboardingProcess");
+          if (jsonValue) {
+            const value = JSON.parse(jsonValue);
+            if (!value.passcodeConfirmed) {
+              setView("passcode");
+            } else {
+              setView("selectUser");
+            }
+          } else {
+            setView("passcode");
+          }
         }
       } catch (e) {
         console.log("-- Error loading onboarding data --", e);

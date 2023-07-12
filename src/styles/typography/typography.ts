@@ -1,6 +1,6 @@
 import { PixelRatio, Dimensions } from 'react-native';
 
-const dim = Dimensions.get('screen');
+const dim = Dimensions.get('window');
 const { width, height } = dim;
 const tablet = Math.max(height, width) > 900 ? true : false;
 

@@ -1,7 +1,7 @@
 import { StyleSheet, Dimensions } from 'react-native';
 import { reusableStyles } from '../../styles';
 
-const dim = Dimensions.get('screen');
+const dim = Dimensions.get('window');
 const { width, height } = dim;
 
 const styles = theme => {

@@ -232,13 +232,15 @@ export const registerForPushNotificationsAsync = async (userId) => {
       finalStatus = status;
     }
     if (finalStatus !== 'granted') {
-      alert('Failed to get push token for push notification!');
+      console.log('Failed to get push token for push notification!');
+      // alert('Failed to get push token for push notification!');
       return;
     }
     const token = (await Notifications.getExpoPushTokenAsync()).data;
     savePushTokenAsync(token, userId);
   } else {
-    alert('Must use physical device for Push Notifications');
+    // alert('Must use physical device for Push Notifications');
+    console.log('Can only get push token on physical device');
   }
 
   if (Platform.OS === 'android') {

@@ -21,6 +21,8 @@ import {
   onCreateStandingsPeople, onUpdateStandingsPeople, onDeleteStandingsPeople,
   onCreateStandingsTeams, onUpdateStandingsTeams, onDeleteStandingsTeams,
   onCreateExpoTokens, onUpdateExpoTokens, onDeleteExpoTokens,
+  onCreateNotifications, onUpdateNotifications, onDeleteNotifications,
+  onCreateScheduledNotifications, onUpdateScheduledNotifications, onDeleteScheduledNotifications,
 } from "./graphql/subscriptions";
 import { lightTheme, darkTheme } from "./styles";
 import {
@@ -34,7 +36,7 @@ import {
 import { WelcomeScreen } from './screens';
 import { Users } from "./models";
 import { registerForPushNotificationsAsync } from "./utils";
-import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions, loadFaqs, loadSchedule, loadGames, loadTeams, loadStandingsPeople, loadStandingsTeams, loadExpoTokens } from "./services";
+import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions, loadFaqs, loadSchedule, loadGames, loadTeams, loadStandingsPeople, loadStandingsTeams, loadExpoTokens, loadNotifications, loadScheduledNotifications } from "./services";
 import AuthedApp from "./AuthedApp";
 
 const customFonts = {
@@ -114,6 +116,9 @@ const App = () => {
     // Tie in Notifications at the user level here (associate userId with their Notification Identifier)
     if(id) {
       registerForPushNotificationsAsync(id);
+    } else {
+      // Logging out, erase Notification data
+      setNotificationDetails({ totalNotifications: 0, unreadNotifications: 0, allNotifications: [] });
     }
     await AsyncStorage.setItem(
       "authStatus",
@@ -176,6 +181,14 @@ const App = () => {
     loadStandingsPeople(setAllStandingsPeople, allStandingsPeople);
     loadStandingsTeams(setAllStandingsTeams, allStandingsTeams);
     loadExpoTokens(setAllExpoTokens, allExpoTokens);
+    onRefreshNotifications();
+  }
+
+  const onRefreshNotifications = async () => {
+    if(authStatus.userId) {
+      loadNotifications(setNotificationDetails, notificationDetails, authStatus.userId);
+      loadScheduledNotifications(authStatus.userId);
+    }
   }
 
   // Fetch user and prepare the app
@@ -513,6 +526,59 @@ const App = () => {
     }
   }, []);
 
+  // Data Subcriptions for Notifications (which are user-dependent)
+  useEffect(() => {
+    if(authStatus.userId) {
+      const userGraphqlOperations = { filter: { userId: {eq: authStatus.userId} }, limit: 999999999 };
+      const createNotificationSub = API.graphql(
+        graphqlOperation(onCreateNotifications, userGraphqlOperations)
+      ).subscribe({
+        next: ({ value }) => loadNotifications(setNotificationDetails, notificationDetails, authStatus.userId),
+      });
+      
+      const updateNotificationSub = API.graphql(
+        graphqlOperation(onUpdateNotifications, userGraphqlOperations)
+      ).subscribe({
+        next: ({ value }) => loadNotifications(setNotificationDetails, notificationDetails, authStatus.userId),
+      });
+      
+      const deleteNotificationSub = API.graphql(
+        graphqlOperation(onDeleteNotifications, userGraphqlOperations)
+      ).subscribe({
+        next: ({ value }) => loadNotifications(setNotificationDetails, notificationDetails, authStatus.userId),
+      });
+
+      const createScheduledNotificationSub = API.graphql(
+        graphqlOperation(onCreateScheduledNotifications, userGraphqlOperations)
+      ).subscribe({
+        next: ({ value }) => loadScheduledNotifications(authStatus.userId),
+      });
+
+      const updateScheduledNotificationSub = API.graphql(
+        graphqlOperation(onUpdateScheduledNotifications, userGraphqlOperations)
+      ).subscribe({
+        next: ({ value }) => loadScheduledNotifications(authStatus.userId),
+      });
+
+      const deleteScheduledNotificationSub = API.graphql(
+        graphqlOperation(onDeleteScheduledNotifications, userGraphqlOperations)
+      ).subscribe({
+        next: ({ value }) => loadScheduledNotifications(authStatus.userId),
+      });
+
+      onRefreshNotifications();
+
+      return () => {
+        createNotificationSub.unsubscribe();
+        updateNotificationSub.unsubscribe();
+        deleteNotificationSub.unsubscribe();
+        createScheduledNotificationSub.unsubscribe();
+        updateScheduledNotificationSub.unsubscribe();
+        deleteScheduledNotificationSub.unsubscribe();
+      }
+    }
+  }, [authStatus])
+
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
       // This tells the splash screen to hide immediately! If we call this after
@@ -526,14 +592,6 @@ const App = () => {
 
   if (!appIsReady) {
     return null;
-  }
-
-  const updateNotifications = (totalNotifications, unreadNotifications, allNotifications) => {
-    setNotificationDetails({
-      totalNotifications,
-      unreadNotifications,
-      allNotifications
-    });
   }
 
   return (
@@ -555,7 +613,6 @@ const App = () => {
               allStandingsPeople,
               allStandingsTeams,
               allExpoTokens,
-              setNotifications: updateNotifications, 
               totalNotifications: notificationDetails.totalNotifications, 
               unreadNotifications: notificationDetails.unreadNotifications, 
               allNotifications: notificationDetails.allNotifications,

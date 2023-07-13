@@ -165,7 +165,7 @@ const WelcomeScreen = () => {
         if(Platform.OS === 'ios') {
           // iOS is an unlisted app, no need to show Passcode screen
           setView("selectUser");
-          console.log('-- iOS, skip passcode --');
+          // console.log('-- iOS, skip passcode --');
         } else {
           const jsonValue = await AsyncStorage.getItem("@onboardingProcess");
           if (jsonValue) {

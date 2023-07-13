@@ -1,5 +1,6 @@
 import React, {
   useMemo,
+  useEffect,
   useState,
   useContext,
   useCallback,
@@ -25,7 +26,7 @@ import styles from "./NotificationsScreenStyles";
 const NotificationsScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-  const { allNotifications } = useContext(DataContext);
+  const { refreshData, allNotifications } = useContext(DataContext);
 
   const navToLink = (targetType, id) => {
     // console.log('-- Notification Navigation --', targetType, id);
@@ -46,6 +47,10 @@ const NotificationsScreen = ({ navigation, route }) => {
     return <Divider />;
   }, []);
 
+  const onRefresh = async () => {
+    refreshData();
+  }
+
   return (
     <View style={ss.pageWrapper}>
       {allNotifications?.length === 0 ? (
@@ -63,7 +68,9 @@ const NotificationsScreen = ({ navigation, route }) => {
           keyboardDismissMode="on-drag"
           removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
           maxToRenderPerBatch={10} // Also the default
-          initialNumToRender={10} // Also the default
+          initialNumToRender={10} // Also the default 
+          onRefresh={onRefresh}
+          refreshing={false}
         />
       )}
     </View>
@@ -85,6 +92,10 @@ const RenderNotificationItem = (props) => {
   if (!read) {
     centerWidth = centerWidth - (typography.fontSizeL * 2 + 15);
   }
+
+  useEffect(() => {
+    setRead(item.read);
+  }, [item.read])
 
   const renderRightActions = () => {
     return (

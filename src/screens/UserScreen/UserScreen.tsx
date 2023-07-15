@@ -37,11 +37,11 @@ const UserScreen = ({ navigation, route }) => {
       <UserScreenHeader
         name={name}
         picture={picture}
-        hasPosted={allPosts.length > 0}
+        hasPosted={displayPosts.length > 0}
         userId={userId}
       />
     );
-  }, [name, picture, userId, allPosts.length]);
+  }, [name, picture, userId, displayPosts.length]);
 
   const keyExtractor = useCallback((item) => item.id, []);
 

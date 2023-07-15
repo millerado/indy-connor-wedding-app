@@ -328,7 +328,6 @@ const PostPreview = (props) => {
                 onPress={() => setCaptionExanded(!captionExanded)}
                 bold
                 size="S"
-                color={theme.colors.onQuaternary}
               >
                 {captionExanded ? "show less" : "show more"}
               </Text>
@@ -381,7 +380,7 @@ const PostPreview = (props) => {
             )}
             {previewMode && (
               <View style={ss.moreCommentsWrapper}>
-                <Text bold color={theme.colors.onQuaternary} size="S" style={{ paddingTop: 5, paddingBottom: 5 }}>
+                <Text bold size="S" style={{ paddingTop: 5, paddingBottom: 5 }}>
                   {comments.length > 1
                     ? `View all ${comments.length} comments`
                     : "View full comment"}

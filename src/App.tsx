@@ -87,6 +87,7 @@ const App = () => {
   const [allStandingsPeople, setAllStandingsPeople] = useState([]);
   const [allStandingsTeams, setAllStandingsTeams] = useState([]);
   const [allExpoTokens, setAllExpoTokens] = useState([]);
+  const [reactionsWithUsers, setReactionsWithUsers] = useState([]);
   const responseListener = useRef();
   const nav = useRef();
   const priorConnectionState = useRef(undefined);
@@ -190,6 +191,21 @@ const App = () => {
       loadScheduledNotifications(authStatus.userId);
     }
   }
+
+  useEffect(() => {
+    if(allUsers.length > 0 && allReactions.length > 0) {
+      const newReactionsWithUsers = allReactions.map((reaction) => {
+        const user = allUsers.find((user) => user.id === reaction.userId);
+        return { ...reaction, user };
+      });
+      
+      const sortedReactions = newReactionsWithUsers.sort((a, b) => a.user.name.localeCompare(b.user.name));
+
+      if(JSON.stringify(sortedReactions) !== JSON.stringify(reactionsWithUsers)) {
+        setReactionsWithUsers(sortedReactions);
+      }
+    }
+  }, [allUsers, allReactions])
 
   // Fetch user and prepare the app
   useEffect(() => {
@@ -604,7 +620,7 @@ const App = () => {
               allUsers, 
               allComments, 
               allAdminFavorites,
-              allReactions,
+              allReactions: reactionsWithUsers,
               allPosts,
               allFaqs,
               allSchedule,

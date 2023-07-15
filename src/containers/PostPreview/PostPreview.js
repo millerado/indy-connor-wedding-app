@@ -30,6 +30,7 @@ import FormatTextWithMentions from '../FormatTextWithMentions/FormatTextWithMent
 import styles from "./PostPreviewStyles";
 
 const previewLines = 3;
+const commentLines = 2;
 const expandedLines = undefined; // If we're not doing a details page, we should show full caption in Preview
 
 const PostPreview = (props) => {
@@ -52,7 +53,9 @@ const PostPreview = (props) => {
   const navigation = useNavigation();
   const [isLiked, setIsLiked] = useState(false);
   const [captionTextExandable, setCaptionTextExandable] = useState(false);
+  const [commentTextExandable, setCommentTextExandable] = useState(false);
   const [captionExanded, setCaptionExanded] = useState(true);
+  const [commentExpanded, setCommentExpanded] = useState(true);
   const [showUnauthedMessage, setShowUnauthedMessage] = useState(false);
   const [postUser, setPostUser] = useState(initialPostUser || {
     id: "",
@@ -147,6 +150,17 @@ const PostPreview = (props) => {
       }
     },
     [captionExanded]
+  );
+
+  const onCommentTextLayout = useCallback(
+    (e) => {
+      const numLines = e.nativeEvent.lines.length;
+      if(!commentTextExandable && numLines > commentLines) {
+        setCommentTextExandable(true);
+        setCommentExpanded(false);
+      }
+    },
+    []
   );
 
   const goToPostScreen = () => {
@@ -367,7 +381,12 @@ const PostPreview = (props) => {
         {comments.length > 0 && (
           <Pressable onPress={goToPostScreen}>
             {previewMode ? (
-              <SingleComment comment={comments[0]} numberOfLines={2} allUsers={allUsers} />
+              <SingleComment 
+                comment={comments[0]} 
+                numberOfLines={commentExpanded ? expandedLines : commentLines}
+                allUsers={allUsers} 
+                onTextLayout={onCommentTextLayout}
+              />
             ) : (
               <>
                 {comments.map((comment, index) => (
@@ -378,7 +397,7 @@ const PostPreview = (props) => {
                 ))}
               </>
             )}
-            {previewMode && (
+            {previewMode && (comments.length > 1 || commentTextExandable) && (
               <View style={ss.moreCommentsWrapper}>
                 <Text bold size="S" style={{ paddingTop: 5, paddingBottom: 5 }}>
                   {comments.length > 1

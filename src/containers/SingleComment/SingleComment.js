@@ -21,7 +21,7 @@ import styles from "./SingleCommentStyles";
 const SingleComment = (props) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-  const { numberOfLines, comment, allUsers } = props;
+  const { numberOfLines, comment, allUsers, ...restOfProps } = props;
   if (!comment) {
     return null;
   }
@@ -146,9 +146,7 @@ const SingleComment = (props) => {
                 <View style={ss.textWrapper}>
                   <Text size="XS">{formatDate(comment.createdAt)}</Text>
                   <Text size="M" bold>{commentUser.name}</Text>
-                  <Text size="M" numberOfLines={numberOfLines}>
-                    <FormatTextWithMentions text={comment.comment} />
-                  </Text>
+                  <FormatTextWithMentions text={comment.comment} size="M" numberOfLines={numberOfLines} {...restOfProps} />
                 </View>
               </ConditionalWrapper>
             </View>

@@ -216,4 +216,5 @@ export const allIcons = [
   { type: 'FontAwesome5', name: 'archive', iconName: 'archive', label: 'Archive' },
   { type: "MaterialIcons", name: "delete-forever", iconName: "delete", label: "Delete" },
   { type: "MaterialIcons", name: "mark-email-read", iconName: "markAsRead", label: "Mark As Read" },
+  { type: "FontAwesome5", name: "video", iconName: "video", label: "Video" },
 ];

@@ -25,6 +25,7 @@ import {
   MultiselectInput,
   ConditionalWrapper,
   ImageS3,
+  VideoS3,
 } from "../../components";
 import { Posts } from "../../models";
 import { uploadImageS3, DataStore, sendUsersPushNotifications, gamePlayers, nth } from "../../utils";
@@ -699,17 +700,26 @@ const CreatePostScreen = ({ navigation, route }) => {
                     <View style={{flexDirection: 'row', width: '100%', flexWrap: 'wrap', justifyContent: 'space-evenly', paddingVertical: (8 / -2)}}>
                       {images.map((image, index) => (
                         <View style={{padding: dimensions.width * .01}} key={index}>
-                          <ImageS3 
-                            fileName={image.url}
-                            height={dimensions.width * .31}
-                            width={dimensions.width * .31}
-                            key={index}
-                            multipleImages={false}
-                          >
-                            <Pressable style={{position: 'absolute', right: 3, bottom: 3}} onPress={() => removeImageFromPost(index)}>
-                              <Icon name="delete" size={24} color={'white'} />
-                            </Pressable>
-                          </ImageS3>
+                          {image.type === 'video' ? (
+                            <View style={{height: dimensions.width * .31, width: dimensions.width * .31, backgroundColor: theme.colors.primary, alignItems: 'center', justifyContent: 'center'}}>
+                              <Icon name="video" size={dimensions.width * .1} color={'white'} />
+                              <Pressable style={{position: 'absolute', right: 3, bottom: 3}} onPress={() => removeImageFromPost(index)}>
+                                <Icon name="delete" size={24} color={'white'} />
+                              </Pressable>
+                            </View>
+                          ) : (
+                            <ImageS3 
+                              fileName={image.url}
+                              height={dimensions.width * .31}
+                              width={dimensions.width * .31}
+                              key={index}
+                              multipleImages={false}
+                            >
+                              <Pressable style={{position: 'absolute', right: 3, bottom: 3}} onPress={() => removeImageFromPost(index)}>
+                                <Icon name="delete" size={24} color={'white'} />
+                              </Pressable>
+                            </ImageS3>
+                          )}
                         </View>
                       ))}
                       {imageLoading === 'uploading' ? (

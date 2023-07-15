@@ -136,10 +136,11 @@ const VideoS3 = (props) => {
     // return () => (isMounted.current = false);
     return () => (mounted = false);
   }, [fileName]);
-  const displatHeight = inFullscreen
+  
+  const displayHeight = inFullscreen
     ? (height / width) * dimensions.width
     : Math.min(videoPreviewHeight, (height / width) * dimensions.width);
-  const displatWidth = inFullscreen ? dimensions.width : videoPreviewWidth;
+  const displayWidth = inFullscreen ? dimensions.width : videoPreviewWidth;
 
   if (fileName) {
     return (
@@ -148,8 +149,8 @@ const VideoS3 = (props) => {
           <Video
             ref={refVideo}
             style={{
-              height: displatHeight,
-              width: displatWidth,
+              height: displayHeight,
+              width: displayWidth,
             }}
             source={{
               uri: videoUrl,

@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { Linking, View } from 'react-native';
+import { Linking, View, Platform } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { useTheme } from "react-native-paper";
 import reactStringReplace from 'react-string-replace';
@@ -78,14 +78,20 @@ const FormatTextWithMentions = ({ text, ...restOfProps }) => {
     if (matchesBullet) {
       matchesBullet.forEach((match) => {
         const [, bulletText] = match.match(/^•/gm);
-        text = reactStringReplace(text, match, (match, i) => (
-          <View style={{flexDirection: 'row', paddingLeft: 20}} key={`${i}${bulletText}${match}`}>
-          <Text>•</Text>
-            <View style={{paddingLeft: 5}}>
-              <Text {...restOfProps}>{match.substring(2)}</Text>
+        if( Platform.OS === 'ios' ) {
+          text = reactStringReplace(text, match, (match, i) => (
+            <View style={{flexDirection: 'row', paddingLeft: 20}} key={`${i}${bulletText}${match}`}>
+            <Text>•</Text>
+              <View style={{paddingLeft: 5}}>
+                <Text {...restOfProps}>{match.substring(2)}</Text>
+              </View>
             </View>
-          </View>
-        ));
+          ));
+        } else {
+          text = reactStringReplace(text, match, (match, i) => (
+            <Text key={`${i}${bulletText}${match}`} {...restOfProps}>•{'   '}{match.substring(2)}</Text>
+          ));
+        }
       });
     }
 

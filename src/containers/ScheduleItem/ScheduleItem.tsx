@@ -91,7 +91,7 @@ const ScheduleItem = (props) => {
                   <Pressable onPress={openMenu}>{children}</Pressable>
                 )}
             >
-              <View style={{ flex: 9 }}>
+              <View>
                 <Text size={TextSizes.XL} bold>{name}{' '}<Text size={TextSizes.XL}>{time}</Text></Text>
                 <Text size={TextSizes.XL}>Location: <Text bold size={TextSizes.XL}>{location}</Text></Text>
               </View>

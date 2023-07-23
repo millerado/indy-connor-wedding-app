@@ -92,8 +92,9 @@ const ScheduleItem = (props) => {
                 )}
             >
               <View>
-                <Text size={TextSizes.XL} bold>{name}{' '}<Text size={TextSizes.XL}>{time}</Text></Text>
-                <Text size={TextSizes.XL}>Location: <Text bold size={TextSizes.XL}>{location}</Text></Text>
+                <Text size={TextSizes.XL} bold>{name}{' '}</Text>
+                <Text size={TextSizes.L}>Time: {time}</Text>
+                <Text size={TextSizes.L}>Location: <Text bold size={TextSizes.L}>{location}</Text></Text>
               </View>
               <View>
                 <FormatTextWithMentions text={description} size={TextSizes.M} />

@@ -167,6 +167,7 @@ const SendNotificationScreen = ({ navigation }) => {
       <ScrollView
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
+        style={{ flex: 1, width: "100%" }}
       >
         <View
           style={{

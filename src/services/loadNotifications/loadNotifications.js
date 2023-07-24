@@ -30,6 +30,8 @@ const loadNotifications = async (setNotificationDetails, oldNotificationsData, u
 
         // console.log('-- Number Unread/Total --', numberUnread, pastOnly.length);
         setBadgeCount(numberUnread, userId, userId);
+      } else {
+        setBadgeCount(0, userId, userId);
       }
     } catch (err) {
       console.log('-- Error Loading Notifications, No Datastore --', err);

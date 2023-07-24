@@ -81,13 +81,13 @@ const handleImagePicked = async (pickerResult, uploadImageCallback) => {
         const image = uploadedImages[i];
         // console.log('-- uploadedImage --', image);
         // Handling for Android returning the wrong Width and Height
-        // Orientation of 6 and 8 are Landscape, so we want to make sure we're using the large dimension as the Height in that case
-        // If it's not 6 or 8, it's Portrait, so larger dimension in the Width
+        // Orientation of 6 and 8 are Landscape, so we want to make sure we're using the large dimension as the Width in that case
+        // If it's not 6 or 8, it's Portrait, so larger dimension in the Height
         let imageWidth = image.width;
         let imageHeight = image.height;
         if(image.exif && image.exif?.Orientation) {
-          imageWidth = image.exif?.Orientation === 6 || image.exif?.orientation === 8 ? Math.min(image.width, image.height) : Math.max(image.width, image.height);
-          imageHeight = image.exif?.Orientation === 6 || image.exif?.orientation === 8 ? Math.max(image.width, image.height) : Math.min(image.width, image.height);  
+          imageWidth = image.exif?.Orientation === 6 || image.exif?.Orientation === 8 ? Math.max(image.width, image.height) : Math.min(image.width, image.height);
+          imageHeight = image.exif?.Orientation === 6 || image.exif?.Orientation === 8 ? Math.min(image.width, image.height) : Math.max(image.width, image.height);  
         }
         
         const img = await fetchImageFromUri(image.uri);

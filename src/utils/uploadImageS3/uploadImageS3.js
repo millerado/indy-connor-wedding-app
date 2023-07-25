@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { Storage } from 'aws-amplify';
 import * as ImagePicker from 'expo-image-picker';
 import uuid from 'react-native-uuid';
@@ -85,7 +86,7 @@ const handleImagePicked = async (pickerResult, uploadImageCallback) => {
         // If it's not 6 or 8, it's Portrait, so larger dimension in the Height
         let imageWidth = image.width;
         let imageHeight = image.height;
-        if(image.exif && image.exif?.Orientation) {
+        if(image.exif && image.exif?.Orientation && Platform.OS === 'android') { // iOS has things rotated the right ways
           imageWidth = image.exif?.Orientation === 6 || image.exif?.Orientation === 8 ? Math.max(image.width, image.height) : Math.min(image.width, image.height);
           imageHeight = image.exif?.Orientation === 6 || image.exif?.Orientation === 8 ? Math.min(image.width, image.height) : Math.max(image.width, image.height);  
         }

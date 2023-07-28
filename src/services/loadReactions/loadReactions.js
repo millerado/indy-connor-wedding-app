@@ -3,33 +3,41 @@ import { listReactions } from '../../graphql/queries'
 import { Reactions } from "../../models";
 import { DataStore } from "../../utils";
 
-  // const formatReactions = async (items) => {
-  //   if (items) {
-  //     const reactionsSet = new Set();
+  const formatReactions = async (items) => {
+    if (items) {
+      // Create  reactionSet of unique postsID, userId, reactionType from items
 
-  //     const newReactions = items.map((reaction) => {
-  //       return {
-  //         postsID: reaction.postsID,
-  //         userId: reaction.userId,
-  //         reactionType: reaction.reactionType,
-  //       };
-  //     }).filter((reaction) => {
-  //       if (reactionsSet.has(reaction.userId)) {
-  //         return false;
-  //       }
-  //       reactionsSet.add(reaction.userId);
-  //       return true;
-  //     });
-  //     // console.log("Reactions data", reactionsData);
-  //     setAllReactions(newReactions);
-  //   }
-  // }
+      const reactionsSet = new Set();
+      items.forEach((item) => {
+        const key = `${item.postsID}|${item.userId}|${item.reactionType}`;
+        reactionsSet.add(key);
+      });
+
+      // Create array of unique postsID, userId, reactionType from reactionSet 
+      const reactionsArray = Array.from(reactionsSet);
+
+      // Create array of unique postsID, userId, reactionType from reactionSet
+      const uniqueReactions = reactionsArray.map((reaction) => {
+        const [postsID, userId, reactionType] = reaction.split("|");
+        const reactionObject = {
+          postsID: postsID,
+          userId: userId,
+          reactionType: reactionType,
+        };
+        return reactionObject;
+      });
+
+      return uniqueReactions;
+    }
+    return [];
+  }
 
   const loadReactionsFromDatastore = async (setReactions, oldReactions) => {
     try {
       const reactions = await DataStore.query(Reactions);
-      if(JSON.stringify(reactions) !== JSON.stringify(oldReactions)) {
-        setReactions(reactions);
+      const formattedReactions = await formatReactions(reactions);
+      if(JSON.stringify(formattedReactions) !== JSON.stringify(oldReactions)) {
+        setReactions(formattedReactions);
       }
     } catch (err) {
       console.log('-- Error Loading Reactions Via Datastore --', err);
@@ -44,9 +52,10 @@ import { DataStore } from "../../utils";
       const unfilteredItems = allReactions?.data?.listReactions?.items;
       // Remove items where _deleted is true
       const items = unfilteredItems.filter(item => !item._deleted);
-      if(items.length > 0) {
-        if(JSON.stringify(items) !== JSON.stringify(oldReactions)) {
-          setReactions(items);
+      const formattedReactions = await formatReactions(items);
+      if(formattedReactions.length > 0) {
+        if(JSON.stringify(formattedReactions) !== JSON.stringify(oldReactions)) {
+          setReactions(formattedReactions);
         }
       }
     } catch (err) {

@@ -20,7 +20,9 @@ const CalculateStandings = () => {
       // console.log('-- Max Event Time --', maxEventTime);
       // console.log('-- Max Team Standings Time --', maxTeamStandingsTime);
       // console.log('-- Max People Standings Time --', maxPeopleStandingsTime);
+      // console.log((maxEventTime > maxTeamStandingsTime || maxEventTime > maxPeopleStandingsTime) && !isCalculating.current);
 
+      // if(!isCalculating.current) {
       if((maxEventTime > maxTeamStandingsTime || maxEventTime > maxPeopleStandingsTime) && !isCalculating.current) {
         isCalculating.current = true;
         // console.log('-- Something Changed, need to calc --');
@@ -121,6 +123,7 @@ const CalculateStandings = () => {
           if(standing) {
             if( standing.points !== p.points || standing.gamesPlayed !== p.gamesPlayed) {
               const originalItem = await DataStore.query(StandingsPeople, standing.id);
+              // DataStore.stop();
               DataStore.save(StandingsPeople.copyOf(originalItem, (updated) => {
                 updated.points = p.points;
                 updated.gamesPlayed = p.gamesPlayed;
@@ -146,6 +149,7 @@ const CalculateStandings = () => {
           if(standing) {
             if( standing.points !== t.points) {
               const originalItem = await DataStore.query(StandingsTeams, standing.id);
+              // DataStore.stop();
               DataStore.save(StandingsTeams.copyOf(originalItem, (updated) => {
                 updated.points = t.points;
                 updated.rank = t.rank;

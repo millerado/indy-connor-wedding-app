@@ -82,11 +82,11 @@ const SettingsModal = () => {
     }, 350);
   }
 
-  // const resetDatastore = async () => {
-  //   await DataStore.stop();
-  //   await DataStore.clear();
-  //   await DataStore.start();
-  // }
+  const resetDatastore = async () => {
+    await DataStore.stop();
+    await DataStore.clear();
+    await DataStore.start();
+  }
 
   return (
     <>
@@ -162,11 +162,11 @@ const SettingsModal = () => {
                     See Admin Favorites
                   </Button>
                 )}
-                {/* {authStatus.isAdmin && (
+                {authStatus.isAdmin && (
                   <Button onPress={resetDatastore} style={{marginTop: 10}}>
                     Debug Reset Datastore
                   </Button>
-                )} */}
+                )}
               </View>
             </ScrollView>
           </View>

@@ -23,6 +23,7 @@ export type ModelScheduledNotificationsConditionInput = {
   and?: Array< ModelScheduledNotificationsConditionInput | null > | null,
   or?: Array< ModelScheduledNotificationsConditionInput | null > | null,
   not?: ModelScheduledNotificationsConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelStringInput = {
@@ -63,6 +64,13 @@ export type ModelSizeInput = {
   ge?: number | null,
   gt?: number | null,
   between?: Array< number | null > | null,
+};
+
+export type ModelBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
 };
 
 export type ScheduledNotifications = {
@@ -118,13 +126,7 @@ export type ModelNotificationsConditionInput = {
   and?: Array< ModelNotificationsConditionInput | null > | null,
   or?: Array< ModelNotificationsConditionInput | null > | null,
   not?: ModelNotificationsConditionInput | null,
-};
-
-export type ModelBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type Notifications = {
@@ -186,6 +188,7 @@ export type ModelGamesConditionInput = {
   and?: Array< ModelGamesConditionInput | null > | null,
   or?: Array< ModelGamesConditionInput | null > | null,
   not?: ModelGamesConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelIntInput = {
@@ -257,6 +260,7 @@ export type ModelStandingsPeopleConditionInput = {
   and?: Array< ModelStandingsPeopleConditionInput | null > | null,
   or?: Array< ModelStandingsPeopleConditionInput | null > | null,
   not?: ModelStandingsPeopleConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type StandingsPeople = {
@@ -300,6 +304,7 @@ export type ModelAdminFavoritesConditionInput = {
   and?: Array< ModelAdminFavoritesConditionInput | null > | null,
   or?: Array< ModelAdminFavoritesConditionInput | null > | null,
   not?: ModelAdminFavoritesConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type AdminFavorites = {
@@ -341,6 +346,7 @@ export type ModelStandingsTeamsConditionInput = {
   and?: Array< ModelStandingsTeamsConditionInput | null > | null,
   or?: Array< ModelStandingsTeamsConditionInput | null > | null,
   not?: ModelStandingsTeamsConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type StandingsTeams = {
@@ -392,6 +398,7 @@ export type ModelPostsConditionInput = {
   and?: Array< ModelPostsConditionInput | null > | null,
   or?: Array< ModelPostsConditionInput | null > | null,
   not?: ModelPostsConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type Posts = {
@@ -483,6 +490,7 @@ export type ModelTeamsConditionInput = {
   and?: Array< ModelTeamsConditionInput | null > | null,
   or?: Array< ModelTeamsConditionInput | null > | null,
   not?: ModelTeamsConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type Teams = {
@@ -559,6 +567,7 @@ export type ModelUsersConditionInput = {
   and?: Array< ModelUsersConditionInput | null > | null,
   or?: Array< ModelUsersConditionInput | null > | null,
   not?: ModelUsersConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelIDInput = {
@@ -607,6 +616,7 @@ export type ModelExpoTokensConditionInput = {
   and?: Array< ModelExpoTokensConditionInput | null > | null,
   or?: Array< ModelExpoTokensConditionInput | null > | null,
   not?: ModelExpoTokensConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ExpoTokens = {
@@ -648,6 +658,7 @@ export type ModelReactionsConditionInput = {
   and?: Array< ModelReactionsConditionInput | null > | null,
   or?: Array< ModelReactionsConditionInput | null > | null,
   not?: ModelReactionsConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type UpdateReactionsInput = {
@@ -678,6 +689,7 @@ export type ModelCommentsConditionInput = {
   and?: Array< ModelCommentsConditionInput | null > | null,
   or?: Array< ModelCommentsConditionInput | null > | null,
   not?: ModelCommentsConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type UpdateCommentsInput = {
@@ -708,6 +720,7 @@ export type ModelFAQConditionInput = {
   and?: Array< ModelFAQConditionInput | null > | null,
   or?: Array< ModelFAQConditionInput | null > | null,
   not?: ModelFAQConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type FAQ = {
@@ -757,6 +770,7 @@ export type ModelScheduleConditionInput = {
   and?: Array< ModelScheduleConditionInput | null > | null,
   or?: Array< ModelScheduleConditionInput | null > | null,
   not?: ModelScheduleConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type Schedule = {
@@ -802,6 +816,7 @@ export type ModelScheduledNotificationsFilterInput = {
   and?: Array< ModelScheduledNotificationsFilterInput | null > | null,
   or?: Array< ModelScheduledNotificationsFilterInput | null > | null,
   not?: ModelScheduledNotificationsFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelScheduledNotificationsConnection = {
@@ -822,6 +837,7 @@ export type ModelNotificationsFilterInput = {
   and?: Array< ModelNotificationsFilterInput | null > | null,
   or?: Array< ModelNotificationsFilterInput | null > | null,
   not?: ModelNotificationsFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelNotificationsConnection = {
@@ -845,6 +861,7 @@ export type ModelGamesFilterInput = {
   and?: Array< ModelGamesFilterInput | null > | null,
   or?: Array< ModelGamesFilterInput | null > | null,
   not?: ModelGamesFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelGamesConnection = {
@@ -864,6 +881,7 @@ export type ModelStandingsPeopleFilterInput = {
   and?: Array< ModelStandingsPeopleFilterInput | null > | null,
   or?: Array< ModelStandingsPeopleFilterInput | null > | null,
   not?: ModelStandingsPeopleFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelStandingsPeopleConnection = {
@@ -879,6 +897,7 @@ export type ModelAdminFavoritesFilterInput = {
   and?: Array< ModelAdminFavoritesFilterInput | null > | null,
   or?: Array< ModelAdminFavoritesFilterInput | null > | null,
   not?: ModelAdminFavoritesFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelAdminFavoritesConnection = {
@@ -897,6 +916,7 @@ export type ModelStandingsTeamsFilterInput = {
   and?: Array< ModelStandingsTeamsFilterInput | null > | null,
   or?: Array< ModelStandingsTeamsFilterInput | null > | null,
   not?: ModelStandingsTeamsFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelStandingsTeamsConnection = {
@@ -917,6 +937,7 @@ export type ModelPostsFilterInput = {
   and?: Array< ModelPostsFilterInput | null > | null,
   or?: Array< ModelPostsFilterInput | null > | null,
   not?: ModelPostsFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelPostsConnection = {
@@ -934,6 +955,7 @@ export type ModelTeamsFilterInput = {
   and?: Array< ModelTeamsFilterInput | null > | null,
   or?: Array< ModelTeamsFilterInput | null > | null,
   not?: ModelTeamsFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelTeamsConnection = {
@@ -955,6 +977,7 @@ export type ModelUsersFilterInput = {
   and?: Array< ModelUsersFilterInput | null > | null,
   or?: Array< ModelUsersFilterInput | null > | null,
   not?: ModelUsersFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export enum ModelSortDirection {
@@ -970,6 +993,7 @@ export type ModelExpoTokensFilterInput = {
   and?: Array< ModelExpoTokensFilterInput | null > | null,
   or?: Array< ModelExpoTokensFilterInput | null > | null,
   not?: ModelExpoTokensFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelExpoTokensConnection = {
@@ -987,6 +1011,7 @@ export type ModelReactionsFilterInput = {
   and?: Array< ModelReactionsFilterInput | null > | null,
   or?: Array< ModelReactionsFilterInput | null > | null,
   not?: ModelReactionsFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelCommentsFilterInput = {
@@ -997,6 +1022,7 @@ export type ModelCommentsFilterInput = {
   and?: Array< ModelCommentsFilterInput | null > | null,
   or?: Array< ModelCommentsFilterInput | null > | null,
   not?: ModelCommentsFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelFAQFilterInput = {
@@ -1007,6 +1033,7 @@ export type ModelFAQFilterInput = {
   and?: Array< ModelFAQFilterInput | null > | null,
   or?: Array< ModelFAQFilterInput | null > | null,
   not?: ModelFAQFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelFAQConnection = {
@@ -1027,6 +1054,7 @@ export type ModelScheduleFilterInput = {
   and?: Array< ModelScheduleFilterInput | null > | null,
   or?: Array< ModelScheduleFilterInput | null > | null,
   not?: ModelScheduleFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelScheduleConnection = {
@@ -1046,6 +1074,7 @@ export type ModelSubscriptionScheduledNotificationsFilterInput = {
   displayTime?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionScheduledNotificationsFilterInput | null > | null,
   or?: Array< ModelSubscriptionScheduledNotificationsFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelSubscriptionIDInput = {
@@ -1088,6 +1117,7 @@ export type ModelSubscriptionNotificationsFilterInput = {
   displayTime?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionNotificationsFilterInput | null > | null,
   or?: Array< ModelSubscriptionNotificationsFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelSubscriptionBooleanInput = {
@@ -1108,6 +1138,7 @@ export type ModelSubscriptionGamesFilterInput = {
   canHaveMultipleWinners?: ModelSubscriptionBooleanInput | null,
   and?: Array< ModelSubscriptionGamesFilterInput | null > | null,
   or?: Array< ModelSubscriptionGamesFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelSubscriptionIntInput = {
@@ -1131,6 +1162,7 @@ export type ModelSubscriptionStandingsPeopleFilterInput = {
   lastCalculationTime?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionStandingsPeopleFilterInput | null > | null,
   or?: Array< ModelSubscriptionStandingsPeopleFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelSubscriptionAdminFavoritesFilterInput = {
@@ -1138,6 +1170,7 @@ export type ModelSubscriptionAdminFavoritesFilterInput = {
   image?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionAdminFavoritesFilterInput | null > | null,
   or?: Array< ModelSubscriptionAdminFavoritesFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelSubscriptionStandingsTeamsFilterInput = {
@@ -1148,6 +1181,7 @@ export type ModelSubscriptionStandingsTeamsFilterInput = {
   lastCalculationTime?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionStandingsTeamsFilterInput | null > | null,
   or?: Array< ModelSubscriptionStandingsTeamsFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelSubscriptionPostsFilterInput = {
@@ -1160,6 +1194,7 @@ export type ModelSubscriptionPostsFilterInput = {
   usersInPost?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionPostsFilterInput | null > | null,
   or?: Array< ModelSubscriptionPostsFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelSubscriptionTeamsFilterInput = {
@@ -1169,6 +1204,7 @@ export type ModelSubscriptionTeamsFilterInput = {
   description?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionTeamsFilterInput | null > | null,
   or?: Array< ModelSubscriptionTeamsFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelSubscriptionUsersFilterInput = {
@@ -1182,6 +1218,7 @@ export type ModelSubscriptionUsersFilterInput = {
   unreadNotifications?: ModelSubscriptionIntInput | null,
   and?: Array< ModelSubscriptionUsersFilterInput | null > | null,
   or?: Array< ModelSubscriptionUsersFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelSubscriptionExpoTokensFilterInput = {
@@ -1190,6 +1227,7 @@ export type ModelSubscriptionExpoTokensFilterInput = {
   userId?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionExpoTokensFilterInput | null > | null,
   or?: Array< ModelSubscriptionExpoTokensFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelSubscriptionReactionsFilterInput = {
@@ -1199,6 +1237,7 @@ export type ModelSubscriptionReactionsFilterInput = {
   postsID?: ModelSubscriptionIDInput | null,
   and?: Array< ModelSubscriptionReactionsFilterInput | null > | null,
   or?: Array< ModelSubscriptionReactionsFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelSubscriptionCommentsFilterInput = {
@@ -1208,6 +1247,7 @@ export type ModelSubscriptionCommentsFilterInput = {
   postsID?: ModelSubscriptionIDInput | null,
   and?: Array< ModelSubscriptionCommentsFilterInput | null > | null,
   or?: Array< ModelSubscriptionCommentsFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelSubscriptionFAQFilterInput = {
@@ -1217,6 +1257,7 @@ export type ModelSubscriptionFAQFilterInput = {
   sortOrder?: ModelSubscriptionIntInput | null,
   and?: Array< ModelSubscriptionFAQFilterInput | null > | null,
   or?: Array< ModelSubscriptionFAQFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type ModelSubscriptionScheduleFilterInput = {
@@ -1229,6 +1270,7 @@ export type ModelSubscriptionScheduleFilterInput = {
   sortOrder?: ModelSubscriptionIntInput | null,
   and?: Array< ModelSubscriptionScheduleFilterInput | null > | null,
   or?: Array< ModelSubscriptionScheduleFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
 };
 
 export type CreateScheduledNotificationsMutationVariables = {

@@ -19,6 +19,7 @@ export const onCreateScheduledNotifications = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -39,6 +40,7 @@ export const onUpdateScheduledNotifications = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -59,6 +61,7 @@ export const onDeleteScheduledNotifications = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -79,6 +82,7 @@ export const onCreateNotifications = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -99,6 +103,7 @@ export const onUpdateNotifications = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -119,6 +124,7 @@ export const onDeleteNotifications = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -140,6 +146,7 @@ export const onCreateGames = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -161,6 +168,7 @@ export const onUpdateGames = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -182,6 +190,7 @@ export const onDeleteGames = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -201,6 +210,7 @@ export const onCreateStandingsPeople = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -220,6 +230,7 @@ export const onUpdateStandingsPeople = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -239,6 +250,7 @@ export const onDeleteStandingsPeople = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -254,6 +266,7 @@ export const onCreateAdminFavorites = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -269,6 +282,7 @@ export const onUpdateAdminFavorites = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -284,6 +298,7 @@ export const onDeleteAdminFavorites = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -302,6 +317,7 @@ export const onCreateStandingsTeams = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -320,6 +336,7 @@ export const onUpdateStandingsTeams = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -338,6 +355,7 @@ export const onDeleteStandingsTeams = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -353,10 +371,12 @@ export const onCreatePosts = /* GraphQL */ `
       Comments {
         nextToken
         startedAt
+        __typename
       }
       Reactions {
         nextToken
         startedAt
+        __typename
       }
       usersInPost
       createdAt
@@ -364,6 +384,7 @@ export const onCreatePosts = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -379,10 +400,12 @@ export const onUpdatePosts = /* GraphQL */ `
       Comments {
         nextToken
         startedAt
+        __typename
       }
       Reactions {
         nextToken
         startedAt
+        __typename
       }
       usersInPost
       createdAt
@@ -390,6 +413,7 @@ export const onUpdatePosts = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -405,10 +429,12 @@ export const onDeletePosts = /* GraphQL */ `
       Comments {
         nextToken
         startedAt
+        __typename
       }
       Reactions {
         nextToken
         startedAt
+        __typename
       }
       usersInPost
       createdAt
@@ -416,6 +442,7 @@ export const onDeletePosts = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -427,6 +454,7 @@ export const onCreateTeams = /* GraphQL */ `
       Users {
         nextToken
         startedAt
+        __typename
       }
       iconName
       description
@@ -435,6 +463,7 @@ export const onCreateTeams = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -446,6 +475,7 @@ export const onUpdateTeams = /* GraphQL */ `
       Users {
         nextToken
         startedAt
+        __typename
       }
       iconName
       description
@@ -454,6 +484,7 @@ export const onUpdateTeams = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -465,6 +496,7 @@ export const onDeleteTeams = /* GraphQL */ `
       Users {
         nextToken
         startedAt
+        __typename
       }
       iconName
       description
@@ -473,6 +505,7 @@ export const onDeleteTeams = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -492,6 +525,7 @@ export const onCreateUsers = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -511,6 +545,7 @@ export const onUpdateUsers = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -530,6 +565,7 @@ export const onDeleteUsers = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -546,6 +582,7 @@ export const onCreateExpoTokens = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -562,6 +599,7 @@ export const onUpdateExpoTokens = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -578,6 +616,7 @@ export const onDeleteExpoTokens = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -595,6 +634,7 @@ export const onCreateReactions = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -612,6 +652,7 @@ export const onUpdateReactions = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -629,6 +670,7 @@ export const onDeleteReactions = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -644,6 +686,7 @@ export const onCreateComments = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -659,6 +702,7 @@ export const onUpdateComments = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -674,6 +718,7 @@ export const onDeleteComments = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -689,6 +734,7 @@ export const onCreateFAQ = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -704,6 +750,7 @@ export const onUpdateFAQ = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -719,6 +766,7 @@ export const onDeleteFAQ = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -737,6 +785,7 @@ export const onCreateSchedule = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -755,6 +804,7 @@ export const onUpdateSchedule = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;
@@ -773,6 +823,7 @@ export const onDeleteSchedule = /* GraphQL */ `
       _version
       _deleted
       _lastChangedAt
+      __typename
     }
   }
 `;

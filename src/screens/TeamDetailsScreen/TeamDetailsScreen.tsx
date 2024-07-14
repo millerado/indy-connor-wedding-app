@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect, useState, useCallback, useContext } from 'react';
-import { View } from "react-native";
+import { View, Platform } from "react-native";
 import { useTheme } from "react-native-paper";
 import Animated, {
   Extrapolation,

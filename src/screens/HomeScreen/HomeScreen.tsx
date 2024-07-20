@@ -18,6 +18,7 @@ const HomeScreen = () => {
   const authContext = useContext(AuthContext);
   const { authStatus } = authContext;
   const { refreshData, allUsers, allComments, allAdminFavorites, allReactions, allPosts } = useContext(DataContext);
+  console.log('-- allPosts --', allPosts.length);
 
   const renderItem = useCallback(({ item }) => {
     const postComments = allComments.filter((comment) => comment.postsID === item.id);
@@ -67,8 +68,8 @@ const HomeScreen = () => {
         stickyHeaderIndices={[0]}
         ListHeaderComponent={listHeader}
         removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
-        maxToRenderPerBatch={10} // Also the default
-        initialNumToRender={10} // Also the default
+        // maxToRenderPerBatch={10} // Also the default
+        // initialNumToRender={10} // Also the default
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"
         style={{ width: '100%' }}

@@ -8,6 +8,7 @@ import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { API, graphqlOperation, Hub } from "aws-amplify";
 import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { 
   onCreatePosts, onUpdatePosts, onDeletePosts,
   onCreateUsers, onUpdateUsers, onDeleteUsers,
@@ -611,48 +612,50 @@ const App = () => {
   }
 
   return (
-    <ThemeContext.Provider value={{ themeName, setThemeName: saveTheme }}>
-      <AuthContext.Provider value={{ authStatus, setAuthStatus: setUser }}>
-        <NavigationContainer ref={nav}>
-          <PaperProvider theme={theme}>
-            <DataContext.Provider value={{ 
-              refreshData: onRefresh, 
-              allUsers, 
-              allComments, 
-              allAdminFavorites,
-              allReactions: reactionsWithUsers,
-              allPosts,
-              allFaqs,
-              allSchedule,
-              allGames,
-              allTeams,
-              allStandingsPeople,
-              allStandingsTeams,
-              allExpoTokens,
-              totalNotifications: notificationDetails.totalNotifications, 
-              unreadNotifications: notificationDetails.unreadNotifications, 
-              allNotifications: notificationDetails.allNotifications,
-            }}>
-              <SnackbarContext.Provider
-                value={{ snackbar: snackbarDetails, setSnackbar }}
-              >
-                <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-                  {authStatus.userId ? (
-                    <AuthedApp
-                      showSnackbar={showSnackbar}
-                      onDismissSnackBar={onDismissSnackBar}
-                      snackbarDetails={snackbarDetails}
-                    />
-                  ) : (
-                    <WelcomeScreen />
-                  )}
-                </View>
-              </SnackbarContext.Provider>
-            </DataContext.Provider>
-          </PaperProvider>
-        </NavigationContainer>
-      </AuthContext.Provider>
-    </ThemeContext.Provider>
+    <GestureHandlerRootView>
+      <ThemeContext.Provider value={{ themeName, setThemeName: saveTheme }}>
+        <AuthContext.Provider value={{ authStatus, setAuthStatus: setUser }}>
+          <NavigationContainer ref={nav}>
+            <PaperProvider theme={theme}>
+              <DataContext.Provider value={{ 
+                refreshData: onRefresh, 
+                allUsers, 
+                allComments, 
+                allAdminFavorites,
+                allReactions: reactionsWithUsers,
+                allPosts,
+                allFaqs,
+                allSchedule,
+                allGames,
+                allTeams,
+                allStandingsPeople,
+                allStandingsTeams,
+                allExpoTokens,
+                totalNotifications: notificationDetails.totalNotifications, 
+                unreadNotifications: notificationDetails.unreadNotifications, 
+                allNotifications: notificationDetails.allNotifications,
+              }}>
+                <SnackbarContext.Provider
+                  value={{ snackbar: snackbarDetails, setSnackbar }}
+                >
+                  <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+                    {authStatus.userId ? (
+                      <AuthedApp
+                        showSnackbar={showSnackbar}
+                        onDismissSnackBar={onDismissSnackBar}
+                        snackbarDetails={snackbarDetails}
+                      />
+                    ) : (
+                      <WelcomeScreen />
+                    )}
+                  </View>
+                </SnackbarContext.Provider>
+              </DataContext.Provider>
+            </PaperProvider>
+          </NavigationContainer>
+        </AuthContext.Provider>
+      </ThemeContext.Provider>
+    </GestureHandlerRootView>
   );
 };
 

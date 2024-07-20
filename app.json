@@ -63,7 +63,9 @@
           "androidCollapsedTitle": "Camp Conndigo",
           "iosDisplayInForeground": true
         }
-      ]
+      ],
+      "expo-font",
+      "expo-secure-store"
     ],
     "extra": {
       "eas": {

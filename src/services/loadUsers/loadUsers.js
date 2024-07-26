@@ -21,7 +21,7 @@ const formatUsers = async (items, setUsers, oldUsers) => {
   }
 };
 
-const loadUsersFromDatastore = async (setUsers, oldUsers) => {
+const loadUsersFromDatastore = async (setUsers, oldUsers, eventId) => {
   try {
     const users = await DataStore.query(Users);
     formatUsers(users, setUsers, oldUsers);
@@ -30,7 +30,7 @@ const loadUsersFromDatastore = async (setUsers, oldUsers) => {
   }
 }
 
-const loadUsers = async (setUsers, oldUsers) => {
+const loadUsers = async (setUsers, oldUsers, eventId) => {
   try {
     const allUsers = await API.graphql({ query: listUsers, variables: { limit: 999999999 } });
 
@@ -42,7 +42,7 @@ const loadUsers = async (setUsers, oldUsers) => {
     }
   } catch (err) {
     console.log('-- Error Loading Users, Trying Datastore --', err);
-    loadUsersFromDatastore(setUsers, oldUsers);
+    loadUsersFromDatastore(setUsers, oldUsers, eventId);
   }
 };
 

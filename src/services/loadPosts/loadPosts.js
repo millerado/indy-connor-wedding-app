@@ -20,10 +20,11 @@ const formatPosts = (items, oldPosts, setPosts) => {
   return [];
 }
 
-const loadPostsFromDatastore = async (setPosts, oldPosts) => {
+const loadPostsFromDatastore = async (setPosts, oldPosts, eventId) => {
   try {
     const posts = await DataStore.query(Posts, Predicates.ALL, {
       sort: (s) => s.createdAt(SortDirection.DESCENDING),
+      filter: (f) => f.postsEventsID("eq", eventId)
     });
     formatPosts(posts, oldPosts, setPosts);
   } catch (err) {
@@ -31,9 +32,11 @@ const loadPostsFromDatastore = async (setPosts, oldPosts) => {
   }
 }
 
-const loadPosts = async (setPosts, oldPosts) => {
+const loadPosts = async (setPosts, oldPosts, eventId) => {
   try {
-    const allPosts = await API.graphql({ query: listPosts, variables: { limit: 999999999 } });
+    const allPosts = await API.graphql({ query: listPosts, variables: { limit: 999999999, filter: {
+      postsEventsId: { eq: eventId }
+    } } });
 
     const unfilteredItems = allPosts?.data?.listPosts?.items;
     // Remove items where _deleted is true
@@ -47,7 +50,7 @@ const loadPosts = async (setPosts, oldPosts) => {
     }
   } catch (err) {
     console.log('-- Error Loading Posts, Will Try Datastore --', err);
-    loadPostsFromDatastore(setPosts, oldPosts);
+    loadPostsFromDatastore(setPosts, oldPosts, eventId);
   }
 };
 

@@ -26,7 +26,7 @@ const TeamDetailsScreen = ({ route }) => {
   const [standingsPeople, setStandingsPeople] = useState([]);
   const [displayPosts, setDisplayPosts] = useState([]);
   const { width, height } = calcDimensions();
-  const { refreshData, allPosts, allTeams, allUsers, allAdminFavorites, allComments, allReactions, allStandingsPeople } = useContext(DataContext);
+  const { refreshData, selectedEventId, allPosts, allTeams, allUsers, allAdminFavorites, allComments, allReactions, allStandingsPeople } = useContext(DataContext);
 
   const scrollY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler((event) => {
@@ -128,7 +128,7 @@ const TeamDetailsScreen = ({ route }) => {
   }, []);
 
   const onRefresh = async () => {
-    refreshData();
+    refreshData(selectedEventId);
   }
 
   useEffect(() => {

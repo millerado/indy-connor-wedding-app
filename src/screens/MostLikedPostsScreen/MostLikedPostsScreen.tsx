@@ -20,7 +20,7 @@ const MostLikedPostsScreen = () => {
 
   const authContext = useContext(AuthContext);
   const { authStatus } = authContext;
-  const { refreshData, allUsers, allComments, allAdminFavorites, allReactions, allPosts } = useContext(DataContext);
+  const { refreshData, selectedEventId, allUsers, allComments, allAdminFavorites, allReactions, allPosts } = useContext(DataContext);
 
   const renderItem = useCallback(({ item }) => {
     const postComments = allComments.filter((comment) => comment.postsID === item.id);
@@ -49,7 +49,7 @@ const MostLikedPostsScreen = () => {
   }, []);
 
   const onRefresh = async () => {
-    refreshData();
+    refreshData(selectedEventId);
   }
 
   useEffect(() => {

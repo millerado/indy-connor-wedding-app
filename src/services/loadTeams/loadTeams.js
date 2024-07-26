@@ -3,7 +3,7 @@ import { listTeams } from '../../graphql/queries'
 import { DataStore } from '../../utils';
 import { Teams } from '../../models';
 
-const loadTeamsFromDatastore = async (setTeams, oldTeams) => {
+const loadTeamsFromDatastore = async (setTeams, oldTeams, eventId) => {
   try {
     const items = await DataStore.query(Teams);
     if(items.length > 0){
@@ -16,7 +16,7 @@ const loadTeamsFromDatastore = async (setTeams, oldTeams) => {
   }
 };
 
-const loadTeams = async (setTeams, oldTeams) => {
+const loadTeams = async (setTeams, oldTeams, eventId) => {
   try {
     const allTeams = await API.graphql({ query: listTeams, variables: { limit: 999999999 } });
 
@@ -30,7 +30,7 @@ const loadTeams = async (setTeams, oldTeams) => {
     }
   } catch (err) {
     console.log('-- Error Loading Teams, Will Try Datastore --', err);
-    loadTeamsFromDatastore(setTeams, oldTeams);
+    loadTeamsFromDatastore(setTeams, oldTeams, eventId);
   }
 };
 

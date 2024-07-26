@@ -17,7 +17,7 @@ const InfoScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const authStatus = useContext(AuthContext).authStatus;
-  const { refreshData, allFaqs } = useContext(DataContext);
+  const { refreshData, selectedEventId, allFaqs } = useContext(DataContext);
   const dimensions = calcDimensions();
 
   const closeModal = () => {
@@ -109,7 +109,7 @@ const InfoScreen = ({ navigation, route }) => {
   }
 
   const onRefresh = () => {
-    refreshData();
+    refreshData(selectedEventId);
   }
 
   useEffect(() => {

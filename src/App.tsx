@@ -24,6 +24,7 @@ import {
   onCreateExpoTokens, onUpdateExpoTokens, onDeleteExpoTokens,
   onCreateNotifications, onUpdateNotifications, onDeleteNotifications,
   onCreateScheduledNotifications, onUpdateScheduledNotifications, onDeleteScheduledNotifications,
+  onCreateEvents, onUpdateEvents, onDeleteEvents,
 } from "./graphql/subscriptions";
 import { lightTheme, darkTheme } from "./styles";
 import {
@@ -37,7 +38,7 @@ import {
 import { WelcomeScreen } from './screens';
 import { Users } from "./models";
 import { registerForPushNotificationsAsync } from "./utils";
-import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions, loadFaqs, loadSchedule, loadGames, loadTeams, loadStandingsPeople, loadStandingsTeams, loadExpoTokens, loadNotifications, loadScheduledNotifications } from "./services";
+import { loadUsers, loadPosts, loadAdminFavorites, loadComments, loadReactions, loadFaqs, loadSchedule, loadGames, loadTeams, loadStandingsPeople, loadStandingsTeams, loadExpoTokens, loadNotifications, loadScheduledNotifications, loadEvents } from "./services";
 import AuthedApp from "./AuthedApp";
 
 const customFonts = {
@@ -88,11 +89,15 @@ const App = () => {
   const [allStandingsPeople, setAllStandingsPeople] = useState([]);
   const [allStandingsTeams, setAllStandingsTeams] = useState([]);
   const [allExpoTokens, setAllExpoTokens] = useState([]);
+  const [allEvents, setAllEvents] = useState([]);
   const [reactionsWithUsers, setReactionsWithUsers] = useState([]);
   const responseListener = useRef();
   const nav = useRef();
   const priorConnectionState = useRef(undefined);
   const lastRefreshTime = useRef(undefined);
+  // TO-DO: Move to context AND add an event sign in form
+  const [selectedEventId, setSelectedEventId] = useState('e6311bc0-c7e6-48eb-8e87-f015c04140e3'); // Wedding
+  // const [selectedEventId, setSelectedEventId] = useState('ca33d400-811e-4557-8ee5-430bd6f8513f'); // 2024 Summer Games
 
   // Pieces for the Theme Context
   const theme = themeName === "Dark" ? darkTheme : lightTheme;
@@ -161,7 +166,7 @@ const App = () => {
         // console.log('-- Refresh from Connection (all data) --', payload.data.connectionState, priorConnectionState.current);
         if(lastRefreshTime.current && (new Date().getTime() - lastRefreshTime.current.getTime()) > 30000) {
           // console.log('-- And do a refresh --');
-          onRefresh();
+          onRefresh(selectedEventId);
         }
       }
       if(priorConnectionState.current !== payload.data.connectionState) {
@@ -170,19 +175,20 @@ const App = () => {
     }
   });
 
-  const onRefresh = async () => {
-    loadPosts(setAllPosts, allPosts);
-    loadUsers(setAllUsers, allUsers);
-    loadAdminFavorites(setAllAdminFavorites, allAdminFavorites);
-    loadComments(setAllComments, allComments);
-    loadReactions(setAllReactions, allReactions);
-    loadFaqs(setAllFaqs, allFaqs);
-    loadSchedule(setAllSchedule, allSchedule);
+  const onRefresh = async (eventId) => {
+    loadPosts(setAllPosts, allPosts, eventId);
+    loadUsers(setAllUsers, allUsers, eventId);
+    loadAdminFavorites(setAllAdminFavorites, allAdminFavorites, eventId);
+    loadComments(setAllComments, allComments, eventId);
+    loadReactions(setAllReactions, allReactions, eventId);
+    loadFaqs(setAllFaqs, allFaqs, eventId);
+    loadSchedule(setAllSchedule, allSchedule, eventId);
     loadGames(setAllGames, allGames);
-    loadTeams(setAllTeams, allTeams);
-    loadStandingsPeople(setAllStandingsPeople, allStandingsPeople);
-    loadStandingsTeams(setAllStandingsTeams, allStandingsTeams);
+    loadTeams(setAllTeams, allTeams, eventId);
+    loadStandingsPeople(setAllStandingsPeople, allStandingsPeople, eventId);
+    loadStandingsTeams(setAllStandingsTeams, allStandingsTeams, eventId);
     loadExpoTokens(setAllExpoTokens, allExpoTokens);
+    loadEvents(setAllEvents, allEvents);
     onRefreshNotifications();
   }
 
@@ -288,127 +294,127 @@ const App = () => {
     const postCreateSub = API.graphql(
       graphqlOperation(onCreatePosts)
     ).subscribe({
-      next: ({ value }) => loadPosts(setAllPosts, allPosts),
+      next: ({ value }) => loadPosts(setAllPosts, allPosts, selectedEventId)
     });
     
     const postUpdateSub = API.graphql(
       graphqlOperation(onUpdatePosts)
     ).subscribe({
-      next: ({ value }) => loadPosts(setAllPosts, allPosts)
+      next: ({ value }) => loadPosts(setAllPosts, allPosts, selectedEventId)
     });
     
     const postDeleteSub = API.graphql(
       graphqlOperation(onDeletePosts)
     ).subscribe({
-      next: ({ value }) => loadPosts(setAllPosts, allPosts)
+      next: ({ value }) => loadPosts(setAllPosts, allPosts, selectedEventId)
     });
 
     const userCreateSub = API.graphql(
       graphqlOperation(onCreateUsers)
     ).subscribe({
-      next: ({ value }) => loadUsers(setAllUsers, allUsers),
+      next: ({ value }) => loadUsers(setAllUsers, allUsers, selectedEventId)
     });
 
     const userUpdateSub = API.graphql(
       graphqlOperation(onUpdateUsers)
     ).subscribe({
-      next: ({ value }) => loadUsers(setAllUsers, allUsers)
+      next: ({ value }) => loadUsers(setAllUsers, allUsers, selectedEventId)
     });
 
     const userDeleteSub = API.graphql(
       graphqlOperation(onDeleteUsers)
     ).subscribe({
-      next: ({ value }) => loadUsers(setAllUsers, allUsers)
+      next: ({ value }) => loadUsers(setAllUsers, allUsers, selectedEventId)
     });
 
     const adminFavoriteCreateSub = API.graphql(
       graphqlOperation(onCreateAdminFavorites)
     ).subscribe({
-      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites),
+      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites, selectedEventId)
     });
 
     const adminFavoriteUpdateSub = API.graphql(
       graphqlOperation(onUpdateAdminFavorites)
     ).subscribe({
-      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites)
+      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites, selectedEventId)
     });
 
     const adminFavoriteDeleteSub = API.graphql(
       graphqlOperation(onDeleteAdminFavorites)
     ).subscribe({
-      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites)
+      next: ({ value }) => loadAdminFavorites(setAllAdminFavorites, allAdminFavorites, selectedEventId)
     });
 
     const commentCreateSub = API.graphql(
       graphqlOperation(onCreateComments)
     ).subscribe({
-      next: ({ value }) => loadComments(setAllComments, allComments),
+      next: ({ value }) => loadComments(setAllComments, allComments, selectedEventId)
     });
 
     const commentUpdateSub = API.graphql(
       graphqlOperation(onUpdateComments)
     ).subscribe({
-      next: ({ value }) => loadComments(setAllComments, allComments)
+      next: ({ value }) => loadComments(setAllComments, allComments, selectedEventId)
     });
 
     const commentDeleteSub = API.graphql(
       graphqlOperation(onDeleteComments)
     ).subscribe({
-      next: ({ value }) => loadComments(setAllComments, allComments)
+      next: ({ value }) => loadComments(setAllComments, allComments, selectedEventId)
     });
 
     const reactionsCreateSub = API.graphql(
       graphqlOperation(onCreateReactions)
     ).subscribe({
-      next: ({ value }) => loadReactions(setAllReactions, allReactions),
+      next: ({ value }) => loadReactions(setAllReactions, allReactions, selectedEventId)
     });
 
     const reactionsUpdateSub = API.graphql(
       graphqlOperation(onUpdateReactions)
     ).subscribe({
-      next: ({ value }) => loadReactions(setAllReactions, allReactions)
+      next: ({ value }) => loadReactions(setAllReactions, allReactions, selectedEventId)
     });
 
     const reactionsDeleteSub = API.graphql(
       graphqlOperation(onDeleteReactions)
     ).subscribe({
-      next: ({ value }) => loadReactions(setAllReactions, allReactions)
+      next: ({ value }) => loadReactions(setAllReactions, allReactions, selectedEventId)
     });
 
     const faqsCreateSub = API.graphql(
       graphqlOperation(onCreateFAQ)
     ).subscribe({
-      next: ({ value }) => loadFaqs(setAllFaqs, allFaqs),
+      next: ({ value }) => loadFaqs(setAllFaqs, allFaqs, selectedEventId)
     });
 
     const faqsUpdateSub = API.graphql(
       graphqlOperation(onUpdateFAQ)
     ).subscribe({
-      next: ({ value }) => loadFaqs(setAllFaqs, allFaqs)
+      next: ({ value }) => loadFaqs(setAllFaqs, allFaqs, selectedEventId)
     });
 
     const faqsDeleteSub = API.graphql(
       graphqlOperation(onDeleteFAQ)
     ).subscribe({
-      next: ({ value }) => loadFaqs(setAllFaqs, allFaqs)
+      next: ({ value }) => loadFaqs(setAllFaqs, allFaqs, selectedEventId)
     });
 
     const scheduleCreateSub = API.graphql(
       graphqlOperation(onCreateSchedule)
     ).subscribe({
-      next: ({ value }) => loadSchedule(setAllSchedule, allSchedule),
+      next: ({ value }) => loadSchedule(setAllSchedule, allSchedule, selectedEventId)
     });
 
     const scheduleUpdateSub = API.graphql(
       graphqlOperation(onUpdateSchedule)
     ).subscribe({
-      next: ({ value }) => loadSchedule(setAllSchedule, allSchedule)
+      next: ({ value }) => loadSchedule(setAllSchedule, allSchedule, selectedEventId)
     });
 
     const scheduleDeleteSub = API.graphql(
       graphqlOperation(onDeleteSchedule)
     ).subscribe({
-      next: ({ value }) => loadSchedule(setAllSchedule, allSchedule)
+      next: ({ value }) => loadSchedule(setAllSchedule, allSchedule, selectedEventId)
     });
 
     const gamesCreateSub = API.graphql(
@@ -432,7 +438,7 @@ const App = () => {
     const teamsCreateSub = API.graphql(
       graphqlOperation(onCreateTeams)
     ).subscribe({
-      next: ({ value }) => loadTeams(setAllTeams, allTeams),
+      next: ({ value }) => loadTeams(setAllTeams, allTeams)
     });
 
     const teamsUpdateSub = API.graphql(
@@ -450,43 +456,43 @@ const App = () => {
     const standingsPeopleCreateSub = API.graphql(
       graphqlOperation(onCreateStandingsPeople)
     ).subscribe({
-      next: ({ value }) => loadStandingsPeople(setAllStandingsPeople, allStandingsPeople),
+      next: ({ value }) => loadStandingsPeople(setAllStandingsPeople, allStandingsPeople, selectedEventId)
     });
 
     const standingsPeopleUpdateSub = API.graphql(
       graphqlOperation(onUpdateStandingsPeople)
     ).subscribe({
-      next: ({ value }) => loadStandingsPeople(setAllStandingsPeople, allStandingsPeople)
+      next: ({ value }) => loadStandingsPeople(setAllStandingsPeople, allStandingsPeople, selectedEventId)
     });
 
     const standingsPeopleDeleteSub = API.graphql(
       graphqlOperation(onDeleteStandingsPeople)
     ).subscribe({
-      next: ({ value }) => loadStandingsPeople(setAllStandingsPeople, allStandingsPeople)
+      next: ({ value }) => loadStandingsPeople(setAllStandingsPeople, allStandingsPeople, selectedEventId)
     });
 
     const standingsTeamsCreateSub = API.graphql(
       graphqlOperation(onCreateStandingsTeams)
     ).subscribe({
-      next: ({ value }) => loadStandingsTeams(setAllStandingsTeams, allStandingsTeams),
+      next: ({ value }) => loadStandingsTeams(setAllStandingsTeams, allStandingsTeams, selectedEventId)
     });
 
     const standingsTeamsUpdateSub = API.graphql(
       graphqlOperation(onUpdateStandingsTeams)
     ).subscribe({
-      next: ({ value }) => loadStandingsTeams(setAllStandingsTeams, allStandingsTeams)
+      next: ({ value }) => loadStandingsTeams(setAllStandingsTeams, allStandingsTeams, selectedEventId)
     });
 
     const standingsTeamsDeleteSub = API.graphql(
       graphqlOperation(onDeleteStandingsTeams)
     ).subscribe({
-      next: ({ value }) => loadStandingsTeams(setAllStandingsTeams, allStandingsTeams)
+      next: ({ value }) => loadStandingsTeams(setAllStandingsTeams, allStandingsTeams, selectedEventId)
     });
 
     const expoTokensCreateSub = API.graphql(
       graphqlOperation(onCreateExpoTokens)
     ).subscribe({
-      next: ({ value }) => loadExpoTokens(setAllExpoTokens, allExpoTokens),
+      next: ({ value }) => loadExpoTokens(setAllExpoTokens, allExpoTokens)
     });
 
     const expoTokensUpdateSub = API.graphql(
@@ -501,7 +507,25 @@ const App = () => {
       next: ({ value }) => loadExpoTokens(setAllExpoTokens, allExpoTokens)
     });
 
-    onRefresh();
+    const eventsCreateSub = API.graphql(
+      graphqlOperation(onCreateEvents)
+    ).subscribe({
+      next: ({ value }) => loadEvents(setAllEvents, allEvents)
+    });
+
+    const eventsUpdateSub = API.graphql(
+      graphqlOperation(onUpdateEvents)
+    ).subscribe({
+      next: ({ value }) => loadEvents(setAllEvents, allEvents)
+    });
+
+    const eventsDeleteSub = API.graphql(
+      graphqlOperation(onDeleteEvents)
+    ).subscribe({
+      next: ({ value }) => loadEvents(setAllEvents, allEvents)
+    });
+
+    onRefresh(selectedEventId);
 
     return () => {
       postCreateSub.unsubscribe();
@@ -540,8 +564,11 @@ const App = () => {
       expoTokensCreateSub.unsubscribe();
       expoTokensUpdateSub.unsubscribe();
       expoTokensDeleteSub.unsubscribe();
+      eventsCreateSub.unsubscribe();
+      eventsUpdateSub.unsubscribe();
+      eventsDeleteSub.unsubscribe();
     }
-  }, []);
+  }, [selectedEventId]);
 
   // Data Subcriptions for Notifications (which are user-dependent)
   useEffect(() => {
@@ -619,6 +646,7 @@ const App = () => {
             <PaperProvider theme={theme}>
               <DataContext.Provider value={{ 
                 refreshData: onRefresh, 
+                selectedEventId,
                 allUsers, 
                 allComments, 
                 allAdminFavorites,
@@ -631,6 +659,7 @@ const App = () => {
                 allStandingsPeople,
                 allStandingsTeams,
                 allExpoTokens,
+                allEvents,
                 totalNotifications: notificationDetails.totalNotifications, 
                 unreadNotifications: notificationDetails.unreadNotifications, 
                 allNotifications: notificationDetails.allNotifications,

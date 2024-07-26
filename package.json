@@ -56,7 +56,8 @@
     "react-native-zoom-reanimated": "^1.1.2",
     "react-string-replace": "^1.1.0",
     "shuffle-seed": "^1.1.6",
-    "typescript": "~5.3.3"
+    "typescript": "~5.3.3",
+    "@shopify/flash-list": "1.6.4"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",

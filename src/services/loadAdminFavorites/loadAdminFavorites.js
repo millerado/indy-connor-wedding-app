@@ -1,4 +1,4 @@
-import { API } from "aws-amplify";
+import { API, Predicates } from "aws-amplify";
 import { listAdminFavorites } from '../../graphql/queries'
 import { AdminFavorites } from "../../models";
 import { DataStore } from "../../utils";
@@ -19,18 +19,22 @@ const formatAdminFavorites = async (items, oldAdminFavorites, setAdminFavorites)
   }
 };
 
-const loadAdminFavoritesFromDatastore = async (setAdminFavorites, oldAdminFavorites) => {
+const loadAdminFavoritesFromDatastore = async (setAdminFavorites, oldAdminFavorites, eventId) => {
   try {
-    const adminFavorites = await DataStore.query(AdminFavorites);
+    const adminFavorites = await DataStore.query(AdminFavorites, Predicates.ALL, {
+      filter: (f) => f.adminFavoritesEventsId("eq", eventId)
+    });
     formatAdminFavorites(adminFavorites, oldAdminFavorites, setAdminFavorites);
   } catch (err) {
     console.log('-- Error Loading Admin Favorites Via Datastore --', err);
   }
 }
 
-const loadAdminFavorites = async (setAdminFavorites, oldAdminFavorites) => {
+const loadAdminFavorites = async (setAdminFavorites, oldAdminFavorites, eventId) => {
   try {
-    const allAdminFavorites = await API.graphql({ query: listAdminFavorites, variables: { limit: 999999999 } });
+    const allAdminFavorites = await API.graphql({ query: listAdminFavorites, variables: { limit: 999999999, filter: {
+      adminFavoritesEventsId: { eq: eventId }
+    } } });
 
     const unfilteredItems = allAdminFavorites?.data?.listAdminFavorites?.items;
     // Remove items where _deleted is true
@@ -38,7 +42,7 @@ const loadAdminFavorites = async (setAdminFavorites, oldAdminFavorites) => {
     formatAdminFavorites(items, oldAdminFavorites, setAdminFavorites);
   } catch (err) {
     console.log('-- Error Loading Admin Favorites, try Datastore --', err);
-    loadAdminFavoritesFromDatastore(setAdminFavorites, oldAdminFavorites);
+    loadAdminFavoritesFromDatastore(setAdminFavorites, oldAdminFavorites, eventId);
   }
 };
 

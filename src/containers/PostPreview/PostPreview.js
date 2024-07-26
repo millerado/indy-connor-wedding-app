@@ -263,7 +263,7 @@ const PostPreview = (props) => {
           <View style={ss.leftSide}>
             {eventDetails ? (
               <View style={ss.avatarWrapper}>
-                {messageBody.toLowerCase().includes("#ohshit") ? (
+                {messageBody?.toLowerCase()?.includes("#ohshit") ? (
                   <Icon name={'ohShit'} color={theme.colors.primary} size={typography.fontSizeM * 2} />
                 ) : (
                   <Icon name={eventDetails.game.iconName} color={theme.colors.primary} size={typography.fontSizeM * 2} />

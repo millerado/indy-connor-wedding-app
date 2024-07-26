@@ -11,7 +11,7 @@ const GamesScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const authStatus = useContext(AuthContext).authStatus;
-  const {allGames, refreshData} = useContext(DataContext);
+  const {allGames} = useContext(DataContext);
 
   const addNewButton = () => {
     return (

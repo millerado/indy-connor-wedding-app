@@ -11,6 +11,8 @@ const reusableStyles = theme => {
       alignItems: 'flex-start',
       justifyContent: 'flex-start',
       backgroundColor: theme.colors.background,
+      // width: '100%',
+      // flexGrow: 1
     },
     modalBackground: {
       justifyContent: "center",

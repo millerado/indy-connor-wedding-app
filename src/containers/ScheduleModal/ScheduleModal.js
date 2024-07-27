@@ -53,7 +53,6 @@ const ScheduleModal = (props) => {
           updatedItem.description = description;
           updatedItem.sortOrder = parseInt(sortOrder);
         
-          // await DataStore.stop();
           await DataStore.save(
             Schedule.copyOf(originalItem, updatedItem => {
               updatedItem.name = name;
@@ -81,7 +80,6 @@ const ScheduleModal = (props) => {
       // Create Item
       if (name && time && day && location && description && sortOrder) {
         try {
-          // await DataStore.stop();
           await DataStore.save(
             new Schedule({
               name,

@@ -5,7 +5,6 @@ import { useTheme } from "react-native-paper";
 import { Icon, Text, Button, Modal, TextSizes } from "../../components";
 import { typography } from "../../styles";
 import { ThemeContext, AuthContext, UnauthedUser } from "../../contexts";
-// import { DataStore } from '../../utils';
 import styles from "./SettingsModalStyles";
 
 const SettingsModal = () => {
@@ -82,11 +81,11 @@ const SettingsModal = () => {
     }, 350);
   }
 
-  const resetDatastore = async () => {
-    await DataStore.stop();
-    await DataStore.clear();
-    await DataStore.start();
-  }
+  // const resetDatastore = async () => {
+  //   await DataStore.stop();
+  //   await DataStore.clear();
+  //   await DataStore.start();
+  // }
 
   return (
     <>
@@ -162,11 +161,11 @@ const SettingsModal = () => {
                     See Admin Favorites
                   </Button>
                 )}
-                {authStatus.isAdmin && (
+                {/* {authStatus.isAdmin && (
                   <Button onPress={resetDatastore} style={{marginTop: 10}}>
                     Debug Reset Datastore
                   </Button>
-                )}
+                )} */}
               </View>
             </ScrollView>
           </View>

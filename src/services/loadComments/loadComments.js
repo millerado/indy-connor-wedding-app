@@ -1,27 +1,12 @@
-import { API, Predicates, SortDirection } from "aws-amplify";
+import { API } from "aws-amplify";
 import { listComments } from '../../graphql/queries'
-import { Comments } from "../../models";
-import { DataStore } from "../../utils";
-
-const loadCommentsFromDatastore = async (setComments, oldComments, eventId) => {
-  try {
-    const comments = await DataStore.query(Comments, Predicates.ALL, {
-      sort: (s) => s.sortOrder(createdAt.ASCENDING),
-      filter: (f) => f.commentsEventsId("eq", eventId)
-    });
-    if(JSON.stringify(comments) !== JSON.stringify(oldComments)) {
-      setComments(comments);
-    }
-  } catch (err) {
-    console.log('-- Error Loading Comments Via Datastore --', err);
-  }
-}
 
 const loadComments = async (setComments, oldComments, eventId) => {
   try {
     let variables = { limit: 999999999, filter: {
-      commentsEventsId: { eq: eventId }
+      eventsID: { eq: eventId }
     } };
+    // let variables = { limit: 999999999 };
     const allComments = await API.graphql({ query: listComments, variables: variables });
 
     const unfilteredItems = allComments?.data?.listComments?.items;
@@ -35,7 +20,8 @@ const loadComments = async (setComments, oldComments, eventId) => {
     }
   } catch (err) {
     console.log('-- Error Loading Comments, Try Datastore --', err);
-    loadCommentsFromDatastore(setComments, oldComments, eventId);
+    setComments([]);
+    // loadCommentsFromDatastore(setComments, oldComments, eventId);
   }
 };
 

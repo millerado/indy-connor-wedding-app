@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Font from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { API, graphqlOperation, Hub } from "aws-amplify";
+// import * as mutations from './graphql/mutations';
 import { CONNECTION_STATE_CHANGE, ConnectionState } from '@aws-amplify/pubsub';
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { 
@@ -90,14 +91,16 @@ const App = () => {
   const [allStandingsTeams, setAllStandingsTeams] = useState([]);
   const [allExpoTokens, setAllExpoTokens] = useState([]);
   const [allEvents, setAllEvents] = useState([]);
-  const [reactionsWithUsers, setReactionsWithUsers] = useState([]);
+  const [reactionsWithUsers, setReactionsWithUsers] = useState([]); // The reactions that get sent to App Context
+  const [allEventUsers, setAllEventUsers] = useState([]); // Users that get sent to App Context
+  const [allEventTeams, setAllEventTeams] = useState([]); // Teams that get sent to App Context
   const responseListener = useRef();
   const nav = useRef();
   const priorConnectionState = useRef(undefined);
   const lastRefreshTime = useRef(undefined);
   // TO-DO: Move to context AND add an event sign in form
-  const [selectedEventId, setSelectedEventId] = useState('e6311bc0-c7e6-48eb-8e87-f015c04140e3'); // Wedding
-  // const [selectedEventId, setSelectedEventId] = useState('ca33d400-811e-4557-8ee5-430bd6f8513f'); // 2024 Summer Games
+  // const [selectedEventId, setSelectedEventId] = useState('e6311bc0-c7e6-48eb-8e87-f015c04140e3'); // Wedding
+  const [selectedEventId, setSelectedEventId] = useState('ca33d400-811e-4557-8ee5-430bd6f8513f'); // 2024 Summer Games
 
   // Pieces for the Theme Context
   const theme = themeName === "Dark" ? darkTheme : lightTheme;
@@ -571,57 +574,57 @@ const App = () => {
   }, [selectedEventId]);
 
   // Data Subcriptions for Notifications (which are user-dependent)
-  useEffect(() => {
-    if(authStatus.userId) {
-      const userGraphqlOperations = { filter: { userId: {eq: authStatus.userId} }, limit: 999999999 };
-      const createNotificationSub = API.graphql(
-        graphqlOperation(onCreateNotifications, userGraphqlOperations)
-      ).subscribe({
-        next: ({ value }) => loadNotifications(setNotificationDetails, notificationDetails, authStatus.userId),
-      });
+  // useEffect(() => {
+  //   if(authStatus.userId) {
+  //     const userGraphqlOperations = { filter: { userId: {eq: authStatus.userId} }, limit: 999999999 };
+  //     const createNotificationSub = API.graphql(
+  //       graphqlOperation(onCreateNotifications, userGraphqlOperations)
+  //     ).subscribe({
+  //       next: ({ value }) => loadNotifications(setNotificationDetails, notificationDetails, authStatus.userId),
+  //     });
       
-      const updateNotificationSub = API.graphql(
-        graphqlOperation(onUpdateNotifications, userGraphqlOperations)
-      ).subscribe({
-        next: ({ value }) => loadNotifications(setNotificationDetails, notificationDetails, authStatus.userId),
-      });
+  //     const updateNotificationSub = API.graphql(
+  //       graphqlOperation(onUpdateNotifications, userGraphqlOperations)
+  //     ).subscribe({
+  //       next: ({ value }) => loadNotifications(setNotificationDetails, notificationDetails, authStatus.userId),
+  //     });
       
-      const deleteNotificationSub = API.graphql(
-        graphqlOperation(onDeleteNotifications, userGraphqlOperations)
-      ).subscribe({
-        next: ({ value }) => loadNotifications(setNotificationDetails, notificationDetails, authStatus.userId),
-      });
+  //     const deleteNotificationSub = API.graphql(
+  //       graphqlOperation(onDeleteNotifications, userGraphqlOperations)
+  //     ).subscribe({
+  //       next: ({ value }) => loadNotifications(setNotificationDetails, notificationDetails, authStatus.userId),
+  //     });
 
-      const createScheduledNotificationSub = API.graphql(
-        graphqlOperation(onCreateScheduledNotifications, userGraphqlOperations)
-      ).subscribe({
-        next: ({ value }) => loadScheduledNotifications(authStatus.userId),
-      });
+  //     const createScheduledNotificationSub = API.graphql(
+  //       graphqlOperation(onCreateScheduledNotifications, userGraphqlOperations)
+  //     ).subscribe({
+  //       next: ({ value }) => loadScheduledNotifications(authStatus.userId),
+  //     });
 
-      const updateScheduledNotificationSub = API.graphql(
-        graphqlOperation(onUpdateScheduledNotifications, userGraphqlOperations)
-      ).subscribe({
-        next: ({ value }) => loadScheduledNotifications(authStatus.userId),
-      });
+  //     const updateScheduledNotificationSub = API.graphql(
+  //       graphqlOperation(onUpdateScheduledNotifications, userGraphqlOperations)
+  //     ).subscribe({
+  //       next: ({ value }) => loadScheduledNotifications(authStatus.userId),
+  //     });
 
-      const deleteScheduledNotificationSub = API.graphql(
-        graphqlOperation(onDeleteScheduledNotifications, userGraphqlOperations)
-      ).subscribe({
-        next: ({ value }) => loadScheduledNotifications(authStatus.userId),
-      });
+  //     const deleteScheduledNotificationSub = API.graphql(
+  //       graphqlOperation(onDeleteScheduledNotifications, userGraphqlOperations)
+  //     ).subscribe({
+  //       next: ({ value }) => loadScheduledNotifications(authStatus.userId),
+  //     });
 
-      onRefreshNotifications();
+  //     onRefreshNotifications();
 
-      return () => {
-        createNotificationSub.unsubscribe();
-        updateNotificationSub.unsubscribe();
-        deleteNotificationSub.unsubscribe();
-        createScheduledNotificationSub.unsubscribe();
-        updateScheduledNotificationSub.unsubscribe();
-        deleteScheduledNotificationSub.unsubscribe();
-      }
-    }
-  }, [authStatus])
+  //     return () => {
+  //       createNotificationSub.unsubscribe();
+  //       updateNotificationSub.unsubscribe();
+  //       deleteNotificationSub.unsubscribe();
+  //       createScheduledNotificationSub.unsubscribe();
+  //       updateScheduledNotificationSub.unsubscribe();
+  //       deleteScheduledNotificationSub.unsubscribe();
+  //     }
+  //   }
+  // }, [authStatus])
 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
@@ -633,6 +636,90 @@ const App = () => {
       await SplashScreen.hideAsync();
     }
   }, [appIsReady]);
+
+  // Use the distinct list of users that are in allEvents to create a list of users in event
+  // Also use the teams the users are tagged to in events to create a list of teams in event
+  useEffect(() => {
+    // console.log('-- All Users --', allUsers.length);
+    // console.log('-- All Events --', allEvents.length);
+    // console.log('-- All Teams --', allTeams.length);
+    // console.log('-- Selected Event --', selectedEventId);
+    if(allUsers.length > 0 && allEvents.length > 0 && allEvents.length > 0 && selectedEventId) {
+      const event = allEvents.find((event) => event.id === selectedEventId);
+      if(event) {
+        const rawEventUsers = event.users;
+        const eventUsers = [];
+        // console.log('-- Event Users --', rawEventUsers);
+        for(let i = 0; i < rawEventUsers.length; i++) {
+          const user = allUsers.find((user) => user.id === rawEventUsers[i].id);
+          // console.log('-- matching user --', user);
+          if(user) {
+            eventUsers.push({
+              ...user,
+              admin: rawEventUsers[i].admin,
+              teamId: rawEventUsers[i].teamId,
+              fullObject: {
+                ...user.fullObject,
+                admin: rawEventUsers[i].admin, // TO-DO: Replace this, why do I need Full Object?!
+              }
+            });
+          }
+        }
+        // Sort eventUsers by name
+        eventUsers.sort((a, b) => a.name.localeCompare(b.name));
+
+        // Create a list of teamId that are in eventUsers
+        const eventTeamsList = [];
+        for(let i = 0; i < eventUsers.length; i++) {
+          if(eventUsers[i].teamId) {
+            if(!eventTeamsList.includes(eventUsers[i].teamId)) {
+              eventTeamsList.push(eventUsers[i].teamId);
+            }
+          }
+        }
+        // Create an array called eventTeams that is allTeams filters to match IDs in eventTeamsList
+        const eventTeams = allTeams.filter((team) => eventTeamsList.includes(team.id));
+        // console.log('-- Event Teams --', eventTeams);
+        setAllEventUsers(eventUsers);
+        setAllEventTeams(eventTeams);
+      }
+    }
+  }, [allUsers, allTeams, allEvents, selectedEventId]);
+
+  ///// Code for adding Event IDs on thigns when I added that field
+  // useEffect(() => {
+  //   const updateItems = async (allItems) => {
+  //     console.log('-- Update Items --', allItems.length);
+  //     if(allItems.length > 0) {
+  //       for (let i = 0; i < allItems.length; i++) {
+  //       // for (let i = 0; i < 1; i++) {
+  //         const item = allItems[i];
+  //         if(item.eventsID !== selectedEventId) {
+  //           console.log('Item to Update:', item.id);
+  //           const itemDetails = {
+  //             id: item.id,
+  //             _version: item._version,
+  //             eventsID: selectedEventId,
+  //           };
+  //           try {
+  //             const updateItem = await API.graphql({
+  //               query: mutations.updateReactions,
+  //               variables: { input: itemDetails }
+  //             });
+  //             console.log('-- updateItem --', updateItem);
+  //           } catch (e) {
+  //             console.log('-- updateItem Error --', e);
+  //           }
+  //         } else {
+  //           console.log('-- Has Event ID Already --');
+  //         }
+  //       }
+  //     }
+  //   }
+
+  //   updateItems(allReactions);
+
+  // }, [allReactions])
 
   if (!appIsReady) {
     return null;
@@ -647,7 +734,7 @@ const App = () => {
               <DataContext.Provider value={{ 
                 refreshData: onRefresh, 
                 selectedEventId,
-                allUsers, 
+                allUsers: allEventUsers, 
                 allComments, 
                 allAdminFavorites,
                 allReactions: reactionsWithUsers,
@@ -655,7 +742,7 @@ const App = () => {
                 allFaqs,
                 allSchedule,
                 allGames,
-                allTeams,
+                allTeams: allEventTeams,
                 allStandingsPeople,
                 allStandingsTeams,
                 allExpoTokens,

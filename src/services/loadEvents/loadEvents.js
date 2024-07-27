@@ -1,44 +1,38 @@
 import { API } from "aws-amplify";
 import { listEvents } from '../../graphql/queries'
-import { Events } from "../../models";
-import { DataStore } from "../../utils";
 
 const formatEvents = async (items, setEvents, oldEvents) => {
-  const newEvents = items.map((e) => {
-    const users = [];
-    for(let i = 0; i < e.users.length; i++) {
-      const oneUser = JSON.parse(e.users[i]);
-      users.push(oneUser);
-    };
-    return {
-      id: e.id,
-      name: e.eventName,
-      password: e.eventPassword,
-      adminPassword: e.adminPassword,
-      startDate: e.startDate,
-      endDate: e.endDate,
-      displayStartDate: e.displayStartDate,
-      displayEndDate: e.displayEndDate,
-      allowNewActivity: e.allowNewActivity,
-      eventFunctionality: e.eventFunctionality ? JSON.parse(e.eventFunctionality) : [],
-      users,
-    };
-  });
-  newEvents.sort((a, b) => a.name.localeCompare(b.name));
-  if(JSON.stringify(newEvents) !== JSON.stringify(oldEvents)) {
-    // console.log('-- And setting events in Context --');
-    setEvents(newEvents);
+  try {
+    const newEvents = items.map((e) => {
+      const users = [];
+      for(let i = 0; i < e.users.length; i++) {
+        const oneUser = JSON.parse(e.users[i]);
+        users.push(oneUser);
+      };
+      return {
+        id: e.id,
+        name: e.eventName,
+        password: e.eventPassword,
+        adminPassword: e.adminPassword,
+        startDate: e.startDate,
+        endDate: e.endDate,
+        displayStartDate: e.displayStartDate,
+        displayEndDate: e.displayEndDate,
+        allowNewActivity: e.allowNewActivity,
+        eventFunctionality: e.eventFunctionality ? JSON.parse(e.eventFunctionality) : [],
+        users,
+      };
+    });
+    newEvents.sort((a, b) => a.name.localeCompare(b.name));
+    if(JSON.stringify(newEvents) !== JSON.stringify(oldEvents)) {
+      // console.log('-- And setting events in Context --');
+      setEvents(newEvents);
+    }
+  } catch (err) {
+    console.log('-- Error Formatting Events --', err);
+    setEvents([]);
   }
 };
-
-const loadEventsFromDatastore = async (setEvents, oldEvents) => {
-  try {
-    const items = await DataStore.query(Events);
-    formatEvents(items, setEvents, oldEvents);
-  } catch (err) {
-    console.log('-- Error Loading Events Via Datastore --', err);
-  }
-}
 
 const loadEvents = async (setEvents, oldEvents) => {
   try {
@@ -52,8 +46,8 @@ const loadEvents = async (setEvents, oldEvents) => {
       formatEvents(items, setEvents, oldEvents);
     }
   } catch (err) {
-    console.log('-- Error Loading Events, Try Datastore --', err);
-    loadEventsFromDatastore(setEvents, oldEvents);
+    console.log('-- Error Loading Events --', err);
+    formatEvents([], setEvents, oldEvents);
   }
 };
 

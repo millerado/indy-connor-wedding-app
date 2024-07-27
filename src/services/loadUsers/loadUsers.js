@@ -1,7 +1,5 @@
 import { API } from "aws-amplify";
 import { listUsers } from '../../graphql/queries';
-import { Users } from "../../models";
-import { DataStore } from "../../utils";
 
 const formatUsers = async (items, setUsers, oldUsers) => {
   const newUsers = items.map((u) => {
@@ -21,15 +19,6 @@ const formatUsers = async (items, setUsers, oldUsers) => {
   }
 };
 
-const loadUsersFromDatastore = async (setUsers, oldUsers, eventId) => {
-  try {
-    const users = await DataStore.query(Users);
-    formatUsers(users, setUsers, oldUsers);
-  } catch (err) {
-    console.log('-- Error Loading Users Via Datastore --', err);
-  }
-}
-
 const loadUsers = async (setUsers, oldUsers, eventId) => {
   try {
     const allUsers = await API.graphql({ query: listUsers, variables: { limit: 999999999 } });
@@ -41,8 +30,8 @@ const loadUsers = async (setUsers, oldUsers, eventId) => {
       formatUsers(items, setUsers, oldUsers);
     }
   } catch (err) {
-    console.log('-- Error Loading Users, Trying Datastore --', err);
-    loadUsersFromDatastore(setUsers, oldUsers, eventId);
+    console.log('-- Error Loading Users --', err);
+    formatUsers([], setUsers, oldUsers);
   }
 };
 

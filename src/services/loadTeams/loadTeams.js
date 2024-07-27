@@ -1,20 +1,5 @@
 import { API } from "aws-amplify";
-import { listTeams } from '../../graphql/queries'
-import { DataStore } from '../../utils';
-import { Teams } from '../../models';
-
-const loadTeamsFromDatastore = async (setTeams, oldTeams, eventId) => {
-  try {
-    const items = await DataStore.query(Teams);
-    if(items.length > 0){
-      if(JSON.stringify(items) !== JSON.stringify(oldTeams)) {
-        setTeams(items);
-      }
-    }
-  } catch (err) {
-    console.log('-- Error Loading Teams From Datastore --', err);
-  }
-};
+import { listTeams } from '../../graphql/queries';
 
 const loadTeams = async (setTeams, oldTeams, eventId) => {
   try {
@@ -29,8 +14,8 @@ const loadTeams = async (setTeams, oldTeams, eventId) => {
       }
     }
   } catch (err) {
-    console.log('-- Error Loading Teams, Will Try Datastore --', err);
-    loadTeamsFromDatastore(setTeams, oldTeams, eventId);
+    console.log('-- Error Loading Teams --', err);
+    setTeams([]);
   }
 };
 

@@ -21,6 +21,46 @@ export const getEvents = /* GraphQL */ `query GetEvents($id: ID!) {
     eventFunctionality
     adminPassword
     users
+    StandingsPeople {
+      nextToken
+      startedAt
+      __typename
+    }
+    AdminFavorites {
+      nextToken
+      startedAt
+      __typename
+    }
+    StandingsTeams {
+      nextToken
+      startedAt
+      __typename
+    }
+    Posts {
+      nextToken
+      startedAt
+      __typename
+    }
+    Reactions {
+      nextToken
+      startedAt
+      __typename
+    }
+    Comments {
+      nextToken
+      startedAt
+      __typename
+    }
+    FAQS {
+      nextToken
+      startedAt
+      __typename
+    }
+    Schedules {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -377,31 +417,12 @@ export const getStandingsPeople = /* GraphQL */ `query GetStandingsPeople($id: I
     points
     gamesPlayed
     lastCalculationTime
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    standingsPeopleEventsId
     __typename
   }
 }
@@ -422,12 +443,12 @@ export const listStandingsPeople = /* GraphQL */ `query ListStandingsPeople(
       points
       gamesPlayed
       lastCalculationTime
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      standingsPeopleEventsId
       __typename
     }
     nextToken
@@ -458,12 +479,12 @@ export const syncStandingsPeople = /* GraphQL */ `query SyncStandingsPeople(
       points
       gamesPlayed
       lastCalculationTime
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      standingsPeopleEventsId
       __typename
     }
     nextToken
@@ -475,22 +496,28 @@ export const syncStandingsPeople = /* GraphQL */ `query SyncStandingsPeople(
   APITypes.SyncStandingsPeopleQueryVariables,
   APITypes.SyncStandingsPeopleQuery
 >;
-export const getAdminFavorites = /* GraphQL */ `query GetAdminFavorites($id: ID!) {
-  getAdminFavorites(id: $id) {
-    id
-    image
-    Events {
+export const standingsPeopleByEventsID = /* GraphQL */ `query StandingsPeopleByEventsID(
+  $eventsID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelStandingsPeopleFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  standingsPeopleByEventsID(
+    eventsID: $eventsID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
       id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
+      userId
+      rank
+      points
+      gamesPlayed
+      lastCalculationTime
+      eventsID
       createdAt
       updatedAt
       _version
@@ -498,12 +525,25 @@ export const getAdminFavorites = /* GraphQL */ `query GetAdminFavorites($id: ID!
       _lastChangedAt
       __typename
     }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.StandingsPeopleByEventsIDQueryVariables,
+  APITypes.StandingsPeopleByEventsIDQuery
+>;
+export const getAdminFavorites = /* GraphQL */ `query GetAdminFavorites($id: ID!) {
+  getAdminFavorites(id: $id) {
+    id
+    image
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    adminFavoritesEventsId
     __typename
   }
 }
@@ -520,12 +560,12 @@ export const listAdminFavorites = /* GraphQL */ `query ListAdminFavorites(
     items {
       id
       image
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      adminFavoritesEventsId
       __typename
     }
     nextToken
@@ -552,12 +592,12 @@ export const syncAdminFavorites = /* GraphQL */ `query SyncAdminFavorites(
     items {
       id
       image
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      adminFavoritesEventsId
       __typename
     }
     nextToken
@@ -569,25 +609,24 @@ export const syncAdminFavorites = /* GraphQL */ `query SyncAdminFavorites(
   APITypes.SyncAdminFavoritesQueryVariables,
   APITypes.SyncAdminFavoritesQuery
 >;
-export const getStandingsTeams = /* GraphQL */ `query GetStandingsTeams($id: ID!) {
-  getStandingsTeams(id: $id) {
-    id
-    teamId
-    rank
-    points
-    lastCalculationTime
-    Events {
+export const adminFavoritesByEventsID = /* GraphQL */ `query AdminFavoritesByEventsID(
+  $eventsID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelAdminFavoritesFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  adminFavoritesByEventsID(
+    eventsID: $eventsID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
       id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
+      image
+      eventsID
       createdAt
       updatedAt
       _version
@@ -595,12 +634,28 @@ export const getStandingsTeams = /* GraphQL */ `query GetStandingsTeams($id: ID!
       _lastChangedAt
       __typename
     }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.AdminFavoritesByEventsIDQueryVariables,
+  APITypes.AdminFavoritesByEventsIDQuery
+>;
+export const getStandingsTeams = /* GraphQL */ `query GetStandingsTeams($id: ID!) {
+  getStandingsTeams(id: $id) {
+    id
+    teamId
+    rank
+    points
+    lastCalculationTime
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    standingsTeamsEventsId
     __typename
   }
 }
@@ -620,12 +675,12 @@ export const listStandingsTeams = /* GraphQL */ `query ListStandingsTeams(
       rank
       points
       lastCalculationTime
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      standingsTeamsEventsId
       __typename
     }
     nextToken
@@ -655,12 +710,12 @@ export const syncStandingsTeams = /* GraphQL */ `query SyncStandingsTeams(
       rank
       points
       lastCalculationTime
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      standingsTeamsEventsId
       __typename
     }
     nextToken
@@ -671,6 +726,43 @@ export const syncStandingsTeams = /* GraphQL */ `query SyncStandingsTeams(
 ` as GeneratedQuery<
   APITypes.SyncStandingsTeamsQueryVariables,
   APITypes.SyncStandingsTeamsQuery
+>;
+export const standingsTeamsByEventsID = /* GraphQL */ `query StandingsTeamsByEventsID(
+  $eventsID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelStandingsTeamsFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  standingsTeamsByEventsID(
+    eventsID: $eventsID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      teamId
+      rank
+      points
+      lastCalculationTime
+      eventsID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.StandingsTeamsByEventsIDQueryVariables,
+  APITypes.StandingsTeamsByEventsIDQuery
 >;
 export const getPosts = /* GraphQL */ `query GetPosts($id: ID!) {
   getPosts(id: $id) {
@@ -691,31 +783,12 @@ export const getPosts = /* GraphQL */ `query GetPosts($id: ID!) {
       __typename
     }
     usersInPost
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    postsEventsId
     __typename
   }
 }
@@ -734,12 +807,12 @@ export const listPosts = /* GraphQL */ `query ListPosts(
       olympicEvent
       eventDetails
       usersInPost
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      postsEventsId
       __typename
     }
     nextToken
@@ -768,12 +841,12 @@ export const syncPosts = /* GraphQL */ `query SyncPosts(
       olympicEvent
       eventDetails
       usersInPost
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      postsEventsId
       __typename
     }
     nextToken
@@ -782,6 +855,45 @@ export const syncPosts = /* GraphQL */ `query SyncPosts(
   }
 }
 ` as GeneratedQuery<APITypes.SyncPostsQueryVariables, APITypes.SyncPostsQuery>;
+export const postsByEventsID = /* GraphQL */ `query PostsByEventsID(
+  $eventsID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelPostsFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  postsByEventsID(
+    eventsID: $eventsID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      userId
+      messageBody
+      images
+      olympicEvent
+      eventDetails
+      usersInPost
+      eventsID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.PostsByEventsIDQueryVariables,
+  APITypes.PostsByEventsIDQuery
+>;
 export const getTeams = /* GraphQL */ `query GetTeams($id: ID!) {
   getTeams(id: $id) {
     id
@@ -793,31 +905,11 @@ export const getTeams = /* GraphQL */ `query GetTeams($id: ID!) {
     }
     iconName
     description
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    teamsEventsId
     __typename
   }
 }
@@ -838,7 +930,6 @@ export const listTeams = /* GraphQL */ `query ListTeams(
       _version
       _deleted
       _lastChangedAt
-      teamsEventsId
       __typename
     }
     nextToken
@@ -869,7 +960,6 @@ export const syncTeams = /* GraphQL */ `query SyncTeams(
       _version
       _deleted
       _lastChangedAt
-      teamsEventsId
       __typename
     }
     nextToken
@@ -1079,31 +1169,12 @@ export const getReactions = /* GraphQL */ `query GetReactions($id: ID!) {
     userId
     reactionType
     postsID
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    reactionsEventsId
     __typename
   }
 }
@@ -1122,12 +1193,12 @@ export const listReactions = /* GraphQL */ `query ListReactions(
       userId
       reactionType
       postsID
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      reactionsEventsId
       __typename
     }
     nextToken
@@ -1156,12 +1227,12 @@ export const syncReactions = /* GraphQL */ `query SyncReactions(
       userId
       reactionType
       postsID
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      reactionsEventsId
       __typename
     }
     nextToken
@@ -1192,12 +1263,12 @@ export const reactionsByPostsID = /* GraphQL */ `query ReactionsByPostsID(
       userId
       reactionType
       postsID
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      reactionsEventsId
       __typename
     }
     nextToken
@@ -1209,24 +1280,26 @@ export const reactionsByPostsID = /* GraphQL */ `query ReactionsByPostsID(
   APITypes.ReactionsByPostsIDQueryVariables,
   APITypes.ReactionsByPostsIDQuery
 >;
-export const getComments = /* GraphQL */ `query GetComments($id: ID!) {
-  getComments(id: $id) {
-    id
-    userId
-    comment
-    postsID
-    Events {
+export const reactionsByEventsID = /* GraphQL */ `query ReactionsByEventsID(
+  $eventsID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelReactionsFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  reactionsByEventsID(
+    eventsID: $eventsID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
       id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
+      userId
+      reactionType
+      postsID
+      eventsID
       createdAt
       updatedAt
       _version
@@ -1234,12 +1307,27 @@ export const getComments = /* GraphQL */ `query GetComments($id: ID!) {
       _lastChangedAt
       __typename
     }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ReactionsByEventsIDQueryVariables,
+  APITypes.ReactionsByEventsIDQuery
+>;
+export const getComments = /* GraphQL */ `query GetComments($id: ID!) {
+  getComments(id: $id) {
+    id
+    userId
+    comment
+    postsID
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    commentsEventsId
     __typename
   }
 }
@@ -1258,12 +1346,12 @@ export const listComments = /* GraphQL */ `query ListComments(
       userId
       comment
       postsID
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      commentsEventsId
       __typename
     }
     nextToken
@@ -1292,12 +1380,12 @@ export const syncComments = /* GraphQL */ `query SyncComments(
       userId
       comment
       postsID
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      commentsEventsId
       __typename
     }
     nextToken
@@ -1328,12 +1416,12 @@ export const commentsByPostsID = /* GraphQL */ `query CommentsByPostsID(
       userId
       comment
       postsID
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      commentsEventsId
       __typename
     }
     nextToken
@@ -1345,24 +1433,26 @@ export const commentsByPostsID = /* GraphQL */ `query CommentsByPostsID(
   APITypes.CommentsByPostsIDQueryVariables,
   APITypes.CommentsByPostsIDQuery
 >;
-export const getFAQ = /* GraphQL */ `query GetFAQ($id: ID!) {
-  getFAQ(id: $id) {
-    id
-    question
-    answer
-    sortOrder
-    Events {
+export const commentsByEventsID = /* GraphQL */ `query CommentsByEventsID(
+  $eventsID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelCommentsFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  commentsByEventsID(
+    eventsID: $eventsID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
       id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
+      userId
+      comment
+      postsID
+      eventsID
       createdAt
       updatedAt
       _version
@@ -1370,12 +1460,27 @@ export const getFAQ = /* GraphQL */ `query GetFAQ($id: ID!) {
       _lastChangedAt
       __typename
     }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.CommentsByEventsIDQueryVariables,
+  APITypes.CommentsByEventsIDQuery
+>;
+export const getFAQ = /* GraphQL */ `query GetFAQ($id: ID!) {
+  getFAQ(id: $id) {
+    id
+    question
+    answer
+    sortOrder
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    fAQEventsId
     __typename
   }
 }
@@ -1387,12 +1492,12 @@ export const listFAQS = /* GraphQL */ `query ListFAQS($filter: ModelFAQFilterInp
       question
       answer
       sortOrder
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      fAQEventsId
       __typename
     }
     nextToken
@@ -1418,12 +1523,12 @@ export const syncFAQS = /* GraphQL */ `query SyncFAQS(
       question
       answer
       sortOrder
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      fAQEventsId
       __typename
     }
     nextToken
@@ -1432,6 +1537,42 @@ export const syncFAQS = /* GraphQL */ `query SyncFAQS(
   }
 }
 ` as GeneratedQuery<APITypes.SyncFAQSQueryVariables, APITypes.SyncFAQSQuery>;
+export const fAQSByEventsID = /* GraphQL */ `query FAQSByEventsID(
+  $eventsID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelFAQFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  fAQSByEventsID(
+    eventsID: $eventsID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      question
+      answer
+      sortOrder
+      eventsID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.FAQSByEventsIDQueryVariables,
+  APITypes.FAQSByEventsIDQuery
+>;
 export const getSchedule = /* GraphQL */ `query GetSchedule($id: ID!) {
   getSchedule(id: $id) {
     id
@@ -1441,31 +1582,12 @@ export const getSchedule = /* GraphQL */ `query GetSchedule($id: ID!) {
     description
     location
     sortOrder
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    scheduleEventsId
     __typename
   }
 }
@@ -1487,12 +1609,12 @@ export const listSchedules = /* GraphQL */ `query ListSchedules(
       description
       location
       sortOrder
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      scheduleEventsId
       __typename
     }
     nextToken
@@ -1524,12 +1646,12 @@ export const syncSchedules = /* GraphQL */ `query SyncSchedules(
       description
       location
       sortOrder
+      eventsID
       createdAt
       updatedAt
       _version
       _deleted
       _lastChangedAt
-      scheduleEventsId
       __typename
     }
     nextToken
@@ -1540,4 +1662,43 @@ export const syncSchedules = /* GraphQL */ `query SyncSchedules(
 ` as GeneratedQuery<
   APITypes.SyncSchedulesQueryVariables,
   APITypes.SyncSchedulesQuery
+>;
+export const schedulesByEventsID = /* GraphQL */ `query SchedulesByEventsID(
+  $eventsID: ID!
+  $sortDirection: ModelSortDirection
+  $filter: ModelScheduleFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  schedulesByEventsID(
+    eventsID: $eventsID
+    sortDirection: $sortDirection
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      name
+      time
+      day
+      description
+      location
+      sortOrder
+      eventsID
+      createdAt
+      updatedAt
+      _version
+      _deleted
+      _lastChangedAt
+      __typename
+    }
+    nextToken
+    startedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.SchedulesByEventsIDQueryVariables,
+  APITypes.SchedulesByEventsIDQuery
 >;

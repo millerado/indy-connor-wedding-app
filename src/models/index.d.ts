@@ -1,6 +1,6 @@
 import { ModelInit, MutableModel, __modelMeta__, ManagedIdentifier } from "@aws-amplify/datastore";
 // @ts-ignore
-import { LazyLoading, LazyLoadingDisabled, AsyncItem, AsyncCollection } from "@aws-amplify/datastore";
+import { LazyLoading, LazyLoadingDisabled, AsyncCollection } from "@aws-amplify/datastore";
 
 
 
@@ -22,6 +22,14 @@ type EagerEvents = {
   readonly eventFunctionality: string;
   readonly adminPassword?: string | null;
   readonly users?: (string | null)[] | null;
+  readonly StandingsPeople?: (StandingsPeople | null)[] | null;
+  readonly AdminFavorites?: (AdminFavorites | null)[] | null;
+  readonly StandingsTeams?: (StandingsTeams | null)[] | null;
+  readonly Posts?: (Posts | null)[] | null;
+  readonly Reactions?: (Reactions | null)[] | null;
+  readonly Comments?: (Comments | null)[] | null;
+  readonly FAQS?: (FAQ | null)[] | null;
+  readonly Schedules?: (Schedule | null)[] | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -42,6 +50,14 @@ type LazyEvents = {
   readonly eventFunctionality: string;
   readonly adminPassword?: string | null;
   readonly users?: (string | null)[] | null;
+  readonly StandingsPeople: AsyncCollection<StandingsPeople>;
+  readonly AdminFavorites: AsyncCollection<AdminFavorites>;
+  readonly StandingsTeams: AsyncCollection<StandingsTeams>;
+  readonly Posts: AsyncCollection<Posts>;
+  readonly Reactions: AsyncCollection<Reactions>;
+  readonly Comments: AsyncCollection<Comments>;
+  readonly FAQS: AsyncCollection<FAQ>;
+  readonly Schedules: AsyncCollection<Schedule>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -183,10 +199,9 @@ type EagerStandingsPeople = {
   readonly points?: number | null;
   readonly gamesPlayed?: number | null;
   readonly lastCalculationTime?: string | null;
-  readonly Events?: Events | null;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly standingsPeopleEventsId?: string | null;
 }
 
 type LazyStandingsPeople = {
@@ -200,10 +215,9 @@ type LazyStandingsPeople = {
   readonly points?: number | null;
   readonly gamesPlayed?: number | null;
   readonly lastCalculationTime?: string | null;
-  readonly Events: AsyncItem<Events | undefined>;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly standingsPeopleEventsId?: string | null;
 }
 
 export declare type StandingsPeople = LazyLoading extends LazyLoadingDisabled ? EagerStandingsPeople : LazyStandingsPeople
@@ -219,10 +233,9 @@ type EagerAdminFavorites = {
   };
   readonly id: string;
   readonly image: string;
-  readonly Events?: Events | null;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly adminFavoritesEventsId?: string | null;
 }
 
 type LazyAdminFavorites = {
@@ -232,10 +245,9 @@ type LazyAdminFavorites = {
   };
   readonly id: string;
   readonly image: string;
-  readonly Events: AsyncItem<Events | undefined>;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly adminFavoritesEventsId?: string | null;
 }
 
 export declare type AdminFavorites = LazyLoading extends LazyLoadingDisabled ? EagerAdminFavorites : LazyAdminFavorites
@@ -254,10 +266,9 @@ type EagerStandingsTeams = {
   readonly rank?: number | null;
   readonly points?: number | null;
   readonly lastCalculationTime?: string | null;
-  readonly Events?: Events | null;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly standingsTeamsEventsId?: string | null;
 }
 
 type LazyStandingsTeams = {
@@ -270,10 +281,9 @@ type LazyStandingsTeams = {
   readonly rank?: number | null;
   readonly points?: number | null;
   readonly lastCalculationTime?: string | null;
-  readonly Events: AsyncItem<Events | undefined>;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly standingsTeamsEventsId?: string | null;
 }
 
 export declare type StandingsTeams = LazyLoading extends LazyLoadingDisabled ? EagerStandingsTeams : LazyStandingsTeams
@@ -296,10 +306,9 @@ type EagerPosts = {
   readonly Comments?: (Comments | null)[] | null;
   readonly Reactions?: (Reactions | null)[] | null;
   readonly usersInPost?: (string | null)[] | null;
-  readonly Events?: Events | null;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly postsEventsId?: string | null;
 }
 
 type LazyPosts = {
@@ -316,10 +325,9 @@ type LazyPosts = {
   readonly Comments: AsyncCollection<Comments>;
   readonly Reactions: AsyncCollection<Reactions>;
   readonly usersInPost?: (string | null)[] | null;
-  readonly Events: AsyncItem<Events | undefined>;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly postsEventsId?: string | null;
 }
 
 export declare type Posts = LazyLoading extends LazyLoadingDisabled ? EagerPosts : LazyPosts
@@ -338,10 +346,8 @@ type EagerTeams = {
   readonly Users?: (Users | null)[] | null;
   readonly iconName?: string | null;
   readonly description?: string | null;
-  readonly Events?: Events | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly teamsEventsId?: string | null;
 }
 
 type LazyTeams = {
@@ -354,10 +360,8 @@ type LazyTeams = {
   readonly Users: AsyncCollection<Users>;
   readonly iconName?: string | null;
   readonly description?: string | null;
-  readonly Events: AsyncItem<Events | undefined>;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly teamsEventsId?: string | null;
 }
 
 export declare type Teams = LazyLoading extends LazyLoadingDisabled ? EagerTeams : LazyTeams
@@ -445,10 +449,9 @@ type EagerReactions = {
   readonly userId: string;
   readonly reactionType: string;
   readonly postsID: string;
-  readonly Events?: Events | null;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly reactionsEventsId?: string | null;
 }
 
 type LazyReactions = {
@@ -460,10 +463,9 @@ type LazyReactions = {
   readonly userId: string;
   readonly reactionType: string;
   readonly postsID: string;
-  readonly Events: AsyncItem<Events | undefined>;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly reactionsEventsId?: string | null;
 }
 
 export declare type Reactions = LazyLoading extends LazyLoadingDisabled ? EagerReactions : LazyReactions
@@ -481,10 +483,9 @@ type EagerComments = {
   readonly userId: string;
   readonly comment: string;
   readonly postsID: string;
-  readonly Events?: Events | null;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly commentsEventsId?: string | null;
 }
 
 type LazyComments = {
@@ -496,10 +497,9 @@ type LazyComments = {
   readonly userId: string;
   readonly comment: string;
   readonly postsID: string;
-  readonly Events: AsyncItem<Events | undefined>;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly commentsEventsId?: string | null;
 }
 
 export declare type Comments = LazyLoading extends LazyLoadingDisabled ? EagerComments : LazyComments
@@ -517,10 +517,9 @@ type EagerFAQ = {
   readonly question: string;
   readonly answer: string;
   readonly sortOrder: number;
-  readonly Events?: Events | null;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly fAQEventsId?: string | null;
 }
 
 type LazyFAQ = {
@@ -532,10 +531,9 @@ type LazyFAQ = {
   readonly question: string;
   readonly answer: string;
   readonly sortOrder: number;
-  readonly Events: AsyncItem<Events | undefined>;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly fAQEventsId?: string | null;
 }
 
 export declare type FAQ = LazyLoading extends LazyLoadingDisabled ? EagerFAQ : LazyFAQ
@@ -556,10 +554,9 @@ type EagerSchedule = {
   readonly description: string;
   readonly location: string;
   readonly sortOrder: number;
-  readonly Events?: Events | null;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly scheduleEventsId?: string | null;
 }
 
 type LazySchedule = {
@@ -574,10 +571,9 @@ type LazySchedule = {
   readonly description: string;
   readonly location: string;
   readonly sortOrder: number;
-  readonly Events: AsyncItem<Events | undefined>;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
-  readonly scheduleEventsId?: string | null;
 }
 
 export declare type Schedule = LazyLoading extends LazyLoadingDisabled ? EagerSchedule : LazySchedule

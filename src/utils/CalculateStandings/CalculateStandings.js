@@ -1,15 +1,16 @@
 import React, { useState, useEffect, memo, useContext, useRef } from "react";
-import { StandingsPeople, StandingsTeams } from "../../models";
-import DataStore from '../DataStore/DataStore';
+import { API } from "aws-amplify";
+import * as mutations from '../../graphql/mutations';
 import { DataContext } from "../../contexts";
 
 const CalculateStandings = () => {
   const [events, setEvents] = useState([]);
-  const { allUsers, allPosts, allTeams, allStandingsPeople, allStandingsTeams } = useContext(DataContext);
+  const { allUsers, allPosts, allTeams, allStandingsPeople, allStandingsTeams, selectedEventId } = useContext(DataContext);
   const isCalculating = useRef(false);
   
   useEffect(() => {
     // Check lengths on all 5 arrays
+    // console.log('-- Running Calc Standings --', allUsers.length, allTeams.length, events.length, allStandingsTeams.length, allStandingsPeople.length);
     if (allUsers.length > 0 && allTeams.length > 0 && events.length > 0 && allStandingsTeams.length > 0 && allStandingsPeople.length > 0) {
       // console.log('-- Running Calc Standings --', allUsers.length, allTeams.length, events.length, allStandingsTeams.length, allStandingsPeople.length);
       const startTime = new Date();
@@ -23,6 +24,7 @@ const CalculateStandings = () => {
       // console.log((maxEventTime > maxTeamStandingsTime || maxEventTime > maxPeopleStandingsTime) && !isCalculating.current);
 
       // if(!isCalculating.current) {
+      // if(1 === 1) {
       if((maxEventTime > maxTeamStandingsTime || maxEventTime > maxPeopleStandingsTime) && !isCalculating.current) {
         isCalculating.current = true;
         // console.log('-- Something Changed, need to calc --');
@@ -122,24 +124,55 @@ const CalculateStandings = () => {
           const standing = allStandingsPeople.find((s) => s.userId === p.id);
           if(standing) {
             if( standing.points !== p.points || standing.gamesPlayed !== p.gamesPlayed) {
-              const originalItem = await DataStore.query(StandingsPeople, standing.id);
-              // DataStore.stop();
-              DataStore.save(StandingsPeople.copyOf(originalItem, (updated) => {
-                updated.points = p.points;
-                updated.gamesPlayed = p.gamesPlayed;
-                updated.rank = p.rank;
-                updated.lastCalculationTime = startTime.toISOString();
-              }));
+              const updatedStandingsPeople = {
+                id: standing.id,
+                _version: standing._version,
+                points: p.points,
+                gamesPlayed: p.gamesPlayed,
+                rank: p.rank,
+                lastCalculationTime: startTime.toISOString(),
+              };
+              try {
+                await API.graphql({
+                  query: mutations.updateStandingsPeople,
+                  variables: { input: updatedStandingsPeople }
+                });
+              } catch (e) {
+                console.log('-- updatedStandingsPeople Error --', e);
+              }
+
+              // const originalItem = await DataStore.query(StandingsPeople, standing.id);
+              // DataStore.save(StandingsPeople.copyOf(originalItem, (updated) => {
+              //   updated.points = p.points;
+              //   updated.gamesPlayed = p.gamesPlayed;
+              //   updated.rank = p.rank;
+              //   updated.lastCalculationTime = startTime.toISOString();
+              // }));
               playerUpdated += 1;
             }
           } else {
-            DataStore.save(new StandingsPeople({
+            const newStandingsPeople = {
               userId: p.id,
               points: p.points,
               gamesPlayed: p.gamesPlayed,
               rank: p.rank,
               lastCalculationTime: startTime.toISOString(),
-            }));
+              eventsID: selectedEventId,
+            };
+            
+            await API.graphql({
+              query: mutations.createStandingsPeople,
+              variables: { input: newStandingsPeople }
+            });
+
+
+            // DataStore.save(new StandingsPeople({
+            //   userId: p.id,
+            //   points: p.points,
+            //   gamesPlayed: p.gamesPlayed,
+            //   rank: p.rank,
+            //   lastCalculationTime: startTime.toISOString(),
+            // }));
             playersAdded += 1;
           }
         });
@@ -148,22 +181,50 @@ const CalculateStandings = () => {
           const standing = allStandingsTeams.find((s) => s.teamId === t.id);
           if(standing) {
             if( standing.points !== t.points) {
-              const originalItem = await DataStore.query(StandingsTeams, standing.id);
-              // DataStore.stop();
-              DataStore.save(StandingsTeams.copyOf(originalItem, (updated) => {
-                updated.points = t.points;
-                updated.rank = t.rank;
-                updated.lastCalculationTime = startTime.toISOString();
-              }));
+              const updatedStandingsTeam = {
+                id: standing.id,
+                _version: standing._version,
+                points: t.points,
+                rank: t.rank,
+                lastCalculationTime: startTime.toISOString(),
+              };
+              try {
+                await API.graphql({
+                  query: mutations.updateStandingsTeams,
+                  variables: { input: updatedStandingsTeam }
+                });
+              } catch (e) {
+                console.log('-- updatedStandingsTeam Error --', e);
+              }
+
+              // const originalItem = await DataStore.query(StandingsTeams, standing.id);
+              // DataStore.save(StandingsTeams.copyOf(originalItem, (updated) => {
+              //   updated.points = t.points;
+              //   updated.rank = t.rank;
+              //   updated.lastCalculationTime = startTime.toISOString();
+              // }));
               teamsUpdated += 1;
             }
           } else {
-            DataStore.save(new StandingsTeams({
+            const newStandingsTeams = {
               teamId: t.id,
               points: t.points,
               rank: t.rank,
               lastCalculationTime: startTime.toISOString(),
-            }));
+              eventsID: selectedEventId,
+            };
+            
+            await API.graphql({
+              query: mutations.createStandingsTeams,
+              variables: { input: newStandingsTeams }
+            });
+
+            // DataStore.save(new StandingsTeams({
+            //   teamId: t.id,
+            //   points: t.points,
+            //   rank: t.rank,
+            //   lastCalculationTime: startTime.toISOString(),
+            // }));
             teamsAdded += 1;
           }
         });

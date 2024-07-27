@@ -11,6 +11,8 @@ import * as ImagePicker from "expo-image-picker";
 import { Menu, useTheme } from 'react-native-paper';
 import NetInfo from '@react-native-community/netinfo';
 import { MentionInput } from 'react-native-controlled-mentions';
+import { API } from "aws-amplify";
+import * as mutations from '../../graphql/mutations';
 import {
   Chip,
   Avatar,
@@ -27,8 +29,7 @@ import {
   ImageS3,
   VideoS3,
 } from "../../components";
-import { Posts } from "../../models";
-import { uploadImageS3, DataStore, sendUsersPushNotifications, gamePlayers, nth } from "../../utils";
+import { uploadImageS3, sendUsersPushNotifications, gamePlayers, nth } from "../../utils";
 import { typography, calcDimensions } from "../../styles";
 import { AuthContext, DataContext } from '../../contexts';
 import { TaggingUserSuggestions } from '../../containers';
@@ -59,7 +60,7 @@ const CreatePostScreen = ({ navigation, route }) => {
   const authStatus = useContext(AuthContext).authStatus;
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-  const { allUsers, allGames } = useContext(DataContext);
+  const { allUsers, allGames, selectedEventId } = useContext(DataContext);
 
   const uploadImageCallback = async (props) => {
     const { success, uploadedImages, errorSummary, errorDetails } = props;
@@ -104,7 +105,6 @@ const CreatePostScreen = ({ navigation, route }) => {
     setDataPosting(true);
     if (formValid) {
       try {
-        // await DataStore.stop();
         const imagesArray = [];
         if(images.length > 0) {
           for(let i = 0; i < images.length; i++) {
@@ -157,29 +157,40 @@ const CreatePostScreen = ({ navigation, route }) => {
         }
 
         if(view === 'edit') {
-          const originalPost = await DataStore.query(Posts, currentPost.id);
-          await DataStore.save(
-            Posts.copyOf(originalPost, (i) => {
-              i.messageBody = messageBody;
-              i.images = imagesArray;
-              i.olympicEvent = selectedGame ? true : false;
-              i.eventDetails = selectedGame ? JSON.stringify(eventDetails) : null;
-              i.usersInPost = allUserIds;
-            })
-          );
+          const updatedPost = {
+            id: currentPost.id,
+            _version: currentPost._version,
+            messageBody: messageBody,
+            images: imagesArray,
+            olympicEvent: selectedGame ? true : false,
+            eventDetails: selectedGame ? JSON.stringify(eventDetails) : null,
+            usersInPost: allUserIds,
+          };
+          try {
+            await API.graphql({
+              query: mutations.updatePosts,
+              variables: { input: updatedPost }
+            });
+          } catch (e) {
+            console.log('-- updatePost Error --', e);
+          }
           navigation.goBack();
         } else {
-          const newPost = await DataStore.save(
-            new Posts({
-              userId: authStatus.userId,
-              messageBody,
-              images: imagesArray,
-              olympicEvent: selectedGame ? true : false,
-              eventDetails: selectedGame ? JSON.stringify(eventDetails) : null,
-              usersInPost: allUserIds,
-            })
-          );
-          pushNotificationsToTaggedUsers(messageBody, newPost.id, allUserIds);
+          const postDetails = {
+            userId: authStatus.userId,
+            eventsID: selectedEventId,
+            messageBody,
+            images: imagesArray,
+            olympicEvent: selectedGame ? true : false,
+            eventDetails: selectedGame ? JSON.stringify(eventDetails) : null,
+            usersInPost: allUserIds,
+          };
+          
+          const newPost = await API.graphql({
+            query: mutations.createPosts,
+            variables: { input: postDetails }
+          });
+          // pushNotificationsToTaggedUsers(messageBody, newPost.id, allUserIds);
           navigation.popToTop();
           // Page is unmounting and you can't "go back" to it, no need to refresh state
         }

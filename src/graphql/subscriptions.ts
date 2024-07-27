@@ -21,6 +21,46 @@ export const onCreateEvents = /* GraphQL */ `subscription OnCreateEvents($filter
     eventFunctionality
     adminPassword
     users
+    StandingsPeople {
+      nextToken
+      startedAt
+      __typename
+    }
+    AdminFavorites {
+      nextToken
+      startedAt
+      __typename
+    }
+    StandingsTeams {
+      nextToken
+      startedAt
+      __typename
+    }
+    Posts {
+      nextToken
+      startedAt
+      __typename
+    }
+    Reactions {
+      nextToken
+      startedAt
+      __typename
+    }
+    Comments {
+      nextToken
+      startedAt
+      __typename
+    }
+    FAQS {
+      nextToken
+      startedAt
+      __typename
+    }
+    Schedules {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -46,6 +86,46 @@ export const onUpdateEvents = /* GraphQL */ `subscription OnUpdateEvents($filter
     eventFunctionality
     adminPassword
     users
+    StandingsPeople {
+      nextToken
+      startedAt
+      __typename
+    }
+    AdminFavorites {
+      nextToken
+      startedAt
+      __typename
+    }
+    StandingsTeams {
+      nextToken
+      startedAt
+      __typename
+    }
+    Posts {
+      nextToken
+      startedAt
+      __typename
+    }
+    Reactions {
+      nextToken
+      startedAt
+      __typename
+    }
+    Comments {
+      nextToken
+      startedAt
+      __typename
+    }
+    FAQS {
+      nextToken
+      startedAt
+      __typename
+    }
+    Schedules {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -71,6 +151,46 @@ export const onDeleteEvents = /* GraphQL */ `subscription OnDeleteEvents($filter
     eventFunctionality
     adminPassword
     users
+    StandingsPeople {
+      nextToken
+      startedAt
+      __typename
+    }
+    AdminFavorites {
+      nextToken
+      startedAt
+      __typename
+    }
+    StandingsTeams {
+      nextToken
+      startedAt
+      __typename
+    }
+    Posts {
+      nextToken
+      startedAt
+      __typename
+    }
+    Reactions {
+      nextToken
+      startedAt
+      __typename
+    }
+    Comments {
+      nextToken
+      startedAt
+      __typename
+    }
+    FAQS {
+      nextToken
+      startedAt
+      __typename
+    }
+    Schedules {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -303,31 +423,12 @@ export const onCreateStandingsPeople = /* GraphQL */ `subscription OnCreateStand
     points
     gamesPlayed
     lastCalculationTime
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    standingsPeopleEventsId
     __typename
   }
 }
@@ -345,31 +446,12 @@ export const onUpdateStandingsPeople = /* GraphQL */ `subscription OnUpdateStand
     points
     gamesPlayed
     lastCalculationTime
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    standingsPeopleEventsId
     __typename
   }
 }
@@ -387,31 +469,12 @@ export const onDeleteStandingsPeople = /* GraphQL */ `subscription OnDeleteStand
     points
     gamesPlayed
     lastCalculationTime
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    standingsPeopleEventsId
     __typename
   }
 }
@@ -425,31 +488,12 @@ export const onCreateAdminFavorites = /* GraphQL */ `subscription OnCreateAdminF
   onCreateAdminFavorites(filter: $filter) {
     id
     image
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    adminFavoritesEventsId
     __typename
   }
 }
@@ -463,31 +507,12 @@ export const onUpdateAdminFavorites = /* GraphQL */ `subscription OnUpdateAdminF
   onUpdateAdminFavorites(filter: $filter) {
     id
     image
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    adminFavoritesEventsId
     __typename
   }
 }
@@ -501,31 +526,12 @@ export const onDeleteAdminFavorites = /* GraphQL */ `subscription OnDeleteAdminF
   onDeleteAdminFavorites(filter: $filter) {
     id
     image
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    adminFavoritesEventsId
     __typename
   }
 }
@@ -542,31 +548,12 @@ export const onCreateStandingsTeams = /* GraphQL */ `subscription OnCreateStandi
     rank
     points
     lastCalculationTime
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    standingsTeamsEventsId
     __typename
   }
 }
@@ -583,31 +570,12 @@ export const onUpdateStandingsTeams = /* GraphQL */ `subscription OnUpdateStandi
     rank
     points
     lastCalculationTime
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    standingsTeamsEventsId
     __typename
   }
 }
@@ -624,31 +592,12 @@ export const onDeleteStandingsTeams = /* GraphQL */ `subscription OnDeleteStandi
     rank
     points
     lastCalculationTime
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    standingsTeamsEventsId
     __typename
   }
 }
@@ -675,31 +624,12 @@ export const onCreatePosts = /* GraphQL */ `subscription OnCreatePosts($filter: 
       __typename
     }
     usersInPost
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    postsEventsId
     __typename
   }
 }
@@ -726,31 +656,12 @@ export const onUpdatePosts = /* GraphQL */ `subscription OnUpdatePosts($filter: 
       __typename
     }
     usersInPost
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    postsEventsId
     __typename
   }
 }
@@ -777,31 +688,12 @@ export const onDeletePosts = /* GraphQL */ `subscription OnDeletePosts($filter: 
       __typename
     }
     usersInPost
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    postsEventsId
     __typename
   }
 }
@@ -820,31 +712,11 @@ export const onCreateTeams = /* GraphQL */ `subscription OnCreateTeams($filter: 
     }
     iconName
     description
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    teamsEventsId
     __typename
   }
 }
@@ -863,31 +735,11 @@ export const onUpdateTeams = /* GraphQL */ `subscription OnUpdateTeams($filter: 
     }
     iconName
     description
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    teamsEventsId
     __typename
   }
 }
@@ -906,31 +758,11 @@ export const onDeleteTeams = /* GraphQL */ `subscription OnDeleteTeams($filter: 
     }
     iconName
     description
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    teamsEventsId
     __typename
   }
 }
@@ -1067,31 +899,12 @@ export const onCreateReactions = /* GraphQL */ `subscription OnCreateReactions($
     userId
     reactionType
     postsID
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    reactionsEventsId
     __typename
   }
 }
@@ -1105,31 +918,12 @@ export const onUpdateReactions = /* GraphQL */ `subscription OnUpdateReactions($
     userId
     reactionType
     postsID
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    reactionsEventsId
     __typename
   }
 }
@@ -1143,31 +937,12 @@ export const onDeleteReactions = /* GraphQL */ `subscription OnDeleteReactions($
     userId
     reactionType
     postsID
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    reactionsEventsId
     __typename
   }
 }
@@ -1181,31 +956,12 @@ export const onCreateComments = /* GraphQL */ `subscription OnCreateComments($fi
     userId
     comment
     postsID
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    commentsEventsId
     __typename
   }
 }
@@ -1219,31 +975,12 @@ export const onUpdateComments = /* GraphQL */ `subscription OnUpdateComments($fi
     userId
     comment
     postsID
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    commentsEventsId
     __typename
   }
 }
@@ -1257,31 +994,12 @@ export const onDeleteComments = /* GraphQL */ `subscription OnDeleteComments($fi
     userId
     comment
     postsID
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    commentsEventsId
     __typename
   }
 }
@@ -1295,31 +1013,12 @@ export const onCreateFAQ = /* GraphQL */ `subscription OnCreateFAQ($filter: Mode
     question
     answer
     sortOrder
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    fAQEventsId
     __typename
   }
 }
@@ -1333,31 +1032,12 @@ export const onUpdateFAQ = /* GraphQL */ `subscription OnUpdateFAQ($filter: Mode
     question
     answer
     sortOrder
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    fAQEventsId
     __typename
   }
 }
@@ -1371,31 +1051,12 @@ export const onDeleteFAQ = /* GraphQL */ `subscription OnDeleteFAQ($filter: Mode
     question
     answer
     sortOrder
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    fAQEventsId
     __typename
   }
 }
@@ -1412,31 +1073,12 @@ export const onCreateSchedule = /* GraphQL */ `subscription OnCreateSchedule($fi
     description
     location
     sortOrder
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    scheduleEventsId
     __typename
   }
 }
@@ -1453,31 +1095,12 @@ export const onUpdateSchedule = /* GraphQL */ `subscription OnUpdateSchedule($fi
     description
     location
     sortOrder
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    scheduleEventsId
     __typename
   }
 }
@@ -1494,31 +1117,12 @@ export const onDeleteSchedule = /* GraphQL */ `subscription OnDeleteSchedule($fi
     description
     location
     sortOrder
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    scheduleEventsId
     __typename
   }
 }

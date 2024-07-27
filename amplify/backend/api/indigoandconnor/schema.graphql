@@ -10,6 +10,14 @@ type Events @model @auth(rules: [{allow: public}]) {
   eventFunctionality: String!
   adminPassword: String
   users: [String]
+  StandingsPeople: [StandingsPeople] @hasMany(indexName: "byEvents", fields: ["id"])
+  AdminFavorites: [AdminFavorites] @hasMany(indexName: "byEvents", fields: ["id"])
+  StandingsTeams: [StandingsTeams] @hasMany(indexName: "byEvents", fields: ["id"])
+  Posts: [Posts] @hasMany(indexName: "byEvents", fields: ["id"])
+  Reactions: [Reactions] @hasMany(indexName: "byEvents", fields: ["id"])
+  Comments: [Comments] @hasMany(indexName: "byEvents", fields: ["id"])
+  FAQS: [FAQ] @hasMany(indexName: "byEvents", fields: ["id"])
+  Schedules: [Schedule] @hasMany(indexName: "byEvents", fields: ["id"])
 }
 
 type ScheduledNotifications @model @auth(rules: [{allow: public}]) {
@@ -52,13 +60,13 @@ type StandingsPeople @model @auth(rules: [{allow: public}]) {
   points: Int
   gamesPlayed: Int
   lastCalculationTime: AWSDateTime
-  Events: Events @hasOne
+  eventsID: ID @index(name: "byEvents")
 }
 
 type AdminFavorites @model @auth(rules: [{allow: public}]) {
   id: ID!
   image: String!
-  Events: Events @hasOne
+  eventsID: ID @index(name: "byEvents")
 }
 
 type StandingsTeams @model @auth(rules: [{allow: public}]) {
@@ -67,7 +75,7 @@ type StandingsTeams @model @auth(rules: [{allow: public}]) {
   rank: Int
   points: Int
   lastCalculationTime: AWSDateTime
-  Events: Events @hasOne
+  eventsID: ID @index(name: "byEvents")
 }
 
 type Posts @model @auth(rules: [{allow: public}]) {
@@ -80,7 +88,7 @@ type Posts @model @auth(rules: [{allow: public}]) {
   Comments: [Comments] @hasMany(indexName: "byPosts", fields: ["id"])
   Reactions: [Reactions] @hasMany(indexName: "byPosts", fields: ["id"])
   usersInPost: [String]
-  Events: Events @hasOne
+  eventsID: ID @index(name: "byEvents")
 }
 
 type Teams @model @auth(rules: [{allow: public}]) {
@@ -89,7 +97,6 @@ type Teams @model @auth(rules: [{allow: public}]) {
   Users: [Users] @hasMany(indexName: "byTeams", fields: ["id"])
   iconName: String
   description: String
-  Events: Events @hasOne
 }
 
 type Users @model @auth(rules: [{allow: public}]) {
@@ -114,7 +121,7 @@ type Reactions @model @auth(rules: [{allow: public}]) {
   userId: String!
   reactionType: String!
   postsID: ID! @index(name: "byPosts")
-  Events: Events @hasOne
+  eventsID: ID @index(name: "byEvents")
 }
 
 type Comments @model @auth(rules: [{allow: public}]) {
@@ -122,7 +129,7 @@ type Comments @model @auth(rules: [{allow: public}]) {
   userId: String!
   comment: String!
   postsID: ID! @index(name: "byPosts")
-  Events: Events @hasOne
+  eventsID: ID @index(name: "byEvents")
 }
 
 type FAQ @model @auth(rules: [{allow: public}]) {
@@ -130,7 +137,7 @@ type FAQ @model @auth(rules: [{allow: public}]) {
   question: String!
   answer: String!
   sortOrder: Int!
-  Events: Events @hasOne
+  eventsID: ID @index(name: "byEvents")
 }
 
 type Schedule @model @auth(rules: [{allow: public}]) {
@@ -141,6 +148,5 @@ type Schedule @model @auth(rules: [{allow: public}]) {
   description: String!
   location: String!
   sortOrder: Int!
-  Events: Events @hasOne
-}
- 
+  eventsID: ID @index(name: "byEvents")
+} 

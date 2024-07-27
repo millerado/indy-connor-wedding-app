@@ -24,6 +24,46 @@ export const createEvents = /* GraphQL */ `mutation CreateEvents(
     eventFunctionality
     adminPassword
     users
+    StandingsPeople {
+      nextToken
+      startedAt
+      __typename
+    }
+    AdminFavorites {
+      nextToken
+      startedAt
+      __typename
+    }
+    StandingsTeams {
+      nextToken
+      startedAt
+      __typename
+    }
+    Posts {
+      nextToken
+      startedAt
+      __typename
+    }
+    Reactions {
+      nextToken
+      startedAt
+      __typename
+    }
+    Comments {
+      nextToken
+      startedAt
+      __typename
+    }
+    FAQS {
+      nextToken
+      startedAt
+      __typename
+    }
+    Schedules {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -52,6 +92,46 @@ export const updateEvents = /* GraphQL */ `mutation UpdateEvents(
     eventFunctionality
     adminPassword
     users
+    StandingsPeople {
+      nextToken
+      startedAt
+      __typename
+    }
+    AdminFavorites {
+      nextToken
+      startedAt
+      __typename
+    }
+    StandingsTeams {
+      nextToken
+      startedAt
+      __typename
+    }
+    Posts {
+      nextToken
+      startedAt
+      __typename
+    }
+    Reactions {
+      nextToken
+      startedAt
+      __typename
+    }
+    Comments {
+      nextToken
+      startedAt
+      __typename
+    }
+    FAQS {
+      nextToken
+      startedAt
+      __typename
+    }
+    Schedules {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -80,6 +160,46 @@ export const deleteEvents = /* GraphQL */ `mutation DeleteEvents(
     eventFunctionality
     adminPassword
     users
+    StandingsPeople {
+      nextToken
+      startedAt
+      __typename
+    }
+    AdminFavorites {
+      nextToken
+      startedAt
+      __typename
+    }
+    StandingsTeams {
+      nextToken
+      startedAt
+      __typename
+    }
+    Posts {
+      nextToken
+      startedAt
+      __typename
+    }
+    Reactions {
+      nextToken
+      startedAt
+      __typename
+    }
+    Comments {
+      nextToken
+      startedAt
+      __typename
+    }
+    FAQS {
+      nextToken
+      startedAt
+      __typename
+    }
+    Schedules {
+      nextToken
+      startedAt
+      __typename
+    }
     createdAt
     updatedAt
     _version
@@ -328,31 +448,12 @@ export const createStandingsPeople = /* GraphQL */ `mutation CreateStandingsPeop
     points
     gamesPlayed
     lastCalculationTime
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    standingsPeopleEventsId
     __typename
   }
 }
@@ -371,31 +472,12 @@ export const updateStandingsPeople = /* GraphQL */ `mutation UpdateStandingsPeop
     points
     gamesPlayed
     lastCalculationTime
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    standingsPeopleEventsId
     __typename
   }
 }
@@ -414,31 +496,12 @@ export const deleteStandingsPeople = /* GraphQL */ `mutation DeleteStandingsPeop
     points
     gamesPlayed
     lastCalculationTime
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    standingsPeopleEventsId
     __typename
   }
 }
@@ -453,31 +516,12 @@ export const createAdminFavorites = /* GraphQL */ `mutation CreateAdminFavorites
   createAdminFavorites(input: $input, condition: $condition) {
     id
     image
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    adminFavoritesEventsId
     __typename
   }
 }
@@ -492,31 +536,12 @@ export const updateAdminFavorites = /* GraphQL */ `mutation UpdateAdminFavorites
   updateAdminFavorites(input: $input, condition: $condition) {
     id
     image
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    adminFavoritesEventsId
     __typename
   }
 }
@@ -531,31 +556,12 @@ export const deleteAdminFavorites = /* GraphQL */ `mutation DeleteAdminFavorites
   deleteAdminFavorites(input: $input, condition: $condition) {
     id
     image
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    adminFavoritesEventsId
     __typename
   }
 }
@@ -573,31 +579,12 @@ export const createStandingsTeams = /* GraphQL */ `mutation CreateStandingsTeams
     rank
     points
     lastCalculationTime
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    standingsTeamsEventsId
     __typename
   }
 }
@@ -615,31 +602,12 @@ export const updateStandingsTeams = /* GraphQL */ `mutation UpdateStandingsTeams
     rank
     points
     lastCalculationTime
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    standingsTeamsEventsId
     __typename
   }
 }
@@ -657,31 +625,12 @@ export const deleteStandingsTeams = /* GraphQL */ `mutation DeleteStandingsTeams
     rank
     points
     lastCalculationTime
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    standingsTeamsEventsId
     __typename
   }
 }
@@ -711,31 +660,12 @@ export const createPosts = /* GraphQL */ `mutation CreatePosts(
       __typename
     }
     usersInPost
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    postsEventsId
     __typename
   }
 }
@@ -765,31 +695,12 @@ export const updatePosts = /* GraphQL */ `mutation UpdatePosts(
       __typename
     }
     usersInPost
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    postsEventsId
     __typename
   }
 }
@@ -819,31 +730,12 @@ export const deletePosts = /* GraphQL */ `mutation DeletePosts(
       __typename
     }
     usersInPost
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    postsEventsId
     __typename
   }
 }
@@ -865,31 +757,11 @@ export const createTeams = /* GraphQL */ `mutation CreateTeams(
     }
     iconName
     description
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    teamsEventsId
     __typename
   }
 }
@@ -911,31 +783,11 @@ export const updateTeams = /* GraphQL */ `mutation UpdateTeams(
     }
     iconName
     description
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    teamsEventsId
     __typename
   }
 }
@@ -957,31 +809,11 @@ export const deleteTeams = /* GraphQL */ `mutation DeleteTeams(
     }
     iconName
     description
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    teamsEventsId
     __typename
   }
 }
@@ -1133,31 +965,12 @@ export const createReactions = /* GraphQL */ `mutation CreateReactions(
     userId
     reactionType
     postsID
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    reactionsEventsId
     __typename
   }
 }
@@ -1174,31 +987,12 @@ export const updateReactions = /* GraphQL */ `mutation UpdateReactions(
     userId
     reactionType
     postsID
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    reactionsEventsId
     __typename
   }
 }
@@ -1215,31 +1009,12 @@ export const deleteReactions = /* GraphQL */ `mutation DeleteReactions(
     userId
     reactionType
     postsID
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    reactionsEventsId
     __typename
   }
 }
@@ -1256,31 +1031,12 @@ export const createComments = /* GraphQL */ `mutation CreateComments(
     userId
     comment
     postsID
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    commentsEventsId
     __typename
   }
 }
@@ -1297,31 +1053,12 @@ export const updateComments = /* GraphQL */ `mutation UpdateComments(
     userId
     comment
     postsID
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    commentsEventsId
     __typename
   }
 }
@@ -1338,31 +1075,12 @@ export const deleteComments = /* GraphQL */ `mutation DeleteComments(
     userId
     comment
     postsID
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    commentsEventsId
     __typename
   }
 }
@@ -1379,31 +1097,12 @@ export const createFAQ = /* GraphQL */ `mutation CreateFAQ(
     question
     answer
     sortOrder
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    fAQEventsId
     __typename
   }
 }
@@ -1420,31 +1119,12 @@ export const updateFAQ = /* GraphQL */ `mutation UpdateFAQ(
     question
     answer
     sortOrder
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    fAQEventsId
     __typename
   }
 }
@@ -1461,31 +1141,12 @@ export const deleteFAQ = /* GraphQL */ `mutation DeleteFAQ(
     question
     answer
     sortOrder
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    fAQEventsId
     __typename
   }
 }
@@ -1505,31 +1166,12 @@ export const createSchedule = /* GraphQL */ `mutation CreateSchedule(
     description
     location
     sortOrder
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    scheduleEventsId
     __typename
   }
 }
@@ -1549,31 +1191,12 @@ export const updateSchedule = /* GraphQL */ `mutation UpdateSchedule(
     description
     location
     sortOrder
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    scheduleEventsId
     __typename
   }
 }
@@ -1593,31 +1216,12 @@ export const deleteSchedule = /* GraphQL */ `mutation DeleteSchedule(
     description
     location
     sortOrder
-    Events {
-      id
-      eventName
-      eventPassword
-      startDate
-      endDate
-      displayStartDate
-      displayEndDate
-      allowNewActivity
-      eventFunctionality
-      adminPassword
-      users
-      createdAt
-      updatedAt
-      _version
-      _deleted
-      _lastChangedAt
-      __typename
-    }
+    eventsID
     createdAt
     updatedAt
     _version
     _deleted
     _lastChangedAt
-    scheduleEventsId
     __typename
   }
 }

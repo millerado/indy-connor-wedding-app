@@ -2,8 +2,9 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import { View, ScrollView } from "react-native";
 import { useTheme } from "react-native-paper";
 import { MentionInput } from 'react-native-controlled-mentions';
-import { DataStore, sendUsersPushNotifications } from "../../utils";
-import { Comments } from "../../models";
+import { API } from "aws-amplify";
+import * as mutations from '../../graphql/mutations';
+import { sendUsersPushNotifications } from "../../utils";
 import {
   Text,
   Button,
@@ -20,7 +21,7 @@ const CommentModal = (props) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const authStatus = useContext(AuthContext).authStatus;
-  const { allUsers } = useContext(DataContext);
+  const { allUsers, selectedEventId } = useContext(DataContext);
 
   const { showModal, modalType, closeModal, postsID, comment } = props;
 
@@ -67,34 +68,41 @@ const CommentModal = (props) => {
     if (commentText) {
       // Update Item
       if (modalType === "update") {
-        const originalItem = await DataStore.query(Comments, comment.id);
-        const updatedItem = { ...originalItem };
-        updatedItem.comment = commentText;
-        // await DataStore.stop();
-        await DataStore.save(
-          Comments.copyOf(originalItem, (updatedItem) => {
-            updatedItem.comment = commentText;
-          })
-        );
+        const updatedComment = {
+          id: comment.id,
+          _version: comment._version,
+          comment: commentText,
+        };
+        try {
+          await API.graphql({
+            query: mutations.updateComments,
+            variables: { input: updatedComment }
+          });
+        } catch (e) {
+          console.log('-- updateComment Error --', e);
+        }
         setIsLoading(false);
         setError("");
         handleCloseModal();
       } else {
         // Create Item
         try {
-          // await DataStore.stop();
-          await DataStore.save(
-            new Comments({
-              userId: authStatus.userId,
-              comment: commentText,
-              postsID: postsID,
-            })
-          );
+          const commentDetails = {
+            userId: authStatus.userId,
+            comment: commentText,
+            postsID: postsID,
+            eventsID: selectedEventId,
+          };
+          
+          await API.graphql({
+            query: mutations.createComments,
+            variables: { input: commentDetails }
+          });
 
           setIsLoading(false);
           setError("");
           handleCloseModal();
-          pushNotificationsToTaggedUsers(commentText);
+          // pushNotificationsToTaggedUsers(commentText);
         } catch (err) {
           console.log("error posting Comment Items right now", err);
           setIsLoading(false);

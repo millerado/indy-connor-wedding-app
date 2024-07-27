@@ -95,7 +95,7 @@ const HomeScreen = () => {
         stickyHeaderIndices={[0]}
         ListHeaderComponent={listHeader}
         removeClippedSubviews={Platform.OS === "android"} // Saves memory, has issues on iOS
-        // maxToRenderPerBatch={10} // Also the default
+        maxToRenderPerBatch={10} // Also the default
         initialNumToRender={10} // Also the default
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="on-drag"

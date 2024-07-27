@@ -1,7 +1,5 @@
-import { API, Predicates, SortDirection } from "aws-amplify";
-import { listPosts } from '../../graphql/queries'
-import { Posts } from "../../models";
-import { DataStore } from "../../utils";
+import { API } from "aws-amplify";
+import { listPosts } from '../../graphql/queries';
 
 const formatPosts = (items, oldPosts, setPosts) => {
   if(items.length > 0) {
@@ -18,25 +16,14 @@ const formatPosts = (items, oldPosts, setPosts) => {
     }
   }
   return [];
-}
-
-const loadPostsFromDatastore = async (setPosts, oldPosts, eventId) => {
-  try {
-    const posts = await DataStore.query(Posts, Predicates.ALL, {
-      sort: (s) => s.createdAt(SortDirection.DESCENDING),
-      filter: (f) => f.postsEventsID("eq", eventId)
-    });
-    formatPosts(posts, oldPosts, setPosts);
-  } catch (err) {
-    console.log('-- Error Loading Posts Via Datastore --', err);
-  }
-}
+};
 
 const loadPosts = async (setPosts, oldPosts, eventId) => {
   try {
     const allPosts = await API.graphql({ query: listPosts, variables: { limit: 999999999, filter: {
-      postsEventsId: { eq: eventId }
+      eventsID: { eq: eventId }
     } } });
+    // const allPosts = await API.graphql({ query: listPosts, variables: { limit: 999999999 } });
 
     const unfilteredItems = allPosts?.data?.listPosts?.items;
     // Remove items where _deleted is true
@@ -49,8 +36,8 @@ const loadPosts = async (setPosts, oldPosts, eventId) => {
       formatPosts(items, oldPosts, setPosts);
     }
   } catch (err) {
-    console.log('-- Error Loading Posts, Will Try Datastore --', err);
-    loadPostsFromDatastore(setPosts, oldPosts, eventId);
+    console.log('-- Error Loading Posts --', err);
+    formatPosts([], oldPosts, setPosts);
   }
 };
 

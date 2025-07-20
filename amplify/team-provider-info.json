@@ -17,6 +17,9 @@
       },
       "storage": {
         "s3indigoandconnorstorage4ad011fe": {}
+      },
+      "api": {
+        "indigoandconnor": {}
       }
     }
   },

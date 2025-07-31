@@ -100,7 +100,8 @@ const App = () => {
   const lastRefreshTime = useRef(undefined);
   // TO-DO: Move to context AND add an event sign in form
   // const [selectedEventId, setSelectedEventId] = useState('e6311bc0-c7e6-48eb-8e87-f015c04140e3'); // Wedding
-  const [selectedEventId, setSelectedEventId] = useState('ca33d400-811e-4557-8ee5-430bd6f8513f'); // 2024 Summer Games
+  // const [selectedEventId, setSelectedEventId] = useState('ca33d400-811e-4557-8ee5-430bd6f8513f'); // 2024 Summer Games
+  const [selectedEventId, setSelectedEventId] = useState('c22b7621-2ba3-40c3-a6b0-f132828d8f0b'); // 2025 Summer Games
 
   // Pieces for the Theme Context
   const theme = themeName === "Dark" ? darkTheme : lightTheme;
@@ -288,7 +289,7 @@ const App = () => {
       // We *only* need this if we're going to track a state (redux or otherwise) of all notifications. Otherwise this isn't needed
       // Notifications.removeNotificationSubscription(notificationListener);
       // This checks for notification clicks with the app open
-      Notifications.removeNotificationSubscription(responseListener);
+      // Notifications.removeNotificationSubscription(responseListener);
     };
   }, []);
 

@@ -1,14 +1,8 @@
-// const { getDefaultConfig } = require('expo/metro-config');
-
-// const config = getDefaultConfig(__dirname);
-
-// config.resolver.sourceExts.push("ios.js", "android.js");
-
-// module.exports = config;
-
-
 // Learn more https://docs.expo.io/guides/customizing-metro
 const { getDefaultConfig } = require('@expo/metro-config');
+const {
+  wrapWithReanimatedMetroConfig,
+} = require('react-native-reanimated/metro-config');
 
 const config = getDefaultConfig(__dirname);
 // config.resolver.sourceExts.push('cjs');
@@ -19,4 +13,4 @@ if (!config.resolver.sourceExts.includes("cjs")) {
 }
 config.resolver.unstable_enablePackageExports = false;
 
-module.exports = config;
+module.exports = wrapWithReanimatedMetroConfig(config);

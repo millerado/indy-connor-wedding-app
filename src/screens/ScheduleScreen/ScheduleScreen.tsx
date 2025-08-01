@@ -19,7 +19,7 @@ const emptyScheduleData = [
   { day: "Sunday", data: [] },
 ];
 
-const ScheduleScreen = ({ navigation, route }) => {
+const ScheduleScreen = ({ navigation }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   const [scheduleData, setScheduleData] = useState([]);
@@ -111,25 +111,49 @@ const ScheduleScreen = ({ navigation, route }) => {
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={{ width: dimensions.width }}
-        renderTabBar={props => (
-          <TabBar
-            {...props} 
-            contentContainerStyle={{backgroundColor: theme.colors.background}} 
-            tabStyle={{backgroundColor: theme.colors.primary, borderTopLeftRadius: 20, borderTopRightRadius: 20}} 
-            renderTabBarItem={({ route, ...otherProps }) => {
-              const isFocused = otherProps?.navigationState.routes[otherProps.navigationState.index].key === route.key;
-              return (
-                <Pressable onPress={otherProps.onPress} style={[ss.tabItem, {backgroundColor: isFocused ? theme.colors.primary : theme.colors.background, width: dimensions.width / routes.length }]} key={route.key}>
-                  <View>
-                    <Text color={isFocused? theme.colors.onPrimary : undefined} bold>
-                      {route.title.toUpperCase()}
-                    </Text>
-                  </View>
-                </Pressable>
-              )
-            }}
-          />
-        )}
+        renderTabBar={(props) => {
+          return (        
+            <TabBar
+              {...props}
+              contentContainerStyle={{ backgroundColor: theme.colors.background }}
+              tabStyle={{
+                backgroundColor: theme.colors.primary,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+              }}
+              renderTabBarItem={({ key, route, ...otherProps }) => {
+                const isFocused =
+                  otherProps?.navigationState.routes[
+                    otherProps.navigationState.index
+                  ].key === route.key;
+                return (
+                  <Pressable
+                    onPress={otherProps.onPress}
+                    key={key}
+                    style={[
+                      ss.tabItem,
+                      {
+                        backgroundColor: isFocused
+                          ? theme.colors.primary
+                          : theme.colors.background,
+                        width: dimensions.width / routes.length,
+                      },
+                    ]}
+                  >
+                    <View>
+                      <Text
+                        color={isFocused ? theme.colors.onPrimary : undefined}
+                        bold
+                      >
+                        {route.title.toUpperCase()}
+                      </Text>
+                    </View>
+                  </Pressable>
+                );
+              }}
+            />
+          )}
+        }
       />
     </>
   );

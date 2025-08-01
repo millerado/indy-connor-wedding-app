@@ -31,7 +31,6 @@ const FAQItem = (props) => {
   const deleteFAQItem = async () => {
     if (authStatus?.isAuthed) {
       try {
-        // await DataStore.stop();
         await DataStore.delete(FAQ, id);
         setDeleteDialogVisible(false);
       } catch (error) {

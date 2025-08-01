@@ -10,10 +10,11 @@ import { View, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Dialog, Menu, Portal, useTheme } from "react-native-paper";
 import _ from "lodash";
+import { API } from "aws-amplify";
+import * as mutations from '../../graphql/mutations';
 import SingleComment from "../SingleComment/SingleComment";
 import AddCommentListView from "../AddCommentListView/AddCommentListView";
 import ImageScroll from "../ImageScroll/ImageScroll";
-import { Reactions, Posts } from "../../models";
 import {
   Icon,
   Text,
@@ -23,7 +24,7 @@ import {
 } from "../../components";
 import { typography } from "../../styles";
 import { formatDate, DataStore, formatGameString } from "../../utils/";
-import { AuthContext } from "../../contexts";
+import { AuthContext, DataContext } from "../../contexts";
 import CommentModal from "../CommentModal/CommentModal";
 import LikedByUsersModal from "../LikedByUsersModal/LikedByUsersModal";
 import FormatTextWithMentions from '../FormatTextWithMentions/FormatTextWithMentions';
@@ -68,6 +69,7 @@ const PostPreview = (props) => {
   const [showMenu, setShowMenu] = useState(false);
 
   const authStatus = useContext(AuthContext).authStatus;
+  const { selectedEventId } = useContext(DataContext);
 
   const { messageBody, images, userId, createdAt, id: postsID, olympicEvent } = post;
   const eventDetails = olympicEvent ? JSON.parse(post.eventDetails) : null;
@@ -76,29 +78,37 @@ const PostPreview = (props) => {
     // console.log('-- likePressHandler --', isLiked, postsID, authStatus?.userId);
     if (authStatus?.isAuthed) {
       if (isLiked) {
+        // TO-DO: FIX THIS! Need to delete by ID, not by Filter
         try {
-          // await DataStore.stop();
-          await DataStore.delete(Reactions, (reaction) =>
-            reaction.and(reaction => [
-              reaction.userId.eq(authStatus.userId),
-              reaction.postsID.eq(postsID),
-              reaction.reactionType.eq("like")
-            ])
-          );
+          const reactionToDelete = {
+            userId: authStatus.userId,
+            postsID: postsID,
+            reactionType: "like",
+            eventsID: selectedEventId,
+          };
+          
+          await API.graphql({
+            query: mutations.deleteReactions,
+            variables: { input: reactionToDelete }
+          });
         } catch (error) {
           console.log("Error deleting reaction", error);
         }
       } else {
         try {
-          // await DataStore.stop();
-          await DataStore.save(
-            new Reactions({
-              postsID: postsID,
-              userId: authStatus.userId,
-              reactionType: "like",
-            })
-          );
-          // console.log("Comment saved successfully!");
+          console.log('-- Save Reaction --', postsID, selectedEventId, authStatus.userId);
+          const reactionDetails = {
+            postsID: postsID,
+            eventsID: selectedEventId,
+            userId: authStatus.userId,
+            reactionType: "like",
+          };
+          
+          await API.graphql({
+            query: mutations.createReactions,
+            variables: { input: reactionDetails }
+          });
+          console.log("Reaction saved successfully!");
         } catch (error) {
           console.log("Error saving reaction", error);
         }
@@ -129,8 +139,10 @@ const PostPreview = (props) => {
   const deletePost = async () => {
     if (authStatus?.isAuthed) {
       try {
-        // await DataStore.stop();
-        await DataStore.delete(Posts, post.id);
+        await API.graphql({
+          query: mutations.deletePosts,
+          variables: { input: {id: post.id, _version: post._version } }
+        });
         setDeleteDialogVisible(false);
         if (!previewMode) {
           navigation.popToTop();
@@ -263,7 +275,7 @@ const PostPreview = (props) => {
           <View style={ss.leftSide}>
             {eventDetails ? (
               <View style={ss.avatarWrapper}>
-                {messageBody.toLowerCase().includes("#ohshit") ? (
+                {messageBody?.toLowerCase()?.includes("#ohshit") ? (
                   <Icon name={'ohShit'} color={theme.colors.primary} size={typography.fontSizeM * 2} />
                 ) : (
                   <Icon name={eventDetails.game.iconName} color={theme.colors.primary} size={typography.fontSizeM * 2} />

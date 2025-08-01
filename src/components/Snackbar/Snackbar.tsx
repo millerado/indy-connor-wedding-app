@@ -2,11 +2,13 @@ import * as React from "react";
 import {
   Snackbar as PaperSnackbar,
   SnackbarProps,
-  withTheme,
+  useTheme,
 } from "react-native-paper";
 
 const Snackbar = (props: SnackbarProps) => {
-  return <PaperSnackbar {...props} />;
+  const { key, ...restOfProps } = props;
+  const theme = useTheme();
+  return <PaperSnackbar {...restOfProps} key={key} theme={theme} />;
 };
 
-export default withTheme(Snackbar);
+export default Snackbar;

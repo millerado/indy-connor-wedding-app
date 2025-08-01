@@ -23,6 +23,7 @@ import {
   UserScreen,
   ViewPostScreen,
 } from "../screens";
+import { typography } from "../styles";
 
 const HomeStack = createNativeStackNavigator();
 const StandingsStack = createNativeStackNavigator();
@@ -50,7 +51,7 @@ const HomeStackScreen = () => {
     <HomeStack.Navigator screenOptions={getScreenOptions()} >
       <HomeStack.Screen name="Home" component={HomeScreen} options={{ 
         headerLeft: () => (
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+          <View style={{ flexDirection: 'row', justifyContent: 'flex-end', width: typography.fontSizeXXL, height: typography.fontSizeXXL }}>
             <SettingsModal />
           </View>
         ),

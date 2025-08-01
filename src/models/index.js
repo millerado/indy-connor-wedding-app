@@ -4,9 +4,10 @@ import { schema } from './schema';
 
 
 
-const { ScheduledNotifications, Notifications, Games, StandingsPeople, AdminFavorites, StandingsTeams, Posts, Teams, Users, ExpoTokens, Reactions, Comments, FAQ, Schedule } = initSchema(schema);
+const { Events, ScheduledNotifications, Notifications, Games, StandingsPeople, AdminFavorites, StandingsTeams, Posts, Teams, Users, ExpoTokens, Reactions, Comments, FAQ, Schedule } = initSchema(schema);
 
 export {
+  Events,
   ScheduledNotifications,
   Notifications,
   Games,

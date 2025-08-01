@@ -2,28 +2,38 @@
 /* eslint-disable */
 //  This file was automatically generated and should not be edited.
 
-export type CreateScheduledNotificationsInput = {
+export type CreateEventsInput = {
   id?: string | null,
-  userId: string,
-  subject: string,
-  linking?: string | null,
-  messageBody: string,
-  scheduleTrigger: string,
-  displayTime: string,
+  eventName: string,
+  eventPassword?: string | null,
+  startDate: string,
+  endDate: string,
+  displayStartDate?: string | null,
+  displayEndDate?: string | null,
+  allowNewActivity: boolean,
+  eventFunctionality: string,
+  adminPassword?: string | null,
+  users?: Array< string | null > | null,
   _version?: number | null,
 };
 
-export type ModelScheduledNotificationsConditionInput = {
-  userId?: ModelStringInput | null,
-  subject?: ModelStringInput | null,
-  linking?: ModelStringInput | null,
-  messageBody?: ModelStringInput | null,
-  scheduleTrigger?: ModelStringInput | null,
-  displayTime?: ModelStringInput | null,
-  and?: Array< ModelScheduledNotificationsConditionInput | null > | null,
-  or?: Array< ModelScheduledNotificationsConditionInput | null > | null,
-  not?: ModelScheduledNotificationsConditionInput | null,
+export type ModelEventsConditionInput = {
+  eventName?: ModelStringInput | null,
+  eventPassword?: ModelStringInput | null,
+  startDate?: ModelStringInput | null,
+  endDate?: ModelStringInput | null,
+  displayStartDate?: ModelStringInput | null,
+  displayEndDate?: ModelStringInput | null,
+  allowNewActivity?: ModelBooleanInput | null,
+  eventFunctionality?: ModelStringInput | null,
+  adminPassword?: ModelStringInput | null,
+  users?: ModelStringInput | null,
+  and?: Array< ModelEventsConditionInput | null > | null,
+  or?: Array< ModelEventsConditionInput | null > | null,
+  not?: ModelEventsConditionInput | null,
   _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type ModelStringInput = {
@@ -71,6 +81,257 @@ export type ModelBooleanInput = {
   eq?: boolean | null,
   attributeExists?: boolean | null,
   attributeType?: ModelAttributeTypes | null,
+};
+
+export type Events = {
+  __typename: "Events",
+  id: string,
+  eventName: string,
+  eventPassword?: string | null,
+  startDate: string,
+  endDate: string,
+  displayStartDate?: string | null,
+  displayEndDate?: string | null,
+  allowNewActivity: boolean,
+  eventFunctionality: string,
+  adminPassword?: string | null,
+  users?: Array< string | null > | null,
+  StandingsPeople?: ModelStandingsPeopleConnection | null,
+  AdminFavorites?: ModelAdminFavoritesConnection | null,
+  StandingsTeams?: ModelStandingsTeamsConnection | null,
+  Posts?: ModelPostsConnection | null,
+  Reactions?: ModelReactionsConnection | null,
+  Comments?: ModelCommentsConnection | null,
+  FAQS?: ModelFAQConnection | null,
+  Schedules?: ModelScheduleConnection | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelStandingsPeopleConnection = {
+  __typename: "ModelStandingsPeopleConnection",
+  items:  Array<StandingsPeople | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type StandingsPeople = {
+  __typename: "StandingsPeople",
+  id: string,
+  userId?: string | null,
+  rank?: number | null,
+  points?: number | null,
+  gamesPlayed?: number | null,
+  lastCalculationTime?: string | null,
+  eventsID?: string | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelAdminFavoritesConnection = {
+  __typename: "ModelAdminFavoritesConnection",
+  items:  Array<AdminFavorites | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type AdminFavorites = {
+  __typename: "AdminFavorites",
+  id: string,
+  image: string,
+  eventsID?: string | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelStandingsTeamsConnection = {
+  __typename: "ModelStandingsTeamsConnection",
+  items:  Array<StandingsTeams | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type StandingsTeams = {
+  __typename: "StandingsTeams",
+  id: string,
+  teamId?: string | null,
+  rank?: number | null,
+  points?: number | null,
+  lastCalculationTime?: string | null,
+  eventsID?: string | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelPostsConnection = {
+  __typename: "ModelPostsConnection",
+  items:  Array<Posts | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type Posts = {
+  __typename: "Posts",
+  id: string,
+  userId: string,
+  messageBody?: string | null,
+  images?: Array< string | null > | null,
+  olympicEvent: boolean,
+  eventDetails?: string | null,
+  Comments?: ModelCommentsConnection | null,
+  Reactions?: ModelReactionsConnection | null,
+  usersInPost?: Array< string | null > | null,
+  eventsID?: string | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelCommentsConnection = {
+  __typename: "ModelCommentsConnection",
+  items:  Array<Comments | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type Comments = {
+  __typename: "Comments",
+  id: string,
+  userId: string,
+  comment: string,
+  postsID: string,
+  eventsID?: string | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelReactionsConnection = {
+  __typename: "ModelReactionsConnection",
+  items:  Array<Reactions | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type Reactions = {
+  __typename: "Reactions",
+  id: string,
+  userId: string,
+  reactionType: string,
+  postsID: string,
+  eventsID?: string | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelFAQConnection = {
+  __typename: "ModelFAQConnection",
+  items:  Array<FAQ | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type FAQ = {
+  __typename: "FAQ",
+  id: string,
+  question: string,
+  answer: string,
+  sortOrder: number,
+  eventsID?: string | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type ModelScheduleConnection = {
+  __typename: "ModelScheduleConnection",
+  items:  Array<Schedule | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
+};
+
+export type Schedule = {
+  __typename: "Schedule",
+  id: string,
+  name: string,
+  time: string,
+  day: string,
+  description: string,
+  location: string,
+  sortOrder: number,
+  eventsID?: string | null,
+  createdAt: string,
+  updatedAt: string,
+  _version: number,
+  _deleted?: boolean | null,
+  _lastChangedAt: number,
+};
+
+export type UpdateEventsInput = {
+  id: string,
+  eventName?: string | null,
+  eventPassword?: string | null,
+  startDate?: string | null,
+  endDate?: string | null,
+  displayStartDate?: string | null,
+  displayEndDate?: string | null,
+  allowNewActivity?: boolean | null,
+  eventFunctionality?: string | null,
+  adminPassword?: string | null,
+  users?: Array< string | null > | null,
+  _version?: number | null,
+};
+
+export type DeleteEventsInput = {
+  id: string,
+  _version?: number | null,
+};
+
+export type CreateScheduledNotificationsInput = {
+  id?: string | null,
+  userId: string,
+  subject: string,
+  linking?: string | null,
+  messageBody: string,
+  scheduleTrigger: string,
+  displayTime: string,
+  _version?: number | null,
+};
+
+export type ModelScheduledNotificationsConditionInput = {
+  userId?: ModelStringInput | null,
+  subject?: ModelStringInput | null,
+  linking?: ModelStringInput | null,
+  messageBody?: ModelStringInput | null,
+  scheduleTrigger?: ModelStringInput | null,
+  displayTime?: ModelStringInput | null,
+  and?: Array< ModelScheduledNotificationsConditionInput | null > | null,
+  or?: Array< ModelScheduledNotificationsConditionInput | null > | null,
+  not?: ModelScheduledNotificationsConditionInput | null,
+  _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type ScheduledNotifications = {
@@ -127,6 +388,8 @@ export type ModelNotificationsConditionInput = {
   or?: Array< ModelNotificationsConditionInput | null > | null,
   not?: ModelNotificationsConditionInput | null,
   _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type Notifications = {
@@ -189,6 +452,8 @@ export type ModelGamesConditionInput = {
   or?: Array< ModelGamesConditionInput | null > | null,
   not?: ModelGamesConditionInput | null,
   _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type ModelIntInput = {
@@ -248,6 +513,7 @@ export type CreateStandingsPeopleInput = {
   points?: number | null,
   gamesPlayed?: number | null,
   lastCalculationTime?: string | null,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
@@ -257,25 +523,29 @@ export type ModelStandingsPeopleConditionInput = {
   points?: ModelIntInput | null,
   gamesPlayed?: ModelIntInput | null,
   lastCalculationTime?: ModelStringInput | null,
+  eventsID?: ModelIDInput | null,
   and?: Array< ModelStandingsPeopleConditionInput | null > | null,
   or?: Array< ModelStandingsPeopleConditionInput | null > | null,
   not?: ModelStandingsPeopleConditionInput | null,
   _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
-export type StandingsPeople = {
-  __typename: "StandingsPeople",
-  id: string,
-  userId?: string | null,
-  rank?: number | null,
-  points?: number | null,
-  gamesPlayed?: number | null,
-  lastCalculationTime?: string | null,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
+export type ModelIDInput = {
+  ne?: string | null,
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  contains?: string | null,
+  notContains?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+  attributeExists?: boolean | null,
+  attributeType?: ModelAttributeTypes | null,
+  size?: ModelSizeInput | null,
 };
 
 export type UpdateStandingsPeopleInput = {
@@ -285,6 +555,7 @@ export type UpdateStandingsPeopleInput = {
   points?: number | null,
   gamesPlayed?: number | null,
   lastCalculationTime?: string | null,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
@@ -296,31 +567,25 @@ export type DeleteStandingsPeopleInput = {
 export type CreateAdminFavoritesInput = {
   id?: string | null,
   image: string,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
 export type ModelAdminFavoritesConditionInput = {
   image?: ModelStringInput | null,
+  eventsID?: ModelIDInput | null,
   and?: Array< ModelAdminFavoritesConditionInput | null > | null,
   or?: Array< ModelAdminFavoritesConditionInput | null > | null,
   not?: ModelAdminFavoritesConditionInput | null,
   _deleted?: ModelBooleanInput | null,
-};
-
-export type AdminFavorites = {
-  __typename: "AdminFavorites",
-  id: string,
-  image: string,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type UpdateAdminFavoritesInput = {
   id: string,
   image?: string | null,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
@@ -335,6 +600,7 @@ export type CreateStandingsTeamsInput = {
   rank?: number | null,
   points?: number | null,
   lastCalculationTime?: string | null,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
@@ -343,24 +609,13 @@ export type ModelStandingsTeamsConditionInput = {
   rank?: ModelIntInput | null,
   points?: ModelIntInput | null,
   lastCalculationTime?: ModelStringInput | null,
+  eventsID?: ModelIDInput | null,
   and?: Array< ModelStandingsTeamsConditionInput | null > | null,
   or?: Array< ModelStandingsTeamsConditionInput | null > | null,
   not?: ModelStandingsTeamsConditionInput | null,
   _deleted?: ModelBooleanInput | null,
-};
-
-export type StandingsTeams = {
-  __typename: "StandingsTeams",
-  id: string,
-  teamId?: string | null,
-  rank?: number | null,
-  points?: number | null,
-  lastCalculationTime?: string | null,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type UpdateStandingsTeamsInput = {
@@ -369,6 +624,7 @@ export type UpdateStandingsTeamsInput = {
   rank?: number | null,
   points?: number | null,
   lastCalculationTime?: string | null,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
@@ -385,6 +641,7 @@ export type CreatePostsInput = {
   olympicEvent: boolean,
   eventDetails?: string | null,
   usersInPost?: Array< string | null > | null,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
@@ -395,68 +652,13 @@ export type ModelPostsConditionInput = {
   olympicEvent?: ModelBooleanInput | null,
   eventDetails?: ModelStringInput | null,
   usersInPost?: ModelStringInput | null,
+  eventsID?: ModelIDInput | null,
   and?: Array< ModelPostsConditionInput | null > | null,
   or?: Array< ModelPostsConditionInput | null > | null,
   not?: ModelPostsConditionInput | null,
   _deleted?: ModelBooleanInput | null,
-};
-
-export type Posts = {
-  __typename: "Posts",
-  id: string,
-  userId: string,
-  messageBody?: string | null,
-  images?: Array< string | null > | null,
-  olympicEvent: boolean,
-  eventDetails?: string | null,
-  Comments?: ModelCommentsConnection | null,
-  Reactions?: ModelReactionsConnection | null,
-  usersInPost?: Array< string | null > | null,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
-};
-
-export type ModelCommentsConnection = {
-  __typename: "ModelCommentsConnection",
-  items:  Array<Comments | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
-};
-
-export type Comments = {
-  __typename: "Comments",
-  id: string,
-  userId: string,
-  comment: string,
-  postsID: string,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
-};
-
-export type ModelReactionsConnection = {
-  __typename: "ModelReactionsConnection",
-  items:  Array<Reactions | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
-};
-
-export type Reactions = {
-  __typename: "Reactions",
-  id: string,
-  userId: string,
-  reactionType: string,
-  postsID: string,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type UpdatePostsInput = {
@@ -467,6 +669,7 @@ export type UpdatePostsInput = {
   olympicEvent?: boolean | null,
   eventDetails?: string | null,
   usersInPost?: Array< string | null > | null,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
@@ -491,6 +694,8 @@ export type ModelTeamsConditionInput = {
   or?: Array< ModelTeamsConditionInput | null > | null,
   not?: ModelTeamsConditionInput | null,
   _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type Teams = {
@@ -568,22 +773,8 @@ export type ModelUsersConditionInput = {
   or?: Array< ModelUsersConditionInput | null > | null,
   not?: ModelUsersConditionInput | null,
   _deleted?: ModelBooleanInput | null,
-};
-
-export type ModelIDInput = {
-  ne?: string | null,
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  contains?: string | null,
-  notContains?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-  attributeExists?: boolean | null,
-  attributeType?: ModelAttributeTypes | null,
-  size?: ModelSizeInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type UpdateUsersInput = {
@@ -617,6 +808,8 @@ export type ModelExpoTokensConditionInput = {
   or?: Array< ModelExpoTokensConditionInput | null > | null,
   not?: ModelExpoTokensConditionInput | null,
   _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type ExpoTokens = {
@@ -648,6 +841,7 @@ export type CreateReactionsInput = {
   userId: string,
   reactionType: string,
   postsID: string,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
@@ -655,10 +849,13 @@ export type ModelReactionsConditionInput = {
   userId?: ModelStringInput | null,
   reactionType?: ModelStringInput | null,
   postsID?: ModelIDInput | null,
+  eventsID?: ModelIDInput | null,
   and?: Array< ModelReactionsConditionInput | null > | null,
   or?: Array< ModelReactionsConditionInput | null > | null,
   not?: ModelReactionsConditionInput | null,
   _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type UpdateReactionsInput = {
@@ -666,6 +863,7 @@ export type UpdateReactionsInput = {
   userId?: string | null,
   reactionType?: string | null,
   postsID?: string | null,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
@@ -679,6 +877,7 @@ export type CreateCommentsInput = {
   userId: string,
   comment: string,
   postsID: string,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
@@ -686,10 +885,13 @@ export type ModelCommentsConditionInput = {
   userId?: ModelStringInput | null,
   comment?: ModelStringInput | null,
   postsID?: ModelIDInput | null,
+  eventsID?: ModelIDInput | null,
   and?: Array< ModelCommentsConditionInput | null > | null,
   or?: Array< ModelCommentsConditionInput | null > | null,
   not?: ModelCommentsConditionInput | null,
   _deleted?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type UpdateCommentsInput = {
@@ -697,6 +899,7 @@ export type UpdateCommentsInput = {
   userId?: string | null,
   comment?: string | null,
   postsID?: string | null,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
@@ -710,6 +913,7 @@ export type CreateFAQInput = {
   question: string,
   answer: string,
   sortOrder: number,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
@@ -717,23 +921,13 @@ export type ModelFAQConditionInput = {
   question?: ModelStringInput | null,
   answer?: ModelStringInput | null,
   sortOrder?: ModelIntInput | null,
+  eventsID?: ModelIDInput | null,
   and?: Array< ModelFAQConditionInput | null > | null,
   or?: Array< ModelFAQConditionInput | null > | null,
   not?: ModelFAQConditionInput | null,
   _deleted?: ModelBooleanInput | null,
-};
-
-export type FAQ = {
-  __typename: "FAQ",
-  id: string,
-  question: string,
-  answer: string,
-  sortOrder: number,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type UpdateFAQInput = {
@@ -741,6 +935,7 @@ export type UpdateFAQInput = {
   question?: string | null,
   answer?: string | null,
   sortOrder?: number | null,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
@@ -757,6 +952,7 @@ export type CreateScheduleInput = {
   description: string,
   location: string,
   sortOrder: number,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
@@ -767,26 +963,13 @@ export type ModelScheduleConditionInput = {
   description?: ModelStringInput | null,
   location?: ModelStringInput | null,
   sortOrder?: ModelIntInput | null,
+  eventsID?: ModelIDInput | null,
   and?: Array< ModelScheduleConditionInput | null > | null,
   or?: Array< ModelScheduleConditionInput | null > | null,
   not?: ModelScheduleConditionInput | null,
   _deleted?: ModelBooleanInput | null,
-};
-
-export type Schedule = {
-  __typename: "Schedule",
-  id: string,
-  name: string,
-  time: string,
-  day: string,
-  description: string,
-  location: string,
-  sortOrder: number,
-  createdAt: string,
-  updatedAt: string,
-  _version: number,
-  _deleted?: boolean | null,
-  _lastChangedAt: number,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
 };
 
 export type UpdateScheduleInput = {
@@ -797,12 +980,40 @@ export type UpdateScheduleInput = {
   description?: string | null,
   location?: string | null,
   sortOrder?: number | null,
+  eventsID?: string | null,
   _version?: number | null,
 };
 
 export type DeleteScheduleInput = {
   id: string,
   _version?: number | null,
+};
+
+export type ModelEventsFilterInput = {
+  id?: ModelIDInput | null,
+  eventName?: ModelStringInput | null,
+  eventPassword?: ModelStringInput | null,
+  startDate?: ModelStringInput | null,
+  endDate?: ModelStringInput | null,
+  displayStartDate?: ModelStringInput | null,
+  displayEndDate?: ModelStringInput | null,
+  allowNewActivity?: ModelBooleanInput | null,
+  eventFunctionality?: ModelStringInput | null,
+  adminPassword?: ModelStringInput | null,
+  users?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
+  and?: Array< ModelEventsFilterInput | null > | null,
+  or?: Array< ModelEventsFilterInput | null > | null,
+  not?: ModelEventsFilterInput | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
+export type ModelEventsConnection = {
+  __typename: "ModelEventsConnection",
+  items:  Array<Events | null >,
+  nextToken?: string | null,
+  startedAt?: number | null,
 };
 
 export type ModelScheduledNotificationsFilterInput = {
@@ -813,6 +1024,8 @@ export type ModelScheduledNotificationsFilterInput = {
   messageBody?: ModelStringInput | null,
   scheduleTrigger?: ModelStringInput | null,
   displayTime?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelScheduledNotificationsFilterInput | null > | null,
   or?: Array< ModelScheduledNotificationsFilterInput | null > | null,
   not?: ModelScheduledNotificationsFilterInput | null,
@@ -834,6 +1047,8 @@ export type ModelNotificationsFilterInput = {
   linking?: ModelStringInput | null,
   subject?: ModelStringInput | null,
   displayTime?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelNotificationsFilterInput | null > | null,
   or?: Array< ModelNotificationsFilterInput | null > | null,
   not?: ModelNotificationsFilterInput | null,
@@ -858,6 +1073,8 @@ export type ModelGamesFilterInput = {
   points?: ModelIntInput | null,
   rules?: ModelStringInput | null,
   canHaveMultipleWinners?: ModelBooleanInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelGamesFilterInput | null > | null,
   or?: Array< ModelGamesFilterInput | null > | null,
   not?: ModelGamesFilterInput | null,
@@ -878,33 +1095,31 @@ export type ModelStandingsPeopleFilterInput = {
   points?: ModelIntInput | null,
   gamesPlayed?: ModelIntInput | null,
   lastCalculationTime?: ModelStringInput | null,
+  eventsID?: ModelIDInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelStandingsPeopleFilterInput | null > | null,
   or?: Array< ModelStandingsPeopleFilterInput | null > | null,
   not?: ModelStandingsPeopleFilterInput | null,
   _deleted?: ModelBooleanInput | null,
 };
 
-export type ModelStandingsPeopleConnection = {
-  __typename: "ModelStandingsPeopleConnection",
-  items:  Array<StandingsPeople | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
-};
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
 
 export type ModelAdminFavoritesFilterInput = {
   id?: ModelIDInput | null,
   image?: ModelStringInput | null,
+  eventsID?: ModelIDInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelAdminFavoritesFilterInput | null > | null,
   or?: Array< ModelAdminFavoritesFilterInput | null > | null,
   not?: ModelAdminFavoritesFilterInput | null,
   _deleted?: ModelBooleanInput | null,
-};
-
-export type ModelAdminFavoritesConnection = {
-  __typename: "ModelAdminFavoritesConnection",
-  items:  Array<AdminFavorites | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
 };
 
 export type ModelStandingsTeamsFilterInput = {
@@ -913,17 +1128,13 @@ export type ModelStandingsTeamsFilterInput = {
   rank?: ModelIntInput | null,
   points?: ModelIntInput | null,
   lastCalculationTime?: ModelStringInput | null,
+  eventsID?: ModelIDInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelStandingsTeamsFilterInput | null > | null,
   or?: Array< ModelStandingsTeamsFilterInput | null > | null,
   not?: ModelStandingsTeamsFilterInput | null,
   _deleted?: ModelBooleanInput | null,
-};
-
-export type ModelStandingsTeamsConnection = {
-  __typename: "ModelStandingsTeamsConnection",
-  items:  Array<StandingsTeams | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
 };
 
 export type ModelPostsFilterInput = {
@@ -934,17 +1145,13 @@ export type ModelPostsFilterInput = {
   olympicEvent?: ModelBooleanInput | null,
   eventDetails?: ModelStringInput | null,
   usersInPost?: ModelStringInput | null,
+  eventsID?: ModelIDInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelPostsFilterInput | null > | null,
   or?: Array< ModelPostsFilterInput | null > | null,
   not?: ModelPostsFilterInput | null,
   _deleted?: ModelBooleanInput | null,
-};
-
-export type ModelPostsConnection = {
-  __typename: "ModelPostsConnection",
-  items:  Array<Posts | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
 };
 
 export type ModelTeamsFilterInput = {
@@ -952,6 +1159,8 @@ export type ModelTeamsFilterInput = {
   name?: ModelStringInput | null,
   iconName?: ModelStringInput | null,
   description?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelTeamsFilterInput | null > | null,
   or?: Array< ModelTeamsFilterInput | null > | null,
   not?: ModelTeamsFilterInput | null,
@@ -974,22 +1183,20 @@ export type ModelUsersFilterInput = {
   teamsID?: ModelIDInput | null,
   admin?: ModelBooleanInput | null,
   unreadNotifications?: ModelIntInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelUsersFilterInput | null > | null,
   or?: Array< ModelUsersFilterInput | null > | null,
   not?: ModelUsersFilterInput | null,
   _deleted?: ModelBooleanInput | null,
 };
 
-export enum ModelSortDirection {
-  ASC = "ASC",
-  DESC = "DESC",
-}
-
-
 export type ModelExpoTokensFilterInput = {
   id?: ModelIDInput | null,
   token?: ModelStringInput | null,
   userId?: ModelStringInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelExpoTokensFilterInput | null > | null,
   or?: Array< ModelExpoTokensFilterInput | null > | null,
   not?: ModelExpoTokensFilterInput | null,
@@ -1008,6 +1215,9 @@ export type ModelReactionsFilterInput = {
   userId?: ModelStringInput | null,
   reactionType?: ModelStringInput | null,
   postsID?: ModelIDInput | null,
+  eventsID?: ModelIDInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelReactionsFilterInput | null > | null,
   or?: Array< ModelReactionsFilterInput | null > | null,
   not?: ModelReactionsFilterInput | null,
@@ -1019,6 +1229,9 @@ export type ModelCommentsFilterInput = {
   userId?: ModelStringInput | null,
   comment?: ModelStringInput | null,
   postsID?: ModelIDInput | null,
+  eventsID?: ModelIDInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelCommentsFilterInput | null > | null,
   or?: Array< ModelCommentsFilterInput | null > | null,
   not?: ModelCommentsFilterInput | null,
@@ -1030,17 +1243,13 @@ export type ModelFAQFilterInput = {
   question?: ModelStringInput | null,
   answer?: ModelStringInput | null,
   sortOrder?: ModelIntInput | null,
+  eventsID?: ModelIDInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelFAQFilterInput | null > | null,
   or?: Array< ModelFAQFilterInput | null > | null,
   not?: ModelFAQFilterInput | null,
   _deleted?: ModelBooleanInput | null,
-};
-
-export type ModelFAQConnection = {
-  __typename: "ModelFAQConnection",
-  items:  Array<FAQ | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
 };
 
 export type ModelScheduleFilterInput = {
@@ -1051,29 +1260,31 @@ export type ModelScheduleFilterInput = {
   description?: ModelStringInput | null,
   location?: ModelStringInput | null,
   sortOrder?: ModelIntInput | null,
+  eventsID?: ModelIDInput | null,
+  createdAt?: ModelStringInput | null,
+  updatedAt?: ModelStringInput | null,
   and?: Array< ModelScheduleFilterInput | null > | null,
   or?: Array< ModelScheduleFilterInput | null > | null,
   not?: ModelScheduleFilterInput | null,
   _deleted?: ModelBooleanInput | null,
 };
 
-export type ModelScheduleConnection = {
-  __typename: "ModelScheduleConnection",
-  items:  Array<Schedule | null >,
-  nextToken?: string | null,
-  startedAt?: number | null,
-};
-
-export type ModelSubscriptionScheduledNotificationsFilterInput = {
+export type ModelSubscriptionEventsFilterInput = {
   id?: ModelSubscriptionIDInput | null,
-  userId?: ModelSubscriptionStringInput | null,
-  subject?: ModelSubscriptionStringInput | null,
-  linking?: ModelSubscriptionStringInput | null,
-  messageBody?: ModelSubscriptionStringInput | null,
-  scheduleTrigger?: ModelSubscriptionStringInput | null,
-  displayTime?: ModelSubscriptionStringInput | null,
-  and?: Array< ModelSubscriptionScheduledNotificationsFilterInput | null > | null,
-  or?: Array< ModelSubscriptionScheduledNotificationsFilterInput | null > | null,
+  eventName?: ModelSubscriptionStringInput | null,
+  eventPassword?: ModelSubscriptionStringInput | null,
+  startDate?: ModelSubscriptionStringInput | null,
+  endDate?: ModelSubscriptionStringInput | null,
+  displayStartDate?: ModelSubscriptionStringInput | null,
+  displayEndDate?: ModelSubscriptionStringInput | null,
+  allowNewActivity?: ModelSubscriptionBooleanInput | null,
+  eventFunctionality?: ModelSubscriptionStringInput | null,
+  adminPassword?: ModelSubscriptionStringInput | null,
+  users?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionEventsFilterInput | null > | null,
+  or?: Array< ModelSubscriptionEventsFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
 };
 
@@ -1107,6 +1318,26 @@ export type ModelSubscriptionStringInput = {
   notIn?: Array< string | null > | null,
 };
 
+export type ModelSubscriptionBooleanInput = {
+  ne?: boolean | null,
+  eq?: boolean | null,
+};
+
+export type ModelSubscriptionScheduledNotificationsFilterInput = {
+  id?: ModelSubscriptionIDInput | null,
+  userId?: ModelSubscriptionStringInput | null,
+  subject?: ModelSubscriptionStringInput | null,
+  linking?: ModelSubscriptionStringInput | null,
+  messageBody?: ModelSubscriptionStringInput | null,
+  scheduleTrigger?: ModelSubscriptionStringInput | null,
+  displayTime?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
+  and?: Array< ModelSubscriptionScheduledNotificationsFilterInput | null > | null,
+  or?: Array< ModelSubscriptionScheduledNotificationsFilterInput | null > | null,
+  _deleted?: ModelBooleanInput | null,
+};
+
 export type ModelSubscriptionNotificationsFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   userId?: ModelSubscriptionStringInput | null,
@@ -1115,14 +1346,11 @@ export type ModelSubscriptionNotificationsFilterInput = {
   linking?: ModelSubscriptionStringInput | null,
   subject?: ModelSubscriptionStringInput | null,
   displayTime?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionNotificationsFilterInput | null > | null,
   or?: Array< ModelSubscriptionNotificationsFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
-};
-
-export type ModelSubscriptionBooleanInput = {
-  ne?: boolean | null,
-  eq?: boolean | null,
 };
 
 export type ModelSubscriptionGamesFilterInput = {
@@ -1136,6 +1364,8 @@ export type ModelSubscriptionGamesFilterInput = {
   points?: ModelSubscriptionIntInput | null,
   rules?: ModelSubscriptionStringInput | null,
   canHaveMultipleWinners?: ModelSubscriptionBooleanInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionGamesFilterInput | null > | null,
   or?: Array< ModelSubscriptionGamesFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
@@ -1160,6 +1390,9 @@ export type ModelSubscriptionStandingsPeopleFilterInput = {
   points?: ModelSubscriptionIntInput | null,
   gamesPlayed?: ModelSubscriptionIntInput | null,
   lastCalculationTime?: ModelSubscriptionStringInput | null,
+  eventsID?: ModelSubscriptionIDInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionStandingsPeopleFilterInput | null > | null,
   or?: Array< ModelSubscriptionStandingsPeopleFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
@@ -1168,6 +1401,9 @@ export type ModelSubscriptionStandingsPeopleFilterInput = {
 export type ModelSubscriptionAdminFavoritesFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   image?: ModelSubscriptionStringInput | null,
+  eventsID?: ModelSubscriptionIDInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionAdminFavoritesFilterInput | null > | null,
   or?: Array< ModelSubscriptionAdminFavoritesFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
@@ -1179,6 +1415,9 @@ export type ModelSubscriptionStandingsTeamsFilterInput = {
   rank?: ModelSubscriptionIntInput | null,
   points?: ModelSubscriptionIntInput | null,
   lastCalculationTime?: ModelSubscriptionStringInput | null,
+  eventsID?: ModelSubscriptionIDInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionStandingsTeamsFilterInput | null > | null,
   or?: Array< ModelSubscriptionStandingsTeamsFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
@@ -1192,6 +1431,9 @@ export type ModelSubscriptionPostsFilterInput = {
   olympicEvent?: ModelSubscriptionBooleanInput | null,
   eventDetails?: ModelSubscriptionStringInput | null,
   usersInPost?: ModelSubscriptionStringInput | null,
+  eventsID?: ModelSubscriptionIDInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionPostsFilterInput | null > | null,
   or?: Array< ModelSubscriptionPostsFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
@@ -1202,6 +1444,8 @@ export type ModelSubscriptionTeamsFilterInput = {
   name?: ModelSubscriptionStringInput | null,
   iconName?: ModelSubscriptionStringInput | null,
   description?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionTeamsFilterInput | null > | null,
   or?: Array< ModelSubscriptionTeamsFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
@@ -1216,6 +1460,8 @@ export type ModelSubscriptionUsersFilterInput = {
   teamsID?: ModelSubscriptionIDInput | null,
   admin?: ModelSubscriptionBooleanInput | null,
   unreadNotifications?: ModelSubscriptionIntInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionUsersFilterInput | null > | null,
   or?: Array< ModelSubscriptionUsersFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
@@ -1225,6 +1471,8 @@ export type ModelSubscriptionExpoTokensFilterInput = {
   id?: ModelSubscriptionIDInput | null,
   token?: ModelSubscriptionStringInput | null,
   userId?: ModelSubscriptionStringInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionExpoTokensFilterInput | null > | null,
   or?: Array< ModelSubscriptionExpoTokensFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
@@ -1235,6 +1483,9 @@ export type ModelSubscriptionReactionsFilterInput = {
   userId?: ModelSubscriptionStringInput | null,
   reactionType?: ModelSubscriptionStringInput | null,
   postsID?: ModelSubscriptionIDInput | null,
+  eventsID?: ModelSubscriptionIDInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionReactionsFilterInput | null > | null,
   or?: Array< ModelSubscriptionReactionsFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
@@ -1245,6 +1496,9 @@ export type ModelSubscriptionCommentsFilterInput = {
   userId?: ModelSubscriptionStringInput | null,
   comment?: ModelSubscriptionStringInput | null,
   postsID?: ModelSubscriptionIDInput | null,
+  eventsID?: ModelSubscriptionIDInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionCommentsFilterInput | null > | null,
   or?: Array< ModelSubscriptionCommentsFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
@@ -1255,6 +1509,9 @@ export type ModelSubscriptionFAQFilterInput = {
   question?: ModelSubscriptionStringInput | null,
   answer?: ModelSubscriptionStringInput | null,
   sortOrder?: ModelSubscriptionIntInput | null,
+  eventsID?: ModelSubscriptionIDInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionFAQFilterInput | null > | null,
   or?: Array< ModelSubscriptionFAQFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
@@ -1268,9 +1525,213 @@ export type ModelSubscriptionScheduleFilterInput = {
   description?: ModelSubscriptionStringInput | null,
   location?: ModelSubscriptionStringInput | null,
   sortOrder?: ModelSubscriptionIntInput | null,
+  eventsID?: ModelSubscriptionIDInput | null,
+  createdAt?: ModelSubscriptionStringInput | null,
+  updatedAt?: ModelSubscriptionStringInput | null,
   and?: Array< ModelSubscriptionScheduleFilterInput | null > | null,
   or?: Array< ModelSubscriptionScheduleFilterInput | null > | null,
   _deleted?: ModelBooleanInput | null,
+};
+
+export type CreateEventsMutationVariables = {
+  input: CreateEventsInput,
+  condition?: ModelEventsConditionInput | null,
+};
+
+export type CreateEventsMutation = {
+  createEvents?:  {
+    __typename: "Events",
+    id: string,
+    eventName: string,
+    eventPassword?: string | null,
+    startDate: string,
+    endDate: string,
+    displayStartDate?: string | null,
+    displayEndDate?: string | null,
+    allowNewActivity: boolean,
+    eventFunctionality: string,
+    adminPassword?: string | null,
+    users?: Array< string | null > | null,
+    StandingsPeople?:  {
+      __typename: "ModelStandingsPeopleConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    AdminFavorites?:  {
+      __typename: "ModelAdminFavoritesConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    StandingsTeams?:  {
+      __typename: "ModelStandingsTeamsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Posts?:  {
+      __typename: "ModelPostsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Reactions?:  {
+      __typename: "ModelReactionsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Comments?:  {
+      __typename: "ModelCommentsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    FAQS?:  {
+      __typename: "ModelFAQConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Schedules?:  {
+      __typename: "ModelScheduleConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type UpdateEventsMutationVariables = {
+  input: UpdateEventsInput,
+  condition?: ModelEventsConditionInput | null,
+};
+
+export type UpdateEventsMutation = {
+  updateEvents?:  {
+    __typename: "Events",
+    id: string,
+    eventName: string,
+    eventPassword?: string | null,
+    startDate: string,
+    endDate: string,
+    displayStartDate?: string | null,
+    displayEndDate?: string | null,
+    allowNewActivity: boolean,
+    eventFunctionality: string,
+    adminPassword?: string | null,
+    users?: Array< string | null > | null,
+    StandingsPeople?:  {
+      __typename: "ModelStandingsPeopleConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    AdminFavorites?:  {
+      __typename: "ModelAdminFavoritesConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    StandingsTeams?:  {
+      __typename: "ModelStandingsTeamsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Posts?:  {
+      __typename: "ModelPostsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Reactions?:  {
+      __typename: "ModelReactionsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Comments?:  {
+      __typename: "ModelCommentsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    FAQS?:  {
+      __typename: "ModelFAQConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Schedules?:  {
+      __typename: "ModelScheduleConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type DeleteEventsMutationVariables = {
+  input: DeleteEventsInput,
+  condition?: ModelEventsConditionInput | null,
+};
+
+export type DeleteEventsMutation = {
+  deleteEvents?:  {
+    __typename: "Events",
+    id: string,
+    eventName: string,
+    eventPassword?: string | null,
+    startDate: string,
+    endDate: string,
+    displayStartDate?: string | null,
+    displayEndDate?: string | null,
+    allowNewActivity: boolean,
+    eventFunctionality: string,
+    adminPassword?: string | null,
+    users?: Array< string | null > | null,
+    StandingsPeople?:  {
+      __typename: "ModelStandingsPeopleConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    AdminFavorites?:  {
+      __typename: "ModelAdminFavoritesConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    StandingsTeams?:  {
+      __typename: "ModelStandingsTeamsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Posts?:  {
+      __typename: "ModelPostsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Reactions?:  {
+      __typename: "ModelReactionsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Comments?:  {
+      __typename: "ModelCommentsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    FAQS?:  {
+      __typename: "ModelFAQConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Schedules?:  {
+      __typename: "ModelScheduleConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
 };
 
 export type CreateScheduledNotificationsMutationVariables = {
@@ -1503,6 +1964,7 @@ export type CreateStandingsPeopleMutation = {
     points?: number | null,
     gamesPlayed?: number | null,
     lastCalculationTime?: string | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1525,6 +1987,7 @@ export type UpdateStandingsPeopleMutation = {
     points?: number | null,
     gamesPlayed?: number | null,
     lastCalculationTime?: string | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1547,6 +2010,7 @@ export type DeleteStandingsPeopleMutation = {
     points?: number | null,
     gamesPlayed?: number | null,
     lastCalculationTime?: string | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1565,6 +2029,7 @@ export type CreateAdminFavoritesMutation = {
     __typename: "AdminFavorites",
     id: string,
     image: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1583,6 +2048,7 @@ export type UpdateAdminFavoritesMutation = {
     __typename: "AdminFavorites",
     id: string,
     image: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1601,6 +2067,7 @@ export type DeleteAdminFavoritesMutation = {
     __typename: "AdminFavorites",
     id: string,
     image: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1622,6 +2089,7 @@ export type CreateStandingsTeamsMutation = {
     rank?: number | null,
     points?: number | null,
     lastCalculationTime?: string | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1643,6 +2111,7 @@ export type UpdateStandingsTeamsMutation = {
     rank?: number | null,
     points?: number | null,
     lastCalculationTime?: string | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1664,6 +2133,7 @@ export type DeleteStandingsTeamsMutation = {
     rank?: number | null,
     points?: number | null,
     lastCalculationTime?: string | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1697,6 +2167,7 @@ export type CreatePostsMutation = {
       startedAt?: number | null,
     } | null,
     usersInPost?: Array< string | null > | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1730,6 +2201,7 @@ export type UpdatePostsMutation = {
       startedAt?: number | null,
     } | null,
     usersInPost?: Array< string | null > | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1763,6 +2235,7 @@ export type DeletePostsMutation = {
       startedAt?: number | null,
     } | null,
     usersInPost?: Array< string | null > | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -1987,6 +2460,7 @@ export type CreateReactionsMutation = {
     userId: string,
     reactionType: string,
     postsID: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2007,6 +2481,7 @@ export type UpdateReactionsMutation = {
     userId: string,
     reactionType: string,
     postsID: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2027,6 +2502,7 @@ export type DeleteReactionsMutation = {
     userId: string,
     reactionType: string,
     postsID: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2047,6 +2523,7 @@ export type CreateCommentsMutation = {
     userId: string,
     comment: string,
     postsID: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2067,6 +2544,7 @@ export type UpdateCommentsMutation = {
     userId: string,
     comment: string,
     postsID: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2087,6 +2565,7 @@ export type DeleteCommentsMutation = {
     userId: string,
     comment: string,
     postsID: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2107,6 +2586,7 @@ export type CreateFAQMutation = {
     question: string,
     answer: string,
     sortOrder: number,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2127,6 +2607,7 @@ export type UpdateFAQMutation = {
     question: string,
     answer: string,
     sortOrder: number,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2147,6 +2628,7 @@ export type DeleteFAQMutation = {
     question: string,
     answer: string,
     sortOrder: number,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2170,6 +2652,7 @@ export type CreateScheduleMutation = {
     description: string,
     location: string,
     sortOrder: number,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2193,6 +2676,7 @@ export type UpdateScheduleMutation = {
     description: string,
     location: string,
     sortOrder: number,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2216,11 +2700,145 @@ export type DeleteScheduleMutation = {
     description: string,
     location: string,
     sortOrder: number,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
     _deleted?: boolean | null,
     _lastChangedAt: number,
+  } | null,
+};
+
+export type GetEventsQueryVariables = {
+  id: string,
+};
+
+export type GetEventsQuery = {
+  getEvents?:  {
+    __typename: "Events",
+    id: string,
+    eventName: string,
+    eventPassword?: string | null,
+    startDate: string,
+    endDate: string,
+    displayStartDate?: string | null,
+    displayEndDate?: string | null,
+    allowNewActivity: boolean,
+    eventFunctionality: string,
+    adminPassword?: string | null,
+    users?: Array< string | null > | null,
+    StandingsPeople?:  {
+      __typename: "ModelStandingsPeopleConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    AdminFavorites?:  {
+      __typename: "ModelAdminFavoritesConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    StandingsTeams?:  {
+      __typename: "ModelStandingsTeamsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Posts?:  {
+      __typename: "ModelPostsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Reactions?:  {
+      __typename: "ModelReactionsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Comments?:  {
+      __typename: "ModelCommentsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    FAQS?:  {
+      __typename: "ModelFAQConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Schedules?:  {
+      __typename: "ModelScheduleConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type ListEventsQueryVariables = {
+  filter?: ModelEventsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ListEventsQuery = {
+  listEvents?:  {
+    __typename: "ModelEventsConnection",
+    items:  Array< {
+      __typename: "Events",
+      id: string,
+      eventName: string,
+      eventPassword?: string | null,
+      startDate: string,
+      endDate: string,
+      displayStartDate?: string | null,
+      displayEndDate?: string | null,
+      allowNewActivity: boolean,
+      eventFunctionality: string,
+      adminPassword?: string | null,
+      users?: Array< string | null > | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type SyncEventsQueryVariables = {
+  filter?: ModelEventsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  lastSync?: number | null,
+};
+
+export type SyncEventsQuery = {
+  syncEvents?:  {
+    __typename: "ModelEventsConnection",
+    items:  Array< {
+      __typename: "Events",
+      id: string,
+      eventName: string,
+      eventPassword?: string | null,
+      startDate: string,
+      endDate: string,
+      displayStartDate?: string | null,
+      displayEndDate?: string | null,
+      allowNewActivity: boolean,
+      eventFunctionality: string,
+      adminPassword?: string | null,
+      users?: Array< string | null > | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
   } | null,
 };
 
@@ -2489,6 +3107,7 @@ export type GetStandingsPeopleQuery = {
     points?: number | null,
     gamesPlayed?: number | null,
     lastCalculationTime?: string | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2514,6 +3133,7 @@ export type ListStandingsPeopleQuery = {
       points?: number | null,
       gamesPlayed?: number | null,
       lastCalculationTime?: string | null,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2543,6 +3163,38 @@ export type SyncStandingsPeopleQuery = {
       points?: number | null,
       gamesPlayed?: number | null,
       lastCalculationTime?: string | null,
+      eventsID?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type StandingsPeopleByEventsIDQueryVariables = {
+  eventsID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelStandingsPeopleFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type StandingsPeopleByEventsIDQuery = {
+  standingsPeopleByEventsID?:  {
+    __typename: "ModelStandingsPeopleConnection",
+    items:  Array< {
+      __typename: "StandingsPeople",
+      id: string,
+      userId?: string | null,
+      rank?: number | null,
+      points?: number | null,
+      gamesPlayed?: number | null,
+      lastCalculationTime?: string | null,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2563,6 +3215,7 @@ export type GetAdminFavoritesQuery = {
     __typename: "AdminFavorites",
     id: string,
     image: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2584,6 +3237,7 @@ export type ListAdminFavoritesQuery = {
       __typename: "AdminFavorites",
       id: string,
       image: string,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2609,6 +3263,34 @@ export type SyncAdminFavoritesQuery = {
       __typename: "AdminFavorites",
       id: string,
       image: string,
+      eventsID?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type AdminFavoritesByEventsIDQueryVariables = {
+  eventsID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelAdminFavoritesFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type AdminFavoritesByEventsIDQuery = {
+  adminFavoritesByEventsID?:  {
+    __typename: "ModelAdminFavoritesConnection",
+    items:  Array< {
+      __typename: "AdminFavorites",
+      id: string,
+      image: string,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2632,6 +3314,7 @@ export type GetStandingsTeamsQuery = {
     rank?: number | null,
     points?: number | null,
     lastCalculationTime?: string | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2656,6 +3339,7 @@ export type ListStandingsTeamsQuery = {
       rank?: number | null,
       points?: number | null,
       lastCalculationTime?: string | null,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2684,6 +3368,37 @@ export type SyncStandingsTeamsQuery = {
       rank?: number | null,
       points?: number | null,
       lastCalculationTime?: string | null,
+      eventsID?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type StandingsTeamsByEventsIDQueryVariables = {
+  eventsID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelStandingsTeamsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type StandingsTeamsByEventsIDQuery = {
+  standingsTeamsByEventsID?:  {
+    __typename: "ModelStandingsTeamsConnection",
+    items:  Array< {
+      __typename: "StandingsTeams",
+      id: string,
+      teamId?: string | null,
+      rank?: number | null,
+      points?: number | null,
+      lastCalculationTime?: string | null,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2719,6 +3434,7 @@ export type GetPostsQuery = {
       startedAt?: number | null,
     } | null,
     usersInPost?: Array< string | null > | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -2745,6 +3461,7 @@ export type ListPostsQuery = {
       olympicEvent: boolean,
       eventDetails?: string | null,
       usersInPost?: Array< string | null > | null,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -2775,6 +3492,39 @@ export type SyncPostsQuery = {
       olympicEvent: boolean,
       eventDetails?: string | null,
       usersInPost?: Array< string | null > | null,
+      eventsID?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type PostsByEventsIDQueryVariables = {
+  eventsID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelPostsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type PostsByEventsIDQuery = {
+  postsByEventsID?:  {
+    __typename: "ModelPostsConnection",
+    items:  Array< {
+      __typename: "Posts",
+      id: string,
+      userId: string,
+      messageBody?: string | null,
+      images?: Array< string | null > | null,
+      olympicEvent: boolean,
+      eventDetails?: string | null,
+      usersInPost?: Array< string | null > | null,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -3059,6 +3809,7 @@ export type GetReactionsQuery = {
     userId: string,
     reactionType: string,
     postsID: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3082,6 +3833,7 @@ export type ListReactionsQuery = {
       userId: string,
       reactionType: string,
       postsID: string,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -3109,6 +3861,7 @@ export type SyncReactionsQuery = {
       userId: string,
       reactionType: string,
       postsID: string,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -3137,6 +3890,36 @@ export type ReactionsByPostsIDQuery = {
       userId: string,
       reactionType: string,
       postsID: string,
+      eventsID?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type ReactionsByEventsIDQueryVariables = {
+  eventsID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelReactionsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type ReactionsByEventsIDQuery = {
+  reactionsByEventsID?:  {
+    __typename: "ModelReactionsConnection",
+    items:  Array< {
+      __typename: "Reactions",
+      id: string,
+      userId: string,
+      reactionType: string,
+      postsID: string,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -3159,6 +3942,7 @@ export type GetCommentsQuery = {
     userId: string,
     comment: string,
     postsID: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3182,6 +3966,7 @@ export type ListCommentsQuery = {
       userId: string,
       comment: string,
       postsID: string,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -3209,6 +3994,7 @@ export type SyncCommentsQuery = {
       userId: string,
       comment: string,
       postsID: string,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -3237,6 +4023,36 @@ export type CommentsByPostsIDQuery = {
       userId: string,
       comment: string,
       postsID: string,
+      eventsID?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type CommentsByEventsIDQueryVariables = {
+  eventsID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelCommentsFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type CommentsByEventsIDQuery = {
+  commentsByEventsID?:  {
+    __typename: "ModelCommentsConnection",
+    items:  Array< {
+      __typename: "Comments",
+      id: string,
+      userId: string,
+      comment: string,
+      postsID: string,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -3259,6 +4075,7 @@ export type GetFAQQuery = {
     question: string,
     answer: string,
     sortOrder: number,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3282,6 +4099,7 @@ export type ListFAQSQuery = {
       question: string,
       answer: string,
       sortOrder: number,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -3309,6 +4127,36 @@ export type SyncFAQSQuery = {
       question: string,
       answer: string,
       sortOrder: number,
+      eventsID?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type FAQSByEventsIDQueryVariables = {
+  eventsID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelFAQFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type FAQSByEventsIDQuery = {
+  fAQSByEventsID?:  {
+    __typename: "ModelFAQConnection",
+    items:  Array< {
+      __typename: "FAQ",
+      id: string,
+      question: string,
+      answer: string,
+      sortOrder: number,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -3334,6 +4182,7 @@ export type GetScheduleQuery = {
     description: string,
     location: string,
     sortOrder: number,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3360,6 +4209,7 @@ export type ListSchedulesQuery = {
       description: string,
       location: string,
       sortOrder: number,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -3390,6 +4240,7 @@ export type SyncSchedulesQuery = {
       description: string,
       location: string,
       sortOrder: number,
+      eventsID?: string | null,
       createdAt: string,
       updatedAt: string,
       _version: number,
@@ -3398,6 +4249,236 @@ export type SyncSchedulesQuery = {
     } | null >,
     nextToken?: string | null,
     startedAt?: number | null,
+  } | null,
+};
+
+export type SchedulesByEventsIDQueryVariables = {
+  eventsID: string,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelScheduleFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type SchedulesByEventsIDQuery = {
+  schedulesByEventsID?:  {
+    __typename: "ModelScheduleConnection",
+    items:  Array< {
+      __typename: "Schedule",
+      id: string,
+      name: string,
+      time: string,
+      day: string,
+      description: string,
+      location: string,
+      sortOrder: number,
+      eventsID?: string | null,
+      createdAt: string,
+      updatedAt: string,
+      _version: number,
+      _deleted?: boolean | null,
+      _lastChangedAt: number,
+    } | null >,
+    nextToken?: string | null,
+    startedAt?: number | null,
+  } | null,
+};
+
+export type OnCreateEventsSubscriptionVariables = {
+  filter?: ModelSubscriptionEventsFilterInput | null,
+};
+
+export type OnCreateEventsSubscription = {
+  onCreateEvents?:  {
+    __typename: "Events",
+    id: string,
+    eventName: string,
+    eventPassword?: string | null,
+    startDate: string,
+    endDate: string,
+    displayStartDate?: string | null,
+    displayEndDate?: string | null,
+    allowNewActivity: boolean,
+    eventFunctionality: string,
+    adminPassword?: string | null,
+    users?: Array< string | null > | null,
+    StandingsPeople?:  {
+      __typename: "ModelStandingsPeopleConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    AdminFavorites?:  {
+      __typename: "ModelAdminFavoritesConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    StandingsTeams?:  {
+      __typename: "ModelStandingsTeamsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Posts?:  {
+      __typename: "ModelPostsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Reactions?:  {
+      __typename: "ModelReactionsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Comments?:  {
+      __typename: "ModelCommentsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    FAQS?:  {
+      __typename: "ModelFAQConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Schedules?:  {
+      __typename: "ModelScheduleConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnUpdateEventsSubscriptionVariables = {
+  filter?: ModelSubscriptionEventsFilterInput | null,
+};
+
+export type OnUpdateEventsSubscription = {
+  onUpdateEvents?:  {
+    __typename: "Events",
+    id: string,
+    eventName: string,
+    eventPassword?: string | null,
+    startDate: string,
+    endDate: string,
+    displayStartDate?: string | null,
+    displayEndDate?: string | null,
+    allowNewActivity: boolean,
+    eventFunctionality: string,
+    adminPassword?: string | null,
+    users?: Array< string | null > | null,
+    StandingsPeople?:  {
+      __typename: "ModelStandingsPeopleConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    AdminFavorites?:  {
+      __typename: "ModelAdminFavoritesConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    StandingsTeams?:  {
+      __typename: "ModelStandingsTeamsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Posts?:  {
+      __typename: "ModelPostsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Reactions?:  {
+      __typename: "ModelReactionsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Comments?:  {
+      __typename: "ModelCommentsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    FAQS?:  {
+      __typename: "ModelFAQConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Schedules?:  {
+      __typename: "ModelScheduleConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
+  } | null,
+};
+
+export type OnDeleteEventsSubscriptionVariables = {
+  filter?: ModelSubscriptionEventsFilterInput | null,
+};
+
+export type OnDeleteEventsSubscription = {
+  onDeleteEvents?:  {
+    __typename: "Events",
+    id: string,
+    eventName: string,
+    eventPassword?: string | null,
+    startDate: string,
+    endDate: string,
+    displayStartDate?: string | null,
+    displayEndDate?: string | null,
+    allowNewActivity: boolean,
+    eventFunctionality: string,
+    adminPassword?: string | null,
+    users?: Array< string | null > | null,
+    StandingsPeople?:  {
+      __typename: "ModelStandingsPeopleConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    AdminFavorites?:  {
+      __typename: "ModelAdminFavoritesConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    StandingsTeams?:  {
+      __typename: "ModelStandingsTeamsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Posts?:  {
+      __typename: "ModelPostsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Reactions?:  {
+      __typename: "ModelReactionsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Comments?:  {
+      __typename: "ModelCommentsConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    FAQS?:  {
+      __typename: "ModelFAQConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    Schedules?:  {
+      __typename: "ModelScheduleConnection",
+      nextToken?: string | null,
+      startedAt?: number | null,
+    } | null,
+    createdAt: string,
+    updatedAt: string,
+    _version: number,
+    _deleted?: boolean | null,
+    _lastChangedAt: number,
   } | null,
 };
 
@@ -3621,6 +4702,7 @@ export type OnCreateStandingsPeopleSubscription = {
     points?: number | null,
     gamesPlayed?: number | null,
     lastCalculationTime?: string | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3642,6 +4724,7 @@ export type OnUpdateStandingsPeopleSubscription = {
     points?: number | null,
     gamesPlayed?: number | null,
     lastCalculationTime?: string | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3663,6 +4746,7 @@ export type OnDeleteStandingsPeopleSubscription = {
     points?: number | null,
     gamesPlayed?: number | null,
     lastCalculationTime?: string | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3680,6 +4764,7 @@ export type OnCreateAdminFavoritesSubscription = {
     __typename: "AdminFavorites",
     id: string,
     image: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3697,6 +4782,7 @@ export type OnUpdateAdminFavoritesSubscription = {
     __typename: "AdminFavorites",
     id: string,
     image: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3714,6 +4800,7 @@ export type OnDeleteAdminFavoritesSubscription = {
     __typename: "AdminFavorites",
     id: string,
     image: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3734,6 +4821,7 @@ export type OnCreateStandingsTeamsSubscription = {
     rank?: number | null,
     points?: number | null,
     lastCalculationTime?: string | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3754,6 +4842,7 @@ export type OnUpdateStandingsTeamsSubscription = {
     rank?: number | null,
     points?: number | null,
     lastCalculationTime?: string | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3774,6 +4863,7 @@ export type OnDeleteStandingsTeamsSubscription = {
     rank?: number | null,
     points?: number | null,
     lastCalculationTime?: string | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3806,6 +4896,7 @@ export type OnCreatePostsSubscription = {
       startedAt?: number | null,
     } | null,
     usersInPost?: Array< string | null > | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3838,6 +4929,7 @@ export type OnUpdatePostsSubscription = {
       startedAt?: number | null,
     } | null,
     usersInPost?: Array< string | null > | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -3870,6 +4962,7 @@ export type OnDeletePostsSubscription = {
       startedAt?: number | null,
     } | null,
     usersInPost?: Array< string | null > | null,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4084,6 +5177,7 @@ export type OnCreateReactionsSubscription = {
     userId: string,
     reactionType: string,
     postsID: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4103,6 +5197,7 @@ export type OnUpdateReactionsSubscription = {
     userId: string,
     reactionType: string,
     postsID: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4122,6 +5217,7 @@ export type OnDeleteReactionsSubscription = {
     userId: string,
     reactionType: string,
     postsID: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4141,6 +5237,7 @@ export type OnCreateCommentsSubscription = {
     userId: string,
     comment: string,
     postsID: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4160,6 +5257,7 @@ export type OnUpdateCommentsSubscription = {
     userId: string,
     comment: string,
     postsID: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4179,6 +5277,7 @@ export type OnDeleteCommentsSubscription = {
     userId: string,
     comment: string,
     postsID: string,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4198,6 +5297,7 @@ export type OnCreateFAQSubscription = {
     question: string,
     answer: string,
     sortOrder: number,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4217,6 +5317,7 @@ export type OnUpdateFAQSubscription = {
     question: string,
     answer: string,
     sortOrder: number,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4236,6 +5337,7 @@ export type OnDeleteFAQSubscription = {
     question: string,
     answer: string,
     sortOrder: number,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4258,6 +5360,7 @@ export type OnCreateScheduleSubscription = {
     description: string,
     location: string,
     sortOrder: number,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4280,6 +5383,7 @@ export type OnUpdateScheduleSubscription = {
     description: string,
     location: string,
     sortOrder: number,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,
@@ -4302,6 +5406,7 @@ export type OnDeleteScheduleSubscription = {
     description: string,
     location: string,
     sortOrder: number,
+    eventsID?: string | null,
     createdAt: string,
     updatedAt: string,
     _version: number,

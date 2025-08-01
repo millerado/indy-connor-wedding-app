@@ -5,7 +5,7 @@ import { useTheme } from "react-native-paper";
 import reactStringReplace from 'react-string-replace';
 import { Text } from "../../components";
 
-const FormatTextWithMentions = ({ text, ...restOfProps }) => {
+const FormatTextWithMentions = ({ text, key, ...restOfProps }) => {
   if (text) {
     const theme = useTheme();
     const navigation = useNavigation();
@@ -80,7 +80,7 @@ const FormatTextWithMentions = ({ text, ...restOfProps }) => {
         const [, bulletText] = match.match(/^•/gm);
         if( Platform.OS === 'ios' ) {
           text = reactStringReplace(text, match, (match, i) => (
-            <View style={{flexDirection: 'row', paddingLeft: 20}} key={`${i}${bulletText}${match}`}>
+            <View style={{flexDirection: 'row', paddingLeft: 20}} key={`${i}${bulletText}${match}`} key={key}>
             <Text>•</Text>
               <View style={{paddingLeft: 5}}>
                 <Text {...restOfProps}>{match.substring(2)}</Text>

@@ -1,7 +1,5 @@
 import { API } from "aws-amplify";
-import { listReactions } from '../../graphql/queries'
-import { Reactions } from "../../models";
-import { DataStore } from "../../utils";
+import { listReactions } from '../../graphql/queries';
 
   const formatReactions = async (items) => {
     if (items) {
@@ -32,21 +30,12 @@ import { DataStore } from "../../utils";
     return [];
   }
 
-  const loadReactionsFromDatastore = async (setReactions, oldReactions) => {
+  const loadReactions = async (setReactions, oldReactions, eventId) => {
     try {
-      const reactions = await DataStore.query(Reactions);
-      const formattedReactions = await formatReactions(reactions);
-      if(JSON.stringify(formattedReactions) !== JSON.stringify(oldReactions)) {
-        setReactions(formattedReactions);
-      }
-    } catch (err) {
-      console.log('-- Error Loading Reactions Via Datastore --', err);
-    }
-  }
-
-  const loadReactions = async (setReactions, oldReactions) => {
-    try {
-      const variables = { limit: 999999999 };
+      const variables = { limit: 999999999, filter: {
+        eventsID: { eq: eventId }
+      } };
+      // const variables = { limit: 999999999 };
       const allReactions = await API.graphql({ query: listReactions, variables: variables });
 
       const unfilteredItems = allReactions?.data?.listReactions?.items;
@@ -59,8 +48,8 @@ import { DataStore } from "../../utils";
         }
       }
     } catch (err) {
-      console.log('-- Error Loading Reactions, Trying Datastore --', err);
-      loadReactionsFromDatastore(setReactions, oldReactions);
+      console.log('-- Error Loading Reactions --', err);
+      setReactions([]);
     }
   };
 

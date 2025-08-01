@@ -5,7 +5,6 @@ import { useTheme } from "react-native-paper";
 import { Icon, Text, Button, Modal, TextSizes } from "../../components";
 import { typography } from "../../styles";
 import { ThemeContext, AuthContext, UnauthedUser } from "../../contexts";
-// import { DataStore } from '../../utils';
 import styles from "./SettingsModalStyles";
 
 const SettingsModal = () => {
@@ -82,16 +81,18 @@ const SettingsModal = () => {
     }, 350);
   }
 
-  const resetDatastore = async () => {
-    await DataStore.stop();
-    await DataStore.clear();
-    await DataStore.start();
-  }
+  // const resetDatastore = async () => {
+  //   await DataStore.stop();
+  //   await DataStore.clear();
+  //   await DataStore.start();
+  // }
 
   return (
     <>
       <Pressable onPress={openModal}>
-        <Icon name='settings' color={theme.colors.primary} size={typography.fontSizeXXL} />
+        <View>
+          <Icon name='settings' color={theme.colors.primary} size={typography.fontSizeXXL} />
+        </View>
       </Pressable>
       <Modal
         isVisible={showModal}
@@ -162,11 +163,11 @@ const SettingsModal = () => {
                     See Admin Favorites
                   </Button>
                 )}
-                {authStatus.isAdmin && (
+                {/* {authStatus.isAdmin && (
                   <Button onPress={resetDatastore} style={{marginTop: 10}}>
                     Debug Reset Datastore
                   </Button>
-                )}
+                )} */}
               </View>
             </ScrollView>
           </View>

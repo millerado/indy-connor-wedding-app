@@ -116,58 +116,47 @@ const StandingsScreen = () => {
     );
   };
 
-  // console.log('-- Number of Teams --', teams.length);
-  // console.log('-- Number of Users --', users.length);
-  // console.log('-- Number of Team Standings --', standingsTeams.length);
-  // console.log('-- Number of People Standings --', standingsPeople.length);
-
   return (
     <TabView
       navigationState={{ index, routes }}
       renderScene={renderScene}
       onIndexChange={setIndex}
       initialLayout={{ width: dimensions.width }}
-      renderTabBar={(props) => (
-        <TabBar
-          {...props}
-          contentContainerStyle={{ backgroundColor: theme.colors.background }}
-          tabStyle={{
-            backgroundColor: theme.colors.primary,
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-          }}
-          renderTabBarItem={({ route, ...otherProps }) => {
-            const isFocused =
-              otherProps?.navigationState.routes[
-                otherProps.navigationState.index
-              ].key === route.key;
-            return (
-              <Pressable
-                onPress={otherProps.onPress}
-                style={[
-                  ss.tabItem,
-                  {
-                    backgroundColor: isFocused
-                      ? theme.colors.primary
-                      : theme.colors.background,
-                    width: dimensions.width / routes.length,
-                  },
-                ]}
-                key={route.key}
-              >
-                <View>
-                  <Text
-                    color={isFocused ? theme.colors.onPrimary : undefined}
-                    bold
-                  >
-                    {route.title.toUpperCase()}
-                  </Text>
-                </View>
-              </Pressable>
-            );
-          }}
-        />
-      )}
+      renderTabBar={(props) => {
+        return (        
+          <TabBar
+            {...props}
+            contentContainerStyle={{ backgroundColor: theme.colors.background }}
+            tabStyle={{
+              backgroundColor: theme.colors.primary,
+              borderTopLeftRadius: 20,
+              borderTopRightRadius: 20,
+            }}
+            renderTabBarItem={({ key, ...restOfProps }) => {
+              const isFocused = restOfProps.navigationState.index === restOfProps.navigationState.routes.findIndex(r => r.key === key);
+              return (
+                <Pressable
+                  onPress={restOfProps.onPress}
+                  key={key}
+                  style={[
+                    ss.tabItem,
+                    {
+                      backgroundColor: isFocused ? theme.colors.primary : theme.colors.background,
+                      width: dimensions.width / routes.length,
+                    },
+                  ]}
+                >
+                  <View>
+                    <Text color={isFocused ? theme.colors.onPrimary : undefined} bold>
+                      {restOfProps.route.title.toUpperCase()}
+                    </Text>
+                  </View>
+                </Pressable>
+              );
+            }}
+          />
+        )}
+      }
     />
   );
 };

@@ -26,7 +26,7 @@ import styles from "./NotificationsScreenStyles";
 const NotificationsScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-  const { refreshData, allNotifications } = useContext(DataContext);
+  const { refreshData, selectedEventId, allNotifications } = useContext(DataContext);
 
   const navToLink = (targetType, id) => {
     // console.log('-- Notification Navigation --', targetType, id);
@@ -48,7 +48,7 @@ const NotificationsScreen = ({ navigation, route }) => {
   }, []);
 
   const onRefresh = async () => {
-    refreshData();
+    refreshData(selectedEventId);
   }
 
   return (

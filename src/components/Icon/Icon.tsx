@@ -48,7 +48,7 @@ interface IconProps {
 
 const Icon = (props: IconProps) => {
   const theme = useTheme();
-  const { name, size = 32, color = theme.colors.primary, ...restOfProps } = props;
+  const { name, size = 32, color = theme.colors.primary, key, ...restOfProps } = props;
   let iconName = allIcons.find((icon) => icon.iconName === name);
   if (!iconName) {
     // Default to the friends icon if we get one that doesn't exist
@@ -61,39 +61,39 @@ const Icon = (props: IconProps) => {
 
   if(iconName.type === 'Image') {
     return (
-      <Image source={iconName.source} style={{width: size, height: size}} resizeMode="contain" resizeMethod='scale' />
+      <Image source={iconName.source} style={{width: size, height: size}} resizeMode="contain" resizeMethod='scale' key={key} />
     )
   } else if (iconName.type === 'Ionicons') {
     return (
-      <Ionicons name={iconName.name} size={size} color={color} {...restOfProps} />
+      <Ionicons name={iconName.name} size={size} color={color} {...restOfProps} key={key} />
     );
   } else if (iconName.type === 'FontAwesome5') {
     return (
-      <FontAwesome5 name={iconName.name} size={size} color={color} {...restOfProps} />
+      <FontAwesome5 name={iconName.name} size={size} color={color} {...restOfProps} key={key} />
     );
   } else if (iconName.type === 'MaterialCommunityIcons') {
     return (
-      <MaterialCommunityIcons name={iconName.name} size={size} color={color} {...restOfProps} />
+      <MaterialCommunityIcons name={iconName.name} size={size} color={color} {...restOfProps} key={key} />
     );
   } else if (iconName.type === 'EvilIcons') {
     return (
-      <EvilIcons name={iconName.name} size={size} color={color} {...restOfProps} />
+      <EvilIcons name={iconName.name} size={size} color={color} {...restOfProps} key={key} />
     );
   } else if (iconName.type === 'SimpleLineIcons') {
     return (
-      <SimpleLineIcons name={iconName.name} size={size} color={color} {...restOfProps} />
+      <SimpleLineIcons name={iconName.name} size={size} color={color} {...restOfProps} key={key} />
     );
   } else if (iconName.type === 'MaterialIcons') {
     return (
-      <MaterialIcons name={iconName.name} size={size} color={color} {...restOfProps} />
+      <MaterialIcons name={iconName.name} size={size} color={color} {...restOfProps} key={key} />
     );
   } else if (iconName.type === 'AntDesign') {
     return (
-      <AntDesign name={iconName.name} size={size} color={color} {...restOfProps} />
+      <AntDesign name={iconName.name} size={size} color={color} {...restOfProps} key={key} />
     );
   } else if (iconName.type === 'FontAwesome') {
     return (
-      <FontAwesome name={iconName.name} size={size} color={color} {...restOfProps} />
+      <FontAwesome name={iconName.name} size={size} color={color} {...restOfProps} key={key} />
     );
   }
 };

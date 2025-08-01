@@ -1,26 +1,12 @@
-import { SortDirection, Predicates, API } from "aws-amplify";
+import { API } from "aws-amplify";
 import { listStandingsTeams } from '../../graphql/queries';
-import { StandingsTeams } from "../../models";
-import { DataStore } from "../../utils";
 
-const loadStandingsTeamsFromDatastore = async (setStandingsTeams, oldStandingsTeams) => {
+const loadStandingsTeams = async (setStandingsTeams, oldStandingsTeams, eventId) => {
   try {
-    const allStandings = await DataStore.query(StandingsTeams,
-      Predicates.ALL,
-      {
-        sort: (s) => s.points(SortDirection.DESCENDING),
-      });
-      if(JSON.stringify(allStandings) !== JSON.stringify(oldStandingsTeams)){
-        setStandingsTeams(allStandings);
-      }
-  } catch (err) {
-    console.log('-- Error Loading Team Standings From Datastore --', err);
-  }
-}
-
-const loadStandingsTeams = async (setStandingsTeams, oldStandingsTeams) => {
-  try {
-    const allStandings = await API.graphql({ query: listStandingsTeams, variables: { limit: 999999999 } });
+    const allStandings = await API.graphql({ query: listStandingsTeams, variables: { limit: 999999999, filter: {
+      eventsID: { eq: eventId }
+    } } });
+    // const allStandings = await API.graphql({ query: listStandingsTeams, variables: { limit: 999999999 } });
 
     const unfilteredItems = allStandings?.data?.listStandingsTeams?.items;
     // Remove items where _deleted is true
@@ -32,8 +18,8 @@ const loadStandingsTeams = async (setStandingsTeams, oldStandingsTeams) => {
       }
     }
   } catch (err) {
-    console.log('-- Error Loading Team Standings, Will Try Datastore --', err);
-    loadStandingsTeamsFromDatastore(setStandingsTeams, oldStandingsTeams);
+    console.log('-- Error Loading Team Standings --', err);
+    setStandingsTeams([]);
   }
 }
 

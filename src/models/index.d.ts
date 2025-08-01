@@ -6,6 +6,68 @@ import { LazyLoading, LazyLoadingDisabled, AsyncCollection } from "@aws-amplify/
 
 
 
+type EagerEvents = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Events, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly eventName: string;
+  readonly eventPassword?: string | null;
+  readonly startDate: string;
+  readonly endDate: string;
+  readonly displayStartDate?: string | null;
+  readonly displayEndDate?: string | null;
+  readonly allowNewActivity: boolean;
+  readonly eventFunctionality: string;
+  readonly adminPassword?: string | null;
+  readonly users?: (string | null)[] | null;
+  readonly StandingsPeople?: (StandingsPeople | null)[] | null;
+  readonly AdminFavorites?: (AdminFavorites | null)[] | null;
+  readonly StandingsTeams?: (StandingsTeams | null)[] | null;
+  readonly Posts?: (Posts | null)[] | null;
+  readonly Reactions?: (Reactions | null)[] | null;
+  readonly Comments?: (Comments | null)[] | null;
+  readonly FAQS?: (FAQ | null)[] | null;
+  readonly Schedules?: (Schedule | null)[] | null;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+type LazyEvents = {
+  readonly [__modelMeta__]: {
+    identifier: ManagedIdentifier<Events, 'id'>;
+    readOnlyFields: 'createdAt' | 'updatedAt';
+  };
+  readonly id: string;
+  readonly eventName: string;
+  readonly eventPassword?: string | null;
+  readonly startDate: string;
+  readonly endDate: string;
+  readonly displayStartDate?: string | null;
+  readonly displayEndDate?: string | null;
+  readonly allowNewActivity: boolean;
+  readonly eventFunctionality: string;
+  readonly adminPassword?: string | null;
+  readonly users?: (string | null)[] | null;
+  readonly StandingsPeople: AsyncCollection<StandingsPeople>;
+  readonly AdminFavorites: AsyncCollection<AdminFavorites>;
+  readonly StandingsTeams: AsyncCollection<StandingsTeams>;
+  readonly Posts: AsyncCollection<Posts>;
+  readonly Reactions: AsyncCollection<Reactions>;
+  readonly Comments: AsyncCollection<Comments>;
+  readonly FAQS: AsyncCollection<FAQ>;
+  readonly Schedules: AsyncCollection<Schedule>;
+  readonly createdAt?: string | null;
+  readonly updatedAt?: string | null;
+}
+
+export declare type Events = LazyLoading extends LazyLoadingDisabled ? EagerEvents : LazyEvents
+
+export declare const Events: (new (init: ModelInit<Events>) => Events) & {
+  copyOf(source: Events, mutator: (draft: MutableModel<Events>) => MutableModel<Events> | void): Events;
+}
+
 type EagerScheduledNotifications = {
   readonly [__modelMeta__]: {
     identifier: ManagedIdentifier<ScheduledNotifications, 'id'>;
@@ -137,6 +199,7 @@ type EagerStandingsPeople = {
   readonly points?: number | null;
   readonly gamesPlayed?: number | null;
   readonly lastCalculationTime?: string | null;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -152,6 +215,7 @@ type LazyStandingsPeople = {
   readonly points?: number | null;
   readonly gamesPlayed?: number | null;
   readonly lastCalculationTime?: string | null;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -169,6 +233,7 @@ type EagerAdminFavorites = {
   };
   readonly id: string;
   readonly image: string;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -180,6 +245,7 @@ type LazyAdminFavorites = {
   };
   readonly id: string;
   readonly image: string;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -200,6 +266,7 @@ type EagerStandingsTeams = {
   readonly rank?: number | null;
   readonly points?: number | null;
   readonly lastCalculationTime?: string | null;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -214,6 +281,7 @@ type LazyStandingsTeams = {
   readonly rank?: number | null;
   readonly points?: number | null;
   readonly lastCalculationTime?: string | null;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -238,6 +306,7 @@ type EagerPosts = {
   readonly Comments?: (Comments | null)[] | null;
   readonly Reactions?: (Reactions | null)[] | null;
   readonly usersInPost?: (string | null)[] | null;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -256,6 +325,7 @@ type LazyPosts = {
   readonly Comments: AsyncCollection<Comments>;
   readonly Reactions: AsyncCollection<Reactions>;
   readonly usersInPost?: (string | null)[] | null;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -379,6 +449,7 @@ type EagerReactions = {
   readonly userId: string;
   readonly reactionType: string;
   readonly postsID: string;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -392,6 +463,7 @@ type LazyReactions = {
   readonly userId: string;
   readonly reactionType: string;
   readonly postsID: string;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -411,6 +483,7 @@ type EagerComments = {
   readonly userId: string;
   readonly comment: string;
   readonly postsID: string;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -424,6 +497,7 @@ type LazyComments = {
   readonly userId: string;
   readonly comment: string;
   readonly postsID: string;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -443,6 +517,7 @@ type EagerFAQ = {
   readonly question: string;
   readonly answer: string;
   readonly sortOrder: number;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -456,6 +531,7 @@ type LazyFAQ = {
   readonly question: string;
   readonly answer: string;
   readonly sortOrder: number;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -478,6 +554,7 @@ type EagerSchedule = {
   readonly description: string;
   readonly location: string;
   readonly sortOrder: number;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }
@@ -494,6 +571,7 @@ type LazySchedule = {
   readonly description: string;
   readonly location: string;
   readonly sortOrder: number;
+  readonly eventsID?: string | null;
   readonly createdAt?: string | null;
   readonly updatedAt?: string | null;
 }

@@ -1,7 +1,8 @@
 import * as React from "react";
 
 export const DataContext = React.createContext({
-  refreshData: () => {},
+  refreshData: (eventId) => {},
+  selectedEventId: "",
   allUsers: [],
   allComments: [],
   allReactions: [],
@@ -17,4 +18,5 @@ export const DataContext = React.createContext({
   unreadNotifications: 0,
   allNotifications: [],
   allExpoTokens: [],
+  allEvents: [],
 });

@@ -1,24 +1,12 @@
 import { API } from "aws-amplify";
 import { listFAQS } from '../../graphql/queries'
-import { FAQ } from '../../models';
-import { DataStore } from '../../utils';
 
-// Backup function that gets called if you're offline
-const loadFaqsFromDatastore = async (setFAQData, oldFAQData) => {
+const loadFaqs = async (setFAQData, oldFAQData, eventId) => {
   try {
-    const items = await DataStore.query(FAQ);
-    items.sort((a, b) => a.sortOrder - b.sortOrder);
-    if(JSON.stringify(items) !== JSON.stringify(oldFAQData)) {
-      setFAQData(items);
-    }
-  } catch (err) {
-    console.log('-- Error Loading FAQ Via Datastore --', err);
-  }
-}
-
-const loadFaqs = async (setFAQData, oldFAQData) => {
-  try {
-    const allFaq = await API.graphql({ query: listFAQS, variables: { limit: 999999999 } });
+    const allFaq = await API.graphql({ query: listFAQS, variables: { limit: 999999999, filter: {
+      eventsID: { eq: eventId }
+    } } });
+    // const allFaq = await API.graphql({ query: listFAQS, variables: { limit: 999999999 } });
     // console.log('-- FAQ Loaded --', allFaq.data.listFAQS.items.length)
 
     const unfilteredItems = allFaq?.data?.listFAQS?.items;
@@ -31,8 +19,8 @@ const loadFaqs = async (setFAQData, oldFAQData) => {
       }
     }
   } catch (err) {
-    console.log('-- Error Loading FAQ, Will Try Datastore --', err);
-    loadFaqsFromDatastore(setFAQData, oldFAQData);
+    console.log('-- Error Loading FAQ --', err);
+    setFAQData([]);
   }
 }
 

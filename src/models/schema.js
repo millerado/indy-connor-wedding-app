@@ -1,5 +1,256 @@
 export const schema = {
     "models": {
+        "Events": {
+            "name": "Events",
+            "fields": {
+                "id": {
+                    "name": "id",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "eventName": {
+                    "name": "eventName",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "eventPassword": {
+                    "name": "eventPassword",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "startDate": {
+                    "name": "startDate",
+                    "isArray": false,
+                    "type": "AWSDate",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "endDate": {
+                    "name": "endDate",
+                    "isArray": false,
+                    "type": "AWSDate",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "displayStartDate": {
+                    "name": "displayStartDate",
+                    "isArray": false,
+                    "type": "AWSDate",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "displayEndDate": {
+                    "name": "displayEndDate",
+                    "isArray": false,
+                    "type": "AWSDate",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "allowNewActivity": {
+                    "name": "allowNewActivity",
+                    "isArray": false,
+                    "type": "Boolean",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "eventFunctionality": {
+                    "name": "eventFunctionality",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": true,
+                    "attributes": []
+                },
+                "adminPassword": {
+                    "name": "adminPassword",
+                    "isArray": false,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": []
+                },
+                "users": {
+                    "name": "users",
+                    "isArray": true,
+                    "type": "String",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true
+                },
+                "StandingsPeople": {
+                    "name": "StandingsPeople",
+                    "isArray": true,
+                    "type": {
+                        "model": "StandingsPeople"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "eventsID"
+                        ]
+                    }
+                },
+                "AdminFavorites": {
+                    "name": "AdminFavorites",
+                    "isArray": true,
+                    "type": {
+                        "model": "AdminFavorites"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "eventsID"
+                        ]
+                    }
+                },
+                "StandingsTeams": {
+                    "name": "StandingsTeams",
+                    "isArray": true,
+                    "type": {
+                        "model": "StandingsTeams"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "eventsID"
+                        ]
+                    }
+                },
+                "Posts": {
+                    "name": "Posts",
+                    "isArray": true,
+                    "type": {
+                        "model": "Posts"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "eventsID"
+                        ]
+                    }
+                },
+                "Reactions": {
+                    "name": "Reactions",
+                    "isArray": true,
+                    "type": {
+                        "model": "Reactions"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "eventsID"
+                        ]
+                    }
+                },
+                "Comments": {
+                    "name": "Comments",
+                    "isArray": true,
+                    "type": {
+                        "model": "Comments"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "eventsID"
+                        ]
+                    }
+                },
+                "FAQS": {
+                    "name": "FAQS",
+                    "isArray": true,
+                    "type": {
+                        "model": "FAQ"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "eventsID"
+                        ]
+                    }
+                },
+                "Schedules": {
+                    "name": "Schedules",
+                    "isArray": true,
+                    "type": {
+                        "model": "Schedule"
+                    },
+                    "isRequired": false,
+                    "attributes": [],
+                    "isArrayNullable": true,
+                    "association": {
+                        "connectionType": "HAS_MANY",
+                        "associatedWith": [
+                            "eventsID"
+                        ]
+                    }
+                },
+                "createdAt": {
+                    "name": "createdAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                },
+                "updatedAt": {
+                    "name": "updatedAt",
+                    "isArray": false,
+                    "type": "AWSDateTime",
+                    "isRequired": false,
+                    "attributes": [],
+                    "isReadOnly": true
+                }
+            },
+            "syncable": true,
+            "pluralName": "Events",
+            "attributes": [
+                {
+                    "type": "model",
+                    "properties": {}
+                },
+                {
+                    "type": "auth",
+                    "properties": {
+                        "rules": [
+                            {
+                                "allow": "public",
+                                "operations": [
+                                    "create",
+                                    "update",
+                                    "delete",
+                                    "read"
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
         "ScheduledNotifications": {
             "name": "ScheduledNotifications",
             "fields": {
@@ -349,6 +600,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "eventsID": {
+                    "name": "eventsID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -372,6 +630,15 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byEvents",
+                        "fields": [
+                            "eventsID"
+                        ]
+                    }
                 },
                 {
                     "type": "auth",
@@ -408,6 +675,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "eventsID": {
+                    "name": "eventsID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -431,6 +705,15 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byEvents",
+                        "fields": [
+                            "eventsID"
+                        ]
+                    }
                 },
                 {
                     "type": "auth",
@@ -488,6 +771,13 @@ export const schema = {
                     "isRequired": false,
                     "attributes": []
                 },
+                "eventsID": {
+                    "name": "eventsID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -511,6 +801,15 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byEvents",
+                        "fields": [
+                            "eventsID"
+                        ]
+                    }
                 },
                 {
                     "type": "auth",
@@ -616,6 +915,13 @@ export const schema = {
                     "attributes": [],
                     "isArrayNullable": true
                 },
+                "eventsID": {
+                    "name": "eventsID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -639,6 +945,15 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byEvents",
+                        "fields": [
+                            "eventsID"
+                        ]
+                    }
                 },
                 {
                     "type": "auth",
@@ -954,6 +1269,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "eventsID": {
+                    "name": "eventsID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -984,6 +1306,15 @@ export const schema = {
                         "name": "byPosts",
                         "fields": [
                             "postsID"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byEvents",
+                        "fields": [
+                            "eventsID"
                         ]
                     }
                 },
@@ -1036,6 +1367,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "eventsID": {
+                    "name": "eventsID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -1066,6 +1404,15 @@ export const schema = {
                         "name": "byPosts",
                         "fields": [
                             "postsID"
+                        ]
+                    }
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byEvents",
+                        "fields": [
+                            "eventsID"
                         ]
                     }
                 },
@@ -1118,6 +1465,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "eventsID": {
+                    "name": "eventsID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -1141,6 +1495,15 @@ export const schema = {
                 {
                     "type": "model",
                     "properties": {}
+                },
+                {
+                    "type": "key",
+                    "properties": {
+                        "name": "byEvents",
+                        "fields": [
+                            "eventsID"
+                        ]
+                    }
                 },
                 {
                     "type": "auth",
@@ -1212,6 +1575,13 @@ export const schema = {
                     "isRequired": true,
                     "attributes": []
                 },
+                "eventsID": {
+                    "name": "eventsID",
+                    "isArray": false,
+                    "type": "ID",
+                    "isRequired": false,
+                    "attributes": []
+                },
                 "createdAt": {
                     "name": "createdAt",
                     "isArray": false,
@@ -1237,6 +1607,15 @@ export const schema = {
                     "properties": {}
                 },
                 {
+                    "type": "key",
+                    "properties": {
+                        "name": "byEvents",
+                        "fields": [
+                            "eventsID"
+                        ]
+                    }
+                },
+                {
                     "type": "auth",
                     "properties": {
                         "rules": [
@@ -1258,5 +1637,5 @@ export const schema = {
     "enums": {},
     "nonModels": {},
     "codegenVersion": "3.4.4",
-    "version": "ed08913d882c98eeececfc94db828365"
+    "version": "87f37dfc453255cf415b96f71790cf36"
 };

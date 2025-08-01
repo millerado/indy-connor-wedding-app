@@ -1,19 +1,5 @@
 import { API } from "aws-amplify";
-import { listExpoTokens } from '../../graphql/queries'
-import { ExpoTokens } from "../../models";
-import { DataStore } from "../../utils";
-
-const loadExpoTokensFromDatastore = async (setExpoTokens, oldExpoTokens) => {
-  try {
-    const allExpoTokens = await DataStore.query(ExpoTokens);
-    allExpoTokens.sort((a, b) => (a.token > b.token) ? 1 : -1);
-    if(JSON.stringify(allExpoTokens) !== JSON.stringify(oldExpoTokens)) {
-      setExpoTokens(allExpoTokens);
-    }
-  } catch (err) {
-    console.log('-- Error Loading Tokens Via Datastore --', err);
-  }
-}
+import { listExpoTokens } from '../../graphql/queries';
 
 const loadExpoTokens = async (setExpoTokens, oldExpoTokens) => {
   try {
@@ -30,8 +16,8 @@ const loadExpoTokens = async (setExpoTokens, oldExpoTokens) => {
       }
     }
   } catch (err) {
-    console.log('-- Error Loading Tokens, Try Datastore --', err);
-    loadExpoTokensFromDatastore(setExpoTokens, oldExpoTokens);
+    console.log('-- Error Loading Tokens --', err);
+    setExpoTokens([]);
   }
 };
 

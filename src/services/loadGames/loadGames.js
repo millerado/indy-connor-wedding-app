@@ -1,22 +1,6 @@
-import { Predicates, SortDirection, API } from "aws-amplify";
+import { API } from "aws-amplify";
 import { listGames } from '../../graphql/queries'
-import { DataStore } from '../../utils';
-import { Games } from '../../models';
 
-const loadGamesFromDatastore = async (setGames, oldGames) => {
-  try {
-    const items = await DataStore.query(Games, Predicates.ALL, {
-      sort: (s) => s.name(SortDirection.ASCENDING),
-    });
-    if(items.length > 0){
-      if(JSON.stringify(items) !== JSON.stringify(oldGames)) {
-        setGames(items);
-      }
-    }
-  } catch (err) {
-    console.log('-- Error Loading Games From Datastore --', err);
-  }
-};
 
 const loadGames = async (setGames, oldGames) => {
   try {
@@ -32,8 +16,8 @@ const loadGames = async (setGames, oldGames) => {
       }
     }
   } catch (err) {
-    console.log('-- Error Loading Games, Will Try Datastore --', err);
-    loadGamesFromDatastore(setGames, oldGames);
+    console.log('-- Error Loading Games --', err);
+    setGames([]);
   }
 };
 

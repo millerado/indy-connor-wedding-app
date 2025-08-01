@@ -2,7 +2,8 @@ import React, { memo, useState, useEffect, useContext, useMemo } from "react";
 import { View, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Dialog, Portal, Menu, useTheme } from "react-native-paper";
-import { Comments } from "../../models";
+import { API } from "aws-amplify";
+import * as mutations from '../../graphql/mutations';
 import {
   Avatar,
   Divider,
@@ -11,7 +12,7 @@ import {
   ConditionalWrapper,
   Icon,
 } from "../../components";
-import { formatDate, DataStore } from "../../utils";
+import { formatDate } from "../../utils";
 import { typography } from "../../styles";
 import { AuthContext } from "../../contexts";
 import CommentModal from "../CommentModal/CommentModal";
@@ -21,7 +22,7 @@ import styles from "./SingleCommentStyles";
 const SingleComment = (props) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-  const { numberOfLines, comment, allUsers, ...restOfProps } = props;
+  const { numberOfLines, comment, allUsers, key, ...restOfProps } = props;
   if (!comment) {
     return null;
   }
@@ -51,8 +52,10 @@ const SingleComment = (props) => {
   const deleteComment = async () => {
     if (authStatus?.isAuthed) {
       try {
-        // await DataStore.stop();
-        await DataStore.delete(Comments, comment.id);
+        await API.graphql({
+          query: mutations.deleteComments,
+          variables: { input: {id: comment.id, _version: comment._version} }
+        });
         setDeleteDialogVisible(false);
       } catch (error) {
         console.log("Error deleting comment", error);
@@ -104,6 +107,7 @@ const SingleComment = (props) => {
           modalType={"update"}
           postsID={comment.postsID}
           comment={comment}
+          key={key}
         />
         <Portal>
           <Dialog visible={deleteDialogVisible} onDismiss={hideDeleteDialog}>

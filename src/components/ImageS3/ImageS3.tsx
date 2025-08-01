@@ -54,7 +54,7 @@ const renderPlaceholder = (width, height, borderRadius, absolute) => {
 }
 
 const ImageS3 = (props) => {
-  const { fileName, variant, width, height, borderRadius, placeholder, imageLoadedCallback, children, multipleImages, ...restOfProps } = props;
+  const { fileName, variant, width, height, borderRadius, placeholder, imageLoadedCallback, children, multipleImages, key, ...restOfProps } = props;
   // const isMounted = useRef(false);
   const [imgUrl, setImgUrl] = useState(undefined);
   const [dimensions, setDimensions] = useState({width: 0, height: 0, borderRadius: 0});
@@ -149,6 +149,7 @@ const ImageS3 = (props) => {
             imageStyle={{ borderRadius: dimensions.borderRadius }}
             resizeMode={multipleImages ? 'contain' : 'cover'}
             loadingIndicatorSource={() => showPlaceholder(false)}
+            key={key}
             {...restOfProps}
           >
             {children}

@@ -14,7 +14,7 @@ const UserScreen = ({ navigation, route }) => {
   const { userId, name, picture } = route.params;
   const [displayPosts, setDisplayPosts] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
-  const { refreshData, allPosts, allUsers, allAdminFavorites, allComments, allReactions } = useContext(DataContext);
+  const { refreshData, selectedEventId, allPosts, allUsers, allAdminFavorites, allComments, allReactions } = useContext(DataContext);
 
   const renderItem = useCallback(({ item }) => {
     const postComments = allComments.filter((comment) => comment.postsID === item.id);
@@ -51,7 +51,7 @@ const UserScreen = ({ navigation, route }) => {
 
   const onRefresh = async () => {
     try {
-      refreshData();
+      refreshData(selectedEventId);
     } catch (err) {
       console.log('-- Error refreshing --', err);
     }

@@ -2,13 +2,15 @@ import * as React from "react";
 import {
   SegmentedButtons as PaperSegmentedButtons,
   SegmentedButtonsProps,
-  withTheme,
+  useTheme,
 } from "react-native-paper";
 
 const SegmentedButtons = (props: SegmentedButtonsProps) => {
+  const { key, ...restOfProps } = props;
+  const theme = useTheme();
   return (
-    <PaperSegmentedButtons {...props}/>
+    <PaperSegmentedButtons {...restOfProps} key={key} theme={theme} />
   );
 };
 
-export default withTheme(SegmentedButtons);
+export default SegmentedButtons;

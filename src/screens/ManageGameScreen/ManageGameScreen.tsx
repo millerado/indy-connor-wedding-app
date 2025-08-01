@@ -1,10 +1,11 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { View, ScrollView } from "react-native";
 import { useTheme, Switch } from "react-native-paper";
+import { API } from "aws-amplify";
+import * as mutations from '../../graphql/mutations';
 import { Text, Icon, allIcons, TextSizes, DropdownInput, TextInput, NumberInput, Button } from '../../components';
 import { typography } from '../../styles';
-import { nth, DataStore } from '../../utils';
-import { Games } from '../../models';
+import { nth } from '../../utils';
 import styles from './ManageGameScreenStyles';
 
 const ManageGameScreen = ({ navigation, route }) => {
@@ -46,40 +47,49 @@ const ManageGameScreen = ({ navigation, route }) => {
   const handleSave = async() => {
     if(view === 'editGame') {
       try { 
-        const originalItem = await DataStore.query(Games, item.id);
-        await DataStore.save(
-          Games.copyOf(originalItem, (i) => {
-            i.name = gameName;
-            i.iconName = iconValue;
-            i.minNumberOfTeams = minNumberOfTeams;
-            i.maxNumberOfTeams = hasMaxNumberOfTeams ? maxNumberOfTeams : null;
-            i.minNumberOfPlayersPerTeam = hasTeams ? minNumberOfPlayersPerTeam : 1;
-            i.maxNumberOfPlayersPerTeam = hasTeams ? hasMaxNumberOfPlayersPerTeam ? maxNumberOfPlayersPerTeam : null : 1;
-            i.points = playerPoints;
-            i.rules = rules;
-            i.canHaveMultipleWinners = hasMultipleWinners;
-          })
-        );
+        const updatedGame = {
+          id: item.id,
+          _version: item._version,
+          name: gameName,
+          iconName: iconValue,
+          minNumberOfTeams,
+          maxNumberOfTeams: hasMaxNumberOfTeams ? maxNumberOfTeams : null,
+          minNumberOfPlayersPerTeam: hasTeams ? minNumberOfPlayersPerTeam : 1,
+          maxNumberOfPlayersPerTeam: hasTeams ? hasMaxNumberOfPlayersPerTeam ? maxNumberOfPlayersPerTeam : null : 1,
+          points: playerPoints,
+          rules,
+          canHaveMultipleWinners: hasMultipleWinners,
+        };
+        try {
+          await API.graphql({
+            query: mutations.updateGames,
+            variables: { input: updatedGame }
+          });
+        } catch (e) {
+          console.log('-- updateGame Error --', e);
+        }
         navigation.goBack();
       } catch (err) {
         console.log("error updating Game", err);
       }
     } else {
       try {
-        // await DataStore.stop();
-        await DataStore.save(
-          new Games({
-            name: gameName,
-            iconName: iconValue,
-            minNumberOfTeams,
-            maxNumberOfTeams: hasMaxNumberOfTeams ? maxNumberOfTeams : null, 
-            minNumberOfPlayersPerTeam: hasTeams ? minNumberOfPlayersPerTeam : 1,
-            maxNumberOfPlayersPerTeam: hasTeams ? hasMaxNumberOfPlayersPerTeam ? maxNumberOfPlayersPerTeam : null : 1,
-            points: playerPoints,
-            rules,
-            canHaveMultipleWinners: hasMultipleWinners,
-          })
-        );
+        const gameDetails = {
+          name: gameName,
+          iconName: iconValue,
+          minNumberOfTeams,
+          maxNumberOfTeams: hasMaxNumberOfTeams ? maxNumberOfTeams : null, 
+          minNumberOfPlayersPerTeam: hasTeams ? minNumberOfPlayersPerTeam : 1,
+          maxNumberOfPlayersPerTeam: hasTeams ? hasMaxNumberOfPlayersPerTeam ? maxNumberOfPlayersPerTeam : null : 1,
+          points: playerPoints,
+          rules,
+          canHaveMultipleWinners: hasMultipleWinners,
+        };
+        
+        await API.graphql({
+          query: mutations.createGames,
+          variables: { input: gameDetails }
+        });
         navigation.goBack();
       } catch (err) {
         console.log("error saving Game", err);

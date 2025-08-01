@@ -141,9 +141,7 @@ const UserScreenHeader = (props) => {
     const { updatePicture, updateAbout } = props;
     // Change userInDb to dbUser
     try {
-      // await DataStore.stop();
       const oldUser = await DataStore.query(Users, userId);
-      // await DataStore.stop();
       const newUser = await DataStore.save(
         Users.copyOf(oldUser, (updatedUser) => {
           updatedUser.image = updatePicture ? updatePicture : oldUser.image;
@@ -158,7 +156,6 @@ const UserScreenHeader = (props) => {
   };
 
   const getUser = async () => {
-    // await DataStore.stop();
     const user = await DataStore.query(Users, userId);
     // console.log('-- Get User --', users);
     if (user) {

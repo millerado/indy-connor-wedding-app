@@ -8,7 +8,7 @@ import styles from './ZoomableViewStyles';
 
 const { height: deviceHeight, width: deviceWidth } = Dimensions.get('window');
 
-const ZoomableView = ({ children, onPress, maxZoom = 3, height = deviceHeight, width = deviceWidth }) =>{
+const ZoomableView = ({ children, onPress, maxZoom = 3, height = deviceHeight, width = deviceWidth, key }) =>{
 	const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
   if(Platform.OS === 'android') {

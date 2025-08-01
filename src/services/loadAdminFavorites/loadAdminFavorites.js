@@ -1,13 +1,13 @@
 import { API } from "aws-amplify";
-import { listAdminFavorites } from '../../graphql/queries'
-import { AdminFavorites } from "../../models";
-import { DataStore } from "../../utils";
+import { listAdminFavorites } from '../../graphql/queries';
 
 const formatAdminFavorites = async (items, oldAdminFavorites, setAdminFavorites) => {
   const newFavorites = items.map((favorite) => {
     const img = JSON.parse(favorite.image);
     return {
       id: favorite.id,
+      _version: favorite._version,
+      eventsID: favorite.eventsID,
       url: img.url,
       width: img.width,
       height: img.height,
@@ -19,18 +19,12 @@ const formatAdminFavorites = async (items, oldAdminFavorites, setAdminFavorites)
   }
 };
 
-const loadAdminFavoritesFromDatastore = async (setAdminFavorites, oldAdminFavorites) => {
+const loadAdminFavorites = async (setAdminFavorites, oldAdminFavorites, eventId) => {
   try {
-    const adminFavorites = await DataStore.query(AdminFavorites);
-    formatAdminFavorites(adminFavorites, oldAdminFavorites, setAdminFavorites);
-  } catch (err) {
-    console.log('-- Error Loading Admin Favorites Via Datastore --', err);
-  }
-}
-
-const loadAdminFavorites = async (setAdminFavorites, oldAdminFavorites) => {
-  try {
-    const allAdminFavorites = await API.graphql({ query: listAdminFavorites, variables: { limit: 999999999 } });
+    const allAdminFavorites = await API.graphql({ query: listAdminFavorites, variables: { limit: 999999999, filter: {
+      eventsID: { eq: eventId }
+    } } });
+    // const allAdminFavorites = await API.graphql({ query: listAdminFavorites, variables: { limit: 999999999 } });
 
     const unfilteredItems = allAdminFavorites?.data?.listAdminFavorites?.items;
     // Remove items where _deleted is true
@@ -38,7 +32,8 @@ const loadAdminFavorites = async (setAdminFavorites, oldAdminFavorites) => {
     formatAdminFavorites(items, oldAdminFavorites, setAdminFavorites);
   } catch (err) {
     console.log('-- Error Loading Admin Favorites, try Datastore --', err);
-    loadAdminFavoritesFromDatastore(setAdminFavorites, oldAdminFavorites);
+    formatAdminFavorites([], oldAdminFavorites, setAdminFavorites);
+    // loadAdminFavoritesFromDatastore(setAdminFavorites, oldAdminFavorites, eventId);
   }
 };
 

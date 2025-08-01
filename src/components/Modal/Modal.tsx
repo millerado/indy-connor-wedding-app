@@ -8,8 +8,9 @@ import styles from "./ModalStyles";
 const Modal = (props: ModalProps) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
+  const { key, ...restOfProps } = props;
   return (
-    <RNModal {...props} backdropColor={theme.colors.modalBackground} />
+    <RNModal {...restOfProps} key={key} backdropColor={theme.colors.modalBackground} />
   )
 };
 

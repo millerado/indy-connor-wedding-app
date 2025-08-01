@@ -179,7 +179,7 @@ const CommentModal = (props) => {
                   ss.textInputWrapper,
                 ]}
                 render={props => {
-                  const { ref, ...restOfProps } = props;
+                  const { ref, key, ...restOfProps } = props;
                   return (
                     <MentionInput
                       value={commentText}
@@ -193,6 +193,7 @@ const CommentModal = (props) => {
                           isInsertSpaceAfterMention: true,
                         },
                       ]}
+                      key={key}
                       {...restOfProps}
                     />
                   );

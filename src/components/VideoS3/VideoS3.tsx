@@ -74,6 +74,7 @@ const VideoS3 = (props) => {
     videoLoadedCallback,
     height,
     width,
+    key,
     ...restOfProps
   } = props;
   const [videoUrl, setVideoUrl] = useState(undefined);
@@ -147,6 +148,7 @@ const VideoS3 = (props) => {
       <>
         {videoUrl && videoUrl.slice(-9) !== "undefined" ? (
           <Video
+            key={key}
             ref={refVideo}
             style={{
               height: displayHeight,
@@ -161,7 +163,6 @@ const VideoS3 = (props) => {
             isMuted={false}
             volume={1.0}
             onPlaybackStatusUpdate={(status) => setStatus(status)}
-            ref={ref}
           />
         ) : (
           showPlaceholder(false)

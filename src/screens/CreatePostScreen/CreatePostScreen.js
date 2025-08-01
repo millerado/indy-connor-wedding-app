@@ -678,7 +678,7 @@ const CreatePostScreen = ({ navigation, route }) => {
                   ss.textInputWrapper,
                 ]}
                 render={props => {
-                  const { ref, ...restOfProps } = props;
+                  const { ref, key, ...restOfProps } = props;
                   return (
                     <MentionInput
                       value={messageBody}
@@ -692,6 +692,7 @@ const CreatePostScreen = ({ navigation, route }) => {
                           isInsertSpaceAfterMention: true,
                         },
                       ]}
+                      key={key}
                       {...restOfProps}
                     />
                   );

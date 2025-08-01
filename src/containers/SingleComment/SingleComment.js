@@ -22,7 +22,7 @@ import styles from "./SingleCommentStyles";
 const SingleComment = (props) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
-  const { numberOfLines, comment, allUsers, ...restOfProps } = props;
+  const { numberOfLines, comment, allUsers, key, ...restOfProps } = props;
   if (!comment) {
     return null;
   }
@@ -107,6 +107,7 @@ const SingleComment = (props) => {
           modalType={"update"}
           postsID={comment.postsID}
           comment={comment}
+          key={key}
         />
         <Portal>
           <Dialog visible={deleteDialogVisible} onDismiss={hideDeleteDialog}>

@@ -1,8 +1,12 @@
 import * as React from 'react';
-import { Switch as PaperSwitch, SwitchProps, withTheme } from 'react-native-paper';
+import { Switch as PaperSwitch, SwitchProps, useTheme } from 'react-native-paper';
 
-const Switch = (props: SwitchProps) => (
-  <PaperSwitch {...props} />
-);
+const Switch = (props: SwitchProps) => {
+  const { key, ...restOfProps } = props;
+  const theme = useTheme();
+  return (
+    <PaperSwitch {...restOfProps} key={key} theme={theme} />
+  );
+};
 
-export default withTheme(Switch);
+export default Switch;

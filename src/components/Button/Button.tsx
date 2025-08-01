@@ -23,6 +23,7 @@ const Button = (props: ButtonProps) => {
     mode = "contained",
     variant = "primary",
     short = false,
+    key,
     ...restOfProps
   } = props;
   const theme = useTheme();
@@ -55,6 +56,7 @@ const Button = (props: ButtonProps) => {
           alignItems: "center",
           justifyContent: "center",
         }}
+        key={key}
         {...restOfProps}
       >
         <Text color={textColor}>{props.children}</Text>
@@ -67,6 +69,7 @@ const Button = (props: ButtonProps) => {
       mode={mode}
       buttonColor={buttonColor}
       textColor={textColor}
+      key={key}
       {...restOfProps}
       theme={theme}
     >

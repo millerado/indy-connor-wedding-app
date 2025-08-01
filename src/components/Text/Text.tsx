@@ -1,9 +1,8 @@
 import * as React from "react";
-import { useTheme } from "react-native-paper";
 import {
   Text as PaperText,
   TextProps as PaperTextProps,
-  withTheme,
+  useTheme
 } from "react-native-paper";
 import { typography } from "../../styles";
 
@@ -49,6 +48,7 @@ const Text = (props: TextProps) => {
       {...restOfProps}
       allowFontScaling={false}
       numberOfLines={numberOfLines}
+      theme={theme}
       style={{
         ...style,
         fontSize: textSize,
@@ -63,7 +63,7 @@ const Text = (props: TextProps) => {
   );
 };
 
-export default withTheme(Text);
+export default Text;
 
 const sizeToVariant = (size: TextSizes): number => {
   switch (size) {

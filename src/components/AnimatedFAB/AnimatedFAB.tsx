@@ -6,11 +6,11 @@ const AnimatedFAB = (props: AnimatedFABProps) => {
   const theme = useTheme();
   const ss = useMemo(() => styles(theme), [theme]);
 
-  const {animateFrom = 'right', iconMode = 'dynamic', ...restOfProps} = props;
+  const {animateFrom = 'right', iconMode = 'dynamic', key, ...restOfProps} = props;
 
   return (
-    <PaperAnimatedFAB animateFrom={animateFrom} iconMode={iconMode} {...restOfProps} style={ss.fabStyle} />
+    <PaperAnimatedFAB theme={theme} animateFrom={animateFrom} iconMode={iconMode} key={key} {...restOfProps} style={ss.fabStyle} />
   )
 };
 
-export default withTheme(AnimatedFAB);
+export default AnimatedFAB;

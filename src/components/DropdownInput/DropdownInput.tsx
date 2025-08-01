@@ -14,7 +14,7 @@ interface DropdownProps extends IDropdownRef {
 }
 
 const DropdownInput = (props: DropdownProps) => {
-  const { value, setValue, data, placeholder, focusPlaceholder, ...restOfProps } = props;
+  const { value, setValue, data, placeholder, focusPlaceholder, key, ...restOfProps } = props;
   const theme = useTheme();
   const ss = styles(theme);
   const [isFocus, setIsFocus] = useState(false);
@@ -22,7 +22,7 @@ const DropdownInput = (props: DropdownProps) => {
   const renderLabel = (label) => {
     if (value || isFocus) {
       return (
-        <View style={ss.dropdownLabelWrapper}>
+        <View style={ss.dropdownLabelWrapper} key={key}>
           <Text style={[isFocus && { color: theme.colors.primary }]} size={TextSizes.XS}>
             {label}
           </Text>
@@ -33,7 +33,7 @@ const DropdownInput = (props: DropdownProps) => {
   };
 
   return (
-    <View style={ss.dropdownWrapper}>
+    <View style={ss.dropdownWrapper} key={key}>
       {renderLabel(placeholder)}
       <Dropdown
         style={[ss.dropdown, isFocus && { borderColor: theme.colors.primary }]}

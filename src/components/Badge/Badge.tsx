@@ -2,17 +2,18 @@ import * as React from "react";
 import {
   Badge as PaperBadge,
   BadgeProps,
-  withTheme,
+  useTheme,
 } from "react-native-paper";
 
 const Badge = (props: BadgeProps) => {
-  const { children, ...restOfProps } = props;
+  const { children, key, ...restOfProps } = props;
+  const theme = useTheme();
   if(children) {
     return (
-      <PaperBadge {...restOfProps}>{children}</PaperBadge>
+      <PaperBadge {...restOfProps} theme={theme} key={key}>{children}</PaperBadge>
     );
   }
   return null;
 };
 
-export default withTheme(Badge);
+export default Badge;

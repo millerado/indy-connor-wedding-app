@@ -90,7 +90,9 @@ const SettingsModal = () => {
   return (
     <>
       <Pressable onPress={openModal}>
-        <Icon name='settings' color={theme.colors.primary} size={typography.fontSizeXXL} />
+        <View>
+          <Icon name='settings' color={theme.colors.primary} size={typography.fontSizeXXL} />
+        </View>
       </Pressable>
       <Modal
         isVisible={showModal}
